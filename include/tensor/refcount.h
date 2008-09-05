@@ -63,11 +63,11 @@ public:
     if (REFCOUNT_HAS_COUNTER && (*ref_count_ > 1)) {
       RefPointer<elt_t,simple_copy> aux(size_);
       if (simple_copy) {
-	std::memcpy(aux.__data, __data, sizeof(elt_t) * size_);
+        std::memcpy(aux.__data, __data, sizeof(elt_t) * size_);
       } else {
-	for (size_t i = 0; i < size_; i++) {
-	  aux.__data[i] = __data[i];
-	}
+        for (size_t i = 0; i < size_; i++) {
+          aux.__data[i] = __data[i];
+        }
       }
       *this = aux;
     }
@@ -136,8 +136,8 @@ private:
   void deref() {
     if (REFCOUNT_HAS_COUNTER) {
       if (--(*ref_count_) == 0) {
-	delete[] __data;
-	delete ref_count_;
+        delete[] __data;
+        delete ref_count_;
       }
     }
     __data = NULL;
