@@ -95,14 +95,6 @@ private:
     void appropiate() {
 	if (REFCOUNT_HAS_COUNTER && (*__counter > 1)) {
 	    RefPointer<elt_t,simple_copy,atomic> aux(size);
-#if 0
-	    // This version is better because it allows to copy objects
-	    // which are more complicated than just numbers or pointers.
-	    // For instance, we can have RefPointer<RefPointer<Tensor>>.
-	    for (size_t i = 0; i < size; i++) {
-		aux.__data[i] = __data[i];
-	    }
-#else
 	    if (simple_copy) {
 	        std::memcpy(aux.__data, __data, sizeof(elt_t) * size);
 	    } else {
@@ -110,7 +102,6 @@ private:
 		    aux.__data[i] = __data[i];
 		}
 	    }
-#endif
 	    *this = aux;
 	}
     }
@@ -122,8 +113,8 @@ private:
     }
 
     /** Copy a pointer increasing the reference count. */
-    RefPointer<elt_t,simple_copy,atomic>
-    &operator=(const RefPointer<elt_t,simple_copy,atomic> &p) {
+    RefPointer<elt_t,simple_copy>
+    &operator=(const RefPointer<elt_t,simple_copy> &p) {
 	// Avoid self assignment
 	if (this != &p) {
 	    deref();
