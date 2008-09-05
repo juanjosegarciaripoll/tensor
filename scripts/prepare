@@ -1,0 +1,6 @@
+#!/bin/sh
+aclocal-1.9
+libtoolize -c
+autoheader
+automake-1.9 -ac
+autoconf
