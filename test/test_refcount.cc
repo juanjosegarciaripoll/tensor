@@ -5,6 +5,7 @@
 
 #include <gtest/gtest.h>
 #include <tensor/refcount.h>
+#include "alloc_informer.h"
 
 TEST(RefcountTest, DefaultConstructor) {
   const RefPointer<int> r;
@@ -13,35 +14,55 @@ TEST(RefcountTest, DefaultConstructor) {
   EXPECT_EQ(0, r.ref_count());
 }
 
-TEST(RefcountTest, SingleConstantReference) {
-  // For a constant object with a single reference, the pointer is
-  // always the same and does not change.
-  const RefPointer<int> r(2);
-  EXPECT_EQ(2, r.size());
-  EXPECT_EQ(1, r.ref_count());
-  const int *p = r.constant_pointer();
-  EXPECT_EQ(p, r.pointer());
+// Verify proper size of object and that the exact number of elements
+// are allocated.
+TEST(RefcountTest, SizeConstructor) {
+  for (int i = 1; i < 10; ++i) {
+    {
+      AllocInformer::reset_counters();
+      const RefPointer<AllocInformer> r(i);
+      EXPECT_EQ(i, r.size());
+      EXPECT_EQ(1, r.ref_count());
+      EXPECT_EQ(i, AllocInformer::allocations);
+    }
+    EXPECT_EQ(i, AllocInformer::deallocations);
+  }
 }
 
-TEST(RefcountTest, SingleReference) {
-  // For a non constant object with a single reference, the pointer is
-  // always the same and does not change.
-  RefPointer<int> r(2);
-  EXPECT_EQ(2, r.size());
+// For a constant object with a single reference, the pointer is
+// always the same and does not change.
+TEST(RefcountTest, SingleConstantReference) {
+  const RefPointer<int> r(2);
+  const int *p = r.constant_pointer();
+  EXPECT_EQ(p, r.pointer());
   EXPECT_EQ(1, r.ref_count());
+}
+
+// For a non constant object with a single reference, the pointer is
+// always the same and does not change.
+TEST(RefcountTest, SingleReferenceAppropiate) {
+  RefPointer<int> r(2);
   const int *p = r.constant_pointer();
   // Appropiate does not change the pointer
   r.appropiate();
   EXPECT_EQ(p, r.constant_pointer());
-  // Nor does getting a non constant reference
-  EXPECT_EQ(p, r.pointer());
 }
 
+// For a non constant object with a single reference, the pointer is
+// always the same and does not change, nor does getting a non
+// constant reference
+TEST(RefcountTest, SingleReferencePointer) {
+  RefPointer<int> r(2);
+  const int *p = r.constant_pointer();
+  EXPECT_EQ(p, r.pointer());
+  EXPECT_EQ(p, r.constant_pointer());
+}
+
+// The copy constructor increases the number of references, so that
+// r1 and r2 point to the same data.
 TEST(RefcountTest, TwoRefsCopyConstructor) {
   RefPointer<int> r1(2);
   const int *p = r1.constant_pointer();
-  // The copy constructor increases the number of references, so that
-  // r1 and r2 point to the same data.
   RefPointer<int> r2(r1);
   EXPECT_EQ(2, r1.size());
   EXPECT_EQ(2, r1.ref_count());
@@ -49,14 +70,17 @@ TEST(RefcountTest, TwoRefsCopyConstructor) {
   EXPECT_EQ(r1.constant_pointer(), r2.constant_pointer());
 }
 
+// When another reference appropiates of data, it creates a fresh new
+// copy and does not affect the original one.
 TEST(RefcountTest, TwoRefsAppropriate) {
-  // When r2 appropiates of data, it creates a fresh new copy.
   RefPointer<int> r1(2);
   const int *p = r1.constant_pointer();
   RefPointer<int> r2(r1);
   r2.appropiate();
   EXPECT_EQ(2, r1.size());
   EXPECT_EQ(p, r1.constant_pointer());
+  EXPECT_EQ(1, r1.ref_count());
   EXPECT_EQ(2, r2.size());
   EXPECT_NE(p, r2.constant_pointer());
+  EXPECT_EQ(1, r2.ref_count());
 }
