@@ -6,6 +6,8 @@
 #ifndef TENSOR_REFCOUNT_H
 #define TENSOR_REFCOUNT_H
 
+#include <cstring>
+
 #ifdef REFCOUNT_USE_STATIC_COUNTER
 # define REFCOUNT_DEFAULT_COUNTER &ref_pointer_default_ref;
 # define REFCOUNT_HAS_COUNTER 1
@@ -33,7 +35,7 @@ protected:
     value_type *__data;
 private:
     size_t *__counter;
-    size_t size;
+    size_t __size;
     void ref() {
 	if (REFCOUNT_HAS_COUNTER)
 	    (*__counter)++;
@@ -47,10 +49,10 @@ private:
 	}
 	__data = NULL;
 	__counter = REFCOUNT_DEFAULT_COUNTER;
-	size = 0;
+	__size = 0;
     }
     void new_data(size_t s) {
-	size = s;
+	__size = s;
 	if (s == 0) {
 	    __counter = REFCOUNT_DEFAULT_COUNTER;
 	    __data = NULL;
@@ -72,13 +74,13 @@ private:
     }
 
     /** Copy constructor that increases the reference count. */
-    RefPointer(const RefPointer<elt_t,simple_copy,atomic> &p)
+    RefPointer(const RefPointer<elt_t,simple_copy> &p)
     {
 	// Avoid self assignment
 	if (this == &p) return;
 	__counter = p.__counter;
 	__data = p.__data;
-	size = p.size;
+	__size = p.__size;
 	ref();
     }
 
@@ -94,11 +96,11 @@ private:
     */
     void appropiate() {
 	if (REFCOUNT_HAS_COUNTER && (*__counter > 1)) {
-	    RefPointer<elt_t,simple_copy,atomic> aux(size);
+	    RefPointer<elt_t,simple_copy> aux(__size);
 	    if (simple_copy) {
-	        std::memcpy(aux.__data, __data, sizeof(elt_t) * size);
+	        std::memcpy(aux.__data, __data, sizeof(elt_t) * __size);
 	    } else {
-		for (size_t i = 0; i < size; i++) {
+		for (size_t i = 0; i < __size; i++) {
 		    aux.__data[i] = __data[i];
 		}
 	    }
@@ -120,7 +122,7 @@ private:
 	    deref();
 	    __counter = p.__counter;
 	    __data = p.__data;
-	    size = p.size;
+	    __size = p.__size;
 	    ref();
 	}
 	return (*this);
@@ -141,8 +143,8 @@ private:
     /** Retreive the pointer without caring for references (unsafe). */
     const elt_t *constant_pointer() const { return __data; }
 
-    /** Length of pointed-to data. */
-    size_t length() const { return size; }
+    /** Size of pointed-to data. */
+    size_t size() const { return __size; }
 
     /** Reference counter */
     size_t ref_count() const { return (REFCOUNT_HAS_COUNTER? *__counter : 0); }
@@ -153,7 +155,7 @@ private:
 #ifndef REFCOUNT_USE_STATIC_COUNTER
     /** Point to preallocated data */
     void set_pointer(size_t new_size, elt_t *p) {
-	deref(); __data = p; size = new_size; __counter = 0;
+	deref(); __data = p; __size = new_size; __counter = 0;
     }
 #endif
 };
