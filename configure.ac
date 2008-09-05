@@ -12,12 +12,13 @@ AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR([./README])		dnl Unique file where sources are
 AC_CONFIG_AUX_DIR([config_aux])		dnl Where to put autoconf files
 AC_CONFIG_HEADERS([config_aux/config.h])	dnl Automatically generated
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile scripts/Makefile test/Makefile])
 AC_CONFIG_FILES([scripts/tensor-config], [chmod +x scripts/tensor-config])
 
 #
 # Initialize Automake, minimal version 1.9, with options to make it less
-# pedantic, various distribution targets and a separate compilation dir.
+# pedantic, various distribution targets and placing object files together
+# inside source dirs.
 #
 AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 dist-zip subdir-objects])
 

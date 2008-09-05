@@ -1,6 +1,5 @@
-# We define the global AM_CPPFLAGS as everything we compile includes from these
-# directories.
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include
+SUBDIRS = src
 
-SUBDIRS = src test
-
+if HAVE_GTEST
+SUBDIRS += test
+endif
