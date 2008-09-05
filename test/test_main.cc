@@ -1,4 +1,4 @@
-// -*- mode: c++; fill-column: 80; c-basic-offset: 4; -*-
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 //
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
@@ -9,8 +9,9 @@
 int
 main(int narg, char *argv[])
 {
+  ::testing::InitGoogleTest(&narg, argv);
 
-    ::testing::InitGoogleTest(&narg, argv);
+  RUN_ALL_TESTS();
 
-    RUN_ALL_TESTS();
+  return 0;
 }

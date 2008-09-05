@@ -1,4 +1,4 @@
-// -*- mode: c++; fill-column: 80; c-basic-offset: 4 -*-
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 //
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
@@ -11,7 +11,7 @@ static clock_t tic_start;
 /**Reset the time counter.*/
 void tic()
 {
-    tic_start = clock();
+  tic_start = clock();
 }
 
 /**Output the time in seconds since last invocation of tic(). This function
@@ -24,5 +24,5 @@ void tic()
 */
 double toc()
 {
-    return (clock()-tic_start)/((double)CLOCKS_PER_SEC);
+  return (clock()-tic_start)/((double)CLOCKS_PER_SEC);
 }
