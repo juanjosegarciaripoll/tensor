@@ -1,4 +1,4 @@
-// -*- mode: c++; fill-column: 80; c-basic-offset: 4 -*-
+// -*- mode: c++; fill-column: 80; c-basic-offset: 4; -*-
 //
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
