@@ -7,6 +7,8 @@
 #include <tensor/refcount.h>
 #include <gtest/gtest.h>
 
+using tensor::RefPointer;
+
 TEST(RefcountTest, DefaultConstructor) {
   const RefPointer<int> r;
   EXPECT_EQ(0, r.size());
