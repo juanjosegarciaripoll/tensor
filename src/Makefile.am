@@ -10,7 +10,10 @@ lib_LTLIBRARIES = libtensor.la
 libtensor_la_SOURCES = \
 	tools/tictoc.cc \
 	tools/refcount.cc \
-	rand/rand.cc
+	rand/rand.cc \
+	indices/indices.cc \
+	tensor/tensor_common.cc \
+	tensor/tensor_d.cc
 
 if HAVE_64BITS
 libtensor_la_SOURCES += rand/rand64.cc
