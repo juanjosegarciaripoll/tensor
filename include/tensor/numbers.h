@@ -44,11 +44,11 @@ inline cdouble to_complex(const cdouble &z) {
   return z;
 }
 
-template<cdouble>
-inline cdouble number_zero() { return to_complex(0.0); }
+template<>
+inline cdouble number_zero<cdouble>() { return to_complex(0.0); }
 
-template<cdouble>
-inline cdouble number_one() { return to_complex(1.0); }
+template<>
+inline cdouble number_one<cdouble>() { return to_complex(1.0); }
 
 using std::real;
 using std::imag;
@@ -58,7 +58,7 @@ using std::abs;
 inline double abs2(cdouble z) { return abs2(real(z)) + abs2(imag(z)); }
 
 inline cdouble round(cdouble r) {
-  return to_complex(::round(re_part(r)),::round(im_part(r)));
+  return to_complex(::round(real(r)),::round(imag(r)));
 }
 
 inline std::istream &operator>>(std::istream &s, cdouble &z) {
@@ -69,7 +69,7 @@ inline std::istream &operator>>(std::istream &s, cdouble &z) {
 }
 
 inline std::ostream &operator<<(std::ostream &s, const cdouble &d) {
-  return s << re_part(d) << ' ' << im_part(d);
+  return s << real(d) << ' ' << imag(d);
 }
 
 #endif // !TENSOR_NUMBERS_H
