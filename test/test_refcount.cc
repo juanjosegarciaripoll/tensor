@@ -3,9 +3,9 @@
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
 
-#include <gtest/gtest.h>
-#include <tensor/refcount.h>
 #include "alloc_informer.h"
+#include <tensor/refcount.h>
+#include <gtest/gtest.h>
 
 TEST(RefcountTest, DefaultConstructor) {
   const RefPointer<int> r;

@@ -8,7 +8,16 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include
 lib_LTLIBRARIES = libtensor.la
 
 libtensor_la_SOURCES = \
-	tools/tictoc.cpp
+	tools/tictoc.cc \
+	rand/rand.cc
+
+if HAVE_64BITS
+libtensor_la_SOURCES += rand/rand64.cc
+else
+libtensor_la_SOURCES += rand/rand32.cc
+endif
 
 pkginclude_HEADERS = \
-	$(top_srcdir)/include/tensor/tools.h
+	$(top_srcdir)/include/tensor/tools.h \
+	$(top_srcdir)/include/tensor/numbers.h \
+	$(top_srcdir)/include/tensor/rand.h
