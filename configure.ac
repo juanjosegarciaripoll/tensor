@@ -38,6 +38,9 @@ AM_CONDITIONAL([HAVE_GTEST], [test "x$HAVE_GTEST" != x])
 AC_SUBST(GTEST_CFLAGS)
 AC_SUBST(GTEST_LDFLAGS)
 
+# Size of computer words
+AM_CONDITIONAL([HAVE_64BITS], [false])
+
 # Missing: headers and library checks
 
 AC_OUTPUT
