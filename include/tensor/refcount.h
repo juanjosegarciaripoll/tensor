@@ -9,6 +9,8 @@
 #include <cstring>
 #include <algorithm>
 
+namespace tensor {
+
 extern size_t ref_pointer_default_ref;
 
 /**A reference counting pointer. This is a pointer that keeps track of whether
@@ -156,5 +158,7 @@ private:
   size_t *ref_count_; // Number of references to that data
   size_t size_;       // Size
 };
+
+}; // namespace
 
 #endif /* !REFCOUNT_REFCOUNT_H */
