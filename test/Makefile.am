@@ -11,12 +11,12 @@ check_PROGRAMS =
 TESTS += test_refcount
 check_PROGRAMS += test_refcount
 test_refcount_SOURCES = test_refcount.cc
-test_refcount_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@
+test_refcount_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
 TESTS += test_rand
 check_PROGRAMS += test_rand
 test_rand_SOURCES = test_rand.cc
-test_rand_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@
+test_rand_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc

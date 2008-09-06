@@ -11,7 +11,7 @@ TEST(RefcountTest, DefaultConstructor) {
   const RefPointer<int> r;
   EXPECT_EQ(0, r.size());
   EXPECT_FALSE(r.constant_pointer());
-  EXPECT_EQ(0, r.ref_count());
+  EXPECT_FALSE(r.other_references());
 }
 
 // Verify proper size of object and that the exact number of elements
@@ -73,14 +73,14 @@ TEST(RefcountTest, TwoRefsCopyConstructor) {
 // When another reference appropiates of data, it creates a fresh new
 // copy and does not affect the original one.
 TEST(RefcountTest, TwoRefsAppropriate) {
-  RefPointer<int> r1(2);
+  RefPointer<int> r1(3);
   const int *p = r1.constant_pointer();
   RefPointer<int> r2(r1);
   r2.appropiate();
-  EXPECT_EQ(2, r1.size());
+  EXPECT_EQ(3, r1.size());
   EXPECT_EQ(p, r1.constant_pointer());
   EXPECT_EQ(1, r1.ref_count());
-  EXPECT_EQ(2, r2.size());
+  EXPECT_EQ(3, r2.size());
   EXPECT_NE(p, r2.constant_pointer());
   EXPECT_EQ(1, r2.ref_count());
 }

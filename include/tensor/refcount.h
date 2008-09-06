@@ -7,15 +7,9 @@
 #define TENSOR_REFCOUNT_H
 
 #include <cstring>
+#include <algorithm>
 
-#ifdef REFCOUNT_USE_STATIC_COUNTER
-# define REFCOUNT_DEFAULT_COUNTER &ref_pointer_default_ref;
-# define REFCOUNT_HAS_COUNTER 1
 extern size_t ref_pointer_default_ref;
-#else
-# define REFCOUNT_DEFAULT_COUNTER NULL
-# define REFCOUNT_HAS_COUNTER ref_count_
-#endif
 
 /**A reference counting pointer. This is a pointer that keeps track of whether
    the same pointer is shared by other structures, and when the total number of
@@ -29,22 +23,27 @@ extern size_t ref_pointer_default_ref;
    \ingroup Internals
 */
 
-template<class value_type, bool simple_copy = true>
+template<class value_type>
 class RefPointer {
 public:
   typedef value_type elt_t; ///< Type of data pointed to
 
+  /** Empty reference */
+  RefPointer() {
+    set_null();
+  }
+
   /** Allocate a pointer of s bytes. */
-  RefPointer(size_t s = 0) {
-    new_data(s);
+  RefPointer(size_t new_size) {
+    set_pointer(new elt_t[new_size], new_size);
   }
 
   /** Copy constructor that increases the reference count. */
-  RefPointer(const RefPointer<elt_t,simple_copy> &p) {
+  RefPointer(const RefPointer<elt_t> &p) {
     // Avoid self assignment
     if (this == &p) return;
     ref_count_ = p.ref_count_;
-    __data = p.__data;
+    data_ = p.data_;
     size_ = p.size_;
     ref();
   }
@@ -60,33 +59,29 @@ public:
       vectors.
   */
   void appropiate() {
-    if (REFCOUNT_HAS_COUNTER && (*ref_count_ > 1)) {
-      RefPointer<elt_t,simple_copy> aux(size_);
-      if (simple_copy) {
-        std::memcpy(aux.__data, __data, sizeof(elt_t) * size_);
-      } else {
-        for (size_t i = 0; i < size_; i++) {
-          aux.__data[i] = __data[i];
-        }
-      }
-      *this = aux;
+    if (other_references()) {
+      size_t new_size = size();
+      elt_t *new_data = new elt_t[new_size];
+      const elt_t *orig = constant_pointer();
+      std::copy(orig, orig + new_size, new_data);
+      deref();
+      set_pointer(new_data, new_size);
     }
   }
 
   /** Replace the pointer with newly allocated data. */
   void reallocate(size_t new_size) {
     deref();
-    new_data(new_size);
+    set_pointer(new elt_t[new_size], new_size);
   }
 
   /** Copy a pointer increasing the reference count. */
-  RefPointer<elt_t,simple_copy>
-  &operator=(const RefPointer<elt_t,simple_copy> &p) {
+  RefPointer<elt_t> &operator=(const RefPointer<elt_t> &p) {
     // Avoid self assignment
     if (this != &p) {
       deref();
       ref_count_ = p.ref_count_;
-      __data = p.__data;
+      data_ = p.data_;
       size_ = p.size_;
       ref();
     }
@@ -94,73 +89,70 @@ public:
   }
 
   /** Read/write access to the pointed data. */
-  elt_t &operator[](size_t ndx) { return __data[ndx]; }
+  elt_t &operator[](size_t ndx) { return data_[ndx]; }
 
   /** Read-only access to the pointed data. */
-  elt_t operator[](size_t ndx) const { return __data[ndx]; }
+  elt_t operator[](size_t ndx) const { return data_[ndx]; }
 
   /** Retreive the pointer without caring for references (unsafe). */
-  elt_t *pointer() { appropiate(); return __data; }
+  elt_t *pointer() { appropiate(); return data_; }
 
   /** Retreive the pointer without caring for references (unsafe). */
-  const elt_t *pointer() const { return __data; }
+  const elt_t *pointer() const { return data_; }
 
   /** Retreive the pointer without caring for references (unsafe). */
-  const elt_t *constant_pointer() const { return __data; }
+  const elt_t *constant_pointer() const { return data_; }
 
   /** Size of pointed-to data. */
   size_t size() const { return size_; }
 
   /** Reference counter */
-  size_t ref_count() const { return (REFCOUNT_HAS_COUNTER? *ref_count_ : 0); }
+  size_t ref_count() const { return (data_? *ref_count_ : 0); }
 
-  /** Coercion to pointer */
-  elt_t *operator *() { return pointer(); }
+  /** Reference counter */
+  bool other_references() const { return (data_ && (*ref_count_ > 1)); }
 
-#ifndef REFCOUNT_USE_STATIC_COUNTER
-  /** Point to preallocated data */
-  void set_pointer(size_t new_size, elt_t *p) {
-    deref(); __data = p; size_ = new_size; ref_count_ = 0;
+  /** Set to NULL */
+  void reset() { deref(); set_null(); }
+
+  /** Set to some pointer */
+  void reset(elt_t *p, size_t new_size = 1) {
+    deref(); set_pointer(p, new_size);
   }
-#endif
 
 private:
   // Increase the reference count of a nontrivial object
   void ref() {
-    if (REFCOUNT_HAS_COUNTER)
-      (*ref_count_)++;
+    (*ref_count_)++;
   }
 
   // Decrease the reference count of a nontrivial object and delete the
   // memory if counter drops to zero.
   void deref() {
-    if (REFCOUNT_HAS_COUNTER) {
-      if (--(*ref_count_) == 0) {
-        delete[] __data;
+    if (--(*ref_count_) == 0) {
+      if (data_) {
+        delete[] data_;
         delete ref_count_;
       }
     }
-    __data = NULL;
-    ref_count_ = REFCOUNT_DEFAULT_COUNTER;
+  }
+
+  // Unconditionally empties the structure
+  void set_null() {
     size_ = 0;
+    data_ = NULL;
+    ref_count_ = &ref_pointer_default_ref;
   }
 
-  // Allocate a C array with the given size and assign it to us
-  void new_data(size_t new_size) {
+  // Assign a pointer creating a shared count object
+  void set_pointer(elt_t *new_data, size_t new_size) {
+    ref_count_ = new size_t;
+    *ref_count_ = 1;
+    data_ = new_data;
     size_ = new_size;
-    if (new_size == 0) {
-      ref_count_ = REFCOUNT_DEFAULT_COUNTER;
-      __data = NULL;
-      ref();
-    } else {
-      // We are the only owners of the data
-      ref_count_ = new size_t;
-      *ref_count_ = 1;
-      __data = new elt_t[new_size];
-    }
   }
 
-  value_type *__data; // Pointer to data we reference or NULL
+  value_type *data_; // Pointer to data we reference or NULL
   size_t *ref_count_; // Number of references to that data
   size_t size_;       // Size
 };

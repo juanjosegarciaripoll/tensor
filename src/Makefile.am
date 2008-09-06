@@ -9,6 +9,7 @@ lib_LTLIBRARIES = libtensor.la
 
 libtensor_la_SOURCES = \
 	tools/tictoc.cc \
+	tools/refcount.cc \
 	rand/rand.cc
 
 if HAVE_64BITS
