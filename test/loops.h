@@ -71,6 +71,50 @@ test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4, int max_dimensi
   }
 }
 
+class DimensionsProducer {
+public:
+  DimensionsProducer(const Indices &d) : base_indices(d), counter(13) {}
+
+  operator bool() const { return counter >= 14; }
+  int operator++() { counter++; }
+
+  Indices operator*() const {
+    Tensor<double> P;
+    switch (counter) {
+      // 1D Tensor<elt_t>
+    case 1: P = Tensor<double>(d(0)*d(1)*d(2)*d(3)); break;
+      // 2D Tensor<elt_t>
+    case 2: P = Tensor<double>(d(0),d(1)*d(2)*d(3)); break;
+    case 3: P = Tensor<double>(d(0)*d(1),d(2)*d(3)); break;
+    case 4: P = Tensor<double>(d(0)*d(1)*d(2),d(3)); break;
+    case 5: P = Tensor<double>(d(3),d(0)*d(1)*d(2)); break;
+    case 6: P = Tensor<double>(d(2)*d(3),d(0)*d(1)); break;
+      // 3D Tensor<elt_t>
+    case 7: P = Tensor<double>(d(0),d(1),d(2)*d(3)); break;
+    case 8: P = Tensor<double>(d(0)*d(1),d(2),d(3)); break;
+    case 9: P = Tensor<double>(d(3)*d(2),d(0),d(1)); break;
+      // 4D Tensor<elt_t>
+    case 10: P = Tensor<double>(d(0),d(1),d(2),d(3)); break;
+    case 11: P = Tensor<double>(d(3),d(1),d(2),d(0)); break;
+    case 12: P = Tensor<double>(d(1),d(0),d(3),d(2)); break;
+    case 13: P = Tensor<double>(d(2),d(0),d(3),d(1)); break;
+    }
+    return P.dimensions();
+  }
+
+private:
+  Indices::elt_t d(int which) const {
+    if (which >= base_indices.size()) {
+      return 1;
+    } else {
+      return base_indices[which];
+    }
+  }
+
+  Indices base_indices;
+  int counter;
+};
+
 } // namespace tensor_test
 
 #endif /* !TENSOR_TEST_LOOPS_H */
