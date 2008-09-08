@@ -126,6 +126,30 @@ namespace tensor_test {
     }
   }
 
+  // When we modify one of the copies, only the first time results in
+  // memory allocation
+  template<typename elt_t>
+  void test_tensor_set_appropiates_only_once(Tensor<elt_t> &P)
+  {
+    if (P.size()) {
+      Tensor<elt_t> P2(P);
+      // Here P and P2 share memory
+      unchanged(P, P2, 2);
+
+      // Now P2 changed and unlinks from P
+      P2.at(0) = number_zero<elt_t>();
+      unique(P);
+      unique(P2);
+
+      // But the second access does not cause new memory being allocated
+      typename Tensor<elt_t>::const_iterator old_p = P2.begin_const();
+      P2.at(P2.size() - 1) = number_one<elt_t>();
+      unique(P);
+      unique(P2);
+      EXPECT_EQ(old_p, P2.begin_const());
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////
   // REAL SPECIALIZATIONS
   //
@@ -142,6 +166,10 @@ namespace tensor_test {
     test_over_tensors(test_tensor_set_appropiates<double>);
   }
 
+  TEST(RTensorTest, RTensorSetAppropiatesOnlyOnce) {
+    test_over_tensors(test_tensor_set_appropiates_only_once<double>);
+  }
+
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
@@ -156,6 +184,10 @@ namespace tensor_test {
 
   TEST(CTensorTest, CTensorSetAppropiates) {
     test_over_tensors(test_tensor_set_appropiates<cdouble>);
+  }
+
+  TEST(CTensorTest, CTensorSetAppropiatesOnlyOnce) {
+    test_over_tensors(test_tensor_set_appropiates_only_once<cdouble>);
   }
 
 } // namespace tensor_test
