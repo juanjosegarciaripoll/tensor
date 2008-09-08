@@ -87,8 +87,52 @@ class Tensor {
   /**Returns total number of elements in tensor.*/
   index size() const { return data_.size(); }
 
+  /**Number of tensor indices.*/
+  int rank() { return dims_.size(); }
   /**Return tensor dimensions.*/
   const Indices &dims() { return dims_; }
+  /**Length of a given tensor index.*/
+  index dimension(int which) const;
+  /**Query dimensions of 1D tensor.*/
+  void get_dimensions(index *length) const;
+  /**Query dimensions of 2D tensor.*/
+  void get_dimensions(index *rows, index *cols) const;
+  /**Query dimensions of 3D tensor.*/
+  void get_dimensions(index *d0, index *d1, index *d2) const;
+  /**Query dimensions of 4D tensor.*/
+  void get_dimensions(index *d0, index *d1, index *d2, index *d3) const;
+  /**Query dimensions of 5D tensor.*/
+  void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4) const;
+  /**Query dimensions of 6D tensor.*/
+  void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4, index *d5) const;
+
+  /**Return element in linear order.*/
+  const elt_t &operator[](index i) const;
+  /**Return element of 1D tensor.*/
+  const elt_t &operator()(index i) const;
+  /**Return element of 2D tensor.*/
+  const elt_t &operator()(index row, index col) const;
+  /**Return element of 3D tensor.*/
+  const elt_t &operator()(index d0, index d1, index d2) const;
+  /**Return element of 4D tensor.*/
+  const elt_t &operator()(index d0, index d1, index d2, index d3) const;
+  /**Return element of 5D tensor.*/
+  const elt_t &operator()(index d0, index d1, index d2, index d3, index d4) const;
+  /**Return element of 6D tensor.*/
+  const elt_t &operator()(index d0, index d1, index d2, index d3, index d4, index d5w) const;
+
+  /**Return mutable reference to element of 1D tensor.*/
+  elt_t &at(index i);
+  /**Return mutable reference to element of 2D tensor.*/
+  elt_t &at(index row, index col);
+  /**Return mutable reference to element of 3D tensor.*/
+  elt_t &at(index d1, index d2, index d3);
+  /**Return mutable reference to element of 4D tensor.*/
+  elt_t &at(index d1, index d2, index d3, index d4);
+  /**Return mutable reference to element of 5D tensor.*/
+  elt_t &at(index d1, index d2, index d3, index d4, index d5);
+  /**Return mutable reference to element of 6D tensor.*/
+  elt_t &at(index d1, index d2, index d3, index d4, index d5, index d6);
 
   /**Fill with an element.*/
   void fill(const elt_t &e);
@@ -100,13 +144,9 @@ class Tensor {
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
   /**Iterator at the beginning for const objects.*/
-  const_iterator begin() const { return data_.begin(); }
-  /**Iterator at the beginning for const objects.*/
   const_iterator begin_const() const { return data_.begin_const(); }
   /**Iterator at the end for const objects.*/
   const_iterator end_const() const { return data_.end_const(); }
-  /**Iterator at the end for const objects.*/
-  const_iterator end() const { return data_.end(); }
   /**Iterator at the end.*/
   iterator end() { return data_.end(); }
 

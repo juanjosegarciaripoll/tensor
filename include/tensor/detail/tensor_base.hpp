@@ -14,6 +14,12 @@
 bool verify_tensor_dims(const Indices &i, index total_size);
 index multiply_indices(const Indices &i);
 
+inline void normalize_index(index i, index dimension) {
+  if (i < 0)
+    i += dimension;
+  assert((i < dimension) && (i >= 0));
+}
+
 //
 // CONSTRUCTORS
 //
@@ -101,6 +107,215 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
   dims_.at(5) = d6;
   assert(verify_tensor_dims(dims_, size()));
 }
+
+//
+// DIMENSIONS
+//
+
+template<typename elt_t>
+index Tensor<elt_t>::dimension(int which) const {
+  assert(rank() >= which);
+  assert(which >= 0);
+  return dims_[which];
+}
+
+template<typename elt_t>
+void Tensor<elt_t>::get_dimensions(index *length) const {
+  assert(rank() == 1);
+  *length = dims_[0];
+}
+
+template<typename elt_t>
+void Tensor<elt_t>::get_dimensions(index *rows, index *cols) const {
+  assert(rank() == 2);
+  *rows = dims_[0];
+  *cols = dims_[1];
+}
+
+template<typename elt_t>
+void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2) const {
+  assert(rank() == 3);
+  *d0 = dims_[0];
+  *d1 = dims_[1];
+  *d2 = dims_[2];
+}
+
+template<typename elt_t>
+void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2,
+                                   index *d3) const {
+  assert(rank() == 4);
+  *d0 = dims_[0];
+  *d1 = dims_[1];
+  *d2 = dims_[2];
+  *d3 = dims_[3];
+}
+
+template<typename elt_t>
+void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2, index *d3,
+                                   index *d4) const {
+  assert(rank() == 5);
+  *d0 = dims_[0];
+  *d1 = dims_[1];
+  *d2 = dims_[2];
+  *d3 = dims_[3];
+  *d4 = dims_[4];
+}
+
+template<typename elt_t>
+void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2, index *d3,
+                                   index *d4, index *d5) const {
+  assert(rank() == 6);
+  *d0 = dims_[0];
+  *d1 = dims_[1];
+  *d2 = dims_[2];
+  *d3 = dims_[3];
+  *d4 = dims_[4];
+  *d5 = dims_[5];
+}
+
+//
+// GETTERS
+//
+
+template<typename elt_t>
+const elt_t &Tensor<elt_t>::operator[](index i) const {
+  return data_[i];
+}
+
+template<typename elt_t>
+const elt_t &Tensor<elt_t>::operator()(index i) const {
+  index length;
+  get_dimensions(&length);
+  i = normalize_index(i, length);
+  return data_[i];
+}
+
+template<typename elt_t>
+const elt_t &Tensor<elt_t>::operator()(index row, index col) const {
+  index rows, cols;
+  get_dimensions(&rows, &cols);
+  row = normalize_index(row, rows);
+  col = normalize_index(col, cols);
+  return data_[col * rows + row];
+}
+
+template<typename elt_t>
+const elt_t &Tensor<elt_t>::operator()(index i1, index i2, index i3) const {
+  index d1, d2, d3;
+  get_dimensions(&d1, &d2, &d3);
+  i1 = normalize_index(i1, d1);
+  i2 = normalize_index(i2, d2);
+  i3 = normalize_index(i3, d3);
+  return data_[((i3 * d2) + i2) * d1 + i1];
+}
+
+template<typename elt_t>
+const elt_t &Tensor<elt_t>::operator()(index i1, index i2, index i3,
+                                       index i4) const {
+  index d1, d2, d3, d4;
+  get_dimensions(&d1, &d2, &d3, &d4);
+  i1 = normalize_index(i1, d1);
+  i2 = normalize_index(i2, d2);
+  i3 = normalize_index(i3, d3);
+  i4 = normalize_index(i4, d4);
+  return data_[(((i4 * d3 + i3) * d2) + i2) * d1 + i1];
+}
+
+template<typename elt_t>
+const elt_t &Tensor<elt_t>::operator()(index i1, index i2, index i3,
+                                       index i4, index i5) const {
+  index d1, d2, d3, d4, d5;
+  get_dimensions(&d1, &d2, &d3, &d4, &d5);
+  i1 = normalize_index(i1, d1);
+  i2 = normalize_index(i2, d2);
+  i3 = normalize_index(i3, d3);
+  i4 = normalize_index(i4, d4);
+  i5 = normalize_index(i5, d5);
+  return data_[((((i5 * d4 + i4) * d3 + i3) * d2) + i2) * d1 + i1];
+}
+
+template<typename elt_t>
+const elt_t &Tensor<elt_t>::operator()(index i1, index i2, index i3,
+                                       index i4, index i5, index i6) const {
+  index d1, d2, d3, d4, d5, d6;
+  get_dimensions(&d1, &d2, &d3, &d4, &d5, &d6);
+  i1 = normalize_index(i1, d1);
+  i2 = normalize_index(i2, d2);
+  i3 = normalize_index(i3, d3);
+  i4 = normalize_index(i4, d4);
+  i5 = normalize_index(i5, d5);
+  i6 = normalize_index(i6, d6);
+  return data_[(((((i6 * d5 + i5) * d4 + i4) * d3 + i3) * d2) + i2) * d1 + i1];
+}
+
+//
+// DESTRUCTIVE ACCESSORS
+//
+
+template<typename elt_t>
+elt_t &Tensor<elt_t>::at(index i) {
+  index length;
+  get_dimensions(length);
+  i = normalize_index(i, length);
+  return data_.at(i);
+}
+
+template<typename elt_t>
+elt_t &Tensor<elt_t>::at(index row, index col) {
+  index d0, d1;
+  get_dimensions(&d0, &d1);
+  row = normalize_index(row, d0);
+  col = normalize_index(col, d1);
+  return data_.at(col * d0 + row);
+}
+
+template<typename elt_t>
+elt_t &Tensor<elt_t>::at(index i1, index i2, index i3) {
+  index d1, d2, d3;
+  get_dimensions(&d1, &d2, &d3);
+  i1 = normalize_index(i1, d1);
+  i2 = normalize_index(i2, d2);
+  i3 = normalize_index(i3, d3);
+  return data_.at(((i3 * d2) + i2) * d1 + i1);
+}
+
+template<typename elt_t>
+elt_t &Tensor<elt_t>::at(index i1, index i2, index i3, index i4) {
+  index d1, d2, d3, d4;
+  get_dimensions(&d1, &d2, &d3, &d4);
+  i1 = normalize_index(i1, d1);
+  i2 = normalize_index(i2, d2);
+  i3 = normalize_index(i3, d3);
+  i4 = normalize_index(i4, d4);
+  return data_.at((((i4 * d3 + i3) * d2) + i2) * d1 + i1);
+}
+
+template<typename elt_t>
+elt_t &Tensor<elt_t>::at(index i1, index i2, index i3, index i4, index i5) {
+  index d1, d2, d3, d4, d5;
+  get_dimensions(&d1, &d2, &d3, &d4, &d5);
+  i1 = normalize_index(i1, d1);
+  i2 = normalize_index(i2, d2);
+  i3 = normalize_index(i3, d3);
+  i4 = normalize_index(i4, d4);
+  i5 = normalize_index(i5, d5);
+  return data_.at(((((i5 * d4 + i4) * d3 + i3) * d2) + i2) * d1 + i1);
+}
+
+template<typename elt_t>
+elt_t &Tensor<elt_t>::at(index i1, index i2, index i3, index i4, index i5,
+                         index i6) {
+  index d1, d2, d3, d4, d5, d6;
+  get_dimensions(&d1, &d2, &d3, &d4, &d5);
+  i1 = normalize_index(i1, d1);
+  i2 = normalize_index(i2, d2);
+  i3 = normalize_index(i3, d3);
+  i4 = normalize_index(i4, d4);
+  i5 = normalize_index(i5, d5);
+  i6 = normalize_index(i6, d6);
+  return data_.at((((((i6 * d5 + i5) * d4 + i4) * d3 + i3) * d2) + i2) * d1 + i1);
+}
+
 
 //
 // SETTERS
