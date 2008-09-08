@@ -7,6 +7,10 @@
 #include "rand/mt.h"
 #include <gtest/gtest.h>
 
+namespace {
+
+using namespace ::tensor;
+
 // The random integer type must have enough bits for integers.
 TEST(RandTest, IntSize) {
   int int_size = sizeof(unsigned int);
@@ -62,8 +66,8 @@ TEST(RandTest, ComplexBalanced) {
   }
   double re = std::abs(real(average)) / total;
   double im = std::abs(imag(average)) / total;
-  EXPECT_LE(1/(double)total, re);
-  EXPECT_LE(1/(double)total, im);
+  EXPECT_GE(1/sqrt((double)total), re);
+  EXPECT_GE(1/sqrt((double)total), im);
 }
 
 // Real and imaginary parts of the complex random number are uncorrelated
@@ -75,6 +79,9 @@ TEST(RandTest, ComplexUncorrelated) {
     corr += (real(z) - 0.5) * (imag(z) - 0.5);
   }
   corr = std::abs(corr) / total;
-  EXPECT_LE(1/(double)total, corr);
-  EXPECT_LE(1/(double)total, corr);
+  EXPECT_GE(1/sqrt((double)total), corr);
+  EXPECT_GE(1/sqrt((double)total), corr);
 }
+
+}
+
