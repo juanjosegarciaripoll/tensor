@@ -25,6 +25,8 @@ namespace tensor_test {
   //
   template<typename elt_t> void test_dims(Tensor<elt_t> &P) {
     Indices d = P.dimensions();
+    unchanged(d, P.dimensions(), 2);
+
     Indices::elt_t a1,a2,a3,a4,a5,a6;
     ASSERT_LE(P.rank(), 6);
     EXPECT_EQ(d.size(), P.rank());
@@ -63,6 +65,16 @@ namespace tensor_test {
       EXPECT_EQ(0, P.size());
       break;
     }
+    }
+    switch (P.rank()) {
+    case 6: EXPECT_EQ(a6, d[5]); EXPECT_EQ(a6, P.dimension(5));
+    case 5: EXPECT_EQ(a5, d[4]); EXPECT_EQ(a5, P.dimension(4));
+    case 4: EXPECT_EQ(a4, d[3]); EXPECT_EQ(a4, P.dimension(3));
+    case 3: EXPECT_EQ(a3, d[2]); EXPECT_EQ(a3, P.dimension(2));
+    case 2: EXPECT_EQ(a2, d[1]); EXPECT_EQ(a2, P.dimension(1));
+            EXPECT_EQ(a2, P.columns());
+    case 1: EXPECT_EQ(a1, d[0]); EXPECT_EQ(a1, P.dimension(0));
+            EXPECT_EQ(a1, P.rows());
     }
   }
 
