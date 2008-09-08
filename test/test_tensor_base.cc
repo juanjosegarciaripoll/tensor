@@ -126,6 +126,38 @@ namespace tensor_test {
     }
   }
 
+  template<typename elt_t>
+  Tensor<elt_t> alternate_reshape(const Tensor<elt_t> &P,
+				  const Indices &d) {
+    switch (d.size()) {
+    case 0:	return P;
+    case 1:	return reshape(P, d[0]);
+    case 2:	return reshape(P, d[0], d[1]);
+    case 3:	return reshape(P, d[0], d[1], d[2]);
+    case 4:	return reshape(P, d[0], d[1], d[2], d[3]);
+    case 5:	return reshape(P, d[0], d[1], d[2], d[3], d[4]);
+    case 6:	return reshape(P, d[0], d[1], d[2], d[3], d[4], d[5]);
+    default:	return reshape(P, d);
+    }
+  }
+
+  template<typename elt_t>
+  void test_reshape(Tensor<elt_t> &P) {
+    for (DimensionsProducer dp(P.dimensions()); dp; ++dp) {
+      Indices new_dimensions = *dp;
+      {
+	Tensor<elt_t> P2 = reshape(P, new_dimensions);
+	unchanged(P2, P);
+	EXPECT_EQ(P2.dimensions(), new_dimensions);
+      }
+      {
+	Tensor<elt_t> P2 = alternate_reshape(P, new_dimensions);
+	unchanged(P2, P);
+	EXPECT_EQ(P2.dimensions(), new_dimensions);
+      }
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////
   // REAL SPECIALIZATIONS
   //
@@ -146,6 +178,10 @@ namespace tensor_test {
     test_over_tensors(test_copy_constructor_with_dims<double>);
   }
 
+  TEST(RTensorTest, RTensorReshape) {
+    test_over_tensors(test_reshape<double>);
+  }
+
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
@@ -164,6 +200,10 @@ namespace tensor_test {
 
   TEST(CTensorTest, CTensorCopyConstructorWithDims) {
     test_over_tensors(test_copy_constructor_with_dims<cdouble>);
+  }
+
+  TEST(CTensorTest, CTensorReshape) {
+    test_over_tensors(test_reshape<cdouble>);
   }
 
 } // namespace tensor_test
