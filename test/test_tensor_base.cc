@@ -11,10 +11,27 @@
 namespace tensor_test {
 
   template<typename elt_t> void test_empty_constructor() {
-    Tensor<elt_t> P;
-    EXPECT_EQ(0, P.size());
-    EXPECT_EQ(0, P.rank());
-    EXPECT_EQ(0, P.begin_const());
+    {
+      SCOPED_TRACE("0D");
+      Tensor<elt_t> P;
+      EXPECT_EQ(0, P.size());
+      EXPECT_EQ(0, P.rank());
+      EXPECT_EQ(0, P.begin_const());
+    }
+    {
+      SCOPED_TRACE("1D");
+      Tensor<elt_t> P(0);
+      EXPECT_EQ(0, P.size());
+      EXPECT_EQ(1, P.rank());
+      EXPECT_EQ(0, P.begin_const());
+    }
+    {
+      SCOPED_TRACE("2D");
+      Tensor<elt_t> P(1,0);
+      EXPECT_EQ(0, P.size());
+      EXPECT_EQ(2, P.rank());
+      EXPECT_EQ(0, P.begin_const());
+    }
   }
 
   template<typename elt_t> void test_copy_constructor(Tensor<elt_t> &P) {
