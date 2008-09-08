@@ -16,21 +16,26 @@ namespace tensor_test {
       Tensor<elt_t> P;
       EXPECT_EQ(0, P.size());
       EXPECT_EQ(0, P.rank());
-      EXPECT_EQ(0, P.begin_const());
+      // In a default constructor, the content of the pointer is unknown
+      // hence we do not know the reference count.
+      /* EXPECT_EQ(1, P.ref_count()); */
+      EXPECT_EQ(P.end_const(), P.begin_const());
     }
     {
       SCOPED_TRACE("1D");
       Tensor<elt_t> P(0);
       EXPECT_EQ(0, P.size());
       EXPECT_EQ(1, P.rank());
-      EXPECT_EQ(0, P.begin_const());
+      EXPECT_EQ(1, P.ref_count());
+      EXPECT_EQ(P.end_const(), P.begin_const());
     }
     {
       SCOPED_TRACE("2D");
       Tensor<elt_t> P(1,0);
       EXPECT_EQ(0, P.size());
       EXPECT_EQ(2, P.rank());
-      EXPECT_EQ(0, P.begin_const());
+      EXPECT_EQ(1, P.ref_count());
+      EXPECT_EQ(P.end_const(), P.begin_const());
     }
   }
 
