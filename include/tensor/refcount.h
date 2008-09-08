@@ -125,7 +125,7 @@ public:
 private:
   // Increase the reference count of a nontrivial object
   void ref() {
-    (*ref_count_)++;
+    ++(*ref_count_);
   }
 
   // Decrease the reference count of a nontrivial object and delete the
