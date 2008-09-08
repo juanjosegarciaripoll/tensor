@@ -258,9 +258,7 @@ const elt_t &Tensor<elt_t>::operator()(index i1, index i2, index i3,
 
 template<typename elt_t>
 elt_t &Tensor<elt_t>::at(index i) {
-  index length;
-  get_dimensions(&length);
-  i = normalize_index(i, length);
+  i = normalize_index(i, size());
   return data_.at(i);
 }
 

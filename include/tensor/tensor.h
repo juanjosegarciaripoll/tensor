@@ -125,7 +125,7 @@ class Tensor {
   /**Return element of 6D tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3, index d4, index d5w) const;
 
-  /**Return mutable reference to element of 1D tensor.*/
+  /**Return mutable reference to element of a tensor.*/
   elt_t &at(index i);
   /**Return mutable reference to element of 2D tensor.*/
   elt_t &at(index row, index col);
