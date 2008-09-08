@@ -105,6 +105,10 @@ class Tensor {
   void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4) const;
   /**Query dimensions of 6D tensor.*/
   void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4, index *d5) const;
+  /**Query size of 2nd index.*/
+  index columns() const { return dimension(1); }
+  /**Query size of 1st index. */
+  index rows() const { return dimension(0); }
 
   /**Return element in linear order.*/
   const elt_t &operator[](index i) const;
