@@ -179,6 +179,10 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index length);
 
 /**Return a tensor with same data and given dimensions.*/
 template<typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, index rows, index columns);
+
+/**Return a tensor with same data and given dimensions.*/
+template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3);
 
 /**Return a tensor with same data and given dimensions.*/
@@ -207,8 +211,8 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 //
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/tensor_base.hpp>
-#include <tensor/detail/tensor_reshape.hpp>
 #endif
+#include <tensor/detail/tensor_reshape.hpp>
 
 //////////////////////////////////////////////////////////////////////
 // EXPLICIT INSTANTIATIONS
