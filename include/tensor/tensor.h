@@ -60,7 +60,7 @@ class Tensor {
   typedef const elt_t *const_iterator;
 
   /**Constructs an empty tensor.*/
-  Tensor();
+  Tensor() : data_(), dims_() {}
 
   /**Constructs an unitialized N-D tensor given the dimensions.*/
   explicit Tensor(const Indices &new_dims);
@@ -88,9 +88,9 @@ class Tensor {
   index size() const { return data_.size(); }
 
   /**Number of tensor indices.*/
-  int rank() { return dims_.size(); }
+  int rank() const { return dims_.size(); }
   /**Return tensor dimensions.*/
-  const Indices &dims() { return dims_; }
+  const Indices &dimensions() const { return dims_; }
   /**Length of a given tensor index.*/
   index dimension(int which) const;
   /**Query dimensions of 1D tensor.*/
@@ -151,7 +151,7 @@ class Tensor {
   iterator end() { return data_.end(); }
 
   // Only for testing purposes
-  int ref_count() { return data_.ref_count(); }
+  int ref_count() const { return data_.ref_count(); }
 
  private:
   Vector<elt_t> data_;
@@ -192,9 +192,11 @@ template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 		      index d4, index d5, index d6);
 
-//
+//////////////////////////////////////////////////////////////////////
 // ALGEBRA
 //
+
+} // namespace tensor
 
 //////////////////////////////////////////////////////////////////////
 // IMPLEMENTATIONS
@@ -208,12 +210,14 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 // EXPLICIT INSTANTIATIONS
 //
 
+namespace tensor {
+
 extern template class Tensor<double>;
 typedef Tensor<double> RTensor;
 
 extern template class Tensor<cdouble>;
 typedef Tensor<cdouble> CTensor;
 
-} // namespace
+} // namespace tensor
 
 #endif // !TENSOR_H

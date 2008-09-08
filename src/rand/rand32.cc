@@ -46,6 +46,8 @@
 #include <stdio.h>
 #include "mt.h"
 
+namespace tensor {
+
 /* Period parameters */  
 #define N 624
 #define M 397
@@ -172,3 +174,5 @@ double genrand_res53(void)
   uint32_t a=genrand_int32()>>5, b=genrand_int32()>>6; 
   return(a*67108864.0+b)*(1.0/9007199254740992.0); 
 }
+
+} // namespace tensor

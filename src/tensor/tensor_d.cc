@@ -3,15 +3,11 @@
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
 
-#define LOAD_TENSOR_IMPL
+#define TENSOR_LOAD_IMPL
 #include <tensor/tensor.h>
-
-namespace tensor {
 
 //
 // Explicitely instantiate an specialization of Tensor. This generates
 // all required code.
 //
-template class Tensor<double>;
-
-} // namespace
+template class tensor::Tensor<double>;

@@ -11,7 +11,7 @@
 
 namespace tensor {
 
-class ListGenerator {};
+class ListGenerator  {};
 
 extern ListGenerator gen;
 
@@ -28,9 +28,14 @@ std::list<elt_t> operator<<(const ListGenerator &g, const elt_t &x) {
   return output;
 }
 
-typedef long index;
+class Indices : public Vector<index> {
+public:
+  Indices() : Vector<index>() {}
 
-typedef Vector<index> Indices;
+  explicit Indices(index size) : Vector<index>(size) {}
+
+  bool operator==(const Indices &other) const;
+};
 
 extern template class Vector<index>;
 

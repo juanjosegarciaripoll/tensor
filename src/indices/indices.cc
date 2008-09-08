@@ -9,4 +9,8 @@ namespace tensor {
 
 template class Vector<index>;
 
+bool Indices::operator==(const Indices &other) const {
+  return std::equal(other.begin(), other.end(), this->begin());
+}
+
 } // namespace

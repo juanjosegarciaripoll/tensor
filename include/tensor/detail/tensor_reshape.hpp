@@ -8,6 +8,8 @@
 #else
 #define TENSOR_DETAIL_TENSOR_RESHAPE_HPP
 
+namespace tensor {
+
 //
 // DIMENSIONS
 //
@@ -76,5 +78,7 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
   new_dims.at(5) = d6;
   return Tensor<elt_t>(new_dims, t);
 }
+
+} // namespace tensor
 
 #endif // !#define TENSOR_DETAIL_TENSOR_RESHAPE_HPP

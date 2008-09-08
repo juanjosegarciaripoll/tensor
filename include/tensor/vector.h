@@ -14,13 +14,17 @@ namespace tensor {
 // VECTOR CLASS
 //
 
+typedef long index;
+
 template<typename elt>
 class Vector {
  public:
-  typedef size_t index;
+  typedef tensor::index index;
   typedef elt elt_t;
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
+
+  Vector() : data_() {}
 
   explicit Vector(index size) : data_(size) {}
 
@@ -61,7 +65,7 @@ class Vector {
   }
 
   // Only for testing purposes
-  int ref_count() { return data_.ref_count(); }
+  int ref_count() const { return data_.ref_count(); }
 
  private:
   RefPointer<elt_t> data_;

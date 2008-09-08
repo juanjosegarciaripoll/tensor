@@ -18,5 +18,10 @@ check_PROGRAMS += test_rand
 test_rand_SOURCES = test_rand.cc
 test_rand_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+TESTS += test_tensor
+check_PROGRAMS += test_tensor
+test_tensor_SOURCES = test_tensor_base.cc
+test_tensor_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc

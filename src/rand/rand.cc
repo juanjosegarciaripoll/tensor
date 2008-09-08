@@ -8,6 +8,8 @@
 #include <tensor/rand.h>
 #include "mt.h"
 
+namespace tensor {
+
 static bool
 initialize_mt()
 {
@@ -68,3 +70,5 @@ template<> double rand<double>() {
 template<> cdouble rand<cdouble>() {
   return to_complex(genrand_res53(), genrand_res53());
 }
+
+} // namespace rand

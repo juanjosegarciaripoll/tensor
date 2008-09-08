@@ -10,6 +10,8 @@
 #include <complex>
 #include <iostream>
 
+namespace tensor {
+
 //
 // REAL NUMBERS
 //
@@ -71,5 +73,7 @@ inline std::istream &operator>>(std::istream &s, cdouble &z) {
 inline std::ostream &operator<<(std::ostream &s, const cdouble &d) {
   return s << real(d) << ' ' << imag(d);
 }
+
+} // namespace tensor
 
 #endif // !TENSOR_NUMBERS_H

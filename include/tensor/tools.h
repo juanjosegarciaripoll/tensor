@@ -6,7 +6,11 @@
 #ifndef TENSOR_TOOLS_H
 #define TENSOR_TOOLS_H
 
+namespace tensor {
+
 void tic();
 double toc();
+
+} // namespace tensor
 
 #endif

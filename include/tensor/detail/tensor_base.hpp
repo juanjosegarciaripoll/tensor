@@ -9,15 +9,19 @@
 #define TENSOR_DETAIL_TENSOR_BASE_HPP
 
 #include <cassert>
+#include <algorithm>
 #include <tensor/rand.h>
 
-bool verify_tensor_dims(const Indices &i, index total_size);
+namespace tensor {
+
+bool verify_tensor_dimensions(const Indices &i, index total_size);
 index multiply_indices(const Indices &i);
 
-inline void normalize_index(index i, index dimension) {
+inline index normalize_index(index i, index dimension) {
   if (i < 0)
     i += dimension;
   assert((i < dimension) && (i >= 0));
+  return i;
 }
 
 //
@@ -30,14 +34,14 @@ template<typename elt_t>
 Tensor<elt_t>::Tensor(const Indices &new_dims) :
   dims_(new_dims), data_(multiply_indices(new_dims))
 {
-  assert(verify_tensor_dims(dims_, size()));
+  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
-Tensor<elt_t>::Tensor(const Indices &new_dims, const Tensor<elt_t> &data) :
-  dims_(new_dims), data_(data)
+Tensor<elt_t>::Tensor(const Indices &new_dims, const Tensor<elt_t> &other) :
+  dims_(new_dims), data_(other.data_)
 {
-  assert(verify_tensor_dims(dims_, size()));
+  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 //
@@ -49,7 +53,7 @@ Tensor<elt_t>::Tensor(index length) :
   data_(length), dims_(1)
 {
   dims_.at(0) = length;
-  assert(verify_tensor_dims(dims_, size()));
+  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -58,7 +62,7 @@ Tensor<elt_t>::Tensor(index rows, index cols) :
 {
   dims_.at(0) = rows;
   dims_.at(1) = cols;
-  assert(verify_tensor_dims(dims_, size()));
+  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -68,7 +72,7 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3) :
   dims_.at(0) = d1;
   dims_.at(1) = d2;
   dims_.at(2) = d3;
-  assert(verify_tensor_dims(dims_, size()));
+  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -79,7 +83,7 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4) :
   dims_.at(1) = d2;
   dims_.at(2) = d3;
   dims_.at(3) = d4;
-  assert(verify_tensor_dims(dims_, size()));
+  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -91,7 +95,7 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5) :
   dims_.at(2) = d3;
   dims_.at(3) = d4;
   dims_.at(4) = d5;
-  assert(verify_tensor_dims(dims_, size()));
+  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -105,7 +109,7 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
   dims_.at(3) = d4;
   dims_.at(4) = d5;
   dims_.at(5) = d6;
-  assert(verify_tensor_dims(dims_, size()));
+  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 //
@@ -255,7 +259,7 @@ const elt_t &Tensor<elt_t>::operator()(index i1, index i2, index i3,
 template<typename elt_t>
 elt_t &Tensor<elt_t>::at(index i) {
   index length;
-  get_dimensions(length);
+  get_dimensions(&length);
   i = normalize_index(i, length);
   return data_.at(i);
 }
@@ -328,7 +332,11 @@ void Tensor<elt_t>::fill(const elt_t &e) {
 
 template<typename elt_t>
 void Tensor<elt_t>::randomize() {
-  std::generate(begin(), end(), rand<elt_t>);
+  for (iterator it = begin(); it != end(); it++) {
+    *it = rand<elt_t>();
+  }
 }
+
+} // namespace tensor
 
 #endif // !TENSOR_DETAIL_TENSOR_INL_H

@@ -54,9 +54,10 @@
    email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 */
 
-
 #include <stdio.h>
 #include "mt.h"
+
+namespace tensor {
 
 #define NN 312
 #define MM 156
@@ -165,3 +166,6 @@ double genrand_real3(void)
 {
   return ((genrand_int64() >> 12) + 0.5) * (1.0/4503599627370496.0);
 }
+
+
+} // namespace tensor

@@ -8,6 +8,8 @@
 
 #include <tensor/numbers.h>
 
+namespace tensor {
+
 /** Reset the random number generator. If the environment variable
     RANDSEED is defined, that value is used. Otherwise we try to
     gather enough random numbers, either from /dev/urandom, from
@@ -32,13 +34,15 @@ template<> float rand<float>();
 template<> double rand<double>();
 template<> cdouble rand<cdouble>();
 
-template<class number> inline number rand(number upper_limit) {
-  return upper_limit * rand<number>();
+template<class real_number> inline real_number rand(real_number upper_limit) {
+  return static_cast<real_number>(upper_limit * rand<double>());
 }
 
-template<class number> inline number rand(number upper_limit,
-                                          number lower_limit) {
-  return rand(upper_limit - lower_limit) + lower_limit;
+template<class real_number> inline real_number rand(real_number upper_limit,
+                                          real_number lower_limit) {
+  return rand<real_number>(upper_limit - lower_limit) + lower_limit;
 }
+
+} // tensor
 
 #endif // !TENSOR_RAND_H
