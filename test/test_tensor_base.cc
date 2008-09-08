@@ -5,6 +5,7 @@
 
 #include "loops.h"
 #include <gtest/gtest.h>
+#include <gtest/gtest-death-test.h>
 #include <tensor/tensor.h>
 
 namespace tensor_test {
@@ -21,7 +22,9 @@ namespace tensor_test {
     unchanged(P2, P);
   }
 
-  // Test proper work of dimension querying routines.
+  // Test proper work of dimension querying routines>
+  //	- they must return individual dimensions
+  //	- must not change actual data
   //
   template<typename elt_t> void test_dims(Tensor<elt_t> &P) {
     Indices d = P.dimensions();
@@ -78,6 +81,32 @@ namespace tensor_test {
     }
   }
 
+  // Verify that get_dimensions signals an error for a wrong number of
+  // arguments
+  template<typename elt_t> void test_get_dimensions_errors() {
+#if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
+    for (size_t i = 0; i <= 6; i++) {
+      Indices dimensions(i);
+      std::fill(dimensions.begin(), dimensions.end(), (Indices::elt_t)2);
+
+      Tensor<elt_t> P(dimensions);
+      for (size_t j = 0; j != i; j++) {
+	Indices::elt_t a[6];
+	switch (j) {
+	case 6:	ASSERT_DEATH(P.get_dimensions(a,a+1,a+2,a+3,a+4,a+5),".*"); break;
+	case 5:	ASSERT_DEATH(P.get_dimensions(a,a+1,a+2,a+3,a+4),".*"); break;
+	case 4:	ASSERT_DEATH(P.get_dimensions(a,a+1,a+2,a+3),".*"); break;
+	case 3:	ASSERT_DEATH(P.get_dimensions(a,a+1,a+2),".*"); break;
+	case 2:	ASSERT_DEATH(P.get_dimensions(a,a+1),".*"); break;
+	case 1:	ASSERT_DEATH(P.get_dimensions(a),".*"); break;
+	}
+      }
+    }
+#endif
+  }
+
+  // Verify that the constructor that reshapes produces the same data
+  // with compatible dimensions. Here SAME means shared reference.
   template<typename elt_t> void test_constructor_with_dims(Tensor<elt_t> &P) {
     Indices d = P.dimensions();
     {
@@ -126,6 +155,8 @@ namespace tensor_test {
     }
   }
 
+  // Does the same as reshape(tensor, dims), but calling explicitely the
+  // functions that take integers as arguments
   template<typename elt_t>
   Tensor<elt_t> alternate_reshape(const Tensor<elt_t> &P,
 				  const Indices &d) {
@@ -141,6 +172,8 @@ namespace tensor_test {
     }
   }
 
+  // Test that reshape produces a tensor with new, compatible dimensions,
+  // but with the same data.
   template<typename elt_t>
   void test_reshape(Tensor<elt_t> &P) {
     for (DimensionsProducer dp(P.dimensions()); dp; ++dp) {
@@ -174,6 +207,10 @@ namespace tensor_test {
     test_over_tensors(test_dims<double>);
   }
 
+  TEST(RTensorTest, RTensorGetDimensionsErrors) {
+    test_get_dimensions_errors<double>();
+  }
+
   TEST(RTensorTest, RTensorCopyConstructorWithDims) {
     test_over_tensors(test_copy_constructor_with_dims<double>);
   }
@@ -196,6 +233,10 @@ namespace tensor_test {
 
   TEST(CTensorTest, CTensorDims) {
     test_over_tensors(test_dims<cdouble>);
+  }
+
+  TEST(CTensorTest, CTensorGetDimensionsErrors) {
+    test_get_dimensions_errors<cdouble>();
   }
 
   TEST(CTensorTest, CTensorCopyConstructorWithDims) {

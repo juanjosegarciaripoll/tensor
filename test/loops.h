@@ -14,6 +14,12 @@
 
 #define EPSILON 1e-14
 
+#ifdef NDEBUG
+#define ONLY_IN_DEBUG(x)
+#else
+#define ONLY_IN_DEBUG(x) x
+#endif
+
 namespace tensor_test {
 
 using namespace tensor;
