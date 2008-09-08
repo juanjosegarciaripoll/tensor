@@ -98,6 +98,34 @@ namespace tensor_test {
     }
   }
 
+  // When we modify one of the copies, the other one remains intact.
+  template<typename elt_t>
+  void test_tensor_set_appropiates(Tensor<elt_t> &P)
+  {
+    {
+      typename Tensor<elt_t>::const_iterator old_p = P.begin_const();
+      Tensor<elt_t> P2(P);
+      for (size_t i = 0; i < P.size(); i++) {
+	P2.at(i) += number_one<elt_t>();
+      }
+      unique(P);
+      unique(P2);
+      EXPECT_EQ(old_p, P.begin_const());
+      EXPECT_NE(old_p, P2.begin_const());
+    }
+    {
+      typename Tensor<elt_t>::const_iterator old_p = P.begin_const();
+      Tensor<elt_t> P2(P);
+      for (size_t i = 0; i < P.size(); i++) {
+	P.at(i) += number_one<elt_t>();
+      }
+      unique(P);
+      unique(P2);
+      EXPECT_EQ(old_p, P2.begin_const());
+      EXPECT_NE(old_p, P.begin_const());
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////
   // REAL SPECIALIZATIONS
   //
@@ -110,6 +138,10 @@ namespace tensor_test {
     test_over_tensors(test_tensor_set<double>);
   }
 
+  TEST(RTensorTest, RTensorSetAppropiates) {
+    test_over_tensors(test_tensor_set_appropiates<double>);
+  }
+
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
@@ -120,6 +152,10 @@ namespace tensor_test {
 
   TEST(CTensorTest, CTensorSet) {
     test_over_tensors(test_tensor_set<cdouble>);
+  }
+
+  TEST(CTensorTest, CTensorSetAppropiates) {
+    test_over_tensors(test_tensor_set_appropiates<cdouble>);
   }
 
 } // namespace tensor_test
