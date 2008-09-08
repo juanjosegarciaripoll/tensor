@@ -1,0 +1,125 @@
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+//
+// Copyright 2008, Juan Jose Garcia-Ripoll
+//
+
+#include "loops.h"
+#include <gtest/gtest.h>
+#include <tensor/tensor.h>
+
+////////////////////////////////////////////////////////////////////////
+//
+// TESTING ELEMENT RETRIEVAL AND SAFE COPYING
+//
+
+namespace tensor_test {
+
+  template<typename elt_t>
+  void store_nd(Tensor<elt_t> &P, size_t row_major_ndx, elt_t x)
+  {
+    const Indices &d = P.dimensions();
+    size_t i1,i2,i3,i4;
+    if (P.rank() == 1) {
+      P.at(row_major_ndx) = x;
+    } else if (P.rank() == 2) {
+      i1 = row_major_ndx % d[0];
+      i2 = row_major_ndx / d[0];
+      P.at(i1,i2) = x;
+    } else if (P.rank() == 3) {
+      i1 = row_major_ndx % d[0]; row_major_ndx /= d[0];
+      i2 = row_major_ndx % d[1];
+      i3 = row_major_ndx / d[1];
+      P.at(i1,i2,i3) = x;
+    } else if (P.rank() == 4) {
+      i1 = row_major_ndx % d[0]; row_major_ndx /= d[0];
+      i2 = row_major_ndx % d[1]; row_major_ndx /= d[1];
+      i3 = row_major_ndx % d[2];
+      i4 = row_major_ndx / d[2];
+      P.at(i1,i2,i3,i4) = x;
+    } else {
+      std::cerr << "Tester does not support tensors with more than 4 dimensions";
+      abort();
+    }
+  }
+
+  template<typename elt_t>
+  elt_t get_nd(Tensor<elt_t> &P, size_t row_major_ndx)
+  {
+    const Indices &d = P.dimensions();
+    size_t i1,i2,i3,i4;
+    if (P.rank() == 1) {
+      return P(row_major_ndx);
+    } else if (P.rank() == 2) {
+      i1 = row_major_ndx % d[0];
+      i2 = row_major_ndx / d[0];
+      return P(i1,i2);
+    } else if (P.rank() == 3) {
+      i1 = row_major_ndx % d[0]; row_major_ndx /= d[0];
+      i2 = row_major_ndx % d[1];
+      i3 = row_major_ndx / d[1];
+      return P(i1,i2,i3);
+    } else if (P.rank() == 4) {
+      i1 = row_major_ndx % d[0]; row_major_ndx /= d[0];
+      i2 = row_major_ndx % d[1]; row_major_ndx /= d[1];
+      i3 = row_major_ndx % d[2];
+      i4 = row_major_ndx / d[2];
+      return P(i1,i2,i3,i4);
+    } else {
+      std::cerr << "Tester does not support tensors with more than 4 dimensions";
+      abort();
+      return number_zero<elt_t>();
+    }
+  }
+
+  // Equivalence between [] and (). Getter does not appropiate data.
+  template<typename elt_t>
+  void test_tensor_get(Tensor<elt_t> &P)
+  {
+    Tensor<elt_t> P2(P);
+    for (size_t i = 0; i < P.size(); i++) {
+      EXPECT_EQ(P[i], get_nd<elt_t>(P2, i));
+      EXPECT_EQ(P[i], get_nd<elt_t>(P2, i));
+    }
+    unchanged(P2, P, 2);
+  }
+
+  // N-dimensional setter works and makes reference unique.
+  template<typename elt_t>
+  void test_tensor_set(Tensor<elt_t> &P)
+  {
+    Tensor<elt_t> P2(P);
+    for (size_t i = 0; i < P.size(); i++) {
+      elt_t x = P2[i] + number_one<elt_t>();
+      ASSERT_NE(x, P2[i]);
+      store_nd<elt_t>(P2, i, x);
+      EXPECT_EQ(x, P2[i]);
+      unique(P);
+      unique(P2);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // REAL SPECIALIZATIONS
+  //
+
+  TEST(RTensorTest, RTensorGet) {
+    test_over_tensors(test_tensor_get<double>);
+  }
+
+  TEST(RTensorTest, RTensorSet) {
+    test_over_tensors(test_tensor_set<double>);
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // COMPLEX SPECIALIZATIONS
+  //
+
+  TEST(CTensorTest, CTensorGet) {
+    test_over_tensors(test_tensor_get<cdouble>);
+  }
+
+  TEST(CTensorTest, CTensorSet) {
+    test_over_tensors(test_tensor_set<cdouble>);
+  }
+
+} // namespace tensor_test

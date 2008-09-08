@@ -20,7 +20,8 @@ test_rand_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
 TESTS += test_tensor
 check_PROGRAMS += test_tensor
-test_tensor_SOURCES = test_tensor_base.cc
+test_tensor_SOURCES = test_tensor_base.cc \
+	test_tensor_getset.cc
 test_tensor_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
 noinst_LIBRARIES = libtestmain.a

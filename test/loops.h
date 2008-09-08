@@ -24,17 +24,28 @@ using namespace tensor;
  */
 template<class Tensor>
 void unchanged(const Tensor &t1, const Tensor &t2, size_t expected_refs = 2) {
-    if ((t1.size() + t2.size()) == 0)
-	return;
-    EXPECT_EQ(t1.begin_const(), t2.begin_const());
-    EXPECT_EQ(expected_refs, t1.ref_count());
-    EXPECT_EQ(expected_refs, t2.ref_count());
+  if ((t1.size() + t2.size()) == 0)
+    return;
+  EXPECT_EQ(t1.begin_const(), t2.begin_const());
+  EXPECT_EQ(expected_refs, t1.ref_count());
+  EXPECT_EQ(expected_refs, t2.ref_count());
+}
+
+/*
+ * Verifies that the tensor that has been passed to the routine has
+ * not been reallocated.
+ */
+template<class Tensor>
+void unique(const Tensor &t) {
+  if (t.size()) {
+    EXPECT_EQ(1, t.ref_count());
+  }
 }
 
 /*
  * Creates a vector of random dimensions.
  */
-Indices random_dimensions(int rank, int max_dim) {
+inline Indices random_dimensions(int rank, int max_dim) {
   Indices dims(rank);
   for (int i = 0; i < rank; i++) {
     dims.at(i) = rand<int>(0, max_dim+1);
