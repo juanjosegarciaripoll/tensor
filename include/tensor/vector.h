@@ -10,6 +10,10 @@
 
 namespace tensor {
 
+//////////////////////////////////////////////////////////////////////
+// VECTOR CLASS
+//
+
 template<typename elt>
 class Vector {
  public:

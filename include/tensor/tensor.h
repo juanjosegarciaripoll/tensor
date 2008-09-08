@@ -65,6 +65,9 @@ class Tensor {
   /**Constructs an unitialized N-D tensor given the dimensions.*/
   explicit Tensor(const Indices &new_dims);
 
+  /**Consturcts an N-D tensor with given initial data.*/
+  Tensor(const Indices &new_dims, const Tensor<elt_t> &data);
+
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
   Tensor(const Tensor &other) : data_(other.data_), dims_(other.dims_) {}
 
@@ -83,6 +86,9 @@ class Tensor {
 
   index size() const { return data_.size(); }
 
+  /**Return tensor dimensions.*/
+  const Indices &dims() { return dims_; }
+
   iterator begin() { return data_.begin(); }
   const_iterator begin() const { return data_.begin(); }
   const_iterator begin_const() const { return data_.begin_const(); }
@@ -96,7 +102,41 @@ class Tensor {
 };
 
 //////////////////////////////////////////////////////////////////////
-// TENSOR ARITHMETIC
+// TENSOR GENERIC OPERATIONS
+//
+//
+// RESHAPING
+//
+
+/**Return a tensor with same data and given dimensions.*/
+template<typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, const Indices &new_dims);
+
+/**Return a tensor with same data and given dimensions.*/
+template<typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, index length);
+
+/**Return a tensor with same data and given dimensions.*/
+template<typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3);
+
+/**Return a tensor with same data and given dimensions.*/
+template<typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
+		      index d4);
+
+/**Return a tensor with same data and given dimensions.*/
+template<typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
+		      index d4, index d5);
+
+/**Return a tensor with same data and given dimensions.*/
+template<typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
+		      index d4, index d5, index d6);
+
+//
+// ALGEBRA
 //
 
 //////////////////////////////////////////////////////////////////////
@@ -104,6 +144,7 @@ class Tensor {
 //
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/tensor_base.hpp>
+#include <tensor/detail/tensor_reshape.hpp>
 #endif
 
 //////////////////////////////////////////////////////////////////////

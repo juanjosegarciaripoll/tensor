@@ -4,6 +4,8 @@
 //
 
 #define TENSOR_LOAD_IMPL
+#include <numeric>
+#include <functional>
 #include <iostream>
 #include <tensor/tensor.h>
 
@@ -24,6 +26,11 @@ bool verify_tensor_dims(const Indices &d, index total_size) {
     }
   }
   return true;
+}
+
+index multiply_dimensions(const Indices &d) {
+  return std::accumulate(d.begin_const(), d.end_const(),
+			 static_cast<index>(0), std::multiplies<index>());
 }
 
 } // namespace
