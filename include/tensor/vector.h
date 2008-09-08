@@ -60,6 +60,9 @@ class Vector {
     return data_.pointer() + data_.size();
   }
 
+  // Only for testing purposes
+  int ref_count() { return data_.ref_count(); }
+
  private:
   RefPointer<elt_t> data_;
 };

@@ -9,6 +9,7 @@
 #define TENSOR_DETAIL_TENSOR_BASE_HPP
 
 #include <cassert>
+#include <tensor/rand.h>
 
 bool verify_tensor_dims(const Indices &i, index total_size);
 index multiply_indices(const Indices &i);
@@ -99,6 +100,20 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
   dims_.at(4) = d5;
   dims_.at(5) = d6;
   assert(verify_tensor_dims(dims_, size()));
+}
+
+//
+// SETTERS
+//
+
+template<typename elt_t>
+void Tensor<elt_t>::fill(const elt_t &e) {
+  std::fill(begin(), end(), e);
+}
+
+template<typename elt_t>
+void Tensor<elt_t>::randomize() {
+  std::generate(begin(), end(), rand<elt_t>);
 }
 
 #endif // !TENSOR_DETAIL_TENSOR_INL_H

@@ -84,18 +84,35 @@ class Tensor {
   /**Build a 6D tensor.*/
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
 
+  /**Returns total number of elements in tensor.*/
   index size() const { return data_.size(); }
 
   /**Return tensor dimensions.*/
   const Indices &dims() { return dims_; }
 
+  /**Fill with an element.*/
+  void fill(const elt_t &e);
+  /**Fill with zeros.*/
+  void fill_with_zeros() { fill(number_zero<elt_t>()); }
+  /**Fills with random numbers.*/
+  void randomize();
+
+  /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
+  /**Iterator at the beginning for const objects.*/
   const_iterator begin() const { return data_.begin(); }
+  /**Iterator at the beginning for const objects.*/
   const_iterator begin_const() const { return data_.begin_const(); }
+  /**Iterator at the end for const objects.*/
   const_iterator end_const() const { return data_.end_const(); }
+  /**Iterator at the end for const objects.*/
   const_iterator end() const { return data_.end(); }
+  /**Iterator at the end.*/
   iterator end() { return data_.end(); }
-  
+
+  // Only for testing purposes
+  int ref_count() { return data_.ref_count(); }
+
  private:
   Vector<elt_t> data_;
   Indices dims_;
