@@ -33,30 +33,30 @@ struct Binop<std::complex<t>,t> {
 //
 
 template<typename t1, typename t2>
-class plus {
+struct plus {
   typename Binop<t1,t2>::type operator()(const t1 &a, const t2 &b) {
     return a + b;
   }
 };
 
 template<typename t1, typename t2>
-class minus {
+struct minus {
   typename Binop<t1,t2>::type operator()(const t1 &a, const t2 &b) {
-    return a + b;
+    return a - b;
   }
 };
 
 template<typename t1, typename t2>
-class times {
+struct times {
   typename Binop<t1,t2>::type operator()(const t1 &a, const t2 &b) {
-    return a + b;
+    return a * b;
   }
 };
 
 template<typename t1, typename t2>
-class divided {
+struct divided {
   typename Binop<t1,t2>::type operator()(const t1 &a, const t2 &b) {
-    return a + b;
+    return a / b;
   }
 };
 
@@ -64,7 +64,7 @@ class divided {
 // Unary operations against constants
 //
 template<typename t1, typename t2>
-class plus_constant {
+struct plus_constant {
   const t2 &value;
   plus_constant(const t2 &b) : value(b) {}
   typename Binop<t1,t2>::type operator()(const t1 &a) {
@@ -73,7 +73,7 @@ class plus_constant {
 };
 
 template<typename t1, typename t2>
-class minus_constant {
+struct minus_constant {
   const t2 &value;
   minus_constant(const t2 &b) : value(b) {}
   typename Binop<t1,t2>::type operator()(const t1 &a) {
@@ -82,16 +82,7 @@ class minus_constant {
 };
 
 template<typename t1, typename t2>
-class constant_minus {
-  const t1 &value;
-  constant_minus(const t1 &b) : value(b) {}
-  typename Binop<t1,t2>::type operator()(const t2 &a) {
-    return value - a;
-  }
-};
-
-template<typename t1, typename t2>
-class times_constant {
+struct times_constant {
   const t2 &value;
   times_constant(const t2 &b) : value(b) {}
   typename Binop<t1,t2>::type operator()(const t1 &a) {
@@ -100,7 +91,7 @@ class times_constant {
 };
 
 template<typename t1, typename t2>
-class divided_constant {
+struct divided_constant {
   const t2 &value;
   divided_constant(const t2 &b) : value(b) {}
   typename Binop<t1,t2>::type operator()(const t1 &a) {
@@ -109,11 +100,20 @@ class divided_constant {
 };
 
 template<typename t1, typename t2>
-class constant_divided {
-  const t1 &value;
-  constant_divided(const t1 &b) : value(b) {}
-  typename Binop<t1,t2>::type operator()(const t2 &a) {
-    return value / a;
+struct constant_minus {
+  const t1 value;
+  constant_minus(const t1 &a) : value(a) {}
+  typename Binop<t1,t2>::type operator()(const t2 &b) {
+    return value - b;
+  }
+};
+
+template<typename t1, typename t2>
+struct constant_divided {
+  const t1 value;
+  constant_divided(const t1 &a) : value(a) {}
+  typename Binop<t1,t2>::type operator()(const t2 &b) {
+    return value / b;
   }
 };
 
