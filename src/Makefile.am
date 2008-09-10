@@ -22,11 +22,12 @@ libtensor_la_SOURCES += rand/rand32.cc
 endif
 
 pkginclude_HEADERS = \
+	$(top_srcdir)/include/tensor/detail/functional.h \
 	$(top_srcdir)/include/tensor/detail/io.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_base.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_matrix.hpp \
+	$(top_srcdir)/include/tensor/detail/tensor_ops.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_reshape.hpp \
-	$(top_srcdir)/include/tensor/header.h \
 	$(top_srcdir)/include/tensor/indices.h \
 	$(top_srcdir)/include/tensor/io.h \
 	$(top_srcdir)/include/tensor/numbers.h \

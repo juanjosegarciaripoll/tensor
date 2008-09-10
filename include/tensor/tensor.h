@@ -9,6 +9,7 @@
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
 #include <tensor/indices.h>
+#include <tensor/detail/functional.h>
 
 namespace tensor {
 
@@ -219,6 +220,43 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 //////////////////////////////////////////////////////////////////////
 // ALGEBRA
 //
+//
+// Unary operations
+//
+template<typename t>
+Tensor<t> operator-(const Tensor<t> &t);
+template<typename t>
+Tensor<t> abs(const Tensor<t> &t);
+
+//
+// Binary operations
+//
+template<typename t1, typename t2, typename t3>
+Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a, const Tensor<t2> &b);
+template<typename t1, typename t2, typename t3>
+Tensor<typename Binop<t1,t2>::type> operator-(const Tensor<t1> &a, const Tensor<t2> &b);
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a, const Tensor<t2> &b);
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a, const Tensor<t2> &b);
+
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a, const t2 &b);
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator-(const Tensor<t1> &a, const t2 &b);
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a, const t2 &b);
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a, const t2 &b);
+
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator+(const t1 &a, const Tensor<t2> &b);
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator-(const t1 &a, const Tensor<t2> &b);
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator*(const t1 &a, const Tensor<t2> &b);
+template<typename t1, typename t2>
+Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 
 } // namespace tensor
 
@@ -230,6 +268,7 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 #include <tensor/detail/tensor_matrix.hpp>
 #endif
 #include <tensor/detail/tensor_reshape.hpp>
+#include <tensor/detail/tensor_ops.hpp>
 
 //////////////////////////////////////////////////////////////////////
 // EXPLICIT INSTANTIATIONS

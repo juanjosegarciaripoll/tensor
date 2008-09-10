@@ -337,4 +337,4 @@ void Tensor<elt_t>::randomize() {
 
 } // namespace tensor
 
-#endif // !TENSOR_DETAIL_TENSOR_INL_H
+#endif // !TENSOR_DETAIL_TENSOR_BASE_H
