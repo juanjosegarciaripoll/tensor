@@ -164,10 +164,14 @@ class Tensor {
 
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
+  /**Iterator at the beginning.*/
+  const_iterator begin() const { return data_.begin_const(); }
   /**Iterator at the beginning for const objects.*/
   const_iterator begin_const() const { return data_.begin_const(); }
   /**Iterator at the end for const objects.*/
   const_iterator end_const() const { return data_.end_const(); }
+  /**Iterator at the end for const objects.*/
+  const_iterator end() const { return data_.end_const(); }
   /**Iterator at the end.*/
   iterator end() { return data_.end(); }
 
@@ -231,9 +235,9 @@ Tensor<t> abs(const Tensor<t> &t);
 //
 // Binary operations
 //
-template<typename t1, typename t2, typename t3>
+template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a, const Tensor<t2> &b);
-template<typename t1, typename t2, typename t3>
+template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator-(const Tensor<t1> &a, const Tensor<t2> &b);
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a, const Tensor<t2> &b);
