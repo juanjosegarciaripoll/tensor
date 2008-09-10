@@ -1,3 +1,4 @@
 #!/bin/sh
-find . -type f|egrep -v  'git|Makefile|configure|deps|dirstamp|autom4te|libtoo|config|aclocal.m4'|xargs wc -l
+find . -name '*.c*' -o -name '*.h*' -o -name '*.am' \
+| egrep -v  'Makefile|autom4te|libtoo|config|aclocal.m4|/\.'|xargs wc -l
 
