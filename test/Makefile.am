@@ -24,6 +24,11 @@ test_tensor_SOURCES = test_tensor_base.cc \
 	test_tensor_getset.cc
 test_tensor_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+TESTS += test_tensor_binop
+check_PROGRAMS += test_tensor_binop
+test_tensor_binop_SOURCES = test_tensor_binop.cc
+test_tensor_binop_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 TESTS += test_matrix
 check_PROGRAMS += test_matrix
 test_matrix_SOURCES = test_matrix.cc
