@@ -26,7 +26,7 @@ Tensor<t> operator-(const Tensor<t> &a) {
 //
 // TENSOR <OP> TENSOR
 //
-template<typename t1, typename t2, typename t3>
+template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a,
 					      const Tensor<t2> &b) {
   Tensor<typename Binop<t1,t2>::type> output(a.dimensions());
@@ -96,7 +96,7 @@ Tensor<typename Binop<t1,t2>::type> operator+(const t1 &a, const Tensor<t2> &b) 
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator-(const t1 &a, const Tensor<t2> &b) {
   Tensor<typename Binop<t1,t2>::type> output(b.dimensions());
-  std::transform(b.begin(), b.end(), output.begin(), constant_minus<t2,t1>(a));
+  std::transform(b.begin(), b.end(), output.begin(), constant_minus<t1,t2>(a));
   return output;
 }
 template<typename t1, typename t2>
@@ -108,7 +108,7 @@ Tensor<typename Binop<t1,t2>::type> operator*(const t1 &a, const Tensor<t2> &b) 
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b) {
   Tensor<typename Binop<t1,t2>::type> output(b.dimensions());
-  std::transform(b.begin(), b.end(), output.begin(), constant_divided<t2,t1>(a));
+  std::transform(b.begin(), b.end(), output.begin(), constant_divided<t1,t2>(a));
   return output;
 }
 
