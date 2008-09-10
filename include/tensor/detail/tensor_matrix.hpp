@@ -10,25 +10,25 @@
 
 namespace tensor {
 
-template<elt_t>
-Tensor<elt_t> &Tensor<elt_t>::eye(index rows, index cols) {
+template<typename elt_t>
+Tensor<elt_t> Tensor<elt_t>::eye(index rows, index cols) {
   Tensor<elt_t> output(rows, cols);
   output.fill_with_zeros();
   for (index i = rows; i < rows && i < cols; ++i) {
-    output.set(i, i) = number_one<elt_t>();
+    output.at(i, i) = number_one<elt_t>();
   }
   return output;
 }
 
-template<elt_t>
-Tensor<elt_t> &Tensor<elt_t>::zeros(index rows, index cols) {
+template<typename elt_t>
+Tensor<elt_t> Tensor<elt_t>::zeros(index rows, index cols) {
   Tensor<elt_t> output(rows, cols);
   output.fill_with_zeros();
   return output;
 }
 
-template<elt_t>
-Tensor<elt_t> &Tensor<elt_t>::ones(index rows, index cols) {
+template<typename elt_t>
+Tensor<elt_t> Tensor<elt_t>::ones(index rows, index cols) {
   Tensor<elt_t> output(rows, cols);
   output.fill(number_one<elt_t>());
   return output;
