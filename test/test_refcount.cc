@@ -8,8 +8,13 @@
 #include <gtest/gtest.h>
 
 using tensor::RefPointer;
+using tensor::RefPointerView;
 
-TEST(RefcountTest, DefaultConstructor) {
+//////////////////////////////////////////////////////////////////////
+// REFPOINTER
+//
+
+TEST(RefPointerTest, DefaultConstructor) {
   const RefPointer<int> r;
   EXPECT_EQ(0, r.size());
   EXPECT_FALSE(r.begin_const());
@@ -18,7 +23,7 @@ TEST(RefcountTest, DefaultConstructor) {
 
 // Verify proper size of object and that the exact number of elements
 // are allocated.
-TEST(RefcountTest, SizeConstructor) {
+TEST(RefPointerTest, SizeConstructor) {
   for (int i = 1; i < 10; ++i) {
     {
       AllocInformer::reset_counters();
@@ -33,7 +38,7 @@ TEST(RefcountTest, SizeConstructor) {
 
 // For a constant object with a single reference, the pointer is
 // always the same and does not change.
-TEST(RefcountTest, SingleConstantReference) {
+TEST(RefPointerTest, SingleConstantReference) {
   const RefPointer<int> r(2);
   const int *p = r.begin_const();
   EXPECT_EQ(p, r.begin());
@@ -42,7 +47,7 @@ TEST(RefcountTest, SingleConstantReference) {
 
 // For a non constant object with a single reference, the pointer is
 // always the same and does not change.
-TEST(RefcountTest, SingleReferenceAppropiate) {
+TEST(RefPointerTest, SingleReferenceAppropiate) {
   RefPointer<int> r(2);
   const int *p = r.begin_const();
   // Appropiate does not change the pointer
@@ -53,7 +58,7 @@ TEST(RefcountTest, SingleReferenceAppropiate) {
 // For a non constant object with a single reference, the pointer is
 // always the same and does not change, nor does getting a non
 // constant reference
-TEST(RefcountTest, SingleReferencePointer) {
+TEST(RefPointerTest, SingleReferencePointer) {
   RefPointer<int> r(2);
   const int *p = r.begin_const();
   EXPECT_EQ(p, r.begin());
@@ -62,7 +67,7 @@ TEST(RefcountTest, SingleReferencePointer) {
 
 // The copy constructor increases the number of references, so that
 // r1 and r2 point to the same data.
-TEST(RefcountTest, TwoRefsCopyConstructor) {
+TEST(RefPointerTest, TwoRefsCopyConstructor) {
   RefPointer<int> r1(2);
   const int *p = r1.begin_const();
   RefPointer<int> r2(r1);
@@ -74,7 +79,7 @@ TEST(RefcountTest, TwoRefsCopyConstructor) {
 
 // When another reference appropiates of data, it creates a fresh new
 // copy and does not affect the original one.
-TEST(RefcountTest, TwoRefsAppropriate) {
+TEST(RefPointerTest, TwoRefsAppropriate) {
   RefPointer<int> r1(3);
   const int *p = r1.begin_const();
   RefPointer<int> r2(r1);
@@ -85,4 +90,48 @@ TEST(RefcountTest, TwoRefsAppropriate) {
   EXPECT_EQ(3, r2.size());
   EXPECT_NE(p, r2.begin_const());
   EXPECT_EQ(1, r2.ref_count());
+}
+
+//////////////////////////////////////////////////////////////////////
+// REFPOINTERVIEW
+//
+
+// For a constant object with a single reference, the pointer is
+// always the same and does not change.
+TEST(RefPointerViewTest, SingleConstantReference) {
+  const RefPointer<int> r1(2);
+  const int *p = r1.begin_const();
+  const RefPointerView<int> r2(r1);
+  EXPECT_EQ(p, r1.begin());
+  EXPECT_EQ(p, r2.begin());
+  EXPECT_EQ(2, r1.ref_count());
+  EXPECT_EQ(2, r2.ref_count());
+}
+
+// When we create a view on shared data, the data is cloned
+TEST(RefPointerViewTest, OneViewTwoRORefsFirst) {
+  const RefPointer<int> r1(2);
+  const int *p = r1.begin_const();
+  const RefPointer<int> r2(r1);
+  const RefPointerView<int> r3(r1);
+  EXPECT_EQ(p, r2.begin());
+  EXPECT_NE(p, r1.begin());
+  EXPECT_EQ(r3.begin(), r1.begin());
+  EXPECT_EQ(1, r2.ref_count());
+  EXPECT_EQ(2, r1.ref_count());
+  EXPECT_EQ(2, r3.ref_count());
+}
+
+// When we create a view on shared data, the data is cloned
+TEST(RefPointerViewTest, OneViewTwoRORefsSecond) {
+  const RefPointer<int> r1(2);
+  const int *p = r1.begin_const();
+  const RefPointer<int> r2(r1);
+  const RefPointerView<int> r3(r2);
+  EXPECT_EQ(p, r1.begin());
+  EXPECT_NE(p, r2.begin());
+  EXPECT_EQ(r3.begin(), r2.begin());
+  EXPECT_EQ(1, r1.ref_count());
+  EXPECT_EQ(2, r2.ref_count());
+  EXPECT_EQ(2, r3.ref_count());
 }

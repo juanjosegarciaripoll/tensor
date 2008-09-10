@@ -38,7 +38,13 @@ template<typename elt_t> SharedPtr<elt_t> *SharedPtr<elt_t>::ro_reference() {
 }
 
 template<typename elt_t> SharedPtr<elt_t> *SharedPtr<elt_t>::rw_reference() {
-  SharedPtr *output = read_only()? clone() : this;
+  SharedPtr *output;
+  if (read_only()) {
+    --ro_references_;
+    output = clone();
+  } else {
+    output = this;
+  }
   ++(output->rw_references_);
   return output;
 }
@@ -115,6 +121,37 @@ template<class elt_t>
 void RefPointer<elt_t>::reset(elt_t *p, size_t new_size) {
   ref_->ro_dereference();
   ref_ = new SharedPtr<elt_t>(p, new_size);
+}
+
+template<typename elt_t>
+SharedPtr<elt_t> *RefPointer<elt_t>::rw_reference() const {
+  return (ref_ = ref_->rw_reference());
+}
+
+//////////////////////////////////////////////////////////////////////
+// VIEW ONTO A SHARED POINTER WITH COPY ON WRITE
+//
+
+template<typename elt_t>
+RefPointerView<elt_t>::RefPointerView(const RefPointer<elt_t> &p) :
+  ref_(p.rw_reference())
+{}
+
+template<typename elt_t>
+RefPointerView<elt_t>::RefPointerView(const RefPointerView<elt_t> &v) :
+  ref_(v.rw_reference())
+{}
+
+template<typename elt_t>
+RefPointerView<elt_t>::~RefPointerView()
+{
+  ref_->rw_dereference();
+}
+
+template<typename elt_t>
+SharedPtr<elt_t> *RefPointerView<elt_t>::rw_reference() const {
+  ref_->rw_reference();
+  return ref_;
 }
 
 } // namespace tensor
