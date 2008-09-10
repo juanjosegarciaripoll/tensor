@@ -99,39 +99,95 @@ TEST(RefPointerTest, TwoRefsAppropriate) {
 // For a constant object with a single reference, the pointer is
 // always the same and does not change.
 TEST(RefPointerViewTest, SingleConstantReference) {
-  const RefPointer<int> r1(2);
-  const int *p = r1.begin_const();
-  const RefPointerView<int> r2(r1);
-  EXPECT_EQ(p, r1.begin());
-  EXPECT_EQ(p, r2.begin());
-  EXPECT_EQ(2, r1.ref_count());
-  EXPECT_EQ(2, r2.ref_count());
+  AllocInformer::reset_counters();
+  {
+    const RefPointer<AllocInformer> r1(2);
+    const AllocInformer *p = r1.begin_const();
+    EXPECT_EQ(2, AllocInformer::allocations);
+    EXPECT_EQ(0, AllocInformer::deallocations);
+    {
+      // Now r1 and r2 point to the same data
+      const RefPointerView<AllocInformer> r2(r1);
+      EXPECT_EQ(p, r1.begin());
+      EXPECT_EQ(p, r2.begin());
+      EXPECT_EQ(2, r1.ref_count());
+      EXPECT_EQ(2, r2.ref_count());
+      EXPECT_EQ(2, AllocInformer::allocations);
+      EXPECT_EQ(0, AllocInformer::deallocations);
+    }
+    EXPECT_EQ(2, AllocInformer::allocations);
+    EXPECT_EQ(0, AllocInformer::deallocations); // r2 does not free data
+  }
+  EXPECT_EQ(2, AllocInformer::allocations);
+  EXPECT_EQ(2, AllocInformer::deallocations); // r1 frees data
 }
 
 // When we create a view on shared data, the data is cloned
 TEST(RefPointerViewTest, OneViewTwoRORefsFirst) {
-  const RefPointer<int> r1(2);
-  const int *p = r1.begin_const();
-  const RefPointer<int> r2(r1);
-  const RefPointerView<int> r3(r1);
-  EXPECT_EQ(p, r2.begin());
-  EXPECT_NE(p, r1.begin());
-  EXPECT_EQ(r3.begin(), r1.begin());
-  EXPECT_EQ(1, r2.ref_count());
-  EXPECT_EQ(2, r1.ref_count());
-  EXPECT_EQ(2, r3.ref_count());
+  AllocInformer::reset_counters();
+  {
+    const RefPointer<AllocInformer> r1(2);
+    const AllocInformer *p = r1.begin_const();
+    EXPECT_EQ(2, AllocInformer::allocations);
+    EXPECT_EQ(0, AllocInformer::deallocations);
+    {
+      // r2 and r1 point to the same data
+      const RefPointer<AllocInformer> r2(r1);
+      EXPECT_EQ(2, AllocInformer::allocations);
+      EXPECT_EQ(0, AllocInformer::deallocations);
+      {
+        // r3 and r1 point to the same data (cloned), r2 became free
+        const RefPointerView<AllocInformer> r3(r1);
+        EXPECT_EQ(4, AllocInformer::allocations);
+        EXPECT_EQ(0, AllocInformer::deallocations);
+        EXPECT_EQ(p, r2.begin());
+        EXPECT_NE(p, r1.begin());
+        EXPECT_EQ(r3.begin(), r1.begin());
+        EXPECT_EQ(1, r2.ref_count());
+        EXPECT_EQ(2, r1.ref_count());
+        EXPECT_EQ(2, r3.ref_count());
+      }
+      EXPECT_EQ(4, AllocInformer::allocations);
+      EXPECT_EQ(0, AllocInformer::deallocations); // r3 does not free data
+    }
+    EXPECT_EQ(4, AllocInformer::allocations);
+    EXPECT_EQ(2, AllocInformer::deallocations); // r2 frees data
+  }
+  EXPECT_EQ(4, AllocInformer::allocations);
+  EXPECT_EQ(4, AllocInformer::deallocations); // r1 frees data
 }
 
 // When we create a view on shared data, the data is cloned
 TEST(RefPointerViewTest, OneViewTwoRORefsSecond) {
-  const RefPointer<int> r1(2);
-  const int *p = r1.begin_const();
-  const RefPointer<int> r2(r1);
-  const RefPointerView<int> r3(r2);
-  EXPECT_EQ(p, r1.begin());
-  EXPECT_NE(p, r2.begin());
-  EXPECT_EQ(r3.begin(), r2.begin());
-  EXPECT_EQ(1, r1.ref_count());
-  EXPECT_EQ(2, r2.ref_count());
-  EXPECT_EQ(2, r3.ref_count());
+  AllocInformer::reset_counters();
+  {
+    const RefPointer<AllocInformer> r1(2);
+    const AllocInformer *p = r1.begin_const();
+    EXPECT_EQ(2, AllocInformer::allocations);
+    EXPECT_EQ(0, AllocInformer::deallocations);
+    {
+      // r2 and r1 point to the same data
+      const RefPointer<AllocInformer> r2(r1);
+      EXPECT_EQ(2, AllocInformer::allocations);
+      EXPECT_EQ(0, AllocInformer::deallocations);
+      {
+        // r3 and r2 point to the same data (cloned), r1 became free
+        const RefPointerView<AllocInformer> r3(r2);
+        EXPECT_EQ(4, AllocInformer::allocations);
+        EXPECT_EQ(0, AllocInformer::deallocations);
+        EXPECT_EQ(p, r1.begin());
+        EXPECT_NE(p, r2.begin());
+        EXPECT_EQ(r3.begin(), r2.begin());
+        EXPECT_EQ(1, r1.ref_count());
+        EXPECT_EQ(2, r2.ref_count());
+        EXPECT_EQ(2, r3.ref_count());
+      }
+      EXPECT_EQ(4, AllocInformer::allocations);
+      EXPECT_EQ(0, AllocInformer::deallocations); // r3 does not free data
+    }
+    EXPECT_EQ(4, AllocInformer::allocations);
+    EXPECT_EQ(2, AllocInformer::deallocations); // r2 frees data
+  }
+  EXPECT_EQ(4, AllocInformer::allocations);
+  EXPECT_EQ(4, AllocInformer::deallocations); // r1 frees data
 }
