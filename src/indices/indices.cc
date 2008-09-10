@@ -10,7 +10,7 @@ namespace tensor {
 template class Vector<index>;
 
 bool Indices::operator==(const Indices &other) const {
-  return std::equal(other.begin(), other.end(), this->begin());
+  return std::equal(other.begin_const(), other.end_const(), this->begin_const());
 }
 
 } // namespace

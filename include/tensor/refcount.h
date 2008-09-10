@@ -11,7 +11,56 @@
 
 namespace tensor {
 
-extern size_t ref_pointer_default_ref;
+/**A reference counting object. This object keeps a pointer and the number
+   of references to it which are read/only or read/write. A pointer can
+   be shared by multiple read/only or by multiple read/write references,
+   but if there are read/write references, only one object can be tagged
+   as read/only reference.
+*/
+template<typename elt_t>
+class SharedPtr {
+public:
+  /** Reference counter for null pointer */
+  SharedPtr();
+  /** Reference count a given data */
+  SharedPtr(elt_t *data, size_t size);
+
+  /** Create a new reference object with the same data and only 1 ro reference. */
+  SharedPtr *clone();
+  /** Add a read/only reference. */
+  SharedPtr<elt_t> *ro_reference();
+  /** Add a read/write reference. */
+  SharedPtr<elt_t> *rw_reference();
+  /** Eliminate a read/only reference. */
+  void ro_dereference();
+  /** Eliminate a read/write reference. */
+  void rw_dereference();
+  /** An object is read/only if other references expect it not to change. */
+  bool read_only() { return ro_references() > 1; }
+  /** An object can mutate if there are references that can change it. */
+  bool can_mutate() { return rw_references() > 0; }
+  /** Return number of read/only references. */
+  int ro_references() { return ro_references_; }
+  /** Return number of read/write references. */
+  int rw_references() { return rw_references_; }
+
+  /** Amount of data allocated. */
+  size_t size() { return size_; }
+  /** Return pointer. */
+  elt_t *begin() { return data_; }
+  /** Return end pointer. */
+  elt_t *end() { return begin() + size(); }
+
+private:
+
+  SharedPtr(const SharedPtr<elt_t> &p); // Prevents copy constructor
+
+  void check_delete();
+
+  elt_t *data_;
+  size_t size_;
+  int ro_references_, rw_references_;
+};
 
 /**A reference counting pointer. This is a pointer that keeps track of whether
    the same pointer is shared by other structures, and when the total number of
@@ -31,134 +80,56 @@ public:
   typedef value_type elt_t; ///< Type of data pointed to
 
   /** Empty reference */
-  RefPointer() {
-    set_null();
-  }
-
+  RefPointer();
   /** Allocate a pointer of s bytes. */
-  RefPointer(size_t new_size) {
-    set_pointer(new elt_t[new_size], new_size);
-  }
-
+  RefPointer(size_t new_size);
   /** Copy constructor that increases the reference count. */
-  RefPointer(const RefPointer<elt_t> &p) {
-    // Avoid self assignment
-    if (this == &p) return;
-    ref_count_ = p.ref_count_;
-    data_ = p.data_;
-    size_ = p.size_;
-    ref();
-  }
+  RefPointer(const RefPointer<elt_t> &p);
 
-  ~RefPointer() {
-    deref();
-  }
-
-  /** Ensure that we have a unique copy of the data. If the pointer has more
-      than one reference, a fresh new copy of the data is created. This
-      routine is useful to delay copying some data until it is really
-      modified. For instance, when implementing a '+' operator between
-      vectors.
-  */
-  void appropiate() {
-    if (other_references()) {
-      size_t new_size = size();
-      elt_t *new_data = new elt_t[new_size];
-      const elt_t *orig = constant_pointer();
-      std::copy(orig, orig + new_size, new_data);
-      deref();
-      set_pointer(new_data, new_size);
-    }
-  }
-
-  /** Replace the pointer with newly allocated data. */
-  void reallocate(size_t new_size) {
-    deref();
-    set_pointer(new elt_t[new_size], new_size);
-  }
+  /** Destructor that deletes no longer reference data. */
+  ~RefPointer();
 
   /** Copy a pointer increasing the reference count. */
-  RefPointer<elt_t> &operator=(const RefPointer<elt_t> &p) {
-    // Avoid self assignment
-    if (this != &p) {
-      deref();
-      ref_count_ = p.ref_count_;
-      data_ = p.data_;
-      size_ = p.size_;
-      ref();
-    }
-    return (*this);
-  }
-
-  /** Read/write access to the pointed data. */
-  elt_t &operator[](size_t ndx) { return data_[ndx]; }
-
-  /** Read-only access to the pointed data. */
-  elt_t operator[](size_t ndx) const { return data_[ndx]; }
+  RefPointer<elt_t> &operator=(const RefPointer<elt_t> &p);
 
   /** Retreive the pointer without caring for references (unsafe). */
-  elt_t *pointer() { appropiate(); return data_; }
-
+  elt_t *begin() { appropiate(); return ref_->begin(); }
   /** Retreive the pointer without caring for references (unsafe). */
-  const elt_t *pointer() const { return data_; }
-
+  const elt_t *begin() const { return ref_->begin(); }
   /** Retreive the pointer without caring for references (unsafe). */
-  const elt_t *constant_pointer() const { return data_; }
+  const elt_t *begin_const() const { return ref_->begin(); }
+  /** Retreive the pointer without caring for references (unsafe). */
+  const elt_t *end_const() const { return ref_->end(); }
+  /** Retreive the pointer without caring for references (unsafe). */
+  const elt_t *end() const { return ref_->end(); }
+  /** Retreive the pointer without caring for references (unsafe). */
+  elt_t *end() { appropiate(); return ref_->end(); }
 
   /** Size of pointed-to data. */
-  size_t size() const { return size_; }
+  size_t size() const { return ref_->size(); }
 
   /** Reference counter */
-  size_t ref_count() const { return (data_? *ref_count_ : 0); }
-
+  size_t ref_count() const { return ref_->ro_references(); }
   /** Reference counter */
-  bool other_references() const { return (data_ && (*ref_count_ > 1)); }
+  bool other_references() const { return ref_->read_only() > 1; }
+  /** Ensure that we have a unique copy of the data. If the pointer has more
+      than one reference, a fresh new copy of the data is created.
+  */
+  void appropiate();
 
+  /** Replace the pointer with newly allocated data. */
+  void reallocate(size_t new_size);
   /** Set to NULL */
-  void reset() { deref(); set_null(); }
-
+  void reset() { reset(0, 0); }
   /** Set to some pointer */
-  void reset(elt_t *p, size_t new_size = 1) {
-    deref(); set_pointer(p, new_size);
-  }
+  void reset(elt_t *p, size_t new_size = 1);
 
 private:
-  // Increase the reference count of a nontrivial object
-  void ref() {
-    ++(*ref_count_);
-  }
-
-  // Decrease the reference count of a nontrivial object and delete the
-  // memory if counter drops to zero.
-  void deref() {
-    if (--(*ref_count_) == 0) {
-      if (data_) {
-        delete[] data_;
-        delete ref_count_;
-      }
-    }
-  }
-
-  // Unconditionally empties the structure
-  void set_null() {
-    size_ = 0;
-    data_ = NULL;
-    ref_count_ = &ref_pointer_default_ref;
-  }
-
-  // Assign a pointer creating a shared count object
-  void set_pointer(elt_t *new_data, size_t new_size) {
-    ref_count_ = new size_t;
-    *ref_count_ = 1;
-    data_ = new_data;
-    size_ = new_size;
-  }
-
-  value_type *data_; // Pointer to data we reference or NULL
-  size_t *ref_count_; // Number of references to that data
-  size_t size_;       // Size
+  mutable SharedPtr<elt_t> *ref_; // Pointer to data we reference or NULL
 };
 
 }; // namespace
+
+#include <tensor/detail/refcount.hpp>
 
 #endif /* !REFCOUNT_REFCOUNT_H */

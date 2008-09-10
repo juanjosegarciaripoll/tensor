@@ -49,6 +49,17 @@ void unique(const Tensor &t) {
 }
 
 /*
+ * Test over integers.
+ */
+inline void
+test_over_integers(int min, int max, void test(int))
+{
+    for (; min <= max; min++) {
+      test(min);
+    }
+}
+
+/*
  * Creates a vector of random dimensions.
  */
 inline Indices random_dimensions(int rank, int max_dim) {

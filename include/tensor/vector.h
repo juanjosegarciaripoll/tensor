@@ -36,33 +36,18 @@ class Vector {
   }
 
   const elt_t &operator[](index pos) const {
-    return data_.constant_pointer()[pos];
-  }
-  const elt_t &at(index pos) const {
-    return data_.pointer()[pos];
+    return *(data_.begin_const() + pos);
   }
   elt_t &at(index pos) {
-    return data_.pointer()[pos];
+    return *(data_.begin() + pos);
   }
 
-  iterator begin() {
-    return data_.pointer();
-  }
-  const_iterator begin() const {
-    return data_.pointer();
-  }
-  const_iterator begin_const() const {
-    return data_.constant_pointer();
-  }
-  const_iterator end_const() const {
-    return data_.constant_pointer() + data_.size();
-  }
-  const_iterator end() const {
-    return data_.pointer() + data_.size();
-  }
-  iterator end() {
-    return data_.pointer() + data_.size();
-  }
+  iterator begin() { return data_.begin(); }
+  const_iterator begin() const { return data_.begin_const(); }
+  const_iterator begin_const() const { return data_.begin_const(); }
+  const_iterator end_const() const { return data_.end_const(); }
+  const_iterator end() const { return data_.end_const(); }
+  iterator end() { return data_.end(); }
 
   // Only for testing purposes
   int ref_count() const { return data_.ref_count(); }

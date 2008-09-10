@@ -4,5 +4,3 @@
 //
 
 #include <tensor/refcount.h>
-
-size_t tensor::ref_pointer_default_ref = 0;

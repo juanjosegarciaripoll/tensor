@@ -12,7 +12,7 @@ using tensor::RefPointer;
 TEST(RefcountTest, DefaultConstructor) {
   const RefPointer<int> r;
   EXPECT_EQ(0, r.size());
-  EXPECT_FALSE(r.constant_pointer());
+  EXPECT_FALSE(r.begin_const());
   EXPECT_FALSE(r.other_references());
 }
 
@@ -35,8 +35,8 @@ TEST(RefcountTest, SizeConstructor) {
 // always the same and does not change.
 TEST(RefcountTest, SingleConstantReference) {
   const RefPointer<int> r(2);
-  const int *p = r.constant_pointer();
-  EXPECT_EQ(p, r.pointer());
+  const int *p = r.begin_const();
+  EXPECT_EQ(p, r.begin());
   EXPECT_EQ(1, r.ref_count());
 }
 
@@ -44,10 +44,10 @@ TEST(RefcountTest, SingleConstantReference) {
 // always the same and does not change.
 TEST(RefcountTest, SingleReferenceAppropiate) {
   RefPointer<int> r(2);
-  const int *p = r.constant_pointer();
+  const int *p = r.begin_const();
   // Appropiate does not change the pointer
   r.appropiate();
-  EXPECT_EQ(p, r.constant_pointer());
+  EXPECT_EQ(p, r.begin_const());
 }
 
 // For a non constant object with a single reference, the pointer is
@@ -55,34 +55,34 @@ TEST(RefcountTest, SingleReferenceAppropiate) {
 // constant reference
 TEST(RefcountTest, SingleReferencePointer) {
   RefPointer<int> r(2);
-  const int *p = r.constant_pointer();
-  EXPECT_EQ(p, r.pointer());
-  EXPECT_EQ(p, r.constant_pointer());
+  const int *p = r.begin_const();
+  EXPECT_EQ(p, r.begin());
+  EXPECT_EQ(p, r.begin_const());
 }
 
 // The copy constructor increases the number of references, so that
 // r1 and r2 point to the same data.
 TEST(RefcountTest, TwoRefsCopyConstructor) {
   RefPointer<int> r1(2);
-  const int *p = r1.constant_pointer();
+  const int *p = r1.begin_const();
   RefPointer<int> r2(r1);
   EXPECT_EQ(2, r1.size());
   EXPECT_EQ(2, r1.ref_count());
   EXPECT_EQ(2, r2.size());
-  EXPECT_EQ(r1.constant_pointer(), r2.constant_pointer());
+  EXPECT_EQ(r1.begin_const(), r2.begin_const());
 }
 
 // When another reference appropiates of data, it creates a fresh new
 // copy and does not affect the original one.
 TEST(RefcountTest, TwoRefsAppropriate) {
   RefPointer<int> r1(3);
-  const int *p = r1.constant_pointer();
+  const int *p = r1.begin_const();
   RefPointer<int> r2(r1);
   r2.appropiate();
   EXPECT_EQ(3, r1.size());
-  EXPECT_EQ(p, r1.constant_pointer());
+  EXPECT_EQ(p, r1.begin_const());
   EXPECT_EQ(1, r1.ref_count());
   EXPECT_EQ(3, r2.size());
-  EXPECT_NE(p, r2.constant_pointer());
+  EXPECT_NE(p, r2.begin_const());
   EXPECT_EQ(1, r2.ref_count());
 }

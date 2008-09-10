@@ -145,6 +145,22 @@ class Tensor {
   /**Fills with random numbers.*/
   void randomize();
 
+  //
+  // Matrix operations
+  //
+  /**Identity matrix.*/
+  static Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
+  /**Rectangular identity matrix.*/
+  static Tensor<elt_t> eye(index rows, index cols);
+  /**Matrix of zeros.*/
+  static Tensor<elt_t> zeros(index rows) { return zeros(rows, rows); }
+  /**Matrix of ones.*/
+  static Tensor<elt_t> zeros(index rows, index cols);
+  /**Matrix of ones.*/
+  static Tensor<elt_t> ones(index rows) { return ones(rows, rows); }
+  /**Matrix of ones.*/
+  static Tensor<elt_t> ones(index rows, index cols);
+
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
   /**Iterator at the beginning for const objects.*/
@@ -211,6 +227,7 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 //
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/tensor_base.hpp>
+#include <tensor/detail/tensor_matrix.hpp>
 #endif
 #include <tensor/detail/tensor_reshape.hpp>
 

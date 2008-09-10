@@ -24,5 +24,10 @@ test_tensor_SOURCES = test_tensor_base.cc \
 	test_tensor_getset.cc
 test_tensor_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+TESTS += test_matrix
+check_PROGRAMS += test_matrix
+test_matrix_SOURCES = test_matrix.cc
+test_matrix_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc
