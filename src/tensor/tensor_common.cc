@@ -52,4 +52,15 @@ index multiply_indices(const Indices &d) {
 			 static_cast<index>(1), std::multiplies<index>());
 }
 
+bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2) {
+  if ((d1.size() != d2.size()) || !(d1 == d2)) {
+    std::cerr << "A binary operation was attempted among two tensors" << std::endl
+              << "with different dimensions:" << std::endl
+              << "d1 = " << d1 << std::endl
+              << "d2 = " << d2 << std::endl;
+    return false;
+  }
+  return true;
+}
+
 } // namespace

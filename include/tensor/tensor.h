@@ -229,8 +229,6 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 //
 template<typename t>
 Tensor<t> operator-(const Tensor<t> &t);
-template<typename t>
-Tensor<t> abs(const Tensor<t> &t);
 
 //
 // Binary operations
@@ -283,8 +281,26 @@ namespace tensor {
 extern template class Tensor<double>;
 typedef Tensor<double> RTensor;
 
+RTensor abs(const RTensor &t);
+RTensor cos(const RTensor &t);
+RTensor sin(const RTensor &t);
+RTensor tan(const RTensor &t);
+RTensor cosh(const RTensor &t);
+RTensor sinh(const RTensor &t);
+RTensor tanh(const RTensor &t);
+RTensor exp(const RTensor &t);
+
 extern template class Tensor<cdouble>;
 typedef Tensor<cdouble> CTensor;
+
+RTensor abs(const CTensor &t);
+CTensor cos(const CTensor &t);
+CTensor sin(const CTensor &t);
+CTensor tan(const CTensor &t);
+CTensor cosh(const CTensor &t);
+CTensor sinh(const CTensor &t);
+CTensor tanh(const CTensor &t);
+CTensor exp(const CTensor &t);
 
 } // namespace tensor
 

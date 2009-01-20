@@ -13,7 +13,34 @@ libtensor_la_SOURCES = \
 	indices/indices.cc \
 	tensor/tensor_common.cc \
 	tensor/tensor_d.cc \
-	tensor/tensor_z.cc
+	tensor/tensor_z.cc \
+	generated/tensor_unop_abs_d.cc \
+	generated/tensor_unop_exp_d.cc \
+	generated/tensor_unop_cos_d.cc \
+	generated/tensor_unop_sin_d.cc \
+	generated/tensor_unop_tan_d.cc \
+	generated/tensor_unop_cosh_d.cc \
+	generated/tensor_unop_sinh_d.cc \
+	generated/tensor_unop_tanh_d.cc \
+	generated/tensor_unop_abs_z.cc \
+	generated/tensor_unop_cos_z.cc \
+	generated/tensor_unop_sin_z.cc \
+	generated/tensor_unop_tan_z.cc \
+	generated/tensor_unop_cosh_z.cc \
+	generated/tensor_unop_sinh_z.cc \
+	generated/tensor_unop_tanh_z.cc \
+	generated/tensor_unop_exp_z.cc
+
+generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
+	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\
+	sed -e "s,TYPE[12],Tensor<double>,g;s,OPERATOR1,$$k,;s,OPERATOR2,std::$$k,g" $< > $@
+generated/tensor_unop_%_z.cc: tensor/tensor_unop.cc Makefile
+	k=`echo $@ | sed 's,.*unop_\(.*\)_z.cc,\1,g'`;\
+	sed -e "s,TYPE[12],Tensor<cdouble>,g;s,OPERATOR1,$$k,;s,OPERATOR2,std::$$k,g" $< > $@
+generated/tensor_unop_abs_d.cc: tensor/tensor_unop.cc Makefile
+	sed -e "s,TYPE1,Tensor<double>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" $< > $@
+generated/tensor_unop_abs_z.cc: tensor/tensor_unop.cc Makefile
+	sed -e "s,TYPE1,Tensor<cdouble>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" $< > $@
 
 if HAVE_64BITS
 libtensor_la_SOURCES += rand/rand64.cc

@@ -75,13 +75,26 @@ inline Indices random_dimensions(int rank, int max_dim) {
  */
 template<typename elt_t>
 void
-test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4, int max_dimension = 10) {
-  for (size_t rank = 1; rank <= max_rank; rank++) {
+test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
+                  int max_dimension = 10, int max_times = 15) {
+  for (size_t rank = 0; rank <= max_rank; rank++) {
     char rank_string[] = "rank:      ";
     sprintf(rank_string, "rank: %d", rank);
     SCOPED_TRACE(rank_string);
-    for (size_t times = 0; times < 15; times++) {
+    //
+    // Test over random dimensions
+    //
+    for (int times = 0; times < max_times; times++) {
       Tensor<elt_t> data(random_dimensions(max_rank, max_dimension));
+      data.randomize();
+      test(data);
+    }
+    //
+    // Forced tests over empty tensors
+    //
+    for (int times = 0; times < rank; times++) {
+      Tensor<elt_t> data(random_dimensions(max_rank, max_dimension));
+      data.at(times) = 0;
       data.randomize();
       test(data);
     }

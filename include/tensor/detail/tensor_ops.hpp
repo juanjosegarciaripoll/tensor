@@ -8,6 +8,8 @@
 #else
 #define TENSOR_DETAIL_TENSOR_OPS_HPP
 
+#include <cassert>
+
 namespace tensor {
 
 //
@@ -23,12 +25,16 @@ Tensor<t> operator-(const Tensor<t> &a) {
 //
 // Binary operations
 //
+
+bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2);
+
 //
 // TENSOR <OP> TENSOR
 //
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a,
 					      const Tensor<t2> &b) {
+  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   Tensor<typename Binop<t1,t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(), plus<t1,t2>());
   return output;
@@ -37,6 +43,7 @@ Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a,
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator-(const Tensor<t1> &a,
 					      const Tensor<t2> &b) {
+  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   Tensor<typename Binop<t1,t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(), minus<t1,t2>());
   return output;
@@ -45,6 +52,7 @@ Tensor<typename Binop<t1,t2>::type> operator-(const Tensor<t1> &a,
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a,
 					      const Tensor<t2> &b) {
+  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   Tensor<typename Binop<t1,t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(), times<t1,t2>());
   return output;
@@ -53,6 +61,7 @@ Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a,
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a,
 					      const Tensor<t2> &b) {
+  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   Tensor<typename Binop<t1,t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(), divided<t1,t2>());
   return output;
