@@ -14,6 +14,10 @@ libtensor_la_SOURCES = \
 	tensor/tensor_common.cc \
 	tensor/tensor_d.cc \
 	tensor/tensor_z.cc \
+	tensor/matrix_diag_d.cc \
+	tensor/matrix_diag_z.cc \
+	tensor/matrix_trace_d.cc \
+	tensor/matrix_trace_z.cc \
 	generated/tensor_unop_abs_d.cc \
 	generated/tensor_unop_exp_d.cc \
 	generated/tensor_unop_cos_d.cc \

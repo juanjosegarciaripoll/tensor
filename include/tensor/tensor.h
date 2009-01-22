@@ -278,29 +278,37 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 
 namespace tensor {
 
-extern template class Tensor<double>;
-typedef Tensor<double> RTensor;
+  extern template class Tensor<double>;
+  typedef Tensor<double> RTensor;
 
-RTensor abs(const RTensor &t);
-RTensor cos(const RTensor &t);
-RTensor sin(const RTensor &t);
-RTensor tan(const RTensor &t);
-RTensor cosh(const RTensor &t);
-RTensor sinh(const RTensor &t);
-RTensor tanh(const RTensor &t);
-RTensor exp(const RTensor &t);
+  RTensor abs(const RTensor &t);
+  RTensor cos(const RTensor &t);
+  RTensor sin(const RTensor &t);
+  RTensor tan(const RTensor &t);
+  RTensor cosh(const RTensor &t);
+  RTensor sinh(const RTensor &t);
+  RTensor tanh(const RTensor &t);
+  RTensor exp(const RTensor &t);
 
-extern template class Tensor<cdouble>;
-typedef Tensor<cdouble> CTensor;
+  const RTensor diag(const RTensor &d, int which, int rows, int cols);
+  const RTensor diag(const RTensor &d, int which = 0);
+  double trace(const RTensor &d);
 
-RTensor abs(const CTensor &t);
-CTensor cos(const CTensor &t);
-CTensor sin(const CTensor &t);
-CTensor tan(const CTensor &t);
-CTensor cosh(const CTensor &t);
-CTensor sinh(const CTensor &t);
-CTensor tanh(const CTensor &t);
-CTensor exp(const CTensor &t);
+  extern template class Tensor<cdouble>;
+  typedef Tensor<cdouble> CTensor;
+
+  RTensor abs(const CTensor &t);
+  CTensor cos(const CTensor &t);
+  CTensor sin(const CTensor &t);
+  CTensor tan(const CTensor &t);
+  CTensor cosh(const CTensor &t);
+  CTensor sinh(const CTensor &t);
+  CTensor tanh(const CTensor &t);
+  CTensor exp(const CTensor &t);
+
+  const CTensor diag(const CTensor &d, int which, int rows, int cols);
+  const CTensor diag(const CTensor &d, int which = 0);
+  cdouble trace(const CTensor &d);
 
 } // namespace tensor
 

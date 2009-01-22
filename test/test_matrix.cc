@@ -86,6 +86,44 @@ void test_zeros(int n) {
   }
 }
 
+template<typename elt_t>
+void test_diag(int n) {
+  elt_t zero = number_zero<elt_t>();
+  Tensor<elt_t> d(n);
+  int i = 1;
+  for (typename Tensor<elt_t>::iterator it = d.begin(); it != d.end(); it++) {
+    *it = (i++);
+  }
+  SCOPED_TRACE("no rows / columns specified");
+  for (i = -n; i <= n; i++) {
+    Tensor<elt_t> M = diag(d, i);
+    EXPECT_EQ(2, M.rank());
+    if (i == 0) {
+      EXPECT_EQ(n, M.rows());
+      EXPECT_EQ(n, M.columns());
+      if (n) {
+        EXPECT_EQ(d(0), M(0,0));
+        EXPECT_EQ(d(n-1), M(n-1,n-1));
+      }
+    } else if (i > 0) {
+      if (n) {
+        EXPECT_EQ(d(0), M(0,i));
+        EXPECT_EQ(d(n-1), M(n-1,i+n-1));
+      }
+    } else {
+      if (n) {
+        EXPECT_EQ(d(0), M(-i,0));
+        EXPECT_EQ(d(n-1), M(-i+n-1,n-1));
+      }
+    }
+  }
+  SCOPED_TRACE("errors");
+#ifndef NDEBUG
+  ASSERT_DEATH(diag(d, -n-1), ".*");
+  ASSERT_DEATH(diag(d, n+1), ".*");
+#endif
+}
+
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
@@ -98,6 +136,10 @@ TEST(RMatrixTest, ZerosTest) {
   test_over_integers(0, 10, test_zeros<double>);
 }
 
+TEST(RMatrixTest, DiagTest) {
+  test_over_integers(0, 10, test_diag<double>);
+}
+
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
@@ -108,6 +150,10 @@ TEST(CMatrixTest, OnesTest) {
 
 TEST(CMatrixTest, ZerosTest) {
   test_over_integers(0, 10, test_zeros<cdouble>);
+}
+
+TEST(CMatrixTest, DiagTest) {
+  test_over_integers(0, 10, test_diag<cdouble>);
 }
 
 } // namespace tensor_test
