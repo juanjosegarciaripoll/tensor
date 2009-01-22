@@ -18,6 +18,8 @@ libtensor_la_SOURCES = \
 	tensor/matrix_diag_z.cc \
 	tensor/matrix_trace_d.cc \
 	tensor/matrix_trace_z.cc \
+	tensor/matrix_transpose_d.cc \
+	tensor/matrix_transpose_z.cc \
 	generated/tensor_unop_abs_d.cc \
 	generated/tensor_unop_exp_d.cc \
 	generated/tensor_unop_cos_d.cc \

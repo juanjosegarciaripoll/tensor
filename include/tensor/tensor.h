@@ -294,6 +294,10 @@ namespace tensor {
   const RTensor diag(const RTensor &d, int which = 0);
   double trace(const RTensor &d);
 
+  const RTensor permute(const RTensor &a, int ndx1 = 0, int ndx2 = -1);
+  const RTensor transpose(const RTensor &a);
+  inline const RTensor adjoint(const RTensor &a) { return a; }
+
   extern template class Tensor<cdouble>;
   typedef Tensor<cdouble> CTensor;
 
@@ -309,6 +313,10 @@ namespace tensor {
   const CTensor diag(const CTensor &d, int which, int rows, int cols);
   const CTensor diag(const CTensor &d, int which = 0);
   cdouble trace(const CTensor &d);
+
+  const CTensor permute(const CTensor &a, int ndx1 = 0, int ndx2 = -1);
+  const CTensor transpose(const CTensor &a);
+  const CTensor adjoint(const CTensor &a);
 
 } // namespace tensor
 

@@ -119,9 +119,37 @@ void test_diag(int n) {
   }
   SCOPED_TRACE("errors");
 #ifndef NDEBUG
-  ASSERT_DEATH(diag(d, -n-1), ".*");
-  ASSERT_DEATH(diag(d, n+1), ".*");
+  ASSERT_DEATH(diag(d,-n-1, n,n), ".*");
+  ASSERT_DEATH(diag(d, n+1, n,n), ".*");
 #endif
+}
+
+template<typename elt_t>
+void test_transpose(int n) {
+  for (int m = 0; m <= n; m++) {
+    Tensor<elt_t> A(n,m);
+    A.randomize();
+
+    Tensor<elt_t> At = transpose(A);
+    EXPECT_EQ(At.rank(), 2);
+    EXPECT_EQ(At.rows(), m);
+    EXPECT_EQ(At.columns(), n);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        EXPECT_TRUE(A(i,j) == At(j,i));
+      }
+    }
+
+    Tensor<elt_t> Att = transpose(At);
+    EXPECT_EQ(Att.rank(), 2);
+    EXPECT_EQ(Att.rows(), n);
+    EXPECT_EQ(Att.columns(), m);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        EXPECT_TRUE(A(i,j) == Att(i,j));
+      }
+    }
+  }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -140,6 +168,10 @@ TEST(RMatrixTest, DiagTest) {
   test_over_integers(0, 10, test_diag<double>);
 }
 
+TEST(RMatrixTest, TransposeTest) {
+  test_over_integers(0, 10, test_transpose<double>);
+}
+
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
@@ -152,8 +184,8 @@ TEST(CMatrixTest, ZerosTest) {
   test_over_integers(0, 10, test_zeros<cdouble>);
 }
 
-TEST(CMatrixTest, DiagTest) {
-  test_over_integers(0, 10, test_diag<cdouble>);
+TEST(CMatrixTest, TransposeTest) {
+  test_over_integers(0, 10, test_transpose<cdouble>);
 }
 
 } // namespace tensor_test
