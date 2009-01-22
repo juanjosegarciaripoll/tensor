@@ -152,6 +152,35 @@ void test_transpose(int n) {
   }
 }
 
+template<typename elt_t>
+void test_permute(int n) {
+  for (int m = 0; m <= n; m++) {
+    Tensor<elt_t> A(n,m);
+    A.randomize();
+
+    Tensor<elt_t> At = transpose(A);
+    Tensor<elt_t> Ap = permute(A);
+    EXPECT_EQ(Ap.rank(), 2);
+    EXPECT_EQ(Ap.rows(), m);
+    EXPECT_EQ(Ap.columns(), n);
+    for (typename Tensor<elt_t>::iterator it = At.begin(), ip = Ap.begin();
+         ip != Ap.end();
+         ip++, it++) {
+      EXPECT_TRUE(*ip == *it);
+    }
+
+    Tensor<elt_t> Att = permute(At);
+    EXPECT_EQ(Att.rank(), 2);
+    EXPECT_EQ(Att.rows(), n);
+    EXPECT_EQ(Att.columns(), m);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        EXPECT_TRUE(A(i,j) == Att(i,j));
+      }
+    }
+  }
+}
+
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
@@ -172,6 +201,10 @@ TEST(RMatrixTest, TransposeTest) {
   test_over_integers(0, 10, test_transpose<double>);
 }
 
+TEST(RMatrixTest, PermuteTest) {
+  test_over_integers(0, 10, test_permute<double>);
+}
+
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
@@ -186,6 +219,10 @@ TEST(CMatrixTest, ZerosTest) {
 
 TEST(CMatrixTest, TransposeTest) {
   test_over_integers(0, 10, test_transpose<cdouble>);
+}
+
+TEST(CMatrixTest, PermuteTest) {
+  test_over_integers(0, 10, test_permute<cdouble>);
 }
 
 } // namespace tensor_test

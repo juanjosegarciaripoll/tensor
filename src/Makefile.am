@@ -16,6 +16,8 @@ libtensor_la_SOURCES = \
 	tensor/tensor_z.cc \
 	tensor/matrix_diag_d.cc \
 	tensor/matrix_diag_z.cc \
+	tensor/matrix_permute_d.cc \
+	tensor/matrix_permute_z.cc \
 	tensor/matrix_trace_d.cc \
 	tensor/matrix_trace_z.cc \
 	tensor/matrix_transpose_d.cc \
