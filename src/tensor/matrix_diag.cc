@@ -8,7 +8,7 @@
 
 namespace tensor {
 
-  template<typename n>
+  template<typename n> inline
   const Tensor<n> do_diag(const Tensor<n> &a, int which, int rows, int cols)
   {
     Tensor<n> output(rows, cols);
