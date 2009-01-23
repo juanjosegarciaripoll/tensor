@@ -66,6 +66,15 @@ Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a,
   std::transform(a.begin(), a.end(), b.begin(), output.begin(), divided<t1,t2>());
   return output;
 }
+
+template<typename t1, typename t2>
+bool operator==(const Tensor<t1> &a, const Tensor<t2> &b) {
+  if (verify_tensor_dimensions_match(a.dimensions(), b.dimensions()))
+    if (std::equal(a.begin(), a.end(), b.begin()))
+      return true;
+  return false;
+}
+
 //
 // TENSOR <OP> NUMBER
 //
