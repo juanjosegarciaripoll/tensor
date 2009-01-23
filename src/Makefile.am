@@ -37,7 +37,8 @@ libtensor_la_SOURCES = \
 	generated/tensor_unop_cosh_z.cc \
 	generated/tensor_unop_sinh_z.cc \
 	generated/tensor_unop_tanh_z.cc \
-	generated/tensor_unop_exp_z.cc
+	generated/tensor_unop_exp_z.cc \
+	linalg/svd_d.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\
