@@ -14,6 +14,8 @@ namespace tensor {
 bool verify_tensor_dimensions(const Indices &d, index total_size) {
   index aux = total_size;
   if (aux == 0) {
+    if (d.size() == 0)
+      return true;
     for (Indices::const_iterator it = d.begin_const(); it != d.end_const();
 	 ++it) {
       if (*it == 0)
@@ -48,8 +50,12 @@ bool verify_tensor_dimensions(const Indices &d, index total_size) {
 }
 
 index multiply_indices(const Indices &d) {
-  return std::accumulate(d.begin_const(), d.end_const(),
-			 static_cast<index>(1), std::multiplies<index>());
+  if (d.size()) {
+    return std::accumulate(d.begin_const(), d.end_const(),
+                           static_cast<index>(1), std::multiplies<index>());
+  } else {
+    return 0;
+  }
 }
 
 bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2) {
