@@ -30,7 +30,7 @@ std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t) {
 
 template<typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t) {
-  s << "(" << t.dims() << ")/[";
+  s << "(" << t.dimensions() << ")/[";
   write_to_stream(s, t.begin_const(), t.end_const());
   s << "]";
   return s;
