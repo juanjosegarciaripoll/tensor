@@ -16,12 +16,12 @@ libtensor_la_SOURCES = \
 	tensor/tensor_z.cc \
 	tensor/matrix_diag_d.cc \
 	tensor/matrix_diag_z.cc \
-	tensor/matrix_permute_d.cc \
-	tensor/matrix_permute_z.cc \
 	tensor/matrix_trace_d.cc \
 	tensor/matrix_trace_z.cc \
 	tensor/matrix_transpose_d.cc \
 	tensor/matrix_transpose_z.cc \
+	tensor/tensor_permute_d.cc \
+	tensor/tensor_permute_z.cc \
 	generated/tensor_unop_abs_d.cc \
 	generated/tensor_unop_exp_d.cc \
 	generated/tensor_unop_cos_d.cc \

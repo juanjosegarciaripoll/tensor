@@ -3,7 +3,7 @@
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
 
-#include "matrix_permute.cc"
+#include "tensor_permute.cc"
 
 namespace tensor {
 

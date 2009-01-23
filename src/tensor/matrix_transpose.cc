@@ -4,7 +4,7 @@
 //
 
 #include <cassert>
-#include "matrix_permute.cc"
+#include "tensor_permute.cc"
 
 namespace tensor {
 
@@ -15,7 +15,8 @@ namespace tensor {
     index rows = a.rows();
     index cols = a.columns();
     Tensor<n> b(cols, rows);
-    permute_12(b, a, rows, cols, 1);
+    if (cols && rows)
+      permute_12(b, a, rows, cols, 1);
     return b;
   }
 
