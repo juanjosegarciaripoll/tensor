@@ -75,6 +75,38 @@ inline Indices random_dimensions(int rank, int max_dim) {
  */
 template<typename elt_t>
 void
+test_over_all_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
+                      int max_dimension = 10) {
+  for (size_t rank = 0; rank <= max_rank; rank++) {
+    char rank_string[] = "rank:      ";
+    sprintf(rank_string, "rank: %d", rank);
+    SCOPED_TRACE(rank_string);
+    //
+    // Test over random dimensions
+    //
+    Indices dims(rank);
+    std::fill(dims.begin(), dims.end(), 0);
+    bool goon = true;
+    while (goon) {
+      Tensor<elt_t> data(dims);
+      // Make all elements different to make accurate comparisons
+      for (tensor::index i = 0; i < data.size(); i++)
+        data.at(i) = i;
+      test(data);
+      goon = false;
+      for (int i = 0; i < rank; i++) {
+        if (++dims.at(i) < max_dimension) {
+          goon = true;
+          break;
+        }
+        dims.at(i) = 0;
+      }
+    }
+  }
+}
+
+template<typename elt_t>
+void
 test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
                   int max_dimension = 10, int max_times = 15) {
   for (size_t rank = 0; rank <= max_rank; rank++) {
@@ -85,7 +117,7 @@ test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
     // Test over random dimensions
     //
     for (int times = 0; times < max_times; times++) {
-      Tensor<elt_t> data(random_dimensions(max_rank, max_dimension));
+      Tensor<elt_t> data(random_dimensions(rank, max_dimension));
       data.randomize();
       test(data);
     }
@@ -93,7 +125,7 @@ test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
     // Forced tests over empty tensors
     //
     for (int times = 0; times < rank; times++) {
-      Tensor<elt_t> data(random_dimensions(max_rank, max_dimension));
+      Tensor<elt_t> data(random_dimensions(rank, max_dimension));
       data.at(times) = 0;
       data.randomize();
       test(data);
