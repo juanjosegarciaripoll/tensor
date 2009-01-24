@@ -23,6 +23,10 @@ libtensor_la_SOURCES = \
 	tensor/matrix_transpose_z.cc \
 	tensor/tensor_permute_d.cc \
 	tensor/tensor_permute_z.cc \
+	tensor/tensor_fold_d.cc \
+	tensor/tensor_fold_z.cc \
+	tensor/tensor_foldin_d.cc \
+	tensor/tensor_foldin_z.cc \
 	generated/tensor_unop_abs_d.cc \
 	generated/tensor_unop_exp_d.cc \
 	generated/tensor_unop_cos_d.cc \
