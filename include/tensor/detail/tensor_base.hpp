@@ -177,6 +177,13 @@ void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2, index *d3,
   *d5 = dims_[5];
 }
 
+template<typename elt_t>
+void Tensor<elt_t>::reshape(const Indices &new_dims)
+{
+  assert(verify_tensor_dimensions(new_dims, size()));
+  dims_ = new_dims;
+}
+
 //
 // GETTERS
 //

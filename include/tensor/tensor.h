@@ -111,6 +111,9 @@ class Tensor {
   /**Query size of 1st index. */
   index rows() const { return dimension(0); }
 
+  /**Change the dimensions, while keeping the data. */
+  void reshape(const Indices &new_dims);
+
   /**Return element in linear order.*/
   const elt_t &operator[](index i) const;
   /**Return element of 1D tensor.*/
