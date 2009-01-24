@@ -324,7 +324,7 @@ elt_t &Tensor<elt_t>::at(index i1, index i2, index i3, index i4, index i5,
 //
 
 template<typename elt_t>
-void Tensor<elt_t>::fill(const elt_t &e) {
+void Tensor<elt_t>::fill_with(const elt_t &e) {
   std::fill(begin(), end(), e);
 }
 
