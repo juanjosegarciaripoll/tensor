@@ -94,6 +94,36 @@ namespace tensor {
   }
 
   template<typename n>
+  void permute_13(Tensor<n> &b, const Tensor<n> &a, index a1, index a2, index a3,
+                  index a4)
+  {
+    // In an abstract sense
+    // b(k,j,i,l) = a(i,j,k,l)
+    // b(a3,a2,a1,a4) = a(a1,a2,a3,a4)
+    // Both tensors are stored in row-major order. So for A we have
+    // (0,0,0), (1,0,0), ... (2,1,0), ... (a1-1,a2-1,a3-1)
+    //
+    typename Tensor<n>::const_iterator ijkl_a = a.begin();
+    typename Tensor<n>::iterator l_b = b.begin();
+    index a32 = a3*a2;
+    index a321 = a32*a1;
+    for (; a4--; l_b += a321) {
+      typename Tensor<n>::iterator kl_b = l_b;
+      for (index k = a3; k--; kl_b++) {
+          typename Tensor<n>::iterator kjl_b = kl_b;
+          for (index j = a2; j--; kjl_b += a3) {
+            typename Tensor<n>::iterator kjil_b = kjl_b;
+            for (index i = a1; i--; ijkl_a++, kjil_b += a32) {
+              //assert(kjil_b < b.begin() || b.end() <= kjil_b);
+              //assert(ijkl_a < a.begin() || a.end() <= ijkl_a);
+              *kjil_b = *ijkl_a;
+            }
+          }
+      }
+    }
+  }
+
+  template<typename n>
   const Tensor<n> do_permute(const Tensor<n> &a, index ndx1, index ndx2)
   {
     index n1 = normalize_index(ndx1, a.rank());
@@ -119,7 +149,11 @@ namespace tensor {
 
     if (output.size()) {
       if (a3 > 1) {
-        permute_24(output, a, a1,a2,a3,a4,a5);
+        if (a1 > 1) {
+          permute_24(output, a, a1,a2,a3,a4,a5);
+        } else {
+          permute_13(output, a, a2,a3,a4,a5);
+        }
       } else if (a1 > 1) {
         permute_23(output, a, a1,a2,a4,a5);
       } else {
