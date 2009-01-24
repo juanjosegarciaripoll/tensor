@@ -21,7 +21,7 @@ bool verify_tensor_dimensions(const Indices &d, index total_size) {
       if (*it == 0)
 	return true;
     }
-    std::cerr << "Product of tensor dimensions exceeds index range."
+    std::cerr << "Product of tensor dimensions exceeds data size."
 	      << std::endl
 	      << "All dimensions: " << d << std::endl
 	      << "Expected size: " << total_size << std::endl;
