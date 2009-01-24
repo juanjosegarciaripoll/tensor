@@ -49,5 +49,10 @@ check_PROGRAMS += test_matrix
 test_matrix_SOURCES = test_matrix.cc
 test_matrix_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+TESTS += test_linalg_svd
+check_PROGRAMS += test_linalg_svd
+test_linalg_svd_SOURCES = test_linalg_svd.cc
+test_linalg_svd_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc

@@ -153,6 +153,34 @@ void test_transpose(int n) {
 }
 
 template<typename elt_t>
+void test_adjoint(int n) {
+  for (int m = 0; m <= n; m++) {
+    Tensor<elt_t> A(n,m);
+    A.randomize();
+
+    Tensor<elt_t> At = adjoint(A);
+    EXPECT_EQ(At.rank(), 2);
+    EXPECT_EQ(At.rows(), m);
+    EXPECT_EQ(At.columns(), n);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        EXPECT_TRUE(A(i,j) == conj(At(j,i)));
+      }
+    }
+
+    Tensor<elt_t> Att = adjoint(At);
+    EXPECT_EQ(Att.rank(), 2);
+    EXPECT_EQ(Att.rows(), n);
+    EXPECT_EQ(Att.columns(), m);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        EXPECT_TRUE(A(i,j) == Att(i,j));
+      }
+    }
+  }
+}
+
+template<typename elt_t>
 void test_permute(int n) {
   for (int m = 0; m <= n; m++) {
     Tensor<elt_t> A(n,m);
@@ -205,6 +233,10 @@ TEST(RMatrixTest, PermuteTest) {
   test_over_integers(0, 10, test_permute<double>);
 }
 
+TEST(RMatrixTest, AdjointTest) {
+  test_over_integers(0, 10, test_adjoint<double>);
+}
+
 //////////////////////////////////////////////////////////////////////
 // COMPLEX SPECIALIZATIONS
 //
@@ -223,6 +255,10 @@ TEST(CMatrixTest, TransposeTest) {
 
 TEST(CMatrixTest, PermuteTest) {
   test_over_integers(0, 10, test_permute<cdouble>);
+}
+
+TEST(CMatrixTest, AdjointTest) {
+  test_over_integers(0, 10, test_adjoint<cdouble>);
 }
 
 } // namespace tensor_test
