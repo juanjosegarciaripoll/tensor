@@ -206,7 +206,7 @@ TEST(RMatrixTest, PermuteTest) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// REAL SPECIALIZATIONS
+// COMPLEX SPECIALIZATIONS
 //
 
 TEST(CMatrixTest, OnesTest) {
