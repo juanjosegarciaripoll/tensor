@@ -140,9 +140,9 @@ class Tensor {
   elt_t &at(index d1, index d2, index d3, index d4, index d5, index d6);
 
   /**Fill with an element.*/
-  void fill(const elt_t &e);
+  void fill_with(const elt_t &e);
   /**Fill with zeros.*/
-  void fill_with_zeros() { fill(number_zero<elt_t>()); }
+  void fill_with_zeros() { fill_with(number_zero<elt_t>()); }
   /**Fills with random numbers.*/
   void randomize();
 
@@ -298,7 +298,7 @@ namespace tensor {
 
   const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
   const RTensor transpose(const RTensor &a);
-  inline const RTensor adjoint(const RTensor &a) { return a; }
+  inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
 
   extern template class Tensor<cdouble>;
   typedef Tensor<cdouble> CTensor;
