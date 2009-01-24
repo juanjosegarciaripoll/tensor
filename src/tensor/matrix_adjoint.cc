@@ -4,6 +4,7 @@
 //
 
 #include <cassert>
+#include <tensor/tensor.h>
 
 namespace tensor {
 
@@ -20,9 +21,9 @@ namespace tensor {
       for (index j = cols; j--; j_b++) {
         typename Tensor<n>::iterator ji_b = j_b;
         for (index i = rows; i--; ij_a++, ji_b += cols) {
-          //assert(ijk_a >= a.begin() && ijk_a < a.end());
-          //assert(ijk_b >= b.begin() && ijk_b < b.end());
-          *ji_b = conj(*ijk_a);
+          //assert(ij_a >= a.begin() && ij_a < a.end());
+          //assert(ji_b >= b.begin() && ji_b < b.end());
+          *ji_b = conj(*ij_a);
         }
       }
     }
