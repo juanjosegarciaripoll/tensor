@@ -6,14 +6,26 @@
 #ifndef TENSOR_CBLAS_H
 #define TENSOR_CBLAS_H
 
-namespace blas {
-
 #ifdef __APPLE__
 #include <vecLib/cblas.h>
 #include <vecLib/clapack.h>
 #define F77NAME(x) x##_
+#endif
+
+namespace blas {
+
+#ifdef __APPLE__
   typedef __CLPK_integer integer;
   typedef __CLPK_doublecomplex cdouble;
+  inline CBLAS_TRANSPOSE char_to_op(char op)
+  {
+    if (op == 'T')
+      return CblasTrans;
+    if (op == 'C')
+      return CblasConjTrans;
+    return CblasNoTrans;
+  }
+
 #endif
 
   inline const double *tensor_pointer(const tensor::RTensor &A) {
