@@ -14,9 +14,7 @@ namespace blas {
                    double alpha, const double *A, integer lda, const double *B,
                    integer ldb, double beta, double *C, integer ldc)
   {
-    cblas_dgemm(CblasRowMajor,
-                op1=='T'? CblasTrans : CblasNoTrans,
-                op2=='T'? CblasTrans : CblasNoTrans,
+    cblas_dgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
                 m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
   }
 
@@ -25,9 +23,7 @@ namespace blas {
                    const tensor::cdouble *B, integer ldb, const tensor::cdouble &beta,
                    tensor::cdouble *C, integer ldc)
   {
-    cblas_zgemm(CblasRowMajor,
-                op1=='T'? CblasTrans : CblasNoTrans,
-                op2=='T'? CblasTrans : CblasNoTrans,
+    cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
                 m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc);
   }
 
