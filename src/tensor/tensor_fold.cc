@@ -42,6 +42,14 @@ namespace tensor {
       i_len *= di;
     }
     l_len = a.dimension(i++);
+    if (l_len == 0) {
+      std::cerr << "Unable to fold() tensors with dimensions" << std::endl
+                << "\t" << a.dimensions() << " and "
+                << b.dimensions() << std::endl
+                << "\tbecause indices " << ndx1 << " and " << ndx2
+                << " are empty" << std::endl;
+      abort();
+    }
     for (j_len = 1; i < ranka; i++) {
       index di = a.dimension(i);
       new_dims.at(rank++) = di;
@@ -58,6 +66,7 @@ namespace tensor {
                 << b.dimensions() << std::endl
                 << "\tbecause indices " << ndx1 << " and " << ndx2
                 << " have different sizes" << std::endl;
+      abort();
     }
     for (m_len = 1; i < rankb; i++) {
       index di = b.dimension(i);
@@ -71,7 +80,10 @@ namespace tensor {
       rank = 1;
       new_dims.at(0) = 1;
     }
-    output.reshape(new_dims);
+    output = Tensor<elt_t>(new_dims);
+    if (output.size() == 0)
+      return;
+
     elt_t *pC = output.begin();
     const elt_t zero = number_zero<elt_t>();
     const elt_t one = number_one<elt_t>();
