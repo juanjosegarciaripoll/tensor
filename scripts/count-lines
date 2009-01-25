@@ -1,0 +1,3 @@
+#!/bin/sh
+find . -type f | grep -v build | grep -v autom4 | grep -v .git | grep -v generated \
+     | grep -v config | xargs wc -l
