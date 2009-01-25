@@ -47,6 +47,8 @@ libtensor_la_SOURCES = \
 	generated/tensor_unop_sinh_z.cc \
 	generated/tensor_unop_tanh_z.cc \
 	generated/tensor_unop_exp_z.cc \
+	linalg/eig_d.cc \
+	linalg/eig_z.cc \
 	linalg/svd_d.cc \
 	linalg/svd_z.cc
 
