@@ -286,6 +286,8 @@ namespace tensor {
   extern template class Tensor<double>;
   typedef Tensor<double> RTensor;
 
+  double norm0(const RTensor &r);
+
   RTensor abs(const RTensor &t);
   RTensor cos(const RTensor &t);
   RTensor sin(const RTensor &t);
@@ -309,6 +311,11 @@ namespace tensor {
   extern template class Tensor<cdouble>;
   typedef Tensor<cdouble> CTensor;
 
+  double norm0(const CTensor &r);
+
+  const CTensor to_complex(const RTensor &r);
+  const CTensor to_complex(const RTensor &r, const RTensor &i);
+
   RTensor abs(const CTensor &t);
   CTensor cos(const CTensor &t);
   CTensor sin(const CTensor &t);
@@ -327,7 +334,12 @@ namespace tensor {
   const CTensor adjoint(const CTensor &a);
 
   const CTensor fold(const CTensor &A, int ndx1, const CTensor &b, int ndx2);
+  const CTensor fold(const RTensor &A, int ndx1, const CTensor &b, int ndx2);
+  const CTensor fold(const CTensor &A, int ndx1, const RTensor &b, int ndx2);
+
   const CTensor mmult(const CTensor &A, const CTensor &b);
+  const CTensor mmult(const RTensor &A, const CTensor &b);
+  const CTensor mmult(const CTensor &A, const RTensor &b);
 
 } // namespace tensor
 

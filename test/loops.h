@@ -56,6 +56,7 @@ bool approx_eq(const Tensor &A, const Tensor &B, double epsilon = EPSILON)
 {
   if (A.rank() == B.rank()) {
     if (A.dimensions() == B.dimensions()) {
+#if 0
       for (typename Tensor::const_iterator a = A.begin(), b = B.begin();
            a!= A.end(); ++a,++b)
         {
@@ -64,6 +65,13 @@ bool approx_eq(const Tensor &A, const Tensor &B, double epsilon = EPSILON)
             return false;
           }
         }
+#else
+      double x = norm0(A - B);
+      if (x > 3*EPSILON) {
+        std::cout << x << std::endl;
+        return false;
+      }
+#endif
       return true;
     }
   }

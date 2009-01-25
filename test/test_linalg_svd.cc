@@ -21,6 +21,14 @@ namespace tensor_test {
   bool unitaryp(const Tensor<elt_t> &U)
   {
     Tensor<elt_t> Ut = adjoint(U);
+    if (U.rows() <= U.columns()) {
+      if (!approx_eq(mmult(U, Ut), Tensor<elt_t>::eye(U.rows())))
+        return false;
+    }
+    if (U.columns() <= U.rows()) {
+      if (!approx_eq(mmult(Ut, U), Tensor<elt_t>::eye(U.columns())))
+        return false;
+    }
     return true;
   }
 
@@ -65,17 +73,18 @@ namespace tensor_test {
         Tensor<elt_t> A(m,n);
         A.randomize();
 
-        Tensor<elt_t> U, V;
-        RTensor s = linalg::svd(A, &U, &V, false);
-
+        Tensor<elt_t> U, Vt;
+        RTensor s = linalg::svd(A, &U, &Vt, false);
         EXPECT_TRUE(unitaryp(U));
-        EXPECT_TRUE(unitaryp(V));
+        EXPECT_TRUE(unitaryp(Vt));
         EXPECT_EQ(abs(s), s);
+        EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s, 0,m,n), Vt))));
 
-        RTensor s2 = linalg::svd(A, &U, &V, true);
+        RTensor s2 = linalg::svd(A, &U, &Vt, true);
         EXPECT_EQ(s, s2);
         EXPECT_TRUE(unitaryp(U));
-        EXPECT_TRUE(unitaryp(V));
+        EXPECT_TRUE(unitaryp(Vt));
+        EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s), Vt))));
       }
     }
   }
