@@ -64,8 +64,8 @@ namespace tensor_test {
 
   template<typename n1, typename n2>
   void test_fold_death() {
-    for (int rankA = 1; rankA <= 5; rankA++) {
-      for (int rankB = 1; rankB <= 5; rankB++) {
+    for (int rankA = 1; rankA <= 4; rankA++) {
+      for (int rankB = 1; rankB <= 4; rankB++) {
         for (int i = 0; i < rankA; i++) {
           for (int j = 0; j < rankB; j++) {
             Indices dA(rankA), dB(rankB);
