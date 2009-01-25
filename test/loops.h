@@ -49,6 +49,28 @@ void unique(const Tensor &t) {
 }
 
 /*
+ * Approximately equal tensors.
+ */
+template<class Tensor>
+bool approx_eq(const Tensor &A, const Tensor &B, double epsilon = EPSILON)
+{
+  if (A.rank() == B.rank()) {
+    if (A.dimensions() == B.dimensions()) {
+      for (typename Tensor::const_iterator a = A.begin(), b = B.begin();
+           a!= A.end(); ++a,++b)
+        {
+          if (abs(*a - *b) > epsilon*std::max(abs(*a),abs(*b))) {
+            std::cout << *a << ' ' << *b << ' ' << abs(*a - *b) << std::endl;
+            return false;
+          }
+        }
+      return true;
+    }
+  }
+  return false;
+}
+
+/*
  * Test over integers.
  */
 inline void
@@ -70,6 +92,33 @@ inline Indices random_dimensions(int rank, int max_dim) {
   return dims;
 }
 
+template<typename elt_t>
+void
+test_over_fixed_rank_tensors(void test(Tensor<elt_t> &t), int rank,
+                             int max_dimension = 10) {
+  //
+  // Test over random dimensions
+  //
+  Indices dims(rank);
+  std::fill(dims.begin(), dims.end(), 0);
+  bool goon = true;
+  while (goon) {
+    Tensor<elt_t> data(dims);
+    // Make all elements different to make accurate comparisons
+    for (tensor::index i = 0; i < data.size(); i++)
+      data.at(i) = i;
+    test(data);
+    goon = false;
+    for (int i = 0; i < rank; i++) {
+      if (++dims.at(i) < max_dimension) {
+        goon = true;
+        break;
+      }
+      dims.at(i) = 0;
+    }
+  }
+}
+
 /*
  * Test over all tensor sizes and ranks, randomly.
  */
@@ -81,27 +130,7 @@ test_over_all_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
     char rank_string[] = "rank:      ";
     sprintf(rank_string, "rank: %d", rank);
     SCOPED_TRACE(rank_string);
-    //
-    // Test over random dimensions
-    //
-    Indices dims(rank);
-    std::fill(dims.begin(), dims.end(), 0);
-    bool goon = true;
-    while (goon) {
-      Tensor<elt_t> data(dims);
-      // Make all elements different to make accurate comparisons
-      for (tensor::index i = 0; i < data.size(); i++)
-        data.at(i) = i;
-      test(data);
-      goon = false;
-      for (int i = 0; i < rank; i++) {
-        if (++dims.at(i) < max_dimension) {
-          goon = true;
-          break;
-        }
-        dims.at(i) = 0;
-      }
-    }
+    test_over_fixed_rank_tensors(test, rank, max_dimension);
   }
 }
 
