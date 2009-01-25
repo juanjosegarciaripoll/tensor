@@ -14,6 +14,7 @@ libtensor_la_SOURCES = \
 	tensor/tensor_common.cc \
 	tensor/tensor_d.cc \
 	tensor/tensor_z.cc \
+	tensor/tensor_to_complex.cc \
 	tensor/matrix_adjoint_z.cc \
 	tensor/matrix_diag_d.cc \
 	tensor/matrix_diag_z.cc \
@@ -25,8 +26,11 @@ libtensor_la_SOURCES = \
 	tensor/tensor_permute_z.cc \
 	tensor/tensor_fold_d.cc \
 	tensor/tensor_fold_z.cc \
+	tensor/tensor_fold_dz.cc \
 	tensor/tensor_foldin_d.cc \
 	tensor/tensor_foldin_z.cc \
+	tensor/tensor_norm0_d.cc \
+	tensor/tensor_norm0_z.cc \
 	generated/tensor_unop_abs_d.cc \
 	generated/tensor_unop_exp_d.cc \
 	generated/tensor_unop_cos_d.cc \
