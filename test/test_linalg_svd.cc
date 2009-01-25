@@ -18,21 +18,6 @@ namespace tensor_test {
   //
 
   template<typename elt_t>
-  bool unitaryp(const Tensor<elt_t> &U)
-  {
-    Tensor<elt_t> Ut = adjoint(U);
-    if (U.rows() <= U.columns()) {
-      if (!approx_eq(mmult(U, Ut), Tensor<elt_t>::eye(U.rows())))
-        return false;
-    }
-    if (U.columns() <= U.rows()) {
-      if (!approx_eq(mmult(Ut, U), Tensor<elt_t>::eye(U.columns())))
-        return false;
-    }
-    return true;
-  }
-
-  template<typename elt_t>
   void test_eye_svd(int n) {
     if (n == 0) {
 #ifndef NDEBUG

@@ -23,7 +23,6 @@ namespace linalg {
       return block_svd(A, U, VT, economic);
     }
     */
-
     assert(A.rows() > 0);
     assert(A.columns() > 0);
     assert(A.rank() == 2);

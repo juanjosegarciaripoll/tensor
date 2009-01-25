@@ -314,6 +314,7 @@ namespace tensor {
   double norm0(const CTensor &r);
 
   const CTensor to_complex(const RTensor &r);
+  inline const CTensor to_complex(const CTensor &r) { return r; }
   const CTensor to_complex(const RTensor &r, const RTensor &i);
 
   RTensor abs(const CTensor &t);

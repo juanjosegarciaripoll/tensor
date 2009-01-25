@@ -64,5 +64,10 @@ check_PROGRAMS += test_linalg_svd
 test_linalg_svd_SOURCES = test_linalg_svd.cc
 test_linalg_svd_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+TESTS += test_linalg_eig
+check_PROGRAMS += test_linalg_eig
+test_linalg_eig_SOURCES = test_linalg_eig.cc
+test_linalg_eig_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc
