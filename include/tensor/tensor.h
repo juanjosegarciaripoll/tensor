@@ -303,6 +303,8 @@ namespace tensor {
   const RTensor transpose(const RTensor &a);
   inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
 
+  const RTensor mmult(const RTensor &A, const RTensor &b);
+
   extern template class Tensor<cdouble>;
   typedef Tensor<cdouble> CTensor;
 
@@ -322,6 +324,8 @@ namespace tensor {
   const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
   const CTensor transpose(const CTensor &a);
   const CTensor adjoint(const CTensor &a);
+
+  const CTensor mmult(const CTensor &A, const CTensor &b);
 
 } // namespace tensor
 
