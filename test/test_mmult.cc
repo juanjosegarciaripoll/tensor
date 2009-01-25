@@ -18,7 +18,6 @@ namespace tensor_test {
 
   template<typename n1, typename n2>
   void test_mmult(index max_dim) {
-    index m = 0;
     for (index i = 1; i <= max_dim; i++) {
       for (index j = 1; j <= max_dim; j++) {
         for (index k = 1; k <= max_dim; k++) {
@@ -28,11 +27,6 @@ namespace tensor_test {
           EXPECT_TRUE(approx_eq(mmult(A, B), fold_22_12(A, B)));
           unique(A);
           unique(B);
-          if (m % 10 == 0)
-            std::cout << '.' << std::flush;
-          m++;
-          if (m % 600 == 0)
-            std::cout << std::endl;
         }
       }
     }
