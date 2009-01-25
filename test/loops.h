@@ -92,6 +92,42 @@ inline Indices random_dimensions(int rank, int max_dim) {
   return dims;
 }
 
+/*
+ * Loop over dimensions
+ */
+
+class DimensionIterator {
+public:
+  DimensionIterator(int rank, int max_dim = 10) :
+    dims_(rank), max_(max_dim), more_(true)
+  {
+    std::fill(dims_.begin(), dims_.end(), 0);
+  }
+
+  bool operator++() {
+    for (int i = 0; i < dims_.size(); i++) {
+      if (++dims_.at(i) < max_) {
+        return more_ = true;
+      }
+      dims_.at(i) = 0;
+    }
+    return more_ = false;
+  }
+
+  const Indices &operator*() const {
+    return dims_;
+  }
+
+  operator bool() const {
+    return more_;
+  }
+
+private:
+  Indices dims_;
+  int max_;
+  bool more_;
+};
+
 template<typename elt_t>
 void
 test_over_fixed_rank_tensors(void test(Tensor<elt_t> &t), int rank,

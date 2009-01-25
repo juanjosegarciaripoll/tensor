@@ -25,7 +25,7 @@ namespace tensor {
     const index rankb = b.rank();
     index ndx1 = normalize_index(_ndx1, ranka);
     index ndx2 = normalize_index(_ndx2, rankb);
-    Indices new_dims(ranka + rankb - 2);
+    Indices new_dims(std::max<index>(ranka + rankb - 2, 1));
     /*
      * Since we use row-major order, in which the first
      * index varies faster, we nest the loops beginning with the last index,
