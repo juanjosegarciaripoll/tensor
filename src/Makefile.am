@@ -50,7 +50,8 @@ libtensor_la_SOURCES = \
 	linalg/eig_d.cc \
 	linalg/eig_z.cc \
 	linalg/svd_d.cc \
-	linalg/svd_z.cc
+	linalg/svd_z.cc \
+	views/range.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\
