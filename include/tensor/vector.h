@@ -34,6 +34,9 @@ class Vector {
   index size() const {
     return data_.size();
   }
+  void resize(index new_size) {
+    data_.reallocate(new_size);
+  }
 
   const elt_t &operator[](index pos) const {
     return *(data_.begin_const() + pos);
