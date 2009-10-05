@@ -37,16 +37,16 @@ namespace tensor {
     }
   }
 
-  index *
-  Range::to_offsets(index increment, index dimension) const
+  void
+  Range::to_offsets(Indices &offsets, index increment, index dimension) const
   {
     index k0, k1, dk;
     index l = size(dimension);
-    index *p = new index[l];
+    offsets.resize(l);
     switch (type) {
     case Full:
       for (k0 = 0, k1 = 0; k0 < dimension; k0++) {
-        p[k0] = k1;
+        offsets.at(k0) = k1;
         k1 += increment;
       }
       break;
@@ -61,7 +61,7 @@ namespace tensor {
       }
       dk = di;
       for (index j = 0; k0 <= k1; k0+=dk, j++) {
-        p[j] = k0 * increment;
+        offsets.at(j) = k0 * increment;
       }
       break;
     case List:
@@ -73,14 +73,13 @@ namespace tensor {
                     << std::endl;
           abort();
         }
-        p[j] = ndx * increment;
+        offsets.at(j) = ndx * increment;
       }
       break;
     default:
       std::cerr << "Not a valid Range type " << type << '\n';
       abort();
     }
-    return p;
   }
 
 } // namespace tensor

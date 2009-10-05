@@ -7,6 +7,7 @@
 #define TENSOR_INDICES_H
 
 #include <list>
+#include <vector>
 #include <tensor/vector.h>
 
 namespace tensor {
@@ -72,7 +73,7 @@ namespace tensor {
     Indices v;
 
     friend class RangeProduct;
-    index *to_offsets(index increment, index dimension) const;
+    void to_offsets(Indices &i, index increment, index dimension) const;
   };
 
   //////////////////////////////////////////////////////////////////////
@@ -81,30 +82,105 @@ namespace tensor {
 
   class RangeProduct {
   public:
-    RangeProduct();
+    RangeProduct(const std::list<Range> all_ranges);
     ~RangeProduct();
 
-    RangeProduct &operator<<(const Range &r);
-
     index size() const { return size_; }
-    bool begin(const Indices &limits) const;
-    bool next() const;
+    index rank() const { return ranges_.size(); }
+    bool begin(const Indices &limits);
+    bool reset();
+    bool next();
     index offset() const;
     bool is_empty() const { return !size(); }
-    Indices &dimensions() const;
+    const Indices &dimensions() const { return limits_; };
 
   private:
-    std::list<Range> ranges_;
+    typedef std::list<Range> ranges;
+    ranges ranges_;
     index size_;
-    index rank_;
-    index **offsets_;
-    index *counters_;
-    index *limits_;
+    std::vector<Indices> offsets_;
+    Indices counters_;
+    Indices limits_;
 
     RangeProduct(const RangeProduct &t); /* Deactivated */
-    void reshape(const Indices &dims, Range **r);
   };
 
+  //////////////////////////////////////////////////////////////////////
+  //
+  // VIEWS OF TENSOR DATA
+  //
+
+  template<typename elt>
+  class ConstTensorView<elt> {
+  public:
+    ConstTensorView<elt>(const Tensor<elt> &t, const std::list<Range> &r) :
+    view_(t), range_product_(new RangeProduct(r))
+    {
+      range_product_->begin(t.dimensions());
+    }
+
+    ~TensorView<elt>() {
+      delete range_product;
+    }
+
+    operator const Tensor<elt>() const {
+      Tensor<elt> output(range_product_->dimensions());
+      if (range_product_->reset()) {
+        Tensor<elt>::iterator it = output.begin();
+        size_t i = 0;
+        do {
+          *it = view_[r->offset()]; 
+        } while(range_product_->next());
+      }
+      return output;
+    }
+
+  private:
+    VectorView<elt> view_;
+    RangeProduct *range_product_;
+  };
+
+  template<typename elt>
+  class TensorView<elt> {
+  public:
+    TensorView<elt>(Tensor<elt> &t, const std::list<Range> &r) :
+    view_(t), range_product_(new RangeProduct(r))
+    {
+      range_product_->begin(t.dimensions());
+    }
+
+    ~TensorView<elt>() {
+      delete range_product;
+    }
+
+    operator const Tensor<elt>() const {
+      Tensor<elt> output(range_product_->dimensions());
+      if (range_product_->reset()) {
+        Tensor<elt>::iterator it = output.begin();
+        size_t i = 0;
+        do {
+          *it = view_[r->offset()]; 
+        } while(range_product_->next());
+      }
+      return output;
+    }
+
+    TensorView<elt> &operator=(const Tensor<elt> &t) {
+      if (range_product_->reset()) {
+        Tensor<elt>::iterator it = output.begin();
+        size_t i = 0;
+        do {
+          *it = view_[r->offset()]; 
+          ++it;
+        } while(range_product_->next());
+      }
+      return output;
+    }
+
+  private:
+    VectorView<elt> view_;
+    RangeProduct *range_product_;
+  };
 
 }; // namespace
 
