@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case $1 in
+    --cflags)	echo @CONFIG_CFLAGS@;;
+    --ldflags)	echo @CONFIG_LDFLAGS@;;
+    *)		cat <<EOF
+tensor-config [--cflags | --ldflags]
+
+	Outputs appropriate flags for compiling and linking programs
+	that make use of the Tensor library.
+EOF
+esac
