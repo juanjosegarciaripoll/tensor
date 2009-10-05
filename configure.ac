@@ -10,6 +10,7 @@ AC_INIT([C++ Tensor Library],
 #
 AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR([./README])		dnl Unique file where sources are
+AC_CONFIG_MACRO_DIR([m4])		dnl Additional macro directories
 AC_CONFIG_AUX_DIR([config_aux])		dnl Where to put autoconf files
 AC_CONFIG_HEADERS([config_aux/config.h])	dnl Automatically generated
 AC_CONFIG_FILES([Makefile src/Makefile scripts/Makefile test/Makefile])
@@ -40,6 +41,18 @@ AC_SUBST(GTEST_LDFLAGS)
 
 # Size of computer words
 AM_CONDITIONAL([HAVE_64BITS], [false])
+
+# Doxygen support
+
+DX_HTML_FEATURE(ON)
+DX_CHM_FEATURE(OFF)
+DX_CHI_FEATURE(OFF)
+DX_MAN_FEATURE(OFF)
+DX_RTF_FEATURE(OFF)
+DX_XML_FEATURE(OFF)
+DX_PDF_FEATURE(OFF)
+DX_PS_FEATURE(OFF)
+DX_INIT_DOXYGEN(tensor, doxygen.cfg, doc)
 
 # Missing: headers and library checks
 
