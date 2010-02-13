@@ -8,6 +8,7 @@
 
 #include <tensor/tensor.h>
 
+/*!\addtogroup Linalg*/
 namespace linalg {
 
   using tensor::RTensor;
@@ -25,5 +26,6 @@ namespace linalg {
   RTensor eig_sym(CTensor A, CTensor *pR = 0);
 
 } // namespace linalg
+
 
 #endif // !TENSOR_LINALG_H

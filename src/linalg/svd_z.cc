@@ -12,6 +12,18 @@ namespace linalg {
   using namespace lapack;
 
   /**Singular value decomposition of a complex matrix.
+
+     The singular value decomposition of a matrix A, consists in finding two
+     unitary matrices U and V, and diagonal one S with nonnegative elements, such
+     that \f$A = U S V\f$. The svd() routine computes the diagonal elements of
+     the matrix S and puts them in a 1D tensor, which is the output of the
+     routine.  Optionally, the matrices U and V are also computed, and stored in
+     the variables pointed to by U and VT.
+
+     Unless otherwise specified, if the matrix A has \c MxN elements, then U is
+     \c MxM, V is \c NxN and the vector S will have \c min(M,N) elements. However
+     if flag \c economic is different from zero, then we get smaller matrices,
+     U being \c MxR, V being \c RxN and S will have \c R=min(M,N) elements.
      
      \ingroup Linalg
   */

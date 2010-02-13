@@ -18,7 +18,7 @@ namespace tensor {
 //
 
 /*!\addtogroup Tensors*/
-/*!@{*/
+/* @{ */
 /**An N-dimensional array of numbers. Tensors are much like Matlab's arrays. They can
    store numbers, be accessed with one, two or more indices, be reshaped,
    extract and put elements, etc.
@@ -34,7 +34,7 @@ namespace tensor {
    the C/C++ indexing of arrays.
 
    \anchor matrices In most computer algebra environments, a tensor with two
-   indices is referred as a matrix and it is treated specially. In MPSLIB
+   indices is referred as a matrix and it is treated specially. In this library
    matrices are no special citizens, but nevertheless we provide some
    functions, such as columns(), rows(), etc, which do what expected and only
    work with 2D arrays.
@@ -60,51 +60,51 @@ class Tensor {
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
-  /**Constructs an empty tensor.*/
+  /**Constructs an empty Tensor.*/
   Tensor() : data_(), dims_() {}
 
-  /**Constructs an unitialized N-D tensor given the dimensions.*/
+  /**Constructs an unitialized N-D Tensor given the dimensions.*/
   explicit Tensor(const Indices &new_dims);
 
-  /**Consturcts an N-D tensor with given initial data.*/
+  /**Consturcts an N-D Tensor with given initial data.*/
   Tensor(const Indices &new_dims, const Tensor<elt_t> &data);
 
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
   Tensor(const Tensor &other) : data_(other.data_), dims_(other.dims_) {}
 
-  /**Build a 1D tensor given the size and the raw C data.*/
+  /**Build a 1D Tensor given the size and the raw C data.*/
   explicit Tensor(index length);
   /**Build a matrix.*/
   Tensor(index rows, index cols);
-  /**Build a 3D tensor.*/
+  /**Build a 3D Tensor.*/
   Tensor(index d1, index d2, index d3);
-  /**Build a 4D tensor.*/
+  /**Build a 4D Tensor.*/
   Tensor(index d1, index d2, index d3, index d4);
-  /**Build a 5D tensor.*/
+  /**Build a 5D Tensor.*/
   Tensor(index d1, index d2, index d3, index d4, index d5);
-  /**Build a 6D tensor.*/
+  /**Build a 6D Tensor.*/
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
 
-  /**Returns total number of elements in tensor.*/
+  /**Returns total number of elements in Tensor.*/
   index size() const { return data_.size(); }
 
-  /**Number of tensor indices.*/
+  /**Number of Tensor indices.*/
   int rank() const { return dims_.size(); }
-  /**Return tensor dimensions.*/
+  /**Return Tensor dimensions.*/
   const Indices &dimensions() const { return dims_; }
-  /**Length of a given tensor index.*/
+  /**Length of a given Tensor index.*/
   index dimension(int which) const;
-  /**Query dimensions of 1D tensor.*/
+  /**Query dimensions of 1D Tensor.*/
   void get_dimensions(index *length) const;
-  /**Query dimensions of 2D tensor.*/
+  /**Query dimensions of 2D Tensor.*/
   void get_dimensions(index *rows, index *cols) const;
-  /**Query dimensions of 3D tensor.*/
+  /**Query dimensions of 3D Tensor.*/
   void get_dimensions(index *d0, index *d1, index *d2) const;
-  /**Query dimensions of 4D tensor.*/
+  /**Query dimensions of 4D Tensor.*/
   void get_dimensions(index *d0, index *d1, index *d2, index *d3) const;
-  /**Query dimensions of 5D tensor.*/
+  /**Query dimensions of 5D Tensor.*/
   void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4) const;
-  /**Query dimensions of 6D tensor.*/
+  /**Query dimensions of 6D Tensor.*/
   void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4, index *d5) const;
   /**Query size of 2nd index.*/
   index columns() const { return dimension(1); }
@@ -116,30 +116,30 @@ class Tensor {
 
   /**Return element in linear order.*/
   const elt_t &operator[](index i) const;
-  /**Return element of 1D tensor.*/
+  /**Return element of 1D Tensor.*/
   const elt_t &operator()(index i) const;
-  /**Return element of 2D tensor.*/
+  /**Return element of 2D Tensor.*/
   const elt_t &operator()(index row, index col) const;
-  /**Return element of 3D tensor.*/
+  /**Return element of 3D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2) const;
-  /**Return element of 4D tensor.*/
+  /**Return element of 4D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3) const;
-  /**Return element of 5D tensor.*/
+  /**Return element of 5D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3, index d4) const;
-  /**Return element of 6D tensor.*/
+  /**Return element of 6D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3, index d4, index d5w) const;
 
-  /**Return mutable reference to element of a tensor.*/
+  /**Return mutable reference to element of a Tensor.*/
   elt_t &at(index i);
-  /**Return mutable reference to element of 2D tensor.*/
+  /**Return mutable reference to element of 2D Tensor.*/
   elt_t &at(index row, index col);
-  /**Return mutable reference to element of 3D tensor.*/
+  /**Return mutable reference to element of 3D Tensor.*/
   elt_t &at(index d1, index d2, index d3);
-  /**Return mutable reference to element of 4D tensor.*/
+  /**Return mutable reference to element of 4D Tensor.*/
   elt_t &at(index d1, index d2, index d3, index d4);
-  /**Return mutable reference to element of 5D tensor.*/
+  /**Return mutable reference to element of 5D Tensor.*/
   elt_t &at(index d1, index d2, index d3, index d4, index d5);
-  /**Return mutable reference to element of 6D tensor.*/
+  /**Return mutable reference to element of 6D Tensor.*/
   elt_t &at(index d1, index d2, index d3, index d4, index d5, index d6);
 
   /**Fill with an element.*/
@@ -193,33 +193,33 @@ class Tensor {
 // RESHAPING
 //
 
-/**Return a tensor with same data and given dimensions.*/
+/**Return a Tensor with same data and given dimensions.*/
 template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, const Indices &new_dims);
 
-/**Return a tensor with same data and given dimensions.*/
+/**Return a Tensor with same data and given dimensions.*/
 template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, index length);
 
-/**Return a tensor with same data and given dimensions.*/
+/**Return a Tensor with same data and given dimensions.*/
 template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, index rows, index columns);
 
-/**Return a tensor with same data and given dimensions.*/
+/**Return a Tensor with same data and given dimensions.*/
 template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3);
 
-/**Return a tensor with same data and given dimensions.*/
+/**Return a Tensor with same data and given dimensions.*/
 template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 		      index d4);
 
-/**Return a tensor with same data and given dimensions.*/
+/**Return a Tensor with same data and given dimensions.*/
 template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 		      index d4, index d5);
 
-/**Return a tensor with same data and given dimensions.*/
+/**Return a Tensor with same data and given dimensions.*/
 template<typename elt_t>
 Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 		      index d4, index d5, index d6);
@@ -284,6 +284,7 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 namespace tensor {
 
   extern template class Tensor<double>;
+  /** Real Tensor with elements of type "double". */
   typedef Tensor<double> RTensor;
 
   double norm0(const RTensor &r);
@@ -305,10 +306,16 @@ namespace tensor {
   const RTensor transpose(const RTensor &a);
   inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
 
-  const RTensor fold(const RTensor &A, int ndx1, const RTensor &b, int ndx2);
-  const RTensor mmult(const RTensor &A, const RTensor &b);
+  const RTensor fold(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+  const RTensor foldin(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+  const RTensor mmult(const RTensor &a, const RTensor &b);
+
+  void fold_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+  void foldin_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+  void mmult_into(RTensor &output, const RTensor &a, const RTensor &b);
 
   extern template class Tensor<cdouble>;
+  /** Complex Tensor with elements of type "cdouble". */
   typedef Tensor<cdouble> CTensor;
 
   double norm0(const CTensor &r);
@@ -334,14 +341,17 @@ namespace tensor {
   const CTensor transpose(const CTensor &a);
   const CTensor adjoint(const CTensor &a);
 
-  const CTensor fold(const CTensor &A, int ndx1, const CTensor &b, int ndx2);
-  const CTensor fold(const RTensor &A, int ndx1, const CTensor &b, int ndx2);
-  const CTensor fold(const CTensor &A, int ndx1, const RTensor &b, int ndx2);
+  const CTensor fold(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
+  const CTensor fold(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
+  const CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
 
-  const CTensor mmult(const CTensor &A, const CTensor &b);
-  const CTensor mmult(const RTensor &A, const CTensor &b);
-  const CTensor mmult(const CTensor &A, const RTensor &b);
+  const CTensor mmult(const CTensor &a, const CTensor &b);
+  const CTensor mmult(const RTensor &a, const CTensor &b);
+  const CTensor mmult(const CTensor &a, const RTensor &b);
 
+  const CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 } // namespace tensor
+
+/* @} */
 
 #endif // !TENSOR_H
