@@ -46,39 +46,53 @@ namespace tensor {
 
   class Range {
   public:
-    Range(index lim = 0) : base_(0), limit_(lim), factor_(1) {}
-    virtual ~Range() = 0;
-    virtual index pop() = 0;
-    virtual void set_factor(index new_factor) = 0;
-    virtual void reset() = 0;
-    index nomore() { return ~(index)0; }
-    index get_offset() { return base_; }
-    index get_limit() { return limit_; }
-    index get_factor() { return factor_; }
+    Range();
+    virtual ~Range();
+    virtual index pop();
+    virtual void set_factor(index new_factor);
+    virtual void set_limit(index new_limit);
+    virtual index size() const;
+    virtual void reset();
+    index nomore() const { return ~(index)0; }
+    index get_offset() const { return base_; }
+    index get_limit() const { return limit_; }
+    index get_factor() const { return factor_; }
     void set_offset(index new_base) { base_ = new_base; }
-    void set_limit(index new_limit) { limit_ = new_limit; }
   private:
     index base_, limit_, factor_;
   };
 
   class FullRange : public Range {
   public:
-    FullRange(index start, index end, index lim = 0) :
-      Range(lim), start_(start), end_(end), ndx_(0) {}
-    ~FullRange();
+    FullRange();
     virtual index pop();
     virtual void set_factor(index new_factor);
+    virtual void set_limit(index new_limit);
+    virtual index size() const;
     virtual void reset();
   private:
-    index ndx_, start_, end_;
+    index counter_, counter_end_;
+  };
+
+  class StepRange : public Range {
+  public:
+    StepRange(index start, index end, index step = 1);
+    virtual index pop();
+    virtual void set_factor(index new_factor);
+    virtual void set_limit(index new_limit);
+    virtual index size() const;
+    virtual void reset();
+  private:
+    index ndx_, start_, end_, step_;
   };
 
   class SingleRange : public Range {
   public:
-    SingleRange(index ndx, index lim = 0) : Range(lim), ndx_(ndx), counter_(ndx) {}
-    ~SingleRange();
+    SingleRange(index ndx);
     virtual index pop();
     virtual void set_factor(index new_factor);
+    virtual void set_limit(index new_limit);
+    virtual index size() const;
     virtual void reset();
   private:
     index ndx_, counter_;
@@ -86,10 +100,11 @@ namespace tensor {
 
   class IndexRange : public Range {
   public:
-    IndexRange(const Indices &i, index lim = 0) : Range(lim), indices_(i), counter_(0) {}
-    ~IndexRange();
+    IndexRange(const Indices &i);
     virtual index pop();
     virtual void set_factor(index new_factor);
+    virtual void set_limit(index new_limit);
+    virtual index size() const;
     virtual void reset();
   private:
     Indices indices_;
@@ -102,14 +117,19 @@ namespace tensor {
     ~ProductRange();
     virtual index pop();
     virtual void set_factor(index new_factor);
+    virtual void set_limit(index new_limit);
+    virtual index size() const;
     virtual void reset();
   private:
     Range *r1_, *r2_;
+    index base_;
   };
 
   inline Range *range(index ndx) { return new SingleRange(ndx); }
-  inline Range *range(index start, index end) { return new FullRange(start, end); }
+  inline Range *range(index start, index end) { return new StepRange(start, end); }
+  inline Range *range(index start, index end, index step) { return new StepRange(start, end, step); }
   inline Range *range(Indices i) { return new IndexRange(i); }
+  inline Range *range() { return new FullRange(); }
 
 }; // namespace
 

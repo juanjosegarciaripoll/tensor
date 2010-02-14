@@ -44,6 +44,11 @@ check_PROGRAMS += test_tensor_permute
 test_tensor_permute_SOURCES = test_tensor_permute.cc
 test_tensor_permute_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+TESTS += test_tensor_view
+check_PROGRAMS += test_tensor_view
+test_tensor_view_SOURCES = test_tensor_view.cc
+test_tensor_view_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 TESTS += test_matrix
 check_PROGRAMS += test_matrix
 test_matrix_SOURCES = test_matrix.cc

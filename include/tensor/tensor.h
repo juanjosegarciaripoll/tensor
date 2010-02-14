@@ -52,6 +52,19 @@ namespace tensor {
    In line [1] just a pointer is copied from b to a. However, in line [2] just
    before modifying the data, we make a copy of it. In the end, b still has
    the original data, and a the modified copy.
+
+   \anchor TensorSlice A Tensor also admits accessing its elements one by one
+   \code
+   RTensor a;
+   ...
+   double x = a(2,3);
+   \endcode
+   or in whole chunks
+   \code
+   RTensor a;
+   ...
+   RTensor b = a(r(1,2),r());
+   \endcode
 */
 template<typename elt>
 class Tensor {
@@ -129,6 +142,8 @@ class Tensor {
   /**Return element of 6D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3, index d4, index d5w) const;
 
+  /**Return mutable reference to element of a Tensor, accessed in row major order.*/
+  elt_t &at_seq(index i);
   /**Return mutable reference to element of a Tensor.*/
   elt_t &at(index i);
   /**Return mutable reference to element of 2D Tensor.*/
@@ -153,11 +168,17 @@ class Tensor {
   // Tensor slicing
   //
   class view;
+  /**Extracts a slice from a 1D Tensor. */
   view operator()(Range *r);
+  /**Extracts a slice from a 2D Tensor. */
   view operator()(Range *r1, Range *r2);
+  /**Extracts a slice from a 3D Tensor. */
   view operator()(Range *r1, Range *r2, Range *r3);
+  /**Extracts a slice from a 4D Tensor. */
   view operator()(Range *r1, Range *r2, Range *r3, Range *r4);
+  /**Extracts a slice from a 5D Tensor. */
   view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5);
+  /**Extracts a slice from a 6D Tensor. */
   view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5, Range *r6);
 
   //
@@ -285,6 +306,7 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 #include <tensor/detail/tensor_base.hpp>
 #include <tensor/detail/tensor_matrix.hpp>
 #endif
+#include <tensor/detail/tensor_slice.hpp>
 #include <tensor/detail/tensor_reshape.hpp>
 #include <tensor/detail/tensor_ops.hpp>
 

@@ -5,9 +5,12 @@
 
 #define TENSOR_LOAD_IMPL
 #include <tensor/tensor.h>
+#include "tensor_view.hpp"
 
 //
 // Explicitely instantiate an specialization of Tensor. This generates
 // all required code.
 //
 template class tensor::Tensor<tensor::cdouble>;
+
+
