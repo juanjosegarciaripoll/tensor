@@ -46,64 +46,70 @@ namespace tensor {
 
   class Range {
   public:
-    typedef enum {
-      Full,
-      Stepped,
-      List,
-      None
-    } Type;
-
-    Range() : type(Full), i0(0), i1(-1), di(1) {}
-
-    Range(const Indices &av): type(List), v(av) {}
-
-    Range(index ndx) : type(Stepped), i0(ndx), i1(ndx), di(1) {}
-
-    Range(index start, index end) : type(Stepped), i0(start), i1(end), di(1) {}
-
-    Range(index start, index end, index delta) :
-	type(Stepped), i0(start), i1(end), di(delta)
-    {}
-
-    index size(index dimension) const;
-
+    Range(index lim = 0) : base_(0), limit_(lim), factor_(1) {}
+    virtual ~Range() = 0;
+    virtual index pop() = 0;
+    virtual void set_factor(index new_factor) = 0;
+    virtual void reset() = 0;
+    index nomore() { return ~(index)0; }
+    index get_offset() { return base_; }
+    index get_limit() { return limit_; }
+    index get_factor() { return factor_; }
+    void set_offset(index new_base) { base_ = new_base; }
+    void set_limit(index new_limit) { limit_ = new_limit; }
   private:
-    Type type;
-    index i0, i1, di;
-    Indices v;
-
-    friend class RangeProduct;
-    void to_offsets(Indices &i, index increment, index dimension) const;
+    index base_, limit_, factor_;
   };
 
-  //////////////////////////////////////////////////////////////////////
-  // TENSOR PRODUCT OF RANGES
-  //
-
-  class RangeProduct {
+  class FullRange : public Range {
   public:
-    RangeProduct(const std::list<Range> all_ranges);
-    ~RangeProduct();
-
-    index size() const { return size_; }
-    index rank() const { return ranges_.size(); }
-    bool begin(const Indices &limits);
-    bool reset();
-    bool next();
-    index offset() const;
-    bool is_empty() const { return !size(); }
-    const Indices &dimensions() const { return limits_; };
-
+    FullRange(index start, index end, index lim = 0) :
+      Range(lim), start_(start), end_(end), ndx_(0) {}
+    ~FullRange();
+    virtual index pop();
+    virtual void set_factor(index new_factor);
+    virtual void reset();
   private:
-    typedef std::list<Range> ranges;
-    ranges ranges_;
-    index size_;
-    std::vector<Indices> offsets_;
-    Indices counters_;
-    Indices limits_;
-
-    RangeProduct(const RangeProduct &t); /* Deactivated */
+    index ndx_, start_, end_;
   };
+
+  class SingleRange : public Range {
+  public:
+    SingleRange(index ndx, index lim = 0) : Range(lim), ndx_(ndx), counter_(ndx) {}
+    ~SingleRange();
+    virtual index pop();
+    virtual void set_factor(index new_factor);
+    virtual void reset();
+  private:
+    index ndx_, counter_;
+  };
+
+  class IndexRange : public Range {
+  public:
+    IndexRange(const Indices &i, index lim = 0) : Range(lim), indices_(i), counter_(0) {}
+    ~IndexRange();
+    virtual index pop();
+    virtual void set_factor(index new_factor);
+    virtual void reset();
+  private:
+    Indices indices_;
+    index counter_;
+  };
+
+  class ProductRange : public Range {
+  public:
+    ProductRange(Range *r1, Range *r2);
+    ~ProductRange();
+    virtual index pop();
+    virtual void set_factor(index new_factor);
+    virtual void reset();
+  private:
+    Range *r1_, *r2_;
+  };
+
+  inline Range *range(index ndx) { return new SingleRange(ndx); }
+  inline Range *range(index start, index end) { return new FullRange(start, end); }
+  inline Range *range(Indices i) { return new IndexRange(i); }
 
 }; // namespace
 
