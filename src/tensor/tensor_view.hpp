@@ -89,7 +89,7 @@ namespace tensor {
     r3->set_limit(dimension(2));
     dims.at(0) = r1->size();
     dims.at(1) = r2->size();
-    dims.at(3) = r3->size();
+    dims.at(2) = r3->size();
     Range *r = product(r1, product(r2, r3));
     return view(*this, dims, r);
   }
@@ -104,8 +104,8 @@ namespace tensor {
     r4->set_limit(dimension(3));
     dims.at(0) = r1->size();
     dims.at(1) = r2->size();
-    dims.at(3) = r3->size();
-    dims.at(4) = r4->size();
+    dims.at(2) = r3->size();
+    dims.at(3) = r4->size();
     Range *r = product(r1, product(r2, product(r3, r4)));
     return view(*this, dims, r);
   }
@@ -121,9 +121,9 @@ namespace tensor {
     r5->set_limit(dimension(4));
     dims.at(0) = r1->size();
     dims.at(1) = r2->size();
-    dims.at(3) = r3->size();
-    dims.at(4) = r4->size();
-    dims.at(5) = r5->size();
+    dims.at(2) = r3->size();
+    dims.at(3) = r4->size();
+    dims.at(4) = r5->size();
     Range *r = product(r1, product(r2, product(r3, product(r4, r5))));
     return view(*this, dims, r);
   }
@@ -141,10 +141,10 @@ namespace tensor {
     r6->set_limit(dimension(5));
     dims.at(0) = r1->size();
     dims.at(1) = r2->size();
-    dims.at(3) = r3->size();
-    dims.at(4) = r4->size();
-    dims.at(5) = r5->size();
-    dims.at(6) = r6->size();
+    dims.at(2) = r3->size();
+    dims.at(3) = r4->size();
+    dims.at(4) = r5->size();
+    dims.at(5) = r6->size();
     Range *r = product(r1, product(r2, product(r3, product(r4, product(r5, r6)))));
     return view(*this, dims, r);
   }
