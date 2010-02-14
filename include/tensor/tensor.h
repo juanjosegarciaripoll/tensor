@@ -150,6 +150,17 @@ class Tensor {
   void randomize();
 
   //
+  // Tensor slicing
+  //
+  class view;
+  view operator()(Range *r);
+  view operator()(Range *r1, Range *r2);
+  view operator()(Range *r1, Range *r2, Range *r3);
+  view operator()(Range *r1, Range *r2, Range *r3, Range *r4);
+  view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5);
+  view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5, Range *r6);
+
+  //
   // Matrix operations
   //
   /**Identity matrix.*/
