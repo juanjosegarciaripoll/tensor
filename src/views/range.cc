@@ -32,7 +32,7 @@ namespace tensor {
   void
   Range::set_limit(index limit)
   {
-    assert(limit > 0);
+    assert(limit >= 0);
     limit_ = limit;
   }
 
