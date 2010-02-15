@@ -3,6 +3,7 @@
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
 
+#include <cassert>
 #include <iostream>
 #include <tensor/indices.h>
 
