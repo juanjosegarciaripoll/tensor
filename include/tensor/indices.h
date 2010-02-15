@@ -10,6 +10,8 @@
 #include <vector>
 #include <tensor/vector.h>
 
+/*!\addtogroup Tensors */
+/*@{*/
 namespace tensor {
 
   class ListGenerator  {};
@@ -44,6 +46,13 @@ namespace tensor {
   // RANGE OF INTEGERS
   //
 
+  /** Range of indices. This class should never be used by public functions, but
+      only as the output of the function range() and only to access segments of
+      a tensors, as in
+      \code
+      b = a(range(1,2),range())
+      \endcode
+  */
   class Range {
   public:
     Range();
@@ -125,12 +134,18 @@ namespace tensor {
     index base_;
   };
 
+  /**Create a Range which only contains one index. \ref TensorSlices*/
   inline Range *range(index ndx) { return new SingleRange(ndx); }
+  /**Create a Range start:end in Matlab notation. \ref TensorSlices*/
   inline Range *range(index start, index end) { return new StepRange(start, end); }
+  /**Create a Range start:step:end in Matlab notation. \ref TensorSlices*/
   inline Range *range(index start, index end, index step) { return new StepRange(start, end, step); }
+  /**Create a Range with the indices in the given vector. \ref TensorSlices*/
   inline Range *range(Indices i) { return new IndexRange(i); }
+  /**Create a Range which covers all indices. \ref TensorSlices*/
   inline Range *range() { return new FullRange(); }
 
 }; // namespace
 
+/*@}*/
 #endif // !TENSOR_H

@@ -59,11 +59,11 @@ namespace tensor {
    ...
    double x = a(2,3);
    \endcode
-   or in whole chunks
+   or in whole chunks also known as Range[s]
    \code
    RTensor a;
    ...
-   RTensor b = a(r(1,2),r());
+   RTensor b = a(range(1,2),range());
    \endcode
 */
 template<typename elt>
@@ -119,42 +119,42 @@ class Tensor {
   void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4) const;
   /**Query dimensions of 6D Tensor.*/
   void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4, index *d5) const;
-  /**Query size of 2nd index.*/
+  /**Query the size of 2nd index.*/
   index columns() const { return dimension(1); }
-  /**Query size of 1st index. */
+  /**Query then size of 1st index. */
   index rows() const { return dimension(0); }
 
   /**Change the dimensions, while keeping the data. */
   void reshape(const Indices &new_dims);
 
-  /**Return element in linear order.*/
+  /**Return the i-th element, accessed in column major order.*/
   const elt_t &operator[](index i) const;
-  /**Return element of 1D Tensor.*/
+  /**Return an element of a 1D Tensor.*/
   const elt_t &operator()(index i) const;
-  /**Return element of 2D Tensor.*/
+  /**Return an element of a 2D Tensor.*/
   const elt_t &operator()(index row, index col) const;
-  /**Return element of 3D Tensor.*/
+  /**Return an element of a 3D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2) const;
-  /**Return element of 4D Tensor.*/
+  /**Return an element of a 4D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3) const;
-  /**Return element of 5D Tensor.*/
+  /**Return an element of a 5D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3, index d4) const;
-  /**Return element of 6D Tensor.*/
+  /**Return an element of a 6D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3, index d4, index d5w) const;
 
-  /**Return mutable reference to element of a Tensor, accessed in row major order.*/
+  /**Return a mutable reference to the i-th element of a Tensor, in column major order.*/
   elt_t &at_seq(index i);
-  /**Return mutable reference to element of a Tensor.*/
+  /**Return a mutable reference to an element of a 1D Tensor.*/
   elt_t &at(index i);
-  /**Return mutable reference to element of 2D Tensor.*/
+  /**Return a mutable reference to an element of a 2D Tensor.*/
   elt_t &at(index row, index col);
-  /**Return mutable reference to element of 3D Tensor.*/
+  /**Return a mutable reference to an element of a 3D Tensor.*/
   elt_t &at(index d1, index d2, index d3);
-  /**Return mutable reference to element of 4D Tensor.*/
+  /**Return a mutable reference to an element of a 4D Tensor.*/
   elt_t &at(index d1, index d2, index d3, index d4);
-  /**Return mutable reference to element of 5D Tensor.*/
+  /**Return a mutable reference to an element of a 5D Tensor.*/
   elt_t &at(index d1, index d2, index d3, index d4, index d5);
-  /**Return mutable reference to element of 6D Tensor.*/
+  /**Return a mutable reference to an element of 6D Tensor.*/
   elt_t &at(index d1, index d2, index d3, index d4, index d5, index d6);
 
   /**Fill with an element.*/
