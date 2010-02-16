@@ -1,5 +1,5 @@
 // -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
-/**\addtogroup Tensor*/
+/**\addtogroup Tensors */
 /*!\page sec_tensor The Tensor class
 
 \section sec_tensor_dims Tensor dimensions and indices
