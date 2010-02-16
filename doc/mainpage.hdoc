@@ -1,0 +1,14 @@
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+/*!\mainpage Tensor Library Documentation
+
+Tensor is a tensor algebra library for doing numerics with arrays of real and
+complex numbers, typically floating point ones. The main motivation of the
+library is to provide arrays with more than one or two indices, and allow the
+kind of computations that are easily done with Matlab, Yorick or Scilab, to
+name some popular software.
+
+Some links you should read before going any further:
+
+\li \subpage sec_intro
+
+*/
