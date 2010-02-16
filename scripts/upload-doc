@@ -1,0 +1,3 @@
+#!/bin/sh
+make doxygen-doc && \
+rsync -rauvz doc/html dreamhost:tream.dreamhosters.com/tensor/
