@@ -134,15 +134,15 @@ namespace tensor {
     index base_;
   };
 
-  /**Create a Range which only contains one index. \ref TensorSlices*/
+  /**Create a Range which only contains one index. \sa \ref sec_tensor_view*/
   inline Range *range(index ndx) { return new SingleRange(ndx); }
-  /**Create a Range start:end in Matlab notation. \ref TensorSlices*/
+  /**Create a Range start:end (Matlab notation). \sa \ref sec_tensor_view*/
   inline Range *range(index start, index end) { return new StepRange(start, end); }
-  /**Create a Range start:step:end in Matlab notation. \ref TensorSlices*/
+  /**Create a Range start:step:end (Matlab notation). \sa \ref sec_tensor_view*/
   inline Range *range(index start, index end, index step) { return new StepRange(start, end, step); }
-  /**Create a Range with the indices in the given vector. \ref TensorSlices*/
+  /**Create a Range with the give set of indices. \sa \ref sec_tensor_view*/
   inline Range *range(Indices i) { return new IndexRange(i); }
-  /**Create a Range which covers all indices. \ref TensorSlices*/
+  /**Create a Range which covers all indices. \ref sec_tensor_view*/
   inline Range *range() { return new FullRange(); }
 
 }; // namespace

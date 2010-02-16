@@ -1,0 +1,119 @@
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+/**\addtogroup Tensor*/
+/*!\page sec_tensor The Tensor class
+
+\section sec_tensor_dims Tensor dimensions and indices
+
+A Tensor is a multidimensional array of numbers. Their behavior is
+similar to Matlab's arrays in that they can store only numbers, be
+accessed with one or more indices using the () or [] syntaxes,
+reshaped, sliced, and all that with an automated memory management.
+
+The total number of dimensions or indices in a Tensor is given by the
+function rank() and it is currently unlimited, though this may change
+in the future for performance reasons.
+
+Dimensions are labeled by integers, from 0 up to rank()-1, though we
+also allow negative numbers: 0 is the first index, 1 is the second,
+etc, and then -1 is interpreted as the last index, -2, as the first to
+one, etc.
+
+Each Tensor index follows a similar convention. For instance, if A is
+a two-dimensional Tensor with A.dimension(0) == 2 and B.dimension(1)
+== 3, we say that it is a matrix of 2 columns and 3 rows, and we can
+access its elements using the parenthesis notation, as A(0,0), A(0,1),
+A(0,2), A(1,0), A(1,1), A(1,2), A(2,0), A(2,1) and A(2,2).
+
+Values in a Tensor are stored using Fortran's column major order, so
+that the element A[0] corresponds to A(0,0), A[1] == A(1,0), etc. This
+simplifies interfacing with LAPACK and BLAS libraries, as well as
+other optimized components that our library relies on.
+
+In most computer algebra environments, a Tensor with two indices is
+referred as a matrix and it is treated specially. In this library
+matrices are no special citizens, but nevertheless we provide some
+functions, such as columns(), rows(), etc, which do what expected and
+only work with 2D arrays.
+
+
+\section sec_tensor_mut Tensor mutability
+
+A Tensor can be declared constant, as in
+\code
+const Tensor<double> A = Tensor<double>::eye(2,3);
+\endcode
+Such a Tensor can not be changed nor assigned values.
+
+In order to change the content of a Tensor there are a few functions
+that can be used. If one wishes to change a single element, the member
+function at() should be used. For instance the following code is
+correct
+\code
+Tensor<double> A;
+...
+A.at(0,2) = 1.0;
+\endcode
+while this code will result in a compiler error
+\code
+Tensor<double> A;
+...
+A(0,2) = 1.0;
+\endcode
+because the operator() returns an inmutable reference to the elements
+of the array.
+
+
+\section sec_tensor_copy Tensor copying
+
+\anchor Copy Our implementation is such that when a Tensor is copied,
+the data is not copied unless either the original Tensor or the copy
+are modified. For instance, take the following piece of code,
+\code
+Tensor a = b; //[1]
+a(1) = 2; //[2]
+\endcode
+In line [1] just a pointer is copied from b to a. However, in line [2]
+just before modifying the data, we make a copy of it. In the end, b
+still has the original data, and a the modified copy.
+
+
+\section sec_tensor_view Tensor slicing
+
+A Tensor also admits accessing its elements one by one
+\code
+RTensor a;
+...
+double x = a(2,3);
+\endcode
+or in whole chunks also known as Range[s]
+\code
+RTensor a;
+...
+RTensor b = a(range(1,4),range());
+\endcode
+
+The function range() selects the interval of indices which we wish to
+use from the Tensor. A full range, or range(), means that we want to
+use all possible values of an index, while an interval, range(1,4),
+means we want to use {1,2,3,4}.
+
+The output of range() only makes sense when used inside an operator()
+as shown above and the user should refrain from storing its output
+elsewhere. Similarly, the output of operator() when it takes a range()
+argument is itself an intermediate class that will either be
+automatically coerced to a tensor or used for an intermediate
+computation.
+
+Note also the difference between the following two statements
+\code
+b = a(range(1,4),range());
+b.at(range(1,4),range()) = 1.0;
+\endcode
+
+In the first case we are requesting an inmutable reference to the
+values in "a", which can not be altered, while in the second case we
+ask for a mutable reference, whose value can be manually changed - in
+this case to set all elements equal to 1.
+
+*/
+

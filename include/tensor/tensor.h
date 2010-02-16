@@ -19,52 +19,11 @@ namespace tensor {
 
 /*!\addtogroup Tensors*/
 /* @{ */
-/**An N-dimensional array of numbers. Tensors are much like Matlab's arrays. They can
-   store numbers, be accessed with one, two or more indices, be reshaped,
-   extract and put elements, etc.
-
-   \anchor tensor_index The total number of dimensions or indices in a tensor
-   is given by the function rank(). However, for many operations we do not
-   want to care about this number, but rather refer to the first index, or to
-   the last, or to the first-to-last... For this reason, some functions allow
-   negative dimension index: 0 is the first index, 1 is the second, etc, and
-   then -1 is interpreted as the last index, -2, as the first to one, etc.
-
-   The reason why the first index is labeled 0 is because of consistency with
-   the C/C++ indexing of arrays.
-
-   \anchor matrices In most computer algebra environments, a tensor with two
-   indices is referred as a matrix and it is treated specially. In this library
-   matrices are no special citizens, but nevertheless we provide some
-   functions, such as columns(), rows(), etc, which do what expected and only
-   work with 2D arrays.
-
-   \anchor Copy Our implementation is such that when a tensor is copied, the
-   data is not copied unless either the original tensor or the copy are
-   modified. For instance, take the following piece of code,
-   \code
-   ...
-   Tensor a = b; //[1]
-   ...
-   a(1) = 2; //[2]
-   ...
-   \endcode
-   In line [1] just a pointer is copied from b to a. However, in line [2] just
-   before modifying the data, we make a copy of it. In the end, b still has
-   the original data, and a the modified copy.
-
-   \anchor TensorSlice A Tensor also admits accessing its elements one by one
-   \code
-   RTensor a;
-   ...
-   double x = a(2,3);
-   \endcode
-   or in whole chunks also known as Range[s]
-   \code
-   RTensor a;
-   ...
-   RTensor b = a(range(1,2),range());
-   \endcode
+/**An N-dimensional array of numbers. A Tensor is a multidimensional array of
+   numbers. Their behavior is similar to Matlab's arrays in that they can store
+   only numbers, be accessed with one or more indices using the () or []
+   syntaxes, reshaped, sliced, and all that with an automated memory management.
+   \see \ref sec_tensor
 */
 template<typename elt>
 class Tensor {
