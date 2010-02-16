@@ -222,7 +222,7 @@ Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
 // Unary operations
 //
 template<typename t>
-Tensor<t> operator-(const Tensor<t> &t);
+Tensor<t> operator-(const Tensor<t> &);
 
 //
 // Binary operations

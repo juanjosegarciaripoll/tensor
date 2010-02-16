@@ -1,0 +1,13 @@
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+//
+// Copyright 2008, Juan Jose Garcia-Ripoll
+//
+
+#ifndef TENSOR_CONFIG_H
+#define TENSOR_CONFIG_H
+
+#undef TENSOR_USE_ATLAS
+#undef TENSOR_USE_VECLIB
+#undef TENSOR_USE_LAPACK
+
+#endif // !TENSOR_CONFIG_H

@@ -1,6 +1,6 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)/include
 
 #
 # Main library
@@ -85,4 +85,5 @@ pkginclude_HEADERS = \
 	$(top_srcdir)/include/tensor/refcount.h \
 	$(top_srcdir)/include/tensor/tensor.h \
 	$(top_srcdir)/include/tensor/tools.h \
-	$(top_srcdir)/include/tensor/vector.h
+	$(top_srcdir)/include/tensor/vector.h \
+	$(top_builddir)/include/tensor/config.h

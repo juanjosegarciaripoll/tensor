@@ -6,17 +6,36 @@
 #ifndef TENSOR_CBLAS_H
 #define TENSOR_CBLAS_H
 
-#ifdef __APPLE__
+#include <tensor/config.h>
+
+#ifdef TENSOR_USE_VECLIB
 #include <vecLib/cblas.h>
 #include <vecLib/clapack.h>
 #define F77NAME(x) x##_
 #endif
+#ifdef TENSOR_USE_ATLAS
+#include <cblas.h>
+#define F77NAME(x) x##_
+#endif
+#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS)
+# error "We need to use one of these libraries: VecLib, Atlas"
+#endif
 
 namespace blas {
 
-#ifdef __APPLE__
+#ifdef TENSOR_USE_VECLIB
   typedef __CLPK_integer integer;
   typedef __CLPK_doublecomplex cdouble;
+#endif
+#ifdef TENSOR_USE_ATLAS
+  typedef int integer;
+  typedef struct { double re, im; } cdouble;
+  typedef int __CLPK_integer;
+  typedef double __CLPK_doublereal;
+  typedef cdouble __CLPK_doublecomplex;
+#endif
+
+#if defined(TENSOR_USE_VECLIB) || defined(TENSOR_USE_ATLAS)
   inline CBLAS_TRANSPOSE char_to_op(char op)
   {
     if (op == 'T')
@@ -25,7 +44,6 @@ namespace blas {
       return CblasConjTrans;
     return CblasNoTrans;
   }
-
 #endif
 
   inline const double *tensor_pointer(const tensor::RTensor &A) {

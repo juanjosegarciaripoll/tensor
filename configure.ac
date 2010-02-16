@@ -15,6 +15,7 @@ AC_CONFIG_AUX_DIR([config_aux])		dnl Where to put autoconf files
 AC_CONFIG_HEADERS([config_aux/config.h])	dnl Automatically generated
 AC_CONFIG_FILES([Makefile src/Makefile scripts/Makefile test/Makefile])
 AC_CONFIG_FILES([scripts/tensor-config], [chmod +x scripts/tensor-config])
+AC_CONFIG_HEADERS([include/tensor/config.h:include/tensor/config.h.in])
 
 #
 # Initialize Automake, minimal version 1.9, with options to make it less
@@ -28,6 +29,10 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_LANG([C++])
 AC_PROG_LIBTOOL
+
+# Numerical libraries
+TENSOR_VECLIB
+TENSOR_ATLAS
 
 # Unit testing with google
 if which gtest-config >/dev/null; then
