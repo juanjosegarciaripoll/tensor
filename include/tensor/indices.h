@@ -34,13 +34,73 @@ namespace tensor {
   class Indices : public Vector<index> {
   public:
     Indices() : Vector<index>() {}
-
+    Indices(const Vector<index> &v) : Vector<index>(v) {}
     explicit Indices(index size) : Vector<index>(size) {}
 
     bool operator==(const Indices &other) const;
   };
 
   extern template class Vector<index>;
+
+
+  template<typename elt_t, size_t n>
+  class StaticVector {
+  public:
+    StaticVector(const StaticVector<elt_t,n-1> &other, elt_t x) :
+      inner(other), extra(x)
+    {};
+    operator Vector<elt_t>() const {
+      Vector<elt_t> output(n);
+      push(output.begin());
+      return output;
+    }
+    void push(elt_t *v) const {
+      inner.push(v);
+      v[n-1] = extra;
+    }
+  protected:
+    StaticVector<elt_t,n-1> inner;
+    elt_t extra;
+  };
+
+  template<typename elt_t>
+  class StaticVector<elt_t,1> {
+  public:
+    StaticVector(elt_t x) :
+      extra(x)
+    {};
+    operator Vector<elt_t>() const {
+      Vector<elt_t> output(1);
+      push(output.begin());
+      return output;
+    }
+    void push(elt_t *v) const {
+      v[0] = extra;
+    }
+  private:
+    elt_t extra;
+  };
+
+  const StaticVector<index,1>
+  operator>>(const ListGenerator &g, const int x) {
+    return StaticVector<index,1>((index)x);
+  }
+
+  template<size_t n>
+  const StaticVector<index,n+1>
+  operator>>(const StaticVector<index,n> &g, const int x) {
+    return StaticVector<index,n+1>(g,(index)x);
+  }
+
+  template<typename elt_t>
+  StaticVector<elt_t,1> operator>>(const ListGenerator &g, const elt_t x) {
+    return StaticVector<elt_t,1>(x);
+  }
+
+  template<typename t1, typename t2, size_t n>
+  StaticVector<t1,n+1> operator>>(const StaticVector<t1,n> &g, const t2 x) {
+    return StaticVector<t1,n+1>(g,x);
+  }
 
   //////////////////////////////////////////////////////////////////////
   // RANGE OF INTEGERS
