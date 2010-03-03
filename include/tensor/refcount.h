@@ -161,6 +161,10 @@ public:
   /** Retreive the pointer without caring for references (unsafe). */
   const elt_t *begin() const { return ref_->begin(); }
   /** Retreive the pointer without caring for references (unsafe). */
+  const elt_t *begin_const() const { return ref_->begin(); }
+  /** Retreive the pointer without caring for references (unsafe). */
+  const elt_t *end_const() const { return ref_->end(); }
+  /** Retreive the pointer without caring for references (unsafe). */
   const elt_t *end() const { return ref_->end(); }
   /** Retreive the pointer without caring for references (unsafe). */
   elt_t *end() { return ref_->end(); }

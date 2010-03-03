@@ -16,6 +16,8 @@ namespace tensor {
 
 typedef long index;
 
+template<typename elt> class VectorView;
+
 template<typename elt>
 class Vector {
  public:
@@ -56,6 +58,8 @@ class Vector {
   int ref_count() const { return data_.ref_count(); }
 
  private:
+  friend class VectorView<elt_t>;
+
   RefPointer<elt_t> data_;
 };
 

@@ -84,7 +84,6 @@ namespace tensor_test {
 
   template<typename elt_t>
   void test_full_size_set1(Tensor<elt_t> &P) {
-    Tensor<elt_t> Pcopy = P + number_zero<elt_t>();
     Tensor<elt_t> t = fill_continuous(P);
     P.at(range()) = t;
     EXPECT_EQ(P, t);
@@ -92,7 +91,6 @@ namespace tensor_test {
 
   template<typename elt_t>
   void test_full_size_set2(Tensor<elt_t> &P) {
-    Tensor<elt_t> Pcopy = P + number_zero<elt_t>();
     Tensor<elt_t> t = fill_continuous(P);
     P.at(range(),range()) = t;
     EXPECT_EQ(P, t);
@@ -100,7 +98,6 @@ namespace tensor_test {
 
   template<typename elt_t>
   void test_full_size_set3(Tensor<elt_t> &P) {
-    Tensor<elt_t> Pcopy = P + number_zero<elt_t>();
     Tensor<elt_t> t = fill_continuous(P);
     P.at(range(),range(),range()) = t;
     EXPECT_EQ(P, t);

@@ -14,23 +14,13 @@ namespace tensor {
   class Tensor<elt_t>::view
   {
   public:
-    //typedef typename RefPointer<value_type>::elt_t elt_t;
-
     ~view() {
       delete ranges_;
     };
-
-    void set(elt_t v);
-    elt_t ref() const;
-
-    view &operator=(const view &a_stripe);
-    view &operator=(const Tensor<elt_t> &a_tensor);
-    view &operator=(elt_t v);
-
     operator Tensor<elt_t>() const;
 
   private:
-    Vector<elt_t> data_;
+    const Vector<elt_t> data_;
     Indices dims_;
     Range *ranges_;
 
@@ -44,6 +34,42 @@ namespace tensor {
     view(const view &a_tensor);
     view(const Tensor<elt_t> *a_tensor, ...);
     view(Tensor<elt_t> *a_tensor, ...);
+
+    friend class Tensor<elt_t>;
+  };
+
+  template<typename elt_t>
+  class Tensor<elt_t>::mutable_view
+  {
+  public:
+    ~mutable_view() {
+      delete ranges_;
+    };
+
+    void set(elt_t v);
+    elt_t ref() const;
+
+    mutable_view &operator=(const mutable_view &a_stripe);
+    mutable_view &operator=(const Tensor<elt_t> &a_tensor);
+    mutable_view &operator=(elt_t v);
+
+    operator Tensor<elt_t>() const;
+
+  private:
+    Vector<elt_t> data_;
+    Indices dims_;
+    Range *ranges_;
+
+    // Start from another tensor and a set of ranges
+    mutable_view(const Tensor<elt_t> &parent, Indices &dims, Range *ranges) :
+      data_(parent.data_), dims_(dims), ranges_(ranges)
+    {}
+
+    // We do not want these objects to be initialized by users nor copied.
+    mutable_view();
+    mutable_view(const mutable_view &a_tensor);
+    mutable_view(const Tensor<elt_t> *a_tensor, ...);
+    mutable_view(Tensor<elt_t> *a_tensor, ...);
 
     friend class Tensor<elt_t>;
   };
