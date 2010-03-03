@@ -81,7 +81,7 @@ namespace tensor {
     elt_t extra;
   };
 
-  const StaticVector<index,1>
+  inline const StaticVector<index,1>
   operator>>(const ListGenerator &g, const int x) {
     return StaticVector<index,1>((index)x);
   }
