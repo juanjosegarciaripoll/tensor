@@ -128,17 +128,30 @@ class Tensor {
   //
   class view;
   /**Extracts a slice from a 1D Tensor. */
-  view operator()(Range *r);
+  const view operator()(Range *r) const;
   /**Extracts a slice from a 2D Tensor. */
-  view operator()(Range *r1, Range *r2);
+  const view operator()(Range *r1, Range *r2) const;
   /**Extracts a slice from a 3D Tensor. */
-  view operator()(Range *r1, Range *r2, Range *r3);
+  const view operator()(Range *r1, Range *r2, Range *r3) const;
   /**Extracts a slice from a 4D Tensor. */
-  view operator()(Range *r1, Range *r2, Range *r3, Range *r4);
+  const view operator()(Range *r1, Range *r2, Range *r3, Range *r4) const;
   /**Extracts a slice from a 5D Tensor. */
-  view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5);
+  const view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5) const;
   /**Extracts a slice from a 6D Tensor. */
-  view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5, Range *r6);
+  const view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5, Range *r6) const;
+
+  /**Mutable slice from a 1D Tensor. */
+  view at(Range *r);
+  /**Mutable slice from a 2D Tensor. */
+  view at(Range *r1, Range *r2);
+  /**Mutable slice from a 3D Tensor. */
+  view at(Range *r1, Range *r2, Range *r3);
+  /**Mutable slice from a 4D Tensor. */
+  view at(Range *r1, Range *r2, Range *r3, Range *r4);
+  /**Mutable slice from a 5D Tensor. */
+  view at(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5);
+  /**Mutable slice from a 6D Tensor. */
+  view at(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5, Range *r6);
 
   //
   // Matrix operations

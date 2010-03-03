@@ -56,11 +56,105 @@ namespace tensor {
   }
 
   ////////////////////////////////////////////////////////////
-  // CONSTRUCT TENSOR VIEWS
+  // CONSTRUCT CONST TENSOR VIEWS
+  //
+
+  template<typename elt_t> const typename Tensor<elt_t>::view
+  Tensor<elt_t>::operator()(Range *r) const
+  {
+    Indices dims(1);
+    r->set_limit(dimension(0));
+    dims.at(0) = r->size();
+    return view(*this, dims, r);
+  }
+
+  template<typename elt_t> const typename Tensor<elt_t>::view
+  Tensor<elt_t>::operator()(Range *r1, Range *r2) const
+  {
+    Indices dims(2);
+    r1->set_limit(dimension(0));
+    r2->set_limit(dimension(1));
+    dims.at(0) = r1->size();
+    dims.at(1) = r2->size();
+    Range *r = product(r1, r2);
+    return view(*this, dims, r);
+  }
+
+  template<typename elt_t> const typename Tensor<elt_t>::view
+  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3) const
+  {
+    Indices dims(3);
+    r1->set_limit(dimension(0));
+    r2->set_limit(dimension(1));
+    r3->set_limit(dimension(2));
+    dims.at(0) = r1->size();
+    dims.at(1) = r2->size();
+    dims.at(2) = r3->size();
+    Range *r = product(r1, product(r2, r3));
+    return view(*this, dims, r);
+  }
+
+  template<typename elt_t> const typename Tensor<elt_t>::view
+  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3, Range *r4) const
+  {
+    Indices dims(4);
+    r1->set_limit(dimension(0));
+    r2->set_limit(dimension(1));
+    r3->set_limit(dimension(2));
+    r4->set_limit(dimension(3));
+    dims.at(0) = r1->size();
+    dims.at(1) = r2->size();
+    dims.at(2) = r3->size();
+    dims.at(3) = r4->size();
+    Range *r = product(r1, product(r2, product(r3, r4)));
+    return view(*this, dims, r);
+  }
+
+  template<typename elt_t> const typename Tensor<elt_t>::view
+  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5) const
+  {
+    Indices dims(5);
+    r1->set_limit(dimension(0));
+    r2->set_limit(dimension(1));
+    r3->set_limit(dimension(2));
+    r4->set_limit(dimension(3));
+    r5->set_limit(dimension(4));
+    dims.at(0) = r1->size();
+    dims.at(1) = r2->size();
+    dims.at(2) = r3->size();
+    dims.at(3) = r4->size();
+    dims.at(4) = r5->size();
+    Range *r = product(r1, product(r2, product(r3, product(r4, r5))));
+    return view(*this, dims, r);
+  }
+
+  template<typename elt_t> const typename  Tensor<elt_t>::view
+  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3,
+                            Range *r4, Range *r5, Range *r6) const
+  {
+    Indices dims(6);
+    r1->set_limit(dimension(0));
+    r2->set_limit(dimension(1));
+    r3->set_limit(dimension(2));
+    r4->set_limit(dimension(3));
+    r5->set_limit(dimension(4));
+    r6->set_limit(dimension(5));
+    dims.at(0) = r1->size();
+    dims.at(1) = r2->size();
+    dims.at(2) = r3->size();
+    dims.at(3) = r4->size();
+    dims.at(4) = r5->size();
+    dims.at(5) = r6->size();
+    Range *r = product(r1, product(r2, product(r3, product(r4, product(r5, r6)))));
+    return view(*this, dims, r);
+  }
+
+  ////////////////////////////////////////////////////////////
+  // CONSTRUCT CONST TENSOR VIEWS
   //
 
   template<typename elt_t> typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r)
+  Tensor<elt_t>::at(Range *r)
   {
     Indices dims(1);
     r->set_limit(dimension(0));
@@ -69,7 +163,7 @@ namespace tensor {
   }
 
   template<typename elt_t> typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2)
+  Tensor<elt_t>::at(Range *r1, Range *r2)
   {
     Indices dims(2);
     r1->set_limit(dimension(0));
@@ -81,7 +175,7 @@ namespace tensor {
   }
 
   template<typename elt_t> typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3)
+  Tensor<elt_t>::at(Range *r1, Range *r2, Range *r3)
   {
     Indices dims(3);
     r1->set_limit(dimension(0));
@@ -95,7 +189,7 @@ namespace tensor {
   }
 
   template<typename elt_t> typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3, Range *r4)
+  Tensor<elt_t>::at(Range *r1, Range *r2, Range *r3, Range *r4)
   {
     Indices dims(4);
     r1->set_limit(dimension(0));
@@ -111,7 +205,7 @@ namespace tensor {
   }
 
   template<typename elt_t> typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5)
+  Tensor<elt_t>::at(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5)
   {
     Indices dims(5);
     r1->set_limit(dimension(0));
@@ -129,8 +223,8 @@ namespace tensor {
   }
 
   template<typename elt_t> typename  Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3,
-                            Range *r4, Range *r5, Range *r6)
+  Tensor<elt_t>::at(Range *r1, Range *r2, Range *r3,
+                    Range *r4, Range *r5, Range *r6)
   {
     Indices dims(6);
     r1->set_limit(dimension(0));
