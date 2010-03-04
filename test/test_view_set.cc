@@ -103,36 +103,99 @@ namespace tensor_test {
     EXPECT_EQ(P, t);
   }
 
-  /////////////////////////////////////////////////////////////////////
+  //
   // REAL SPECIALIZATIONS
   //
 
-  TEST(SliceTest, SliceRTensor1DSetFull) {
+  TEST(SliceTest, SliceRTensor1DFullSet) {
     test_over_fixed_rank_tensors<double>(test_full_size_set1<double>,1);
   }
 
-  TEST(SliceTest, SliceRTensor2DSetFull) {
+  TEST(SliceTest, SliceRTensor2DFullSet) {
     test_over_fixed_rank_tensors<double>(test_full_size_set2<double>,2);
   }
 
-  TEST(SliceTest, SliceRTensor3DSetFull) {
+  TEST(SliceTest, SliceRTensor3DFullSet) {
     test_over_fixed_rank_tensors<double>(test_full_size_set3<double>,3);
   }
 
-  /////////////////////////////////////////////////////////////////////
+  //
   // COMPLEX SPECIALIZATIONS
   //
 
-  TEST(SliceTest, SliceCTensor1DSetFull) {
+  TEST(SliceTest, SliceCTensor1DFullSet) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set1<cdouble>,1);
   }
 
-  TEST(SliceTest, SliceCTensor2DSetFull) {
+  TEST(SliceTest, SliceCTensor2DFullSet) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set2<cdouble>,2);
   }
 
-  TEST(SliceTest, SliceCTensor3DSetFull) {
+  TEST(SliceTest, SliceCTensor3DFullSet) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set3<cdouble>,3);
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // FULL RANGE ASSIGNMENT
+  //
+
+  template<typename elt_t>
+  void test_full_size_set_number1(Tensor<elt_t> &P) {
+    Tensor<elt_t> t = P(range());
+    t.fill_with(number_one<elt_t>());
+    if (t.size()) EXPECT_NE(t, P);
+    P.at(range()) = number_one<elt_t>();
+    EXPECT_EQ(P, t);
+  }
+
+  template<typename elt_t>
+  void test_full_size_set_number2(Tensor<elt_t> &P) {
+    Tensor<elt_t> t = P(range(),range());
+    t.fill_with(number_one<elt_t>());
+    if (t.size()) EXPECT_NE(t, P);
+    P.at(range(),range()) = number_one<elt_t>();
+    EXPECT_EQ(P, t);
+  }
+
+  template<typename elt_t>
+  void test_full_size_set_number3(Tensor<elt_t> &P) {
+    Tensor<elt_t> t = P(range(),range(),range());
+    t.fill_with(number_one<elt_t>());
+    if (t.size()) EXPECT_NE(t, P);
+    P.at(range(),range(),range()) = number_one<elt_t>();
+    EXPECT_EQ(P, t);
+  }
+
+  //
+  // REAL SPECIALIZATIONS
+  //
+
+  TEST(SliceTest, SliceRTensor1DFullSetNumber) {
+    test_over_fixed_rank_tensors<double>(test_full_size_set_number1<double>,1);
+  }
+
+  TEST(SliceTest, SliceRTensor2DFullSetNumber) {
+    test_over_fixed_rank_tensors<double>(test_full_size_set_number2<double>,2);
+  }
+
+  TEST(SliceTest, SliceRTensor3DFullSetNumber) {
+    test_over_fixed_rank_tensors<double>(test_full_size_set_number3<double>,3);
+  }
+
+  //
+  // COMPLEX SPECIALIZATIONS
+  //
+
+  TEST(SliceTest, SliceCTensor1DFullSetNumber) {
+    test_over_fixed_rank_tensors<cdouble>(test_full_size_set_number1<cdouble>,1);
+  }
+
+  TEST(SliceTest, SliceCTensor2DFullSetNumber) {
+    test_over_fixed_rank_tensors<cdouble>(test_full_size_set_number2<cdouble>,2);
+  }
+
+  TEST(SliceTest, SliceCTensor3DFullSetNumber) {
+    test_over_fixed_rank_tensors<cdouble>(test_full_size_set_number3<cdouble>,3);
   }
 
 
