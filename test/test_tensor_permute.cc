@@ -154,13 +154,11 @@ namespace tensor_test {
     return true;
   }
 
-
-  template<typename elt_t>
+  template<typename elt_t, int i, int j>
   void test_permute(Tensor<elt_t> &A)
   {
     const Indices &dA = A.dimensions();
-    for (int i = 0; i < A.rank(); i++) {
-      for (int j = 0; j < A.rank(); j++) {
+    {
         Tensor<elt_t> P = permute(A, i, j);
         Indices dP = P.dimensions();
         std::swap(dP.at(i), dP.at(j));
@@ -182,7 +180,6 @@ namespace tensor_test {
           case 6: EXPECT_TRUE(eq_permute_6(A, P, code)); break;
           }
         }
-      }
     }
   }
 
@@ -190,17 +187,254 @@ namespace tensor_test {
   // REAL SPECIALIZATIONS
   //
 
-  TEST(TensorPermuteTest, RTensorPermute) {
-    test_over_all_tensors<double>(test_permute<double>, 6, 5);
+#define RTENSOR_TEST(i,j,r)                                             \
+  TEST(TensorPermuteTest, RTensorPermute ## i ## j ## r) {              \
+    test_over_fixed_rank_tensors<double>(test_permute<double,i,j>, r, 5); \
   }
+
+  RTENSOR_TEST(0,0,1)
+
+
+  RTENSOR_TEST(0,0,2)
+  RTENSOR_TEST(0,1,2)
+
+  RTENSOR_TEST(1,0,2)
+  RTENSOR_TEST(1,1,2)
+
+
+  RTENSOR_TEST(0,0,3)
+  RTENSOR_TEST(0,1,3)
+  RTENSOR_TEST(0,2,3)
+
+  RTENSOR_TEST(1,0,3)
+  RTENSOR_TEST(1,1,3)
+  RTENSOR_TEST(1,2,3)
+
+  RTENSOR_TEST(2,0,3)
+  RTENSOR_TEST(2,1,3)
+  RTENSOR_TEST(2,2,3)
+
+
+  RTENSOR_TEST(0,0,4)
+  RTENSOR_TEST(0,1,4)
+  RTENSOR_TEST(0,2,4)
+  RTENSOR_TEST(0,3,4)
+
+  RTENSOR_TEST(1,0,4)
+  RTENSOR_TEST(1,1,4)
+  RTENSOR_TEST(1,2,4)
+  RTENSOR_TEST(1,3,4)
+
+  RTENSOR_TEST(2,0,4)
+  RTENSOR_TEST(2,1,4)
+  RTENSOR_TEST(2,2,4)
+  RTENSOR_TEST(2,3,4)
+
+  RTENSOR_TEST(3,0,4)
+  RTENSOR_TEST(3,1,4)
+  RTENSOR_TEST(3,2,4)
+  RTENSOR_TEST(3,3,4)
+
+
+  RTENSOR_TEST(0,0,5)
+  RTENSOR_TEST(0,1,5)
+  RTENSOR_TEST(0,2,5)
+  RTENSOR_TEST(0,3,5)
+  RTENSOR_TEST(0,4,5)
+
+  RTENSOR_TEST(1,0,5)
+  RTENSOR_TEST(1,1,5)
+  RTENSOR_TEST(1,2,5)
+  RTENSOR_TEST(1,3,5)
+  RTENSOR_TEST(1,4,5)
+
+  RTENSOR_TEST(2,0,5)
+  RTENSOR_TEST(2,1,5)
+  RTENSOR_TEST(2,2,5)
+  RTENSOR_TEST(2,3,5)
+  RTENSOR_TEST(2,4,5)
+
+  RTENSOR_TEST(3,0,5)
+  RTENSOR_TEST(3,1,5)
+  RTENSOR_TEST(3,2,5)
+  RTENSOR_TEST(3,3,5)
+  RTENSOR_TEST(3,4,5)
+
+  RTENSOR_TEST(4,0,5)
+  RTENSOR_TEST(4,1,5)
+  RTENSOR_TEST(4,2,5)
+  RTENSOR_TEST(4,3,5)
+  RTENSOR_TEST(4,4,5)
+
+
+  RTENSOR_TEST(0,0,6)
+  RTENSOR_TEST(0,1,6)
+  RTENSOR_TEST(0,2,6)
+  RTENSOR_TEST(0,3,6)
+  RTENSOR_TEST(0,4,6)
+  RTENSOR_TEST(0,5,6)
+
+  RTENSOR_TEST(1,0,6)
+  RTENSOR_TEST(1,1,6)
+  RTENSOR_TEST(1,2,6)
+  RTENSOR_TEST(1,3,6)
+  RTENSOR_TEST(1,4,6)
+  RTENSOR_TEST(1,5,6)
+
+  RTENSOR_TEST(2,0,6)
+  RTENSOR_TEST(2,1,6)
+  RTENSOR_TEST(2,2,6)
+  RTENSOR_TEST(2,3,6)
+  RTENSOR_TEST(2,4,6)
+  RTENSOR_TEST(2,5,6)
+
+  RTENSOR_TEST(3,0,6)
+  RTENSOR_TEST(3,1,6)
+  RTENSOR_TEST(3,2,6)
+  RTENSOR_TEST(3,3,6)
+  RTENSOR_TEST(3,4,6)
+  RTENSOR_TEST(3,5,6)
+
+  RTENSOR_TEST(4,0,6)
+  RTENSOR_TEST(4,1,6)
+  RTENSOR_TEST(4,2,6)
+  RTENSOR_TEST(4,3,6)
+  RTENSOR_TEST(4,4,6)
+  RTENSOR_TEST(4,5,6)
+
+  RTENSOR_TEST(5,0,6)
+  RTENSOR_TEST(5,1,6)
+  RTENSOR_TEST(5,2,6)
+  RTENSOR_TEST(5,3,6)
+  RTENSOR_TEST(5,4,6)
+  RTENSOR_TEST(5,5,6)
 
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
 
-  TEST(TensorPermuteTest, CTensorPermute) {
-    test_over_all_tensors<cdouble>(test_permute<cdouble>, 6, 5);
+
+#define CTENSOR_TEST(i,j,r)                                             \
+  TEST(TensorPermuteTest, CTensorPermute ## i ## j ## r) {              \
+    test_over_fixed_rank_tensors<cdouble>(test_permute<cdouble,i,j>, r, 5); \
   }
+
+  CTENSOR_TEST(0,0,1)
+
+
+  CTENSOR_TEST(0,0,2)
+  CTENSOR_TEST(0,1,2)
+
+  CTENSOR_TEST(1,0,2)
+  CTENSOR_TEST(1,1,2)
+
+
+  CTENSOR_TEST(0,0,3)
+  CTENSOR_TEST(0,1,3)
+  CTENSOR_TEST(0,2,3)
+
+  CTENSOR_TEST(1,0,3)
+  CTENSOR_TEST(1,1,3)
+  CTENSOR_TEST(1,2,3)
+
+  CTENSOR_TEST(2,0,3)
+  CTENSOR_TEST(2,1,3)
+  CTENSOR_TEST(2,2,3)
+
+
+  CTENSOR_TEST(0,0,4)
+  CTENSOR_TEST(0,1,4)
+  CTENSOR_TEST(0,2,4)
+  CTENSOR_TEST(0,3,4)
+
+  CTENSOR_TEST(1,0,4)
+  CTENSOR_TEST(1,1,4)
+  CTENSOR_TEST(1,2,4)
+  CTENSOR_TEST(1,3,4)
+
+  CTENSOR_TEST(2,0,4)
+  CTENSOR_TEST(2,1,4)
+  CTENSOR_TEST(2,2,4)
+  CTENSOR_TEST(2,3,4)
+
+  CTENSOR_TEST(3,0,4)
+  CTENSOR_TEST(3,1,4)
+  CTENSOR_TEST(3,2,4)
+  CTENSOR_TEST(3,3,4)
+
+
+  CTENSOR_TEST(0,0,5)
+  CTENSOR_TEST(0,1,5)
+  CTENSOR_TEST(0,2,5)
+  CTENSOR_TEST(0,3,5)
+  CTENSOR_TEST(0,4,5)
+
+  CTENSOR_TEST(1,0,5)
+  CTENSOR_TEST(1,1,5)
+  CTENSOR_TEST(1,2,5)
+  CTENSOR_TEST(1,3,5)
+  CTENSOR_TEST(1,4,5)
+
+  CTENSOR_TEST(2,0,5)
+  CTENSOR_TEST(2,1,5)
+  CTENSOR_TEST(2,2,5)
+  CTENSOR_TEST(2,3,5)
+  CTENSOR_TEST(2,4,5)
+
+  CTENSOR_TEST(3,0,5)
+  CTENSOR_TEST(3,1,5)
+  CTENSOR_TEST(3,2,5)
+  CTENSOR_TEST(3,3,5)
+  CTENSOR_TEST(3,4,5)
+
+  CTENSOR_TEST(4,0,5)
+  CTENSOR_TEST(4,1,5)
+  CTENSOR_TEST(4,2,5)
+  CTENSOR_TEST(4,3,5)
+  CTENSOR_TEST(4,4,5)
+
+
+  CTENSOR_TEST(0,0,6)
+  CTENSOR_TEST(0,1,6)
+  CTENSOR_TEST(0,2,6)
+  CTENSOR_TEST(0,3,6)
+  CTENSOR_TEST(0,4,6)
+  CTENSOR_TEST(0,5,6)
+
+  CTENSOR_TEST(1,0,6)
+  CTENSOR_TEST(1,1,6)
+  CTENSOR_TEST(1,2,6)
+  CTENSOR_TEST(1,3,6)
+  CTENSOR_TEST(1,4,6)
+  CTENSOR_TEST(1,5,6)
+
+  CTENSOR_TEST(2,0,6)
+  CTENSOR_TEST(2,1,6)
+  CTENSOR_TEST(2,2,6)
+  CTENSOR_TEST(2,3,6)
+  CTENSOR_TEST(2,4,6)
+  CTENSOR_TEST(2,5,6)
+
+  CTENSOR_TEST(3,0,6)
+  CTENSOR_TEST(3,1,6)
+  CTENSOR_TEST(3,2,6)
+  CTENSOR_TEST(3,3,6)
+  CTENSOR_TEST(3,4,6)
+  CTENSOR_TEST(3,5,6)
+
+  CTENSOR_TEST(4,0,6)
+  CTENSOR_TEST(4,1,6)
+  CTENSOR_TEST(4,2,6)
+  CTENSOR_TEST(4,3,6)
+  CTENSOR_TEST(4,4,6)
+  CTENSOR_TEST(4,5,6)
+
+  CTENSOR_TEST(5,0,6)
+  CTENSOR_TEST(5,1,6)
+  CTENSOR_TEST(5,2,6)
+  CTENSOR_TEST(5,3,6)
+  CTENSOR_TEST(5,4,6)
+  CTENSOR_TEST(5,5,6)
 
 } // namespace tensor_test
 
