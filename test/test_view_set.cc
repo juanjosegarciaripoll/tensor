@@ -112,7 +112,7 @@ namespace tensor_test {
   }
 
   TEST(SliceTest, SliceRTensor2DSetFull) {
-    test_over_fixed_rank_tensors<double>(test_full_size_set2<double>,3);
+    test_over_fixed_rank_tensors<double>(test_full_size_set2<double>,2);
   }
 
   TEST(SliceTest, SliceRTensor3DSetFull) {
@@ -128,7 +128,7 @@ namespace tensor_test {
   }
 
   TEST(SliceTest, SliceCTensor2DSetFull) {
-    test_over_fixed_rank_tensors<cdouble>(test_full_size_set2<cdouble>,3);
+    test_over_fixed_rank_tensors<cdouble>(test_full_size_set2<cdouble>,2);
   }
 
   TEST(SliceTest, SliceCTensor3DSetFull) {
