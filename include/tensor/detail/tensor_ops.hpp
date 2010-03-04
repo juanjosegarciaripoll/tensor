@@ -75,6 +75,11 @@ bool operator==(const Tensor<t1> &a, const Tensor<t2> &b) {
   return false;
 }
 
+template<typename t1, typename t2>
+bool operator!=(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return !operator==(a, b);
+}
+
 //
 // TENSOR <OP> NUMBER
 //
