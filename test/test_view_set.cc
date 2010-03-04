@@ -107,15 +107,15 @@ namespace tensor_test {
   // REAL SPECIALIZATIONS
   //
 
-  TEST(SliceTest, SliceRTensor1DFullSet) {
+  TEST(SliceSetTest, SliceRTensor1DFullSet) {
     test_over_fixed_rank_tensors<double>(test_full_size_set1<double>,1);
   }
 
-  TEST(SliceTest, SliceRTensor2DFullSet) {
+  TEST(SliceSetTest, SliceRTensor2DFullSet) {
     test_over_fixed_rank_tensors<double>(test_full_size_set2<double>,2);
   }
 
-  TEST(SliceTest, SliceRTensor3DFullSet) {
+  TEST(SliceSetTest, SliceRTensor3DFullSet) {
     test_over_fixed_rank_tensors<double>(test_full_size_set3<double>,3);
   }
 
@@ -123,15 +123,15 @@ namespace tensor_test {
   // COMPLEX SPECIALIZATIONS
   //
 
-  TEST(SliceTest, SliceCTensor1DFullSet) {
+  TEST(SliceSetTest, SliceCTensor1DFullSet) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set1<cdouble>,1);
   }
 
-  TEST(SliceTest, SliceCTensor2DFullSet) {
+  TEST(SliceSetTest, SliceCTensor2DFullSet) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set2<cdouble>,2);
   }
 
-  TEST(SliceTest, SliceCTensor3DFullSet) {
+  TEST(SliceSetTest, SliceCTensor3DFullSet) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set3<cdouble>,3);
   }
 
@@ -170,15 +170,15 @@ namespace tensor_test {
   // REAL SPECIALIZATIONS
   //
 
-  TEST(SliceTest, SliceRTensor1DFullSetNumber) {
+  TEST(SliceSetTest, SliceRTensor1DFullSetNumber) {
     test_over_fixed_rank_tensors<double>(test_full_size_set_number1<double>,1);
   }
 
-  TEST(SliceTest, SliceRTensor2DFullSetNumber) {
+  TEST(SliceSetTest, SliceRTensor2DFullSetNumber) {
     test_over_fixed_rank_tensors<double>(test_full_size_set_number2<double>,2);
   }
 
-  TEST(SliceTest, SliceRTensor3DFullSetNumber) {
+  TEST(SliceSetTest, SliceRTensor3DFullSetNumber) {
     test_over_fixed_rank_tensors<double>(test_full_size_set_number3<double>,3);
   }
 
@@ -186,15 +186,15 @@ namespace tensor_test {
   // COMPLEX SPECIALIZATIONS
   //
 
-  TEST(SliceTest, SliceCTensor1DFullSetNumber) {
+  TEST(SliceSetTest, SliceCTensor1DFullSetNumber) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set_number1<cdouble>,1);
   }
 
-  TEST(SliceTest, SliceCTensor2DFullSetNumber) {
+  TEST(SliceSetTest, SliceCTensor2DFullSetNumber) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set_number2<cdouble>,2);
   }
 
-  TEST(SliceTest, SliceCTensor3DFullSetNumber) {
+  TEST(SliceSetTest, SliceCTensor3DFullSetNumber) {
     test_over_fixed_rank_tensors<cdouble>(test_full_size_set_number3<cdouble>,3);
   }
 
