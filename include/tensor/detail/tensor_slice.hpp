@@ -56,7 +56,7 @@ namespace tensor {
     operator Tensor<elt_t>() const;
 
   private:
-    Vector<elt_t> data_;
+    VectorView<elt_t> data_;
     Indices dims_;
     Range *ranges_;
 
