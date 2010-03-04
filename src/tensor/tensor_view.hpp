@@ -3,6 +3,8 @@
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
 
+#include <cassert>
+
 namespace tensor {
 
   ////////////////////////////////////////////////////////////
@@ -216,6 +218,7 @@ namespace tensor {
   template<typename elt_t> typename Tensor<elt_t>::mutable_view &
   Tensor<elt_t>::mutable_view::operator=(const Tensor<elt_t>::mutable_view &t)
   {
+    assert(verify_tensor_dimensions_match(dims_, t.dims_));
     Range *r1 = ranges_;
     Range *r2 = t.ranges_;
     r1->reset();
@@ -230,6 +233,7 @@ namespace tensor {
   template<typename elt_t> typename Tensor<elt_t>::mutable_view &
   Tensor<elt_t>::mutable_view::operator=(const Tensor<elt_t> &t)
   {
+    assert(verify_tensor_dimensions_match(dims_, t.dimensions()));
     ranges_->reset();
     for (index i = 0, j; (j = ranges_->pop()) != ranges_->nomore(); i++) {
       data_.at(j) = t[i];
