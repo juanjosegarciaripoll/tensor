@@ -17,6 +17,12 @@ namespace tensor_test {
   //
   // TESTING TENSOR UNARY OPERATIONS
   //
+  void error_wrong_code(int code)
+  {
+    std::cerr << "Not a valid permutation code: " << code;
+    abort();
+  }
+
   template<typename elt_t>
   bool eq_permute_2(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code)
   {
@@ -24,7 +30,11 @@ namespace tensor_test {
     A.get_dimensions(&a1, &a2);
     for (index i = 0; i < a1; i++) {
       for (index j = 0; j < a2; j++) {
-        if (A(i,j) != P(j,i)) return false;
+        switch (code) {
+        case 122:
+        case 212: if (A(i,j) != P(j,i)) return false; break;
+        default:  error_wrong_code(code);
+        }
       }
     }
     return true;
@@ -45,6 +55,7 @@ namespace tensor_test {
           case 123: if (A(i,j,k) != P(j,i,k)) return false; break;
           case 133: if (A(i,j,k) != P(k,j,i)) return false; break;
           case 233: if (A(i,j,k) != P(i,k,j)) return false; break;
+          default:  error_wrong_code(code);
           }
         }
       }
@@ -71,6 +82,7 @@ namespace tensor_test {
             case 234: if (A(i,j,k,l) != P(i,k,j,l)) return false; break;
             case 244: if (A(i,j,k,l) != P(i,l,k,j)) return false; break;
             case 344: if (A(i,j,k,l) != P(i,j,l,k)) return false; break;
+            default:  error_wrong_code(code);
             }
           }
         }
@@ -104,6 +116,7 @@ namespace tensor_test {
               case 345: if (A(i,j,k,l,m) != P(i,j,l,k,m)) return false; break;
               case 355: if (A(i,j,k,l,m) != P(i,j,m,l,k)) return false; break;
               case 455: if (A(i,j,k,l,m) != P(i,j,k,m,l)) return false; break;
+              default:  error_wrong_code(code);
               }
             }
           }
@@ -144,6 +157,7 @@ namespace tensor_test {
                 case 456: if (A(i,j,k,l,m,n) != P(i,j,k,m,l,n)) return false; break;
                 case 466: if (A(i,j,k,l,m,n) != P(i,j,k,n,m,l)) return false; break;
                 case 566: if (A(i,j,k,l,m,n) != P(i,j,k,l,n,m)) return false; break;
+                default:  error_wrong_code(code);
                 }
               }
             }
