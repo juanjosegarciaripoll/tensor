@@ -56,22 +56,11 @@ namespace tensor_test {
   {
     if (A.rank() == B.rank()) {
       if (A.dimensions() == B.dimensions()) {
-#if 0
-        for (typename Tensor::const_iterator a = A.begin(), b = B.begin();
-             a!= A.end(); ++a,++b)
-          {
-            if (abs(*a - *b) > epsilon*std::max(abs(*a),abs(*b))) {
-              std::cout << *a << ' ' << *b << ' ' << abs(*a - *b) << std::endl;
-              return false;
-            }
-          }
-#else
         double x = norm0(A - B);
         if (x > epsilon) {
           std::cout << x << std::endl;
           return false;
         }
-#endif
         return true;
       }
     }
@@ -264,6 +253,10 @@ namespace tensor_test {
     Indices base_indices;
     int counter;
   };
+
+  template<typename elt_t> Tensor<elt_t> random_unitary(int n, int iterations = -1);
+  template<> Tensor<double> random_unitary(int n, int iterations);
+  template<> Tensor<cdouble> random_unitary(int n, int iterations);
 
 } // namespace tensor_test
 
