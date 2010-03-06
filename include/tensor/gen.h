@@ -11,14 +11,37 @@
 
 namespace tensor {
 
-  template<typename elt_t> class ListGenerator {};
-
   /** Compile-time generator of vectors, tensors and indices. This placeholder
       can be used to statically create arrays of data that can then be coerced
-      to Vector, Tensor and Indices types.
+      to Vector, Tensor and Indices types. There are three generators tensor::igen,
+      tensor::rgen and tensor::cgen of types ListGenerator<t> with t = tensor::index,
+      double and cdouble, which can be used as shown in \ref sec_tensor_gen
+\code
+RTensor a = rgen << 2 << 3 << 4;
+Indices d = igen << 1 << 2 << 3 << 5;
+\endcode
+
   */
+  template<typename elt_t> class ListGenerator {};
+
+  /** Placeholder for statically creating a vector of indices. For example
+\code
+Indices d = igen << 2 << 2;
+RTensor a(igen << 1 << 3);
+\endcode
+\sa ListGenerator */
   extern const ListGenerator<index> igen;
+  /** Placeholder for statically creating a vector of reals.
+\code
+RTensor a = rgen << 1 << 3;
+\endcode
+\sa ListGenerator */
   extern const ListGenerator<double> rgen;
+  /** Placeholder for statically creating a vector of complex numbers.
+\code
+CTensor a = cgen << 1 << 3;
+\endcode
+\sa ListGenerator */
   extern const ListGenerator<cdouble> cgen;
 
   template<typename elt_t, size_t n>
