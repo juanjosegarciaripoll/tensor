@@ -25,7 +25,7 @@ namespace tensor_test {
       Tensor<elt_t> V = random_unitary<elt_t>(m);
       EXPECT_TRUE(unitaryp(U));
       EXPECT_TRUE(unitaryp(V));
-      s = Tensor<double>(Indices(gen >> std::min(n,m)));
+      s = Tensor<double>(igen << std::min(n,m));
       s.randomize();
       s = abs(s); // Just in case we change our mind and make rand < 0
       return mmult(U, mmult(diag(s, 0, n, m), V));
