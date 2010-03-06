@@ -28,18 +28,20 @@ namespace tensor {
   //
 
   template<typename elt_t> const typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r) const
+  Tensor<elt_t>::operator()(PRange r) const
   {
     Indices dims(1);
+    assert(this->rank() == 1);
     r->set_limit(dimension(0));
     dims.at(0) = r->size();
     return view(*this, dims, r);
   }
 
   template<typename elt_t> const typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2) const
+  Tensor<elt_t>::operator()(PRange r1, PRange r2) const
   {
     Indices dims(2);
+    assert(this->rank() == 2);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     dims.at(0) = r1->size();
@@ -49,9 +51,10 @@ namespace tensor {
   }
 
   template<typename elt_t> const typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3) const
+  Tensor<elt_t>::operator()(PRange r1, PRange r2, PRange r3) const
   {
     Indices dims(3);
+    assert(this->rank() == 3);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     r3->set_limit(dimension(2));
@@ -63,9 +66,10 @@ namespace tensor {
   }
 
   template<typename elt_t> const typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3, Range *r4) const
+  Tensor<elt_t>::operator()(PRange r1, PRange r2, PRange r3, PRange r4) const
   {
     Indices dims(4);
+    assert(this->rank() == 4);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     r3->set_limit(dimension(2));
@@ -79,9 +83,10 @@ namespace tensor {
   }
 
   template<typename elt_t> const typename Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5) const
+  Tensor<elt_t>::operator()(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5) const
   {
     Indices dims(5);
+    assert(this->rank() == 5);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     r3->set_limit(dimension(2));
@@ -92,15 +97,16 @@ namespace tensor {
     dims.at(2) = r3->size();
     dims.at(3) = r4->size();
     dims.at(4) = r5->size();
-    Range *r = product(r1, product(r2, product(r3, product(r4, r5))));
+    PRange r = product(r1, product(r2, product(r3, product(r4, r5))));
     return view(*this, dims, r);
   }
 
   template<typename elt_t> const typename  Tensor<elt_t>::view
-  Tensor<elt_t>::operator()(Range *r1, Range *r2, Range *r3,
-                            Range *r4, Range *r5, Range *r6) const
+  Tensor<elt_t>::operator()(PRange r1, PRange r2, PRange r3,
+                            PRange r4, PRange r5, PRange r6) const
   {
     Indices dims(6);
+    assert(this->rank() == 6);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     r3->set_limit(dimension(2));
@@ -122,18 +128,20 @@ namespace tensor {
   //
 
   template<typename elt_t> typename Tensor<elt_t>::mutable_view
-  Tensor<elt_t>::at(Range *r)
+  Tensor<elt_t>::at(PRange r)
   {
     Indices dims(1);
+    assert(this->rank() == 1);
     r->set_limit(dimension(0));
     dims.at(0) = r->size();
     return mutable_view(*this, dims, r);
   }
 
   template<typename elt_t> typename Tensor<elt_t>::mutable_view
-  Tensor<elt_t>::at(Range *r1, Range *r2)
+  Tensor<elt_t>::at(PRange r1, PRange r2)
   {
     Indices dims(2);
+    assert(this->rank() == 2);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     dims.at(0) = r1->size();
@@ -143,9 +151,10 @@ namespace tensor {
   }
 
   template<typename elt_t> typename Tensor<elt_t>::mutable_view
-  Tensor<elt_t>::at(Range *r1, Range *r2, Range *r3)
+  Tensor<elt_t>::at(PRange r1, PRange r2, PRange r3)
   {
     Indices dims(3);
+    assert(this->rank() == 3);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     r3->set_limit(dimension(2));
@@ -157,9 +166,10 @@ namespace tensor {
   }
 
   template<typename elt_t> typename Tensor<elt_t>::mutable_view
-  Tensor<elt_t>::at(Range *r1, Range *r2, Range *r3, Range *r4)
+  Tensor<elt_t>::at(PRange r1, PRange r2, PRange r3, PRange r4)
   {
     Indices dims(4);
+    assert(this->rank() == 4);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     r3->set_limit(dimension(2));
@@ -173,9 +183,10 @@ namespace tensor {
   }
 
   template<typename elt_t> typename Tensor<elt_t>::mutable_view
-  Tensor<elt_t>::at(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5)
+  Tensor<elt_t>::at(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5)
   {
     Indices dims(5);
+    assert(this->rank() == 5);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     r3->set_limit(dimension(2));
@@ -191,10 +202,11 @@ namespace tensor {
   }
 
   template<typename elt_t> typename  Tensor<elt_t>::mutable_view
-  Tensor<elt_t>::at(Range *r1, Range *r2, Range *r3,
-                    Range *r4, Range *r5, Range *r6)
+  Tensor<elt_t>::at(PRange r1, PRange r2, PRange r3,
+                    PRange r4, PRange r5, PRange r6)
   {
     Indices dims(6);
+    assert(this->rank() == 6);
     r1->set_limit(dimension(0));
     r2->set_limit(dimension(1));
     r3->set_limit(dimension(2));

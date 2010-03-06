@@ -9,98 +9,24 @@
 #include <list>
 #include <vector>
 #include <tensor/vector.h>
+#include <tensor/gen.h>
 
 /*!\addtogroup Tensors */
 /*@{*/
 namespace tensor {
 
-  class ListGenerator  {};
-
-  extern ListGenerator gen;
-
-  template<typename elt_t>
-  std::list<elt_t> &operator<<(std::list<elt_t> &l, const elt_t &x) {
-    l.push_back(x);
-    return l;
-  }
-
-  template<typename elt_t>
-  std::list<elt_t> operator<<(const ListGenerator &g, const elt_t &x) {
-    std::list<elt_t> output;
-    output.push_back(x);
-    return output;
-  }
+  extern template class Vector<index>;
 
   class Indices : public Vector<index> {
   public:
     Indices() : Vector<index>() {}
     Indices(const Vector<index> &v) : Vector<index>(v) {}
+    template<size_t n> Indices(StaticVector<index,n> v) : Vector<index>(v) {}
     explicit Indices(index size) : Vector<index>(size) {}
 
     bool operator==(const Indices &other) const;
+    index total_size() const;
   };
-
-  extern template class Vector<index>;
-
-
-  template<typename elt_t, size_t n>
-  class StaticVector {
-  public:
-    StaticVector(const StaticVector<elt_t,n-1> &other, elt_t x) :
-      inner(other), extra(x)
-    {};
-    operator Vector<elt_t>() const {
-      Vector<elt_t> output(n);
-      push(output.begin());
-      return output;
-    }
-    void push(elt_t *v) const {
-      inner.push(v);
-      v[n-1] = extra;
-    }
-  protected:
-    StaticVector<elt_t,n-1> inner;
-    elt_t extra;
-  };
-
-  template<typename elt_t>
-  class StaticVector<elt_t,1> {
-  public:
-    StaticVector(elt_t x) :
-      extra(x)
-    {};
-    operator Vector<elt_t>() const {
-      Vector<elt_t> output(1);
-      push(output.begin());
-      return output;
-    }
-    void push(elt_t *v) const {
-      v[0] = extra;
-    }
-  private:
-    elt_t extra;
-  };
-
-  inline const StaticVector<index,1>
-  operator>>(const ListGenerator &g, const int x) {
-    return StaticVector<index,1>((index)x);
-  }
-
-  template<size_t n>
-  const StaticVector<index,n+1>
-  operator>>(const StaticVector<index,n> &g, const int x) {
-    return StaticVector<index,n+1>(g,(index)x);
-  }
-
-  template<typename elt_t>
-  StaticVector<elt_t,1> operator>>(const ListGenerator &g, const elt_t x) {
-    return StaticVector<elt_t,1>(x);
-  }
-
-  template<typename t1, typename t2, size_t n>
-  StaticVector<t1,n+1> operator>>(const StaticVector<t1,n> &g, const t2 x) {
-    return StaticVector<t1,n+1>(g,x);
-  }
 
   //////////////////////////////////////////////////////////////////////
   // RANGE OF INTEGERS
@@ -194,16 +120,27 @@ namespace tensor {
     index base_;
   };
 
+  class PRange {
+  public:
+    PRange(Range *r) : ptr_(r) {};
+    operator Range*() const { return ptr_; }
+    Range &operator*() { return *ptr_; }
+    Range *operator->() { return ptr_; }
+  private:
+    PRange();
+    Range * ptr_;
+  };
+
   /**Create a Range which only contains one index. \sa \ref sec_tensor_view*/
-  inline Range *range(index ndx) { return new SingleRange(ndx); }
+  inline PRange range(index ndx) { return new SingleRange(ndx); }
   /**Create a Range start:end (Matlab notation). \sa \ref sec_tensor_view*/
-  inline Range *range(index start, index end) { return new StepRange(start, end); }
+  inline PRange range(index start, index end) { return new StepRange(start, end); }
   /**Create a Range start:step:end (Matlab notation). \sa \ref sec_tensor_view*/
-  inline Range *range(index start, index end, index step) { return new StepRange(start, end, step); }
+  inline PRange range(index start, index end, index step) { return new StepRange(start, end, step); }
   /**Create a Range with the give set of indices. \sa \ref sec_tensor_view*/
-  inline Range *range(Indices i) { return new IndexRange(i); }
+  inline PRange range(Indices i) { return new IndexRange(i); }
   /**Create a Range which covers all indices. \ref sec_tensor_view*/
-  inline Range *range() { return new FullRange(); }
+  inline PRange range() { return new FullRange(); }
 
 }; // namespace
 

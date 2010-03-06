@@ -3,8 +3,6 @@
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
 
-#include <numeric>
-#include <functional>
 #include <iostream>
 #include <tensor/tensor.h>
 #include <tensor/io.h>
@@ -46,15 +44,6 @@ bool verify_tensor_dimensions(const Indices &d, index total_size) {
       }
     }
     return true;
-  }
-}
-
-index multiply_indices(const Indices &d) {
-  if (d.size()) {
-    return std::accumulate(d.begin_const(), d.end_const(),
-                           static_cast<index>(1), std::multiplies<index>());
-  } else {
-    return 0;
   }
 }
 

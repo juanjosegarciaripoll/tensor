@@ -15,7 +15,6 @@
 namespace tensor {
 
 bool verify_tensor_dimensions(const Indices &i, index total_size);
-index multiply_indices(const Indices &i);
 
 inline index normalize_index(index i, index dimension) {
   if (i < 0)
@@ -32,7 +31,7 @@ inline index normalize_index(index i, index dimension) {
 //
 template<typename elt_t>
 Tensor<elt_t>::Tensor(const Indices &new_dims) :
-  dims_(new_dims), data_(multiply_indices(new_dims))
+  dims_(new_dims), data_(new_dims.total_size())
 {
   assert(verify_tensor_dimensions(dims_, size()));
 }

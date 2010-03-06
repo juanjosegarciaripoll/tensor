@@ -8,6 +8,7 @@
 
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
+#include <tensor/gen.h>
 #include <tensor/indices.h>
 #include <tensor/detail/functional.h>
 
@@ -43,6 +44,18 @@ class Tensor {
 
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
   Tensor(const Tensor &other) : data_(other.data_), dims_(other.dims_) {}
+
+  /**Create a one-dimensional tensor from data created with "gen" expressions.*/
+  template<size_t n> Tensor(const StaticVector<elt_t,n> &t) :
+    data_(t), dims_(igen << t.size())
+  {}
+
+  /**Create a general tensor from data created with "gen" expressions.*/
+  template<size_t n> Tensor(const StaticVector<elt_t,n> &t, const Indices &d) :
+    data_(t), dims_(d)
+  {
+    assert(data_.size() == d.total_size());
+  }
 
   /**Build a 1D Tensor given the size and the raw C data.*/
   explicit Tensor(index length);
@@ -128,31 +141,31 @@ class Tensor {
   //
   class view;
   /**Extracts a slice from a 1D Tensor. */
-  const view operator()(Range *r) const;
+  const view operator()(PRange r) const;
   /**Extracts a slice from a 2D Tensor. */
-  const view operator()(Range *r1, Range *r2) const;
+  const view operator()(PRange r1, PRange r2) const;
   /**Extracts a slice from a 3D Tensor. */
-  const view operator()(Range *r1, Range *r2, Range *r3) const;
+  const view operator()(PRange r1, PRange r2, PRange r3) const;
   /**Extracts a slice from a 4D Tensor. */
-  const view operator()(Range *r1, Range *r2, Range *r3, Range *r4) const;
+  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4) const;
   /**Extracts a slice from a 5D Tensor. */
-  const view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5) const;
+  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5) const;
   /**Extracts a slice from a 6D Tensor. */
-  const view operator()(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5, Range *r6) const;
+  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5, PRange r6) const;
 
   class mutable_view;
   /**Mutable slice from a 1D Tensor. */
-  mutable_view at(Range *r);
+  mutable_view at(PRange r);
   /**Mutable slice from a 2D Tensor. */
-  mutable_view at(Range *r1, Range *r2);
+  mutable_view at(PRange r1, PRange r2);
   /**Mutable slice from a 3D Tensor. */
-  mutable_view at(Range *r1, Range *r2, Range *r3);
+  mutable_view at(PRange r1, PRange r2, PRange r3);
   /**Mutable slice from a 4D Tensor. */
-  mutable_view at(Range *r1, Range *r2, Range *r3, Range *r4);
+  mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4);
   /**Mutable slice from a 5D Tensor. */
-  mutable_view at(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5);
+  mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5);
   /**Mutable slice from a 6D Tensor. */
-  mutable_view at(Range *r1, Range *r2, Range *r3, Range *r4, Range *r5, Range *r6);
+  mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5, PRange r6);
 
   //
   // Matrix operations
