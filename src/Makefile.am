@@ -78,8 +78,10 @@ pkginclude_HEADERS = \
 	$(top_srcdir)/include/tensor/detail/tensor_ops.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_reshape.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_slice.hpp \
+	$(top_srcdir)/include/tensor/gen.h \
 	$(top_srcdir)/include/tensor/indices.h \
 	$(top_srcdir)/include/tensor/io.h \
+	$(top_srcdir)/include/tensor/linalg.h \
 	$(top_srcdir)/include/tensor/numbers.h \
 	$(top_srcdir)/include/tensor/rand.h \
 	$(top_srcdir)/include/tensor/refcount.h \
