@@ -9,6 +9,8 @@
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
 
+/*!\addtogroup Tensors */
+/*@{*/
 namespace tensor {
 
   /** Compile-time generator of vectors, tensors and indices. This placeholder
@@ -99,5 +101,6 @@ CTensor a = cgen << 1 << 3;
   }
 
 } // namespace tensor
+/*}@*/
 
 #endif // TENSOR_GEN_H
