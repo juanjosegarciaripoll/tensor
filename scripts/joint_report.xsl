@@ -76,9 +76,9 @@ color:red;
     <td>
       <xsl:for-each select="config">
         <xsl:choose>
-        <xsl:when test="@field = 'TENSOR_USE_MKL' & @value = 1">MKL</xsl:when>
-        <xsl:when test="@field = 'TENSOR_USE_ATLAS' & @value = 1">Atlas</xsl:when>
-        <xsl:when test="@field = 'TENSOR_USE_VECLIB' & @value = 1">VecLib</xsl:when>
+        <xsl:when test="@field = 'TENSOR_USE_MKL' &amp; @value = 1">MKL</xsl:when>
+        <xsl:when test="@field = 'TENSOR_USE_ATLAS' &amp; @value = 1">Atlas</xsl:when>
+        <xsl:when test="@field = 'TENSOR_USE_VECLIB' &amp; @value = 1">VecLib</xsl:when>
         </xsl:choose>
       </xsl:for-each>
     </td>
