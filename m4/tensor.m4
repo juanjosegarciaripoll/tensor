@@ -64,19 +64,19 @@ AC_DEFUN([TENSOR_CHOOSE_LIB],[
   if test $have_mkl = yes; then
     AC_DEFINE(TENSOR_USE_MKL, [1], [Use Intel MKL for matrix operations])
     LIBS="$LIBS $MKL_LIBS"
-    CXXFLAGS="$CFLAGS $MKL_CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS $MKL_CXXFLAGS"
     have_atlas=no
     have_veclib=no
   fi
   if test $have_veclib = yes; then
     AC_DEFINE(TENSOR_USE_VECLIB, [1], [Use VecLib for matrix operations])
-    LIBS="$LIBS $MKL_LIBS"
-    CXXFLAGS="$CFLAGS $MKL_CXXFLAGS"
+    LIBS="$LIBS $VECLIB_LIBS"
+    CXXFLAGS="$CXXFLAGS $VECLIB_CXXFLAGS"
     have_atlas=no
   fi
   if test $have_atlas = yes; then
     AC_DEFINE(TENSOR_USE_ATLAS, [1], [Use Atlas for matrix operations])
     LIBS="$LIBS $ATLAS_LIBS"
-    CXXFLAGS="$CFLAGS $ATLAS_CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS $ATLAS_CXXFLAGS"
   fi
 ])
