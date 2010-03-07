@@ -97,25 +97,22 @@ OUTPUT_FLAGS = CXX CXXFLAGS LDFLAGS \
 	TENSOR_USE_VECLIB TENSOR_USE_MKL TENSOR_USE_ATLAS \
 	host_cpu host_os host_vendor
 
-report.xml: $(check_PROGRAMS)
+report.xml: $(check_PROGRAMS) Makefile
 	echo '<?xml version="1.0" encoding="UTF-8"?>' > $@
 	echo '<testframe>' >> $@
 	echo '<config field="hostname" value="'`hostname`'"/>' >> $@
 	echo '<config field="date" value="'`date +"%Y-%m-%d-%H:%M"`'"/>' >> $@
 	for i in $(OUTPUT_FLAGS); do \
 	 k=`sed -e '/S\[.'$${i}'.\]/!d;s/.*="\(.*\)"$$/\1/' ../config.status`; \
-	 if [ "x$k" = "x" ]; then k="0"; fi; \
+	 if [ "x$$k" = "x" ]; then k="0"; fi; \
 	 echo "<config field='$$i' value='$${k}'/>" >> $@ ; \
 	 echo "$$i <config field='$$i' value='$${k}'/>" ; \
 	done
 	for i in $(check_PROGRAMS); do \
 	 xmlfile=$${i}.xml; \
 	 test -f $$xmlfile || GTEST_OUTPUT=xml:$${xmlfile} ./$$i; \
-	 if test -f $$xmlfile; then \
-	  sed -e '/<\?xml/d;s/AllTests/'$$i'/g' $${xmlfile} >> $@; \
-	 else \
-	  echo '<globalfailure name="'$$i'"/>' >> $@; \
-	 fi \
+	 test -f $$xmlfile || echo '<globalfailure name="'$$i'"/>' >> $$xmlfile; \
+	 sed -e '/<\?xml/d;s/AllTests/'$$i'/g' $${xmlfile} >> $@; \
 	done
 	echo '</testframe>' >> $@
 
@@ -125,16 +122,19 @@ report.html: report.xml $(top_srcdir)/scripts/report.xsl
 report_nfailures: report.xml
 	k=0; \
 	for i in test*.xml; do \
-	  n=`sed -e '/AllTests/!d;s/.*failures="\(.[^"]*\)".*$/\1/g' $i`; \
-	  k=$(($k + $n)); \
+	  n=`sed -e '/AllTests/!d;s/.*failures="\(.[^"]*\)".*$$/\1/g' $$i`; \
+	  k=$$(($$k + $$n)); \
 	done; \
-	echo $k > $@
+	echo $$k > $@
 
 upload_tests: report.xml report_nfailures
 	if [ "x$(NAME)" != "x" ]; then \
 	  host=$(HOST); \
 	  if [ "x$${host}" = "x" ]; then host="master:"; fi; \
-	  mkdir $(NAME) && \
+	  if [ ! -d $(NAME) ]; then mkdir $(NAME) ; fi;  \
 	  cp report.xml report_nfailures test*.xml $(NAME) && \
 	  rsync -rauvz $(NAME) $${host}src/tensor_logs/; \
 	fi
+
+clean:
+	rm -f *.xml report_nfailures
