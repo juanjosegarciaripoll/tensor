@@ -6,7 +6,7 @@
    This is a 64-bit version of Mersenne Twister pseudorandom number
    generator.
 
-   Before using, initialize the state by using init_genrand64(seed)  
+   Before using, initialize the state by using init_genrand(seed)  
    or init_by_array64(init_key, key_length).
 
    Copyright (C) 2004, Makoto Matsumoto and Takuji Nishimura,
@@ -85,7 +85,7 @@ void init_genrand(uint64_t seed)
 void init_by_array64(uint64_t init_key[], uint64_t key_length)
 {
   uint64_t i, j, k;
-  init_genrand64(19650218ULL);
+  init_genrand(19650218ULL);
   i=1; j=0;
   k = (NN>key_length ? NN : key_length);
   for (; k; k--) {
@@ -114,10 +114,10 @@ uint64_t genrand_int64(void)
 
   if (mti >= NN) { /* generate NN words at one time */
 
-    /* if init_genrand64() has not been called, */
+    /* if init_genrand() has not been called, */
     /* a default initial seed is used     */
     if (mti == NN+1) 
-      init_genrand64(5489ULL); 
+      init_genrand(5489ULL); 
 
     for (i=0;i<NN-MM;i++) {
       x = (mt[i]&UM)|(mt[i+1]&LM);
