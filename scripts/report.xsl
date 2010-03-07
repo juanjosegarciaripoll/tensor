@@ -60,7 +60,7 @@ color: red;
                 <td colspan="2" class="framework"><xsl:value-of select="@name"/></td>
               </tr>
               <tr>
-                <td colspan="2" class="failure>Failed</td>
+                <td colspan="2" class="failure">Failed</td>
               </tr>
             </xsl:for-each>
             <xsl:for-each select="testframe/testsuites">
