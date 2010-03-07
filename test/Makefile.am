@@ -93,13 +93,18 @@ noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 	 random_unitary_d.cc random_unitary_z.cc
 
+OUTPUT_FLAGS = CXX CXXFLAGS LDFLAGS \
+	TENSOR_USE_VECLIB TENSOR_USE_MKL TENSOR_USE_ATLAS \
+	host_cpu host_os host_vendor
+
 report.xml: $(check_PROGRAMS)
 	echo '<?xml version="1.0" encoding="UTF-8"?>' > $@
 	echo '<testframe>' >> $@
 	echo '<config field="hostname" value="'`hostname`'"/>' >> $@
 	echo '<config field="date" value="'`date +"%Y-%m-%d-%H:%M"`'"/>' >> $@
-	for i in CXX CXXFLAGS LDFLAGS; do \
+	for i in $(OUTPUT_FLAGS); do \
 	 k=`sed -e '/S\[.'$${i}'.\]/!d;s/.*="\(.*\)"$$/\1/' ../config.status`; \
+	 if [ "x$k" = "x" ]; then k="0"; fi; \
 	 echo "<config field='$$i' value='$${k}'/>" >> $@ ; \
 	 echo "$$i <config field='$$i' value='$${k}'/>" ; \
 	done
