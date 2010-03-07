@@ -7,7 +7,7 @@
    generator.
 
    Before using, initialize the state by using init_genrand(seed)  
-   or init_by_array64(init_key, key_length).
+   or init_by_array(init_key, key_length).
 
    Copyright (C) 2004, Makoto Matsumoto and Takuji Nishimura,
    All rights reserved.                          
@@ -82,7 +82,7 @@ void init_genrand(uint64_t seed)
 /* initialize by an array with array-length */
 /* init_key is the array for initializing keys */
 /* key_length is its length */
-void init_by_array64(uint64_t init_key[], uint64_t key_length)
+void init_by_array(uint64_t init_key[], int key_length)
 {
   uint64_t i, j, k;
   init_genrand(19650218ULL);
@@ -167,5 +167,10 @@ double genrand_real3(void)
   return ((genrand_int64() >> 12) + 0.5) * (1.0/4503599627370496.0);
 }
 
+/* generates a random number on [0,1)-real-interval */
+double genrand_res53(void)
+{
+  return (genrand_int64() >> 11) * (1.0/9007199254740992.0);
+}
 
 } // namespace tensor

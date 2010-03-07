@@ -5,7 +5,6 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <tensor/config.h>
 #include <tensor/rand.h>
 #include "mt.h"
 
