@@ -45,9 +45,9 @@ AC_DEFUN([TENSOR_MKL],[
   AC_MSG_CHECKING([for MKL library])
   if test $have_mkl = yes ; then
     case ${host_cpu} in
-      ia64*)    MKL_LIBS="$MKL_LIBS -lmkl_intel_lp64 -lmkl_core -lpthread";;
-      x86_64*)  MKL_LIBS="$MKL_LIBS -lmkl_intel_lp64 -lmkl_core -lpthread";;
-      *)        MKL_LIBS="$MKL_LIBS -lmkl_intel -lmkl_core -lpthread";;
+      ia64*)    MKL_LIBS="$MKL_LIBS -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
+      x86_64*)  MKL_LIBS="$MKL_LIBS -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
+      *)        MKL_LIBS="$MKL_LIBS -lmkl_intel -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
     esac
   fi
   AC_MSG_RESULT([$have_mkl])
