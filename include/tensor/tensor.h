@@ -6,6 +6,7 @@
 #ifndef TENSOR_TENSOR_H
 #define TENSOR_TENSOR_H
 
+#include <cassert>
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
 #include <tensor/gen.h>
