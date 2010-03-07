@@ -53,7 +53,7 @@ AC_SUBST(GTEST_CFLAGS)
 AC_SUBST(GTEST_LDFLAGS)
 
 # Size of computer words
-TENSOR_64BITS
+TENSOR_BITS
 
 # Doxygen support
 

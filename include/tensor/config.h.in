@@ -11,4 +11,6 @@
 #undef TENSOR_USE_LAPACK
 #undef TENSOR_USE_MKL
 
+#undef TENSOR_64BITS
+
 #endif // !TENSOR_CONFIG_H

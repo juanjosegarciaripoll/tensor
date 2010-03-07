@@ -1,9 +1,12 @@
 dnl ----------------------------------------------------------------------
 dnl Find word size
 dnl
-AC_DEFUN([TENSOR_64BITS],[
+AC_DEFUN([TENSOR_BITS],[
 AC_CHECK_SIZEOF([long])
-AM_CONDITIONAL([HAVE_64BITS], [test $ac_cv_sizeof_long = 8])
+if test $ac_cv_sizeof_long = 8; then
+  AM_CONDITIONAL([HAVE_64BITS], [true])
+  AC_DEFINE(TENSOR_64BITS, [1], [Words are 64-bits])
+fi
 ])
 
 
