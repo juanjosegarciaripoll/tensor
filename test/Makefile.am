@@ -128,7 +128,7 @@ report_nfailures: report.xml
 upload_tests: report.xml report.html
 	if [ "x$(NAME)" != "x" ]; then \
 	  host=$(HOST); \
-	  if [ "x$${host}" = "x" ]; then host="master:" fi; \
+	  if [ "x$${host}" = "x" ]; then host="master:"; fi; \
 	  mkdir $(NAME) && \
 	  cp report.xml test*.xml $(NAME) && \
 	  rsync -rauvz $(NAME) $${host}src/tensor_logs/$(NAME); \
