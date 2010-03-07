@@ -55,6 +55,12 @@ color: red;
         </table>
         <table id="report">
           <tbody>
+            <xsl:for-each select="testframe/testsuites">
+              <tr>
+                <td colspan="2" class="framework"><xsl:value-of select="@name"/></td>
+              </tr>
+              <xsl:apply-templates/>
+            </xsl:for-each>
             <xsl:for-each select="testframe/testsuite">
               <tr>
                 <td colspan="2" class="framework"><xsl:value-of select="@name"/></td>
