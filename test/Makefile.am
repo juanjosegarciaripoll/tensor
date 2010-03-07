@@ -1,6 +1,7 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src @GTEST_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src \
+	-I$(top_builddir)/include @GTEST_CFLAGS@
 
 #
 # No rules here yet
