@@ -92,3 +92,42 @@ test_linalg_eig_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 	 random_unitary_d.cc random_unitary_z.cc
+
+report.xml: $(check_PROGRAMS)
+	echo '<?xml version="1.0" encoding="UTF-8"?>' > $@
+	echo '<testframe>' >> $@
+	echo '<config field="hostname" value="'`hostname`'"/>' >> $@
+	echo '<config field="date" value="'`date +"%Y-%m-%d-%H:%M"`'"/>' >> $@
+	for i in CXX CXXFLAGS LDFLAGS; do \
+	 k=`sed -e '/S\[.'$${i}'.\]/!d;s/.*="\(.*\)"$$/\1/' ../config.status`; \
+	 echo "<config field='$$i' value='$${k}'/>" >> $@ ; \
+	 echo "$$i <config field='$$i' value='$${k}'/>" ; \
+	done
+	for i in $(check_PROGRAMS); do \
+	 xmlfile=$${i}.xml; \
+	 test -f $$xmlfile || GTEST_OUTPUT=xml:$${xmlfile} ./$$i; \
+	 if test -f $$xmlfile; then \
+	  sed -e '/<\?xml/d;s/AllTests/'$$i'/g' $${xmlfile} >> $@; \
+	 else \
+	  echo '<globalfailure name="'$$i'"/>' >> $@; \
+	 fi \
+	done
+	echo '</testframe>' >> $@
+
+report.html: report.xml $(top_srcdir)/scripts/report.xsl
+	xsltproc $(top_srcdir)/scripts/report.xsl report.xml > $@
+
+report_nfailures: report.xml
+	k=0; \
+	for i in test*.xml; do \
+	  n=`sed -e '/AllTests/!d;s/.*failures="\(.[^"]*\)".*$/\1/g' $i`; \
+	  k=$(($k + $n)); \
+	done; \
+	echo $k > $@
+
+upload_tests: report.xml report.html
+	if [ "x$(NAME)" != "x" ]; then \
+	  mkdir $(NAME) && \
+	  cp report.xml test*.xml $(NAME) && \
+	  rsync -rauvz $(NAME) master:src/tensor_logs/$(NAME); \
+	fi
