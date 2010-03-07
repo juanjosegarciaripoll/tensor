@@ -36,6 +36,7 @@ color:red;
               <th>OS</th>
               <th>Vendor</th>
               <th>Architecture</th>
+              <th>Libraries</th>
               <th>Failures</th>
               <th>Date</th>
             </tr>
@@ -70,6 +71,15 @@ color:red;
         <xsl:if test="@field = 'host_cpu'">
           <xsl:value-of select="@value"/>
         </xsl:if>
+      </xsl:for-each>
+    </td>
+    <td>
+      <xsl:for-each select="config">
+        <xsl:choose>
+        <xsl:when test="@field = 'TENSOR_USE_MKL' & @value = 1">MKL</xsl:when>
+        <xsl:when test="@field = 'TENSOR_USE_ATLAS' & @value = 1">Atlas</xsl:when>
+        <xsl:when test="@field = 'TENSOR_USE_VECLIB' & @value = 1">VecLib</xsl:when>
+        </xsl:choose>
       </xsl:for-each>
     </td>
     <xsl:choose>
