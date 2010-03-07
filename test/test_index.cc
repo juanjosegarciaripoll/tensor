@@ -124,7 +124,7 @@ TEST(StaticCTensorTest, DataAndDim) {
   EXPECT_EQ(6, v.size());
   EXPECT_EQ(2, v.rank());
   EXPECT_EQ(2, v.dimension(0));
-  EXPECT_EQ(4, v.dimension(1));
+  EXPECT_EQ(3, v.dimension(1));
   EXPECT_EQ(1.0, v[0]);
   EXPECT_EQ(2.0, v[1]);
   EXPECT_EQ(3.0, v[2]);
