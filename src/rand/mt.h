@@ -5,7 +5,7 @@
 #ifndef TENSOR_RAND_MT_H
 #define TENSOR_RAND_MT_H
 
-#include "tensor/config.h"
+#include "config.h"
 #include <inttypes.h>
 
 namespace tensor {
