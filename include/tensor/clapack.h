@@ -17,6 +17,7 @@ namespace lapack {
 #endif
 #ifdef TENSOR_USE_ATLAS
 #include <clapack.h>
+extern "C" {
   int F77NAME(dgeev)
     (char *jobvl, char *jobvr, __CLPK_integer *n, __CLPK_doublereal *
      a, __CLPK_integer *lda, __CLPK_doublereal *wr, __CLPK_doublereal *wi,
@@ -41,6 +42,7 @@ namespace lapack {
      __CLPK_doublecomplex *u, __CLPK_integer *ldu, __CLPK_doublecomplex *vt,
      __CLPK_integer *ldvt, __CLPK_doublecomplex *work, 
      __CLPK_integer *lwork, __CLPK_doublereal *rwork, __CLPK_integer *info);
+}
 #endif
 
 }
