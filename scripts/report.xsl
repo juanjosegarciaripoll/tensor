@@ -15,6 +15,7 @@ font-family: sans serif, Arial;
 }
 #report {
 font-size: 12px;
+text-align: left;
 }
 .ok {
 color: green;
@@ -41,6 +42,9 @@ color: red;
         <h1>Configuration log</h1>
         <table id="report">
           <tbody>
+            <tr>
+              <th colspan="2">Configuration</th>
+            </tr>
             <xsl:for-each select="testframe/config">
               <tr>
               <td><xsl:value-of select="@field"/></td>
