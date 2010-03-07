@@ -1,4 +1,13 @@
 dnl ----------------------------------------------------------------------
+dnl Find word size
+dnl
+AC_DEFUN([TENSOR_64BITS],[
+AC_CHECK_SIZEOF([long])
+AM_CONDITIONAL([HAVE_64BITS], [test $ac_cv_sizeof_long = 8])
+])
+
+
+dnl ----------------------------------------------------------------------
 dnl Find veclib framework
 dnl
 AC_DEFUN([TENSOR_VECLIB],[
