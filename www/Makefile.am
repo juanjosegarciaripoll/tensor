@@ -17,7 +17,7 @@ joint_report.xml: Makefile
 	done
 	echo '</testfarm>' >> $@
 
-logs: $(LOGS_DIR) Makefile
+logs: $(LOGS_DIR) Makefile $(top_srcdir)/scripts/report.xsl
 	if [ -d logs ]; then rm -f logs/*.html ; else mkdir logs; fi
 	for i in $(LOGS_DIR)/*/report.xml; do \
 	  dir=`dirname $$i`; \
