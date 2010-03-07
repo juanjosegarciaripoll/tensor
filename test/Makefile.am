@@ -123,7 +123,7 @@ report_nfailures: report.xml
 	k=0; \
 	for i in test*.xml; do \
 	  n=`sed -e '/AllTests/!d;s/.*failures="\(.[^"]*\)".*$$/\1/g' $$i`; \
-	  k=$$(($$k + $$n)); \
+	  if [ "x$$n" = "x" ]; then n=1; fi; k=$$(($$k + $$n)); \
 	done; \
 	echo $$k > $@
 
