@@ -8,52 +8,96 @@
   <xsl:template match="/">
     <html>
       <head>
-        <title>o:XML Test Report Interface</title>
+        <title>Tensor C++ Library -- Test results</title>
+        <style type="text/css">
+html {
+font-family: sans serif, Arial;
+}
+#report {
+font-size: 12px;
+}
+.ok {
+color: green;
+}
+.failed {
+color:red;
+}
+.framework {
+background-color: #CCC;
+}
+.suite {
+padding-left: 1em;
+}
+.case {
+padding-left: 2em;
+}
+.failure {
+padding-left: 4em;
+color: red;
+}
+        </style>
       </head>
       <body>
-        <table>
+        <h1>Configuration log</h1>
+        <table id="report">
           <tbody>
-            <xsl:apply-templates/>
+            <xsl:for-each select="testframe/config">
+              <tr>
+              <td><xsl:value-of select="@field"/></td>
+              <td><xsl:value-of select="@value"/></td>
+              </tr>
+            </xsl:for-each>
+          </tbody>
+        </table>
+        <table id="report">
+          <tbody>
+            <xsl:for-each select="testframe/testsuite">
+              <tr>
+                <td colspan="2" class="framework"><xsl:value-of select="@name"/></td>
+              </tr>
+              <xsl:apply-templates/>
+            </xsl:for-each>
           </tbody>
         </table>
       </body>
     </html>
   </xsl:template>
 
+  <xsl:template match="globalfailure">
+    <tr>
+      <td colspan="2">
+        <xsl:value-of select="@name"/>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="failed">FAILED</td>
+    </tr>
+  </xsl:template>
+
   <xsl:template match="testsuite">
-    <xsl:if test="not(@name='AllTests')">
-      <tr>
-        <td colspan="2">
-          <xsl:value-of select="@name"/>
-        </td>
-      </tr>
-    </xsl:if>
+    <tr>
+      <td colspan="2" class="suite">
+        <xsl:value-of select="@name"/>
+      </td>
+    </tr>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="testcase">
     <tr>
-      <td><xsl:value-of select="@name"/></td>
-      <td>
-        <xsl:choose>
-          <xsl:when test="failure">FAILED</xsl:when>
-          <xsl:otherwise>OK</xsl:otherwise>
-        </xsl:choose>
-      </td>
+      <td class="case"><xsl:value-of select="@name"/></td>
+      <xsl:choose>
+        <xsl:when test="failure"><td class="failed">FAILED</td></xsl:when>
+        <xsl:otherwise><td class="ok">OK</td></xsl:otherwise>
+      </xsl:choose>
     </tr>
     <xsl:for-each select="failure">
       <tr>
-        <td colspan="2"><xsl:value-of select="@message"/>
+        <td colspan="2" class="failure"><xsl:value-of select="@message"/>
         </td>
       </tr>
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="failure">
-    <tr>
-      <td colspan="2" class="failure">
-        <xsl:value-of select="@message" />
-      </td>
-    </tr>
-  </xsl:template>
 </xsl:stylesheet>
