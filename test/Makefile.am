@@ -125,11 +125,11 @@ report_nfailures: report.xml
 	done; \
 	echo $k > $@
 
-upload_tests: report.xml
+upload_tests: report.xml report_nfailures
 	if [ "x$(NAME)" != "x" ]; then \
 	  host=$(HOST); \
 	  if [ "x$${host}" = "x" ]; then host="master:"; fi; \
 	  mkdir $(NAME) && \
-	  cp report.xml test*.xml $(NAME) && \
-	  rsync -rauvz $(NAME) $${host}src/tensor_logs/$(NAME); \
+	  cp report.xml report_nfailures test*.xml $(NAME) && \
+	  rsync -rauvz $(NAME) $${host}src/tensor_logs/; \
 	fi
