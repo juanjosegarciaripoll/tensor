@@ -24,6 +24,15 @@ AC_CONFIG_HEADERS([include/tensor/config.h:include/tensor/config.h.in])
 #
 AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 dist-zip subdir-objects])
 
+#
+# Command line arguments
+#
+AC_ARG_WITH([mkl-dir],
+ [AS_HELP_STRING([--with-mkl-dir],
+     [provide location of the Intel MKL Library])],
+ [MKL_DIR=$with_mkl_dir],
+ [])
+
 # Programs used to build the library
 AC_PROG_CC
 AC_PROG_CXX
@@ -31,8 +40,7 @@ AC_LANG([C++])
 AC_PROG_LIBTOOL
 
 # Numerical libraries
-TENSOR_VECLIB
-TENSOR_ATLAS
+TENSOR_CHOOSE_LIB
 
 # Unit testing with google
 if which gtest-config >/dev/null; then
