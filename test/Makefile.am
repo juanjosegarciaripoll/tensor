@@ -103,7 +103,7 @@ report.xml: $(check_PROGRAMS) Makefile
 	echo '<config field="hostname" value="'`hostname`'"/>' >> $@
 	echo '<config field="date" value="'`date +"%Y-%m-%d-%H:%M"`'"/>' >> $@
 	for i in $(OUTPUT_FLAGS); do \
-	 k=`sed -e '/S\[.'$${i}'.\]/!d;s/.*="\(.*\)"$$/\1/' ../config.status`; \
+	 k=`sed -e '/[DS]\[.'$${i}'.\]/!d;s/.*="\(.*\)"$$/\1/' ../config.status`; \
 	 if [ "x$$k" = "x" ]; then k="0"; fi; \
 	 echo "<config field='$$i' value='$${k}'/>" >> $@ ; \
 	 echo "$$i <config field='$$i' value='$${k}'/>" ; \
