@@ -72,7 +72,7 @@ static uint64_t mt[NN];
 static int mti=NN+1; 
 
 /* initializes mt[NN] with a seed */
-void init_genrand64(uint64_t seed)
+void init_genrand(uint64_t seed)
 {
   mt[0] = seed;
   for (mti=1; mti<NN; mti++) 

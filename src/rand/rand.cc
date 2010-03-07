@@ -5,6 +5,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <tensor/config.h>
 #include <tensor/rand.h>
 #include "mt.h"
 
@@ -41,7 +42,7 @@ void rand_reseed() {
   }
   for (size_t i = 0; i < 624*10; i++) {
     // Warm up
-    genrand_int32();
+    rand<long>();
   }
 }
 

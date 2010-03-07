@@ -33,9 +33,9 @@ extern int32_t genrand_int31(void);
  * 64 bits
  */
 
-typedef uint32_t rand_uint;
+typedef uint64_t rand_uint;
 
-extern void init_genrand64(uint64_t s);
+extern void init_genrand(uint64_t s);
 extern void init_by_array(uint64_t init_key[], int key_length);
 
 /* generates a random number on [0,0xffffffff]-interval */
