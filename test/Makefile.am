@@ -125,7 +125,7 @@ report_nfailures: report.xml
 	done; \
 	echo $k > $@
 
-upload_tests: report.xml report.html
+upload_tests: report.xml
 	if [ "x$(NAME)" != "x" ]; then \
 	  host=$(HOST); \
 	  if [ "x$${host}" = "x" ]; then host="master:"; fi; \
