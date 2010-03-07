@@ -8,6 +8,11 @@
 
 #include <tensor/config.h>
 
+#ifdef TENSOR_USE_MKL
+#include <mkl_cblas.h>
+#include <mkl_lapack.h>
+#define F77NAME(x)
+#endif
 #ifdef TENSOR_USE_VECLIB
 #include <vecLib/cblas.h>
 #include <vecLib/clapack.h>
@@ -15,9 +20,10 @@
 #endif
 #ifdef TENSOR_USE_ATLAS
 #include <cblas.h>
+#include <clapack.h>
 #define F77NAME(x) x##_
 #endif
-#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS)
+#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL)
 # error "We need to use one of these libraries: VecLib, Atlas"
 #endif
 
@@ -34,8 +40,12 @@ namespace blas {
   typedef double __CLPK_doublereal;
   typedef cdouble __CLPK_doublecomplex;
 #endif
+#ifdef TENSOR_USE_MKL
+  typedef MKL_INT integer;
+  typedef struct { double re, im; } cdouble;
+#endif
 
-#if defined(TENSOR_USE_VECLIB) || defined(TENSOR_USE_ATLAS)
+#if defined(TENSOR_USE_VECLIB) || defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_MKL)
   inline CBLAS_TRANSPOSE char_to_op(char op)
   {
     if (op == 'T')

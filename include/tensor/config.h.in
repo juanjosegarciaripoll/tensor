@@ -9,5 +9,6 @@
 #undef TENSOR_USE_ATLAS
 #undef TENSOR_USE_VECLIB
 #undef TENSOR_USE_LAPACK
+#undef TENSOR_USE_MKL
 
 #endif // !TENSOR_CONFIG_H

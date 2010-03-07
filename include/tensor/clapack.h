@@ -12,11 +12,13 @@ namespace lapack {
 
   using namespace blas;
 
+#ifdef TENSOR_USE_MKL
+#include <mkl_lapack.h>
+#endif
 #ifdef TENSOR_USE_VECLIB
 #include <vecLib/clapack.h>
 #endif
 #ifdef TENSOR_USE_ATLAS
-#include <clapack.h>
 extern "C" {
   int F77NAME(dgeev)
     (char *jobvl, char *jobvr, __CLPK_integer *n, __CLPK_doublereal *
