@@ -202,9 +202,9 @@ namespace tensor_test {
       // Forced tests over empty tensors
       //
       for (int times = 0; times < rank; times++) {
-        Tensor<elt_t> data(random_dimensions(rank, max_dimension));
-        data.at(times) = 0;
-        data.randomize();
+        Indices d = random_dimensions(rank, max_dimension);
+        d.at(times) = 0;
+        Tensor<elt_t> data(d);
         test(data);
       }
     }
