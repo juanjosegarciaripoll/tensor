@@ -44,7 +44,7 @@ template<class real_number> inline real_number rand(real_number lower_limit,
 }
 
 template<> inline int rand<int>(int upper) {
-  return rand<int>() % upper;
+  return rand<unsigned int>() % upper;
 }
 
 template<> inline int rand<int>(int lower, int upper) {
@@ -52,7 +52,7 @@ template<> inline int rand<int>(int lower, int upper) {
 }
 
 template<> inline long rand<long>(long upper) {
-  return rand<long>() % upper;
+  return (long)rand<unsigned long>() % upper;
 }
 
 template<> inline long rand<long>(long lower, long upper) {
