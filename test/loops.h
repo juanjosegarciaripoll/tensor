@@ -105,6 +105,17 @@ namespace tensor_test {
   }
 
   /*
+   * Creates a vector of random dimensions some of which are empty
+   */
+  inline Indices random_empty_dimensions(int rank, int max_dim, int which = -1) {
+    Indices dims = random_dimensions(rank, max_dim);
+    if (which < 0 || which >= rank)
+      which = rand<int>(rank);
+    dims.at(which) = 0;
+    return dims;
+  }
+
+  /*
    * Loop over dimensions
    */
 
@@ -202,9 +213,7 @@ namespace tensor_test {
       // Forced tests over empty tensors
       //
       for (int times = 0; times < rank; times++) {
-        Indices d = random_dimensions(rank, max_dimension);
-        d.at(times) = 0;
-        Tensor<elt_t> data(d);
+        Tensor<elt_t> data(random_empty_dimensions(rank, max_dimension, times));
         test(data);
       }
     }
