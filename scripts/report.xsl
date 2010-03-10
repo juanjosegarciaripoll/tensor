@@ -39,7 +39,6 @@ color: red;
         </style>
       </head>
       <body>
-        <h1>Configuration log</h1>
         <table id="report">
           <tbody>
             <tr>

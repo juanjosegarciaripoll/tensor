@@ -29,9 +29,11 @@ color:red;
         </style>
       </head>
       <body>
-        <h1>Build farm brief report</h1>
         <table id="report">
           <tbody>
+            <tr>
+              <th colspan="7">Build farm brief report</th>
+            </tr>
             <tr>
               <th>OS</th>
               <th>Vendor</th>
