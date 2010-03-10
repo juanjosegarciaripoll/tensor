@@ -115,7 +115,7 @@ width: 100%;
       </xsl:choose>
     </div>
     <xsl:for-each select="failure">
-      <div class="full">
+      <div class="failure full">
 	<xsl:value-of select="@message"/>
       </div>
     </xsl:for-each>
