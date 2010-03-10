@@ -66,7 +66,7 @@ width: 100%;
         <table id="report">
           <tbody>
             <tr>
-              <th colspan="2">Configuration</th>
+              <th colspan="2">Configuration <a href="../test.html">[back]</a></th>
             </tr>
             <xsl:for-each select="testframe/config">
               <tr>
