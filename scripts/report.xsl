@@ -13,8 +13,20 @@
 html {
 font-family: sans serif, Arial;
 }
-#report {
+* {
+font-size: inherit;
+line-height: inherit;
+font-family: inherit;
+}
+table {
+padding: 0;
+}
+body {
+max-width: 65em;
 font-size: 12px;
+line-height: 1.5em;
+}
+#report {
 text-align: left;
 }
 .ok {
@@ -36,6 +48,18 @@ padding-left: 2em;
 padding-left: 4em;
 color: red;
 }
+.left {
+display: inline-block;
+width: 80%;
+}
+.right {
+display: inline-block;
+width: 10%;
+}
+.full {
+display: block;
+width: 100%;
+}
         </style>
       </head>
       <body>
@@ -52,68 +76,48 @@ color: red;
             </xsl:for-each>
           </tbody>
         </table>
-        <table id="report">
-          <tbody>
-            <xsl:for-each select="testframe/globalfailure">
-              <tr>
-                <td colspan="2" class="framework"><xsl:value-of select="@name"/></td>
-              </tr>
-              <tr>
-                <td colspan="2" class="failure">Failed</td>
-              </tr>
-            </xsl:for-each>
-            <xsl:for-each select="testframe/testsuites">
-              <tr>
-                <td colspan="2" class="framework"><xsl:value-of select="@name"/></td>
-              </tr>
-              <xsl:apply-templates/>
-            </xsl:for-each>
-            <xsl:for-each select="testframe/testsuite">
-              <tr>
-                <td colspan="2" class="framework"><xsl:value-of select="@name"/></td>
-              </tr>
-              <xsl:apply-templates/>
-            </xsl:for-each>
-          </tbody>
-        </table>
+        <div id="report">
+	  <xsl:for-each select="testframe/globalfailure">
+	    <div class="framework full"><xsl:value-of select="@name"/></div>
+	    <div class="suite left"></div>
+	    <div class="failure right">Failed</div>
+	  </xsl:for-each>
+	  <xsl:for-each select="testframe/testsuites">
+	    <div class="framework full"><xsl:value-of select="@name"/></div>
+	    <xsl:apply-templates/>
+	  </xsl:for-each>
+	  <xsl:for-each select="testframe/testsuite">
+	    <div class="framework full"><xsl:value-of select="@name"/></div>
+	    <xsl:apply-templates/>
+	  </xsl:for-each>
+        </div>
       </body>
     </html>
   </xsl:template>
 
   <xsl:template match="globalfailure">
-    <tr>
-      <td colspan="2">
-        <xsl:value-of select="@name"/>
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td class="failed">FAILED</td>
-    </tr>
+    <div class="framework full"><xsl:value-of select="@name"/></div>
+    <div class="suite left"></div>
+    <div class="failure right">Failed</div>
   </xsl:template>
 
   <xsl:template match="testsuite">
-    <tr>
-      <td colspan="2" class="suite">
-        <xsl:value-of select="@name"/>
-      </td>
-    </tr>
+    <div class="suite full"><xsl:value-of select="@name"/></div>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="testcase">
-    <tr>
-      <td class="case"><xsl:value-of select="@name"/></td>
+    <div class="case left"><xsl:value-of select="@name"/></div>
+    <div class="right">
       <xsl:choose>
-        <xsl:when test="failure"><td class="failed">FAILED</td></xsl:when>
-        <xsl:otherwise><td class="ok">OK</td></xsl:otherwise>
+	<xsl:when test="failure"><div class="failed">FAILED</div></xsl:when>
+	<xsl:otherwise><div class="ok">OK</div></xsl:otherwise>
       </xsl:choose>
-    </tr>
+    </div>
     <xsl:for-each select="failure">
-      <tr>
-        <td colspan="2" class="failure"><xsl:value-of select="@message"/>
-        </td>
-      </tr>
+      <div class="full">
+	<xsl:value-of select="@message"/>
+      </div>
     </xsl:for-each>
   </xsl:template>
 
