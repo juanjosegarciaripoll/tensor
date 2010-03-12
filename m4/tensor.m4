@@ -46,8 +46,8 @@ AC_DEFUN([TENSOR_MKL],[
   OLD_LDFLAGS="$LDFLAGS"
   if test -d $MKL_DIR ; then
     case ${host_cpu} in
-      ia64*)    MKL_LIBS="-L$MKL_DIR/lib/ia64";;
-      x86_64*)  MKL_LIBS="-L$MKL_DIR/lib/64";;
+      ia64*)    MKL_LIBS="-L$MKL_DIR/lib/64";;
+      x86_64*)  MKL_LIBS="-L$MKL_DIR/lib/emt64";;
       *)        MKL_LIBS="-L$MKL_DIR/lib/32";;
     esac
     MKL_CXXFLAGS="-I$MKL_DIR/include"
