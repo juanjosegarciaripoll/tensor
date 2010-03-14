@@ -74,6 +74,8 @@ namespace tensor {
     /**Return a random sparse matrix.*/
     static Sparse<elt_t> random(index rows, index columns, double density = 0.2);
 
+    template<typename t> friend const Tensor<t> full(const Sparse<t> &s);
+
   public:
     Indices dims_;
     Indices row_start_;

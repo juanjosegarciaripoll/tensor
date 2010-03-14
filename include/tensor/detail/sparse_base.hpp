@@ -76,8 +76,8 @@ namespace tensor {
     return *this;
   }
 
-  //
-  // CONSTRUCTOR FROM FULL TENSOR 
+  //////////////////////////////////////////////////////////////////////
+  // CONSTRUCTOR FROM FULL TENSOR TO SPARSE AND VICEVERSA
   //
 
   template<typename elt_t>
@@ -130,6 +130,30 @@ namespace tensor {
       *(row_it++) = col_it - col_begin;
     }
   }
+
+  template<typename elt_t>
+  const Tensor<elt_t> full(const Sparse<elt_t> &s)
+  {
+    index nrows = s.rows();
+    index ncols = s.columns();
+    Tensor<elt_t> output(nrows, ncols);
+
+    output.fill_with_zeros();
+
+    Indices::const_iterator row_start = s.row_start_.begin_const();
+    Indices::const_iterator column = s.column_.begin_const();
+    typename Vector<elt_t>::const_iterator data = s.data_.begin();
+    typename Tensor<elt_t>::iterator out_data = output.begin();
+
+    for (index i = 0; i < nrows; i++, out_data++) {
+	for (index l = row_start[i+1] - row_start[i]; l; l--) {
+	    out_data[nrows * *(column++)] = *(data++);
+	}
+    }
+
+    return output;
+  }
+
 
   //////////////////////////////////////////////////////////////////////
   // SPECIAL MATRICES CONSTRUCTORS
