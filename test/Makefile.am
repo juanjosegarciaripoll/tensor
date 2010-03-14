@@ -114,6 +114,8 @@ report.xml: $(check_PROGRAMS) Makefile
 	 echo "<config field='$$i' value='$${k}'/>" >> $@ ; \
 	 echo "$$i <config field='$$i' value='$${k}'/>" ; \
 	done
+	-shared=`sed '/^enable_shared=/!d;s,enable_shared=\(.*\)$,\1,'`; \
+	echo '<config field="SHARED" value="'$$shared'"/>' >> $@
 	for i in $(check_PROGRAMS); do \
 	 xmlfile=$${i}.xml; \
 	 test -f $$xmlfile || GTEST_OUTPUT=xml:$${xmlfile} ./$$i; \

@@ -39,6 +39,7 @@ color:red;
               <th>Vendor</th>
               <th>Architecture</th>
               <th>Libraries</th>
+              <th>Link</th>
               <th>Failures</th>
               <th>Date</th>
             </tr>
@@ -81,6 +82,14 @@ color:red;
         <xsl:when test="@field = 'TENSOR_USE_MKL' and @value = 1">MKL</xsl:when>
         <xsl:when test="@field = 'TENSOR_USE_ATLAS' and @value = 1">Atlas</xsl:when>
         <xsl:when test="@field = 'TENSOR_USE_VECLIB' and @value = 1">VecLib</xsl:when>
+        </xsl:choose>
+      </xsl:for-each>
+    </td>
+    <td>
+      <xsl:for-each select="config">
+        <xsl:choose>
+        <xsl:when test="@field = 'SHARED' and @value = 'yes'">shared</xsl:when>
+        <xsl:when test="@field = 'SHARED' and @value = 'no'">static</xsl:when>
         </xsl:choose>
       </xsl:for-each>
     </td>
