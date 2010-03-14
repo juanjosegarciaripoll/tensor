@@ -70,6 +70,11 @@ check_PROGRAMS += test_matrix
 test_matrix_SOURCES = test_matrix.cc
 test_matrix_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+TESTS += test_sparse_base
+check_PROGRAMS += test_sparse_base
+test_sparse_base_SOURCES = test_sparse_base.cc
+test_sparse_base_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 TESTS += test_mmult
 check_PROGRAMS += test_mmult
 test_mmult_SOURCES = test_mmult.cc

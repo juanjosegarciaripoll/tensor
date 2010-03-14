@@ -114,6 +114,10 @@ CTensor a = cgen << 1 << 3;
     return StaticVector<t1,n+1>(g,x);
   }
 
+  template<typename t1> StaticVector<t1,1> gen(t1 r) {
+    return StaticVector<t1,1>(r);
+  }
+
 } // namespace tensor
 /*}@*/
 

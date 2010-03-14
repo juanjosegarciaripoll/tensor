@@ -21,6 +21,7 @@
 #define TENSOR_IO_H
 
 #include <iostream>
+#include <tensor/tensor.h>
 
 namespace tensor {
 
@@ -31,6 +32,14 @@ std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t);
 /**Simple text representation of tensor.*/
 template<typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t);
+
+template<typename t, size_t n>
+inline std::ostream &operator<<(std::ostream &s, const StaticVector<t,n> &v)
+{
+  return s << Vector<t>(v);
+}
+
+
 
 } // namespace tensor
 

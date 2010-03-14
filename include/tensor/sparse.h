@@ -76,6 +76,11 @@ namespace tensor {
 
     template<typename t> friend const Tensor<t> full(const Sparse<t> &s);
 
+    const Indices &priv_dims() { return dims_; }
+    const Indices &priv_row_start() { return row_start_; }
+    const Indices &priv_column() { return column_; }
+    const Vector<elt> &priv_data() { return data_; }
+
   public:
     Indices dims_;
     Indices row_start_;
