@@ -25,17 +25,9 @@
 #include <cassert>
 #include <algorithm>
 #include <tensor/rand.h>
+#include <tensor/detail/common.h>
 
 namespace tensor {
-
-bool verify_tensor_dimensions(const Indices &i, index total_size);
-
-inline index normalize_index(index i, index dimension) {
-  if (i < 0)
-    i += dimension;
-  assert((i < dimension) && (i >= 0));
-  return i;
-}
 
 //
 // CONSTRUCTORS

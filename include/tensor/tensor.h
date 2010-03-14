@@ -88,6 +88,8 @@ class Tensor {
 
   /**Returns total number of elements in Tensor.*/
   index size() const { return data_.size(); }
+  /**Does the tensor have elements?*/
+  bool is_empty() const { return size() == 0; }
 
   /**Number of Tensor indices.*/
   int rank() const { return dims_.size(); }

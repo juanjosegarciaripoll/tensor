@@ -11,6 +11,8 @@ libtensor_la_SOURCES = \
 	tools/tictoc.cc \
 	rand/rand.cc \
 	indices/indices.cc \
+	sparse/sparse_d.cc \
+	sparse/sparse_z.cc \
 	tensor/tensor_common.cc \
 	tensor/tensor_d.cc \
 	tensor/tensor_z.cc \
@@ -71,8 +73,10 @@ libtensor_la_SOURCES += rand/rand32.cc
 endif
 
 pkginclude_HEADERS = \
+	$(top_srcdir)/include/tensor/detail/common.h \
 	$(top_srcdir)/include/tensor/detail/functional.h \
 	$(top_srcdir)/include/tensor/detail/io.hpp \
+	$(top_srcdir)/include/tensor/detail/sparse_base.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_base.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_matrix.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_ops.hpp \
@@ -85,6 +89,7 @@ pkginclude_HEADERS = \
 	$(top_srcdir)/include/tensor/numbers.h \
 	$(top_srcdir)/include/tensor/rand.h \
 	$(top_srcdir)/include/tensor/refcount.h \
+	$(top_srcdir)/include/tensor/sparse.h \
 	$(top_srcdir)/include/tensor/tensor.h \
 	$(top_srcdir)/include/tensor/tools.h \
 	$(top_srcdir)/include/tensor/vector.h \
