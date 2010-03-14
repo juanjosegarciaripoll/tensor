@@ -60,6 +60,13 @@ namespace tensor {
   }
 
   template<typename elt_t>
+  Sparse<elt_t>::Sparse(const Indices &dims, const Indices &rows,
+                        const Indices &cols, const Vector<elt_t> &data) :
+    dims_(dims), row_start_(rows), column_(cols), data_(data)
+  {
+  }
+
+  template<typename elt_t>
   Sparse<elt_t>::Sparse(const Sparse<elt_t> &s) :
     dims_(s.dims_), row_start_(s.row_start_), column_(s.column_),
     data_(s.data_)

@@ -15,6 +15,8 @@ libtensor_la_SOURCES = \
 	sparse/full_z.cc \
 	sparse/sparse_d.cc \
 	sparse/sparse_z.cc \
+	sparse/sparse_ops_d.cc \
+	sparse/sparse_ops_z.cc \
 	tensor/tensor_common.cc \
 	tensor/tensor_d.cc \
 	tensor/tensor_z.cc \
@@ -79,6 +81,7 @@ pkginclude_HEADERS = \
 	$(top_srcdir)/include/tensor/detail/functional.h \
 	$(top_srcdir)/include/tensor/detail/io.hpp \
 	$(top_srcdir)/include/tensor/detail/sparse_base.hpp \
+	$(top_srcdir)/include/tensor/detail/sparse_ops.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_base.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_matrix.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_ops.hpp \

@@ -43,6 +43,8 @@ namespace tensor {
     Sparse();
     /**Create a matrix with all elements set to zero.*/
     Sparse(index rows, index cols, index nonzero = 0);
+    Sparse(const Indices &dims, const Indices &rows,
+           const Indices &cols, const Vector<elt_t> &data);
     /**Convert a tensor to sparse form.*/
     explicit Sparse(const Tensor<elt_t> &tensor);
     /**Copy constructor.*/
@@ -76,10 +78,10 @@ namespace tensor {
 
     template<typename t> friend const Tensor<t> full(const Sparse<t> &s);
 
-    const Indices &priv_dims() { return dims_; }
-    const Indices &priv_row_start() { return row_start_; }
-    const Indices &priv_column() { return column_; }
-    const Vector<elt> &priv_data() { return data_; }
+    const Indices &priv_dims() const { return dims_; }
+    const Indices &priv_row_start() const { return row_start_; }
+    const Indices &priv_column() const { return column_; }
+    const Vector<elt> &priv_data() const { return data_; }
 
   public:
     Indices dims_;
@@ -93,10 +95,36 @@ namespace tensor {
   const CSparse to_complex(const RSparse &s);
   inline const CSparse to_complex(const CSparse &c) { return c; }
 
+  //////////////////////////////////////////////////////////////////////
+  // ALGEBRA
+  //
+  //
+  // Unary operations
+  //
+
+  template<typename t>
+  const Sparse<t> operator-(const Sparse<t> &);
+
+  template<typename t>
+  const Sparse<t> operator*(t b, const Sparse<t> &s);
+  template<typename t>
+  const Sparse<t> operator*(const Sparse<t> &s, t b);
+  template<typename t>
+  const Sparse<t> operator/(const Sparse<t> &s, t b);
+
+  template<typename t>
+  const Sparse<t> operator+(const Sparse<t> &m1, const Sparse<t> &m2);
+  template<typename t>
+  const Sparse<t> operator-(const Sparse<t> &m1, const Sparse<t> &m2);
+  template<typename t>
+  const Sparse<t> operator*(const Sparse<t> &m1, const Sparse<t> &m2);
+
+
 } // namespace tensor
 
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/sparse_base.hpp>
+#include <tensor/detail/sparse_ops.hpp>
 #endif
 
 #endif // !TENSOR_SPARSE_H
