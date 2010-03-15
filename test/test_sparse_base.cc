@@ -231,4 +231,41 @@ namespace tensor_test {
     test_over_fixed_rank_tensors<cdouble>(test_sparse_eye<cdouble>, 2, 7);
   }
 
+  //
+  // SPARSE <-> FULL CONVERSION, ARBITRARY SIZES
+  //
+  template<typename elt_t>
+  void test_full(Tensor<elt_t> &t) {
+    for (int times = 0; times <= 10; times++) {
+      tensor::index zeros = std::count(t.begin(), t.end(), number_zero<elt_t>());
+      tensor::index nonzeros = t.size() - zeros;
+      Tensor<elt_t> tcopy = t;
+      Sparse<elt_t> s(t);
+
+      unchanged(tcopy, t);
+      EXPECT_EQ(nonzeros, s.length());
+      EXPECT_EQ(t, full(s));
+      EXPECT_EQ(nonzeros, s.priv_column().size());
+      EXPECT_EQ(nonzeros, s.priv_data().size());
+      EXPECT_EQ(t.rows()+1, s.priv_row_start().size());
+
+      if (t.size()) {
+        tensor::index i = rand<int>(0, t.rows()-1);
+        tensor::index j = rand<int>(0, t.columns()-1);
+        t.at(i,j) = number_zero<elt_t>();
+      } else {
+        break;
+      }
+    }
+  }
+
+  TEST(RSparseTest, RSparseFull) {
+    test_over_fixed_rank_tensors<double>(test_full<double>, 2, 7);
+  }
+
+  TEST(CSparseTest, CSparseFull) {
+    test_over_fixed_rank_tensors<cdouble>(test_full<cdouble>, 2, 7);
+  }
+
+
 } // namespace tensor_test
