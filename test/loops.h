@@ -21,50 +21,6 @@
 #define ONLY_IN_DEBUG(x) x
 #endif
 
-template<typename elt_t>
-bool operator==(const tensor::Vector<elt_t> &v1,
-                const tensor::Vector<elt_t> &v2)
-{
-  if (v1.size() != v2.size()) return false;
-  return std::equal(v1.begin_const(), v1.end_const(), v2.begin_const());
-}
-
-template<typename elt_t, size_t n>
-bool operator==(const tensor::StaticVector<elt_t,n> &v1,
-                const tensor::Vector<elt_t> &v2)
-{
-  tensor::Vector<elt_t> v0(v1);
-  if (v0.size() != v2.size()) return false;
-  return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
-}
-
-template<typename elt_t, size_t n>
-bool operator==(const tensor::Vector<elt_t> &v2,
-                const tensor::StaticVector<elt_t,n> &v1)
-{
-  tensor::Vector<elt_t> v0(v1);
-  if (v0.size() != v2.size()) return false;
-  return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
-}
-
-template<size_t n>
-bool operator==(const tensor::Indices &v2,
-                const tensor::StaticVector<tensor::index,n> &v1)
-{
-  tensor::Indices v0(v1);
-  if (v0.size() != v2.size()) return false;
-  return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
-}
-
-template<size_t n>
-bool operator==(const tensor::StaticVector<tensor::index,n> &v1,
-                const tensor::Indices &v2)
-{
-  tensor::Indices v0(v1);
-  if (v0.size() != v2.size()) return false;
-  return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
-}
-
 namespace tensor_test {
 
   using namespace tensor;
