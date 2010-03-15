@@ -1,0 +1,57 @@
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+/**\addtogroup Tensors */
+/*!\page sec_tensor_op Operations among Tensor's
+
+\section sec_tensor_unop Unary Tensor operations
+
+The library contains a limited number of unary operators for tensors. These include negation (- A), special functions (cos(A), tan(A), etc), and a few others.
+
+
+\section sec_tensor_binop Binary Tensor operations
+
+The library supports various operations between tensors, such as multiplication, addition and subtraction, and also between tensors and numbers. All of those are element-wise. Take for instance the following code:
+\code
+Tensor<double> A = Tensor<double>(igen << 2 << 2);
+A.fill_with_zeros();
+A.at(0,1) = 1.0;
+
+Tensor<double> C = A * A;
+Tensor<double> D = mmult(A, A);
+\endcode
+The matrix A contains the tensor [0,1;0,0] in Matlab notation. The product A * A is equivalent to Matlab's A .* A so that in the end the variable C contains the element-wise product [0, 1; 0, 0], while the variable D contains the product of two matrices, that is [0, 0; 0, 0]; 
+
+
+\section sec_tensor_fold Tensor contraction
+
+The most useful operations are tensor contractions. These constitute a generalization of matrix multiplication for tensor with more than two indices and come in two flavors.
+
+The first flavor is "exterior" contraction, in which the indices of the tensor are simply joined together. This is done with the routine tensor::fold, which takes four arguments, as in tensor::fold(A, nA, B, nB). The two arguments A and B are two tensors, while nA and nB represent the indices that are contracted.
+
+For instance assume that A has three indices and B has two, the code \c C=tensor::fold(A,1,B,0) contracts tensors A and B, according to the second and first index as given by the formula
+\f[
+C_{i_0i_1i_3i_4} = \sum_j A_{i_0ji_1} B_{ji_3i_4}
+\f]
+Note that the indices of A are simply concatenated to those of B, in that precise order.
+
+The other routine that we have is called tensor::foldin, and this time it "inserts" the indices of one tensor into another one. Going back to the previous example \c C=tensor::foldin(A,1,B,0) contracts tensors A and B as follows
+\f[
+C_{i_3i_0i_1i_4} = \sum_j A_{i_0ji_1} B_{ji_3i_4}
+\f]
+Now the indices of "A" appear in-place where they were contracted with B's indices. This routine is very useful for applying transformations on certain indices of a tensor.
+
+
+\section sec_tensor_mmult Matrix multiplication
+
+Matrix multiplication is a special case of tensor contraction which can be implemented with any of the two given functions. For convenience we provide a function that does it, called tensor::mmult. Roughly mmult(A,B) = fold(A,-1,B,0) that is we contract the last index of A with the first index of B. So, if we do
+\code
+Tensor<double> A(2,3);
+Tensor<double> B(3,4);
+...
+C = mmult(A, B);
+\endcode
+then we will obtain
+\f[
+C_{ik} = \sum_{l=1}^3 A_{ij} B_{jk},\quad i\in\{1,2\}, k\in\{1,2,3,4\}
+\f]
+
+*/

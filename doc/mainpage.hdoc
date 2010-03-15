@@ -11,5 +11,7 @@ Some links you should read before going any further:
 
 \li \subpage sec_intro
 \li \subpage sec_tensor
+\li \subpage sec_tensor_op
+\li \subpage sec_sparse
 
 */
