@@ -91,7 +91,6 @@ namespace tensor {
   static index
   number_of_nonzero(const Tensor<elt_t> &data)
   {
-    ;
     index counter = 0;
     for (typename Tensor<elt_t>::const_iterator it = data.begin();
          it != data.end();
@@ -104,18 +103,12 @@ namespace tensor {
 
   template<typename elt_t>
   Sparse<elt_t>::Sparse(const Tensor<elt_t> &t) :
-    dims_(2), row_start_(), column_(), data_()
+    dims_(t.dimensions()), row_start_(Indices(t.rows()+1)),
+    column_(), data_()
   {
-    if (t.is_empty()) {
-      dims_.at(0) = 0;
-      dims_.at(1) = 0;
-      return;
-    }
-
-    dims_ = t.dimensions();
-    row_start_ = Indices(t.rows()+1);
-    column_ = Indices(number_of_nonzero<elt_t>(t));
-    data_ = Vector<elt_t>(column_.size());
+    index nonzero = number_of_nonzero<elt_t>(t);
+    column_ = Indices(nonzero);
+    data_ = Vector<elt_t>(nonzero);
 
     index nrows = rows();
     index ncols = columns();
@@ -147,8 +140,8 @@ namespace tensor {
 
     output.fill_with_zeros();
 
-    Indices::const_iterator row_start = s.row_start_.begin_const();
-    Indices::const_iterator column = s.column_.begin_const();
+    Indices::const_iterator row_start = s.priv_row_start().begin();
+    Indices::const_iterator column = s.priv_column().begin();
     typename Vector<elt_t>::const_iterator data = s.data_.begin();
     typename Tensor<elt_t>::iterator out_data = output.begin();
 
@@ -170,16 +163,16 @@ namespace tensor {
   Sparse<elt_t> Sparse<elt_t>::eye(index rows, index columns)
   {
     index nel = std::min(rows, columns);
-    Sparse<elt_t> output(rows, columns, nel);
-    for (index k = 0; k < nel; ) {
-      output.data_.at(k) = number_one<elt_t>();
-      output.column_.at(k) = k;
-      output.row_start_.at(++k) = k;
+    Vector<elt_t> data(nel);
+    std::fill(data.begin(), data.end(), number_one<elt_t>());
+    Indices row_start(rows+1);
+    for (index i = 0; i <= rows; i++) {
+      row_start.at(i) = std::min(i, nel);
     }
-    for (index k = nel; k < rows; k++) {
-      output.row_start_.at(++k) = nel;
-    }
-    return output;
+    return Sparse(igen << rows << columns,
+                  row_start, // row_start
+                  Indices::range(0, nel-1), // columns
+                  data);
   }
 
   template<typename elt_t> Sparse<elt_t>
