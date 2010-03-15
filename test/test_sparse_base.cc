@@ -232,6 +232,96 @@ namespace tensor_test {
   }
 
   //
+  // SPARSE IDENTITITES BUILT BY HAND
+  //
+  template<typename elt_t>
+  void test_sparse_random_small() {
+    {
+    // sprandom(0,0)
+    SCOPED_TRACE("0x0");
+    Sparse<elt_t> S = Sparse<elt_t>::random(0,0);
+    EXPECT_EQ(0, S.rows());
+    EXPECT_EQ(0, S.columns());
+    EXPECT_EQ(igen << 0, S.priv_row_start());
+    EXPECT_EQ(Indices(), S.priv_column());
+    EXPECT_EQ(Vector<elt_t>(), S.priv_data());
+    EXPECT_EQ(Tensor<elt_t>(0,0), full(S));
+    }
+    {
+    // sprandom(0,1)
+    SCOPED_TRACE("0x1");
+    Sparse<elt_t> S = Sparse<elt_t>::random(0,1);
+    EXPECT_EQ(0, S.rows());
+    EXPECT_EQ(1, S.columns());
+    EXPECT_EQ(igen << 0, S.priv_row_start());
+    EXPECT_EQ(Indices(), S.priv_column());
+    EXPECT_EQ(Vector<elt_t>(), S.priv_data());
+    EXPECT_EQ(Tensor<elt_t>(0,1), full(S));
+    }
+    {
+    // sprandom(2,0)
+    SCOPED_TRACE("2x0");
+    Sparse<elt_t> S = Sparse<elt_t>::random(2,0);
+    EXPECT_EQ(2, S.rows());
+    EXPECT_EQ(0, S.columns());
+    EXPECT_EQ(igen << 0 << 0 << 0, S.priv_row_start());
+    EXPECT_EQ(Indices(), S.priv_column());
+    EXPECT_EQ(Vector<elt_t>(), S.priv_data());
+    EXPECT_EQ(Tensor<elt_t>(2,0), full(S));
+    }
+  }
+
+  TEST(RSparseTest, RSparseRandomSmall) {
+    test_sparse_random_small<double>();
+  }
+
+  TEST(CSparseTest, CSparseRandomSmall) {
+    test_sparse_random_small<cdouble>();
+  }
+
+  //
+  // SPARSE RANDOM MATRICES ARBITRARY SIZES
+  //
+  template<typename elt_t>
+  void test_sparse_random(Tensor<elt_t> &t) {
+    tensor::index rows = t.rows(), cols = t.columns();
+    {
+    Sparse<elt_t> s = Sparse<elt_t>::random(rows, cols);
+    EXPECT_EQ(rows, s.rows());
+    EXPECT_EQ(cols, s.columns());
+    Tensor<elt_t> t = full(s);
+    EXPECT_EQ(Sparse<elt_t>(t), s);
+    tensor::index zero = std::count(t.begin(), t.end(), number_zero<elt_t>());
+    tensor::index nonzero = t.size() - zero;
+    EXPECT_EQ(nonzero, s.length());
+    EXPECT_EQ(nonzero, s.priv_data().size());
+    EXPECT_EQ(nonzero, s.priv_column().size());
+    EXPECT_EQ(rows+1, s.priv_row_start().size());
+    }
+    for (double x = 0.0; x <= 1.0; x+= 0.1) {
+      Sparse<elt_t> s = Sparse<elt_t>::random(rows, cols, x);
+      EXPECT_EQ(rows, s.rows());
+      EXPECT_EQ(cols, s.columns());
+      Tensor<elt_t> t = full(s);
+      EXPECT_EQ(Sparse<elt_t>(t), s);
+      tensor::index zero = std::count(t.begin(), t.end(), number_zero<elt_t>());
+      tensor::index nonzero = t.size() - zero;
+      EXPECT_EQ(nonzero, s.length());
+      EXPECT_EQ(nonzero, s.priv_data().size());
+      EXPECT_EQ(nonzero, s.priv_column().size());
+      EXPECT_EQ(rows+1, s.priv_row_start().size());
+    }
+  }
+
+  TEST(RSparseTest, RSparseRandom) {
+    test_over_fixed_rank_tensors<double>(test_sparse_random<double>, 2, 7);
+  }
+
+  TEST(CSparseTest, CSparseRandom) {
+    test_over_fixed_rank_tensors<cdouble>(test_sparse_random<cdouble>, 2, 7);
+  }
+
+  //
   // SPARSE <-> FULL CONVERSION, ARBITRARY SIZES
   //
   template<typename elt_t>
