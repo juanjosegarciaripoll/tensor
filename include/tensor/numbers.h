@@ -52,7 +52,11 @@ template<class number> number square(number r) { return r*r; }
 
 typedef std::complex<double> cdouble;
 
-inline cdouble to_complex(const double &r, const double &i = 0.0) {
+inline cdouble to_complex(const double &r) {
+  return cdouble(r, 0);
+}
+
+inline cdouble to_complex(const double &r, const double &i) {
   return cdouble(r, i);
 }
 

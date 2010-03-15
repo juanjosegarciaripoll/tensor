@@ -20,9 +20,12 @@
 #define TENSOR_LOAD_IMPL
 #include <tensor/sparse.h>
 
-//
-// Explicitely instantiate an specialization of Tensor. This generates
-// all required code.
-//
-template class tensor::Sparse<tensor::cdouble>;
+namespace tensor {
 
+  //
+  // Explicitely instantiate an specialization of CSparse. This generates
+  // all required code.
+  //
+  template class Sparse<cdouble>;
+
+} // namespace tensor

@@ -15,6 +15,7 @@ libtensor_la_SOURCES = \
 	sparse/full_z.cc \
 	sparse/sparse_d.cc \
 	sparse/sparse_z.cc \
+	sparse/sparse_d_to_z.cc \
 	sparse/sparse_ops_d.cc \
 	sparse/sparse_ops_z.cc \
 	tensor/tensor_common.cc \

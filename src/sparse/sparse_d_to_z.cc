@@ -18,15 +18,20 @@
 */
 
 #define TENSOR_LOAD_IMPL
-#include <algorithm>
 #include <tensor/sparse.h>
 
 namespace tensor {
 
-  //
-  // Explicitely instantiate an specialization of RSparse. This generates
-  // all required code.
-  //
-  template class Sparse<double>;
+  static cdouble coerce(double c) { return to_complex(c); }
+
+  const CSparse
+  to_complex(const RSparse &s)
+  {
+    Vector<cdouble> data(s.length());
+    std::transform(s.priv_data().begin(), s.priv_data().end(), data.begin(),
+                   coerce);
+    return CSparse(s.dimensions(), s.priv_row_start(), s.priv_column(),
+		   data);
+  }
 
 } // namespace tensor

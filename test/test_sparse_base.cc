@@ -357,5 +357,27 @@ namespace tensor_test {
     test_over_fixed_rank_tensors<cdouble>(test_full<cdouble>, 2, 7);
   }
 
+  //
+  // SPARSE -> COMPLEX CONVERSION, ARBITRARY SIZES
+  //
+  template<typename elt_t>
+  void test_to_complex(Tensor<elt_t> &t) {
+    Sparse<elt_t> s = Sparse<elt_t>::random(t.rows(), t.columns());
+    Sparse<cdouble> sc = to_complex(s);
+    EXPECT_EQ(t.rows(), sc.rows());
+    EXPECT_EQ(t.columns(), sc.columns());
+    EXPECT_EQ(to_complex(full(s)), full(sc));
+    EXPECT_EQ(s.priv_row_start(), sc.priv_row_start());
+    EXPECT_EQ(s.priv_column(), sc.priv_column());
+  }
+
+  TEST(RSparseTest, RSparseToComplex) {
+    test_over_fixed_rank_tensors<double>(test_to_complex<double>, 2, 7);
+  }
+
+  TEST(CSparseTest, CSparseToComplex) {
+    test_over_fixed_rank_tensors<cdouble>(test_to_complex<cdouble>, 2, 7);
+  }
+
 
 } // namespace tensor_test
