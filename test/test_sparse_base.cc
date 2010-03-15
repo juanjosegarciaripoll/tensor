@@ -236,7 +236,7 @@ namespace tensor_test {
   //
   template<typename elt_t>
   void test_full(Tensor<elt_t> &t) {
-    for (int times = 0; times <= 10; times++) {
+    for (int times = 0; times <= std::min<int>(100,t.size()); times++) {
       tensor::index zeros = std::count(t.begin(), t.end(), number_zero<elt_t>());
       tensor::index nonzeros = t.size() - zeros;
       Tensor<elt_t> tcopy = t;
