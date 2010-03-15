@@ -97,5 +97,23 @@ TEST(RandTest, ComplexUncorrelated) {
   EXPECT_GE(1/sqrt((double)total), corr);
 }
 
+// Test random numbers in empty ranges
+TEST(RandTest, IntEmpty) {
+  EXPECT_EQ(0, rand<int>(0));
+  EXPECT_EQ(-11, rand<int>(-11, -11));
+}
+
+// Test random numbers in empty ranges
+TEST(RandTest, LongEmpty) {
+  EXPECT_EQ(0, rand<long>(0));
+  EXPECT_EQ(-13, rand<long>(-13, -13));
+}
+
+// Test random numbers in empty ranges
+TEST(RandTest, ULongEmpty) {
+  EXPECT_EQ(0, rand<unsigned long>(0));
+  EXPECT_EQ(13, rand<unsigned long>(13, 13));
+}
+
 }
 
