@@ -38,6 +38,8 @@ namespace tensor {
     template<size_t n> Indices(StaticVector<index,n> v) : Vector<index>(v) {}
     explicit Indices(index size) : Vector<index>(size) {}
 
+    static const Indices range(index min, index max, index step = 1);
+
     bool operator==(const Indices &other) const;
     index total_size() const;
   };
@@ -155,6 +157,25 @@ namespace tensor {
   inline PRange range(Indices i) { return new IndexRange(i); }
   /**Create a Range which covers all indices. \ref sec_tensor_view*/
   inline PRange range() { return new FullRange(); }
+
+  template<size_t n>
+  bool operator==(const tensor::Indices &v2,
+                  const tensor::StaticVector<tensor::index,n> &v1)
+  {
+    tensor::Indices v0(v1);
+    if (v0.size() != v2.size()) return false;
+    return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
+  }
+
+  template<size_t n>
+  bool operator==(const tensor::StaticVector<tensor::index,n> &v1,
+                  const tensor::Indices &v2)
+  {
+    tensor::Indices v0(v1);
+    if (v0.size() != v2.size()) return false;
+    return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
+  }
+
 
 }; // namespace
 

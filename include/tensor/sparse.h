@@ -96,14 +96,16 @@ namespace tensor {
   inline const CSparse to_complex(const CSparse &c) { return c; }
 
   //////////////////////////////////////////////////////////////////////
-  // ALGEBRA
-  //
   //
   // Unary operations
   //
 
   template<typename t>
   const Sparse<t> operator-(const Sparse<t> &);
+
+  //
+  // Binary operations
+  //
 
   template<typename t>
   const Sparse<t> operator*(t b, const Sparse<t> &s);
@@ -119,6 +121,16 @@ namespace tensor {
   template<typename t>
   const Sparse<t> operator*(const Sparse<t> &m1, const Sparse<t> &m2);
 
+  //
+  // Comparison
+  //
+  template<typename t1, typename t2>
+  inline bool operator==(const Sparse<t1> &s1, const Sparse<t2> &s2) {
+    return (s1.dimensions() == s2.dimensions()) &&
+      (s1.priv_row_start() == s2.priv_row_start()) &&
+      (s1.priv_column() == s2.priv_column()) &&
+      (s1.priv_data() == s2.priv_data());
+  }
 
 } // namespace tensor
 

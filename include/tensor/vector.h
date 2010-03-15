@@ -77,6 +77,11 @@ class Vector {
   RefPointer<elt_t> data_;
 };
 
+template<typename t1, typename t2>
+bool operator==(const Vector<t1> &v1, const Vector<t2> &v2) {
+  return (v1.size() == v2.size()) && std::equal(v1.begin(), v1.end(), v2.begin());
+}
+
 template<typename elt>
 class VectorView {
  public:

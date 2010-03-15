@@ -118,6 +118,24 @@ CTensor a = cgen << 1 << 3;
     return StaticVector<t1,1>(r);
   }
 
+  template<typename elt_t, size_t n>
+  bool operator==(const tensor::StaticVector<elt_t,n> &v1,
+                  const tensor::Vector<elt_t> &v2)
+  {
+    tensor::Vector<elt_t> v0(v1);
+    if (v0.size() != v2.size()) return false;
+    return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
+  }
+
+  template<typename elt_t, size_t n>
+  bool operator==(const tensor::Vector<elt_t> &v2,
+                  const tensor::StaticVector<elt_t,n> &v1)
+  {
+    tensor::Vector<elt_t> v0(v1);
+    if (v0.size() != v2.size()) return false;
+    return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
+  }
+
 } // namespace tensor
 /*}@*/
 
