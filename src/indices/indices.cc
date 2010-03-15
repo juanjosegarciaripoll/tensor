@@ -30,7 +30,8 @@ namespace tensor {
   template class Vector<index>;
 
   bool Indices::operator==(const Indices &other) const {
-    return std::equal(other.begin_const(), other.end_const(), this->begin_const());
+    return (this->size() == other.size()) &&
+      std::equal(other.begin_const(), other.end_const(), this->begin_const());
   }
 
   index Indices::total_size() const {
@@ -42,5 +43,18 @@ namespace tensor {
     }
   }
 
+  const Indices Indices::range(index min, index max, index step) {
+    if (max < min) {
+      return Indices();
+    } else {
+      index size = (max - min) / step + 1;
+      Indices output(size);
+      for (Indices::iterator it = output.begin(); it != output.end(); it ++) {
+        *it = min;
+        min += step;
+      }
+      return output;
+    }
+  }
 
 } // namespace
