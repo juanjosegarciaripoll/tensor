@@ -53,7 +53,7 @@ AC_DEFUN([TENSOR_MKL],[
     MKL_CXXFLAGS="-I$MKL_DIR/include"
     LDFLAGS="$LDFLAGS $MKL_LIBS"
   fi
-  AC_CHECK_LIB([mkl_core], [mkl_blas_caxpy], [have_mkl=yes], [have_mkl=no])
+  AC_CHECK_LIB([mkl_core], [mkl_lapack_cbdsqr], [have_mkl=yes], [have_mkl=no])
   AC_MSG_CHECKING([for MKL library])
   if test $have_mkl = yes ; then
     case ${host_cpu} in
