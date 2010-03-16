@@ -152,10 +152,9 @@ namespace tensor_test {
     bool more_;
   };
 
-  template<typename elt_t>
+  template<typename elt_t, typename unop>
   void
-  test_over_fixed_rank_tensors(void test(Tensor<elt_t> &t), int rank,
-                               int max_dimension = 10) {
+  test_over_fixed_rank_tensors(unop test, int rank, int max_dimension = 10) {
     //
     // Test over random dimensions
     //
@@ -177,6 +176,34 @@ namespace tensor_test {
         dims.at(i) = 0;
       }
     }
+  }
+
+  template<typename elt_t, typename binop>
+  void
+  test_over_fixed_rank_pairs(binop fn, int rank, int max_dimension = 6) {
+    struct lambda {
+      binop fn;
+      int rank, max_dimension;
+      lambda(binop f, int r, int md) :
+        fn(f), rank(r), max_dimension(md)
+      {}
+      void operator()(Tensor<elt_t> &t) {
+        struct closure {
+          binop fn;
+          Tensor<elt_t> a;
+          closure(binop f, Tensor<elt_t> &t) :
+            fn(f), a(t)
+          {}
+          void operator()(Tensor<elt_t> &b) {
+            fn(a, b);
+          }
+        };
+        tensor_test::test_over_fixed_rank_tensors<elt_t,closure>
+          (closure(fn, t), rank, max_dimension);
+      }
+    };
+    tensor_test::test_over_fixed_rank_tensors<elt_t,lambda>
+      (lambda(fn, rank, max_dimension), rank, max_dimension);
   }
 
   /*
@@ -225,7 +252,7 @@ namespace tensor_test {
     DimensionsProducer(const Indices &d) : base_indices(d), counter(13) {}
 
     operator bool() const { return counter >= 14; }
-    int operator++() { counter++; }
+    int operator++() { return counter++; }
 
     Indices operator*() const {
       Tensor<double> P;
