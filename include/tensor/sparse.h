@@ -121,6 +121,13 @@ namespace tensor {
   template<typename t>
   const Sparse<t> operator*(const Sparse<t> &m1, const Sparse<t> &m2);
 
+  /**Kronecker product between matrices, in Matlab order.*/
+  template<typename t>
+  const Sparse<t> kron(const Sparse<t> &s1, const Sparse<t> &s2);
+  /**Kronecker product between matrices, opposite to Matlab order.*/
+  template<typename t>
+  const Sparse<t> kron2(const Sparse<t> &s1, const Sparse<t> &s2);
+
   //
   // Comparison
   //
@@ -136,6 +143,7 @@ namespace tensor {
 
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/sparse_base.hpp>
+#include <tensor/detail/sparse_kron.hpp>
 #include <tensor/detail/sparse_ops.hpp>
 #endif
 

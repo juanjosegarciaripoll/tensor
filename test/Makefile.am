@@ -75,6 +75,11 @@ check_PROGRAMS += test_sparse_base
 test_sparse_base_SOURCES = test_sparse_base.cc
 test_sparse_base_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+#TESTS += test_sparse_kron
+#check_PROGRAMS += test_sparse_kron
+#test_sparse_kron_SOURCES = test_sparse_kron.cc
+#test_sparse_kron_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 TESTS += test_mmult
 check_PROGRAMS += test_mmult
 test_mmult_SOURCES = test_mmult.cc
