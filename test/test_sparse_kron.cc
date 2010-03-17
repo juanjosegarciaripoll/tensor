@@ -19,9 +19,7 @@
 
 #include <tensor/sparse.h>
 #include "loops.h"
-
-#include <gtest/gtest.h>
-#include <gtest/gtest-death-test.h>
+#include "test_kron.hpp"
 
 namespace tensor_test {
 
@@ -52,6 +50,35 @@ namespace tensor_test {
 
   TEST(CSparseKronTest, KronSize) {
     test_over_fixed_rank_pairs<cdouble>(do_test_kron_size<cdouble>, 2);
+  }
+
+  //
+  // HAND-BUILT KRONECKER PRODUCTS
+  //
+
+  template<typename elt_t>
+  void test_kron_small() {
+    kron_2d_fixture<elt_t> fixture;
+
+    for(typename kron_2d_fixture<elt_t>::const_iterator it = fixture.begin();
+        it != fixture.end();
+        )
+      {
+        Sparse<elt_t> sa(*(it++));
+        Sparse<elt_t> sb(*(it++));
+        Sparse<elt_t> sk(*(it++));
+
+        ASSERT_EQ(sk, kron(sa, sb));
+        ASSERT_EQ(kron(sb, sa), kron2(sa, sb));
+      }
+  }
+
+  TEST(RSparseKronTest, KronSmall) {
+    test_kron_small<double>();
+  }
+
+  TEST(CSparseKronTest, KronSmall) {
+    test_kron_small<cdouble>();
   }
 
 } // namespace tensor_test
