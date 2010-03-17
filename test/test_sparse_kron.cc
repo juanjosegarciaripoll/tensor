@@ -81,4 +81,28 @@ namespace tensor_test {
     test_kron_small<cdouble>();
   }
 
+  //
+  // COMPARISON WITH SLOW FORMULAS
+  //
+
+  template<typename elt_t>
+  void test_tensor_kron(Tensor<elt_t> &a, Tensor<elt_t> &b)
+  {
+    Sparse<elt_t> sa = Sparse<elt_t>::random(a.rows(), a.columns());
+    Sparse<elt_t> sb = Sparse<elt_t>::random(b.rows(), b.columns());
+    a = full(sa);
+    b = full(sb);
+    ASSERT_EQ(kron(a,b), full(kron(sa,sb)));
+  }
+
+  TEST(RTensorKronTest, CompareWithTensorKron) {
+    test_over_fixed_rank_pairs<double>(test_tensor_kron<double>, 2);
+  }
+
+  TEST(CTensorKronTest, CompareWithTensorKron) {
+    test_over_fixed_rank_pairs<cdouble>(test_tensor_kron<cdouble>, 2);
+  }
+
+
+
 } // namespace tensor_test
