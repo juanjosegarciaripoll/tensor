@@ -152,58 +152,85 @@ namespace tensor_test {
     bool more_;
   };
 
+  class fixed_rank_iterator {
+  public:
+    fixed_rank_iterator(int rank, int max_dimension = 10) :
+      rank_(rank), max_dimension_(max_dimension),
+      indices_(rank), finished_(false)
+    {
+      assert((rank >= 0) && (max_dimension >= 0));
+      reset();
+    }
+    int rank() const {
+      return rank_;
+    }
+    int max_dimension() const {
+      return max_dimension_;
+    }
+    bool finished() const {
+      return finished_;
+    }
+    bool more() const {
+      return !finished_;
+    }
+    const Indices &dimensions() const {
+      return indices_;
+    }
+    void reset() {
+      std::fill(indices_.begin(), indices_.end(), 0);
+    }
+    bool next() {
+      if (!finished_) {
+        for (int i = 0; i < rank(); i++) {
+          if (++indices_.at(i) < max_dimension()) {
+            return true;
+          }
+          indices_.at(i) = 0;
+        }
+        finished_ = true;
+      }
+      return false;
+    }
+  private:
+    int rank_, max_dimension_;
+    Indices indices_;
+    bool finished_;
+  };
+    
   template<typename elt_t, typename unop>
   void
   test_over_fixed_rank_tensors(unop test, int rank, int max_dimension = 10) {
-    //
-    // Test over random dimensions
-    //
-    Indices dims(rank);
-    std::fill(dims.begin(), dims.end(), 0);
-    bool goon = true;
-    while (goon) {
-      Tensor<elt_t> data(dims);
+    for (fixed_rank_iterator it(rank, max_dimension);
+         !it.finished(); it.next())
+    {
+      Tensor<elt_t> data(it.dimensions());
       // Make all elements different to make accurate comparisons
       for (tensor::index i = 0; i < data.size(); i++)
         data.at(i) = i;
       test(data);
-      goon = false;
-      for (int i = 0; i < rank; i++) {
-        if (++dims.at(i) < max_dimension) {
-          goon = true;
-          break;
-        }
-        dims.at(i) = 0;
-      }
     }
   }
 
   template<typename elt_t, typename binop>
   void
-  test_over_fixed_rank_pairs(binop fn, int rank, int max_dimension = 6) {
-    struct lambda {
-      binop fn;
-      int rank, max_dimension;
-      lambda(binop f, int r, int md) :
-        fn(f), rank(r), max_dimension(md)
-      {}
-      void operator()(Tensor<elt_t> &t) {
-        struct closure {
-          binop fn;
-          Tensor<elt_t> a;
-          closure(binop f, Tensor<elt_t> &t) :
-            fn(f), a(t)
-          {}
-          void operator()(Tensor<elt_t> &b) {
-            fn(a, b);
-          }
-        };
-        tensor_test::test_over_fixed_rank_tensors<elt_t,closure>
-          (closure(fn, t), rank, max_dimension);
+  test_over_fixed_rank_pairs(binop test, int rank, int max_dimension = 6) {
+    for (fixed_rank_iterator it1(rank, max_dimension);
+         !it1.finished(); it1.next())
+    {
+      Tensor<elt_t> data1(it1.dimensions());
+      // Make all elements different to make accurate comparisons
+      for (tensor::index i = 0; i < data1.size(); i++)
+        data1.at(i) = i;
+      for (fixed_rank_iterator it2(rank, max_dimension);
+           !it2.finished(); it2.next())
+      {
+        Tensor<elt_t> data2(it2.dimensions());
+        // Make all elements different to make accurate comparisons
+        for (tensor::index i = 0; i < data2.size(); i++)
+          data2.at(i) = i;
+        test(data1, data2);
       }
-    };
-    tensor_test::test_over_fixed_rank_tensors<elt_t,lambda>
-      (lambda(fn, rank, max_dimension), rank, max_dimension);
+    }
   }
 
   /*
