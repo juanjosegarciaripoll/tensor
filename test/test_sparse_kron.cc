@@ -35,14 +35,15 @@ namespace tensor_test {
     Sparse<elt_t> sb = Sparse<elt_t>::random(b.rows(), b.columns());
 
     Sparse<elt_t> sk = kron(sa, sb);
-    EXPECT_EQ(sk.rows(), sa.rows() * sb.rows());
-    EXPECT_EQ(sk.columns(), sa.columns() * sb.columns());
-    EXPECT_EQ(sk.length(), sa.length() * sb.length());
+
+    ASSERT_EQ(sk.rows(), sa.rows() * sb.rows());
+    ASSERT_EQ(sk.columns(), sa.columns() * sb.columns());
+    ASSERT_EQ(sk.length(), sa.length() * sb.length());
 
     Sparse<elt_t> sk2 = kron2(sa, sb);
-    EXPECT_EQ(sk2.rows(), sa.rows() * sb.rows());
-    EXPECT_EQ(sk2.columns(), sa.columns() * sb.columns());
-    EXPECT_EQ(sk2.length(), sa.length() * sb.length());
+    ASSERT_EQ(sk2.rows(), sa.rows() * sb.rows());
+    ASSERT_EQ(sk2.columns(), sa.columns() * sb.columns());
+    ASSERT_EQ(sk2.length(), sa.length() * sb.length());
   }
 
   TEST(RSparseKronTest, KronSize) {
