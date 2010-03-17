@@ -45,6 +45,11 @@ check_PROGRAMS += test_tensor_binop_error
 test_tensor_binop_error_SOURCES = test_tensor_binop_error.cc
 test_tensor_binop_error_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
 
+TESTS += test_tensor_kron
+check_PROGRAMS += test_tensor_kron
+test_tensor_kron_SOURCES = test_tensor_kron.cc
+test_tensor_kron_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ -lstdc++
+
 TESTS += test_tensor_permute
 check_PROGRAMS += test_tensor_permute
 test_tensor_permute_SOURCES = test_tensor_permute.cc

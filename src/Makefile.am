@@ -38,6 +38,8 @@ libtensor_la_SOURCES = \
 	tensor/tensor_fold_dz.cc \
 	tensor/tensor_foldin_d.cc \
 	tensor/tensor_foldin_z.cc \
+	tensor/tensor_kron_d.cc \
+	tensor/tensor_kron_z.cc \
 	tensor/tensor_norm0_d.cc \
 	tensor/tensor_norm0_z.cc \
 	generated/tensor_unop_abs_d.cc \
@@ -87,6 +89,7 @@ pkginclude_HEADERS = \
 	$(top_srcdir)/include/tensor/detail/sparse_kron.hpp \
 	$(top_srcdir)/include/tensor/detail/sparse_ops.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_base.hpp \
+	$(top_srcdir)/include/tensor/detail/tensor_kron.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_matrix.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_ops.hpp \
 	$(top_srcdir)/include/tensor/detail/tensor_reshape.hpp \

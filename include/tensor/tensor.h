@@ -303,6 +303,11 @@ Tensor<typename Binop<t1,t2>::type> operator*(const t1 &a, const Tensor<t2> &b);
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 
+  template<typename elt_t>
+  const Tensor<elt_t> kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b);
+  template<typename elt_t>
+  const Tensor<elt_t> kron2(const Tensor<elt_t> &a, const Tensor<elt_t> &b);
+
 } // namespace tensor
 
 //////////////////////////////////////////////////////////////////////
@@ -311,6 +316,7 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/tensor_base.hpp>
 #include <tensor/detail/tensor_matrix.hpp>
+#include <tensor/detail/tensor_kron.hpp>
 #endif
 #include <tensor/detail/tensor_slice.hpp>
 #include <tensor/detail/tensor_reshape.hpp>
