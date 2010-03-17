@@ -34,21 +34,21 @@ namespace tensor {
   template<typename elt_t>
   const Sparse<elt_t> kron(const Sparse<elt_t> &s2, const Sparse<elt_t> &s1)
   {
-    if (s1.is_empty())
-	return s2;
-    if (s2.is_empty())
-	return s1;
     index rows1 = s1.rows();
     index cols1 = s1.columns();
     index rows2 = s2.rows();
     index cols2 = s2.columns();
     index number_nonzero = s1.length() * s2.length();
     index total_rows = rows1 * rows2;
+    index total_cols = cols1 * cols2;
+
+    if (number_nonzero == 0)
+      return Sparse<elt_t>(total_rows, total_cols);
 
     Vector<elt_t> output_data(number_nonzero);
     Indices output_column(number_nonzero);
     Indices output_row_start(total_rows+1);
-    Indices output_dims(igen << total_rows << cols1*cols2);
+    Indices output_dims(igen << total_rows << total_cols);
 
     typename Vector<elt_t>::iterator out_data = output_data.begin();
     typename Indices::iterator out_column = output_column.begin();
