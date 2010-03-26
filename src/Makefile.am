@@ -103,6 +103,8 @@ pkginclude_HEADERS = \
 	$(top_srcdir)/include/tensor/refcount.h \
 	$(top_srcdir)/include/tensor/sparse.h \
 	$(top_srcdir)/include/tensor/tensor.h \
+	$(top_srcdir)/include/tensor/tensor_blas.h \
+	$(top_srcdir)/include/tensor/tensor_lapack.h \
 	$(top_srcdir)/include/tensor/tools.h \
 	$(top_srcdir)/include/tensor/vector.h \
 	$(top_builddir)/include/tensor/config.h
