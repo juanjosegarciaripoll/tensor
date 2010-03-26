@@ -20,7 +20,7 @@
 #ifndef TENSOR_GEMM_CC
 #define TENSOR_GEMM_CC
 
-#include <tensor/cblas.h>
+#include <tensor/tensor_blas.h>
 
 namespace blas {
 

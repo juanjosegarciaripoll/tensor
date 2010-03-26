@@ -18,7 +18,7 @@
 */
 
 #include <tensor/tensor.h>
-#include <tensor/clapack.h>
+#include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
 
 namespace linalg {

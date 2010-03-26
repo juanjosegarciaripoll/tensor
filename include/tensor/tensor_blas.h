@@ -17,8 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef TENSOR_CBLAS_H
-#define TENSOR_CBLAS_H
+#ifndef TENSOR_TENSOR_BLAS_H
+#define TENSOR_TENSOR_BLAS_H
 
 #include <tensor/config.h>
 
@@ -92,4 +92,4 @@ namespace blas {
 
 }
 
-#endif // TENSOR_CLAPACK_H
+#endif // TENSOR_TENSOR_BLAS_H

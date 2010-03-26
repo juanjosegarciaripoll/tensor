@@ -17,10 +17,10 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef TENSOR_CLAPACK_H
-#define TENSOR_CLAPACK_H
+#ifndef TENSOR_TENSOR_LAPACK_H
+#define TENSOR_TENSOR_LAPACK_H
 
-#include <tensor/cblas.h>
+#include <tensor/tensor_blas.h>
 
 namespace lapack {
 
@@ -63,4 +63,4 @@ extern "C" {
 
 }
 
-#endif // TENSOR_CLAPACK_H
+#endif // TENSOR_TENSOR_LAPACK_H
