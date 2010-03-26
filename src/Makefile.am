@@ -85,6 +85,7 @@ pkginclude_HEADERS = \
 	$(top_srcdir)/include/tensor/detail/common.h \
 	$(top_srcdir)/include/tensor/detail/functional.h \
 	$(top_srcdir)/include/tensor/detail/io.hpp \
+	$(top_srcdir)/include/tensor/detail/refcount.hpp \
 	$(top_srcdir)/include/tensor/detail/sparse_base.hpp \
 	$(top_srcdir)/include/tensor/detail/sparse_kron.hpp \
 	$(top_srcdir)/include/tensor/detail/sparse_ops.hpp \
