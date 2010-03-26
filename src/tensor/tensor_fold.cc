@@ -21,7 +21,7 @@
 #include <iostream>
 #include <tensor/tensor.h>
 #include <tensor/io.h>
-#include <tensor/clapack.h>
+#include <tensor/tensor_lapack.h>
 #include "gemm.cc"
 
 namespace tensor {
