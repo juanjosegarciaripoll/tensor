@@ -99,8 +99,8 @@ namespace tensor_test {
 
         Tensor<elt_t> U, Vt;
         RTensor s = linalg::svd(A, &U, &Vt, false);
-        EXPECT_TRUE(unitaryp(U));
-        EXPECT_TRUE(unitaryp(Vt));
+        EXPECT_TRUE(unitaryp(U,1e-10));
+        EXPECT_TRUE(unitaryp(Vt,1e-10));
         EXPECT_EQ(abs(s), s);
         EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s, 0,m,n), Vt))));
 
