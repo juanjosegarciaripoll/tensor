@@ -101,7 +101,7 @@ namespace tensor_test {
         for (tensor::index k = 0; k < b2; k++)
           for (tensor::index l = 0; l < a2; l++)
             output.at(i,j,k,l) = b(i,k) * a(j,l);
-    return output;
+    return reshape(output, b1*a1,b2*a2);
   }
 
   template<typename elt_t>
