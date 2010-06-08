@@ -80,32 +80,3 @@ libtensor_la_SOURCES += rand/rand64.cc
 else
 libtensor_la_SOURCES += rand/rand32.cc
 endif
-
-pkginclude_HEADERS = \
-	$(top_srcdir)/include/tensor/detail/common.h \
-	$(top_srcdir)/include/tensor/detail/functional.h \
-	$(top_srcdir)/include/tensor/detail/io.hpp \
-	$(top_srcdir)/include/tensor/detail/refcount.hpp \
-	$(top_srcdir)/include/tensor/detail/sparse_base.hpp \
-	$(top_srcdir)/include/tensor/detail/sparse_kron.hpp \
-	$(top_srcdir)/include/tensor/detail/sparse_ops.hpp \
-	$(top_srcdir)/include/tensor/detail/tensor_base.hpp \
-	$(top_srcdir)/include/tensor/detail/tensor_kron.hpp \
-	$(top_srcdir)/include/tensor/detail/tensor_matrix.hpp \
-	$(top_srcdir)/include/tensor/detail/tensor_ops.hpp \
-	$(top_srcdir)/include/tensor/detail/tensor_reshape.hpp \
-	$(top_srcdir)/include/tensor/detail/tensor_slice.hpp \
-	$(top_srcdir)/include/tensor/gen.h \
-	$(top_srcdir)/include/tensor/indices.h \
-	$(top_srcdir)/include/tensor/io.h \
-	$(top_srcdir)/include/tensor/linalg.h \
-	$(top_srcdir)/include/tensor/numbers.h \
-	$(top_srcdir)/include/tensor/rand.h \
-	$(top_srcdir)/include/tensor/refcount.h \
-	$(top_srcdir)/include/tensor/sparse.h \
-	$(top_srcdir)/include/tensor/tensor.h \
-	$(top_srcdir)/include/tensor/tensor_blas.h \
-	$(top_srcdir)/include/tensor/tensor_lapack.h \
-	$(top_srcdir)/include/tensor/tools.h \
-	$(top_srcdir)/include/tensor/vector.h \
-	$(top_builddir)/include/tensor/config.h

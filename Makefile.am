@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src www
+SUBDIRS = src include www
 
 include aminclude.am
 
