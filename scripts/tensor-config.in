@@ -1,8 +1,8 @@
 #!/bin/sh
 
 case $1 in
-    --cflags)	echo @CONFIG_CFLAGS@;;
-    --ldflags)	echo @CONFIG_LDFLAGS@;;
+    --cxxflags)	echo @CPPFLAGS@ @CXXFLAGS@;;
+    --ldflags)	echo @LDFLAGS@;;
     *)		cat <<EOF
 tensor-config [--cflags | --ldflags]
 
