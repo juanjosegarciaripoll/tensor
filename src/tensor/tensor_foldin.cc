@@ -85,7 +85,10 @@ namespace tensor {
       rank = 1;
       new_dims.at(0) = 1;
     }
-    output.reshape(new_dims);
+    output = Tensor<elt_t>(new_dims);
+    if (output.size() == 0)
+      return;
+
     elt_t *pC = output.begin();
     elt_t zero = number_zero<elt_t>();
     elt_t one = number_one<elt_t>();
