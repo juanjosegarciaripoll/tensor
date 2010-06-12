@@ -55,6 +55,7 @@ AC_DEFUN([TENSOR_ESSL],[
     # AIX version of the libraries
     ESSL_CXXFLAGS="-qnocinc=/usr/include/essl"
   fi
+  have_lapack_essl=no
   if test $ac_cv_sizeof_long = 8 ; then    
     AC_CHECK_LIB([esslsmp6464], [esvsgemm],
                  [have_essl=yes;
@@ -70,6 +71,12 @@ AC_DEFUN([TENSOR_ESSL],[
                    [have_essl=no],
                    [$ESSL_XTRA64])
     fi
+    if test $have_essl = yes ; then
+      AC_CHECK_LIB([lapack_essl6464], [sgbsv], [have_essl_lapack=yes],
+                   [have_essl_lapack=no], [$ESSL_LIBS])
+      ESSL_LAPACK_LIB=liblapack_essl6464.a
+      AC_SUBST([ESSL_LAPACK_LIB])
+    fi
   else
     AC_CHECK_LIB([esslsmp], [esvsgemm],
                  [have_essl=yes;
@@ -83,8 +90,13 @@ AC_DEFUN([TENSOR_ESSL],[
                    [have_essl=no],
                    [$ESSL_XTRA])
     fi
+    if test $have_essl = yes ; then
+      AC_CHECK_LIB([lapack_essl], [sgbsv], [have_essl_lapack=yes], [have_essl_lapack=no],
+                   [$ESSL_LIBS])
+      ESSL_LAPACK_LIB=liblapack_essl.a
+      AC_SUBST([ESSL_LAPACK_LIB])
+    fi
   fi
-  LIBS="$LIBS $ESSLIB"
   AC_MSG_CHECKING([for ESSL library])
   AC_MSG_RESULT([$have_essl])
 ])
@@ -151,5 +163,5 @@ AC_DEFUN([TENSOR_CHOOSE_LIB],[
     LIBS="$LIBS $ESSL_LIBS"
     CXXFLAGS="$CXXFLAGS $ESSL_CXXFLAGS"
   fi
-  AM_CONDITIONAL([USE_ESSL], [test $have_essl = yes])
+  AM_CONDITIONAL([BUILD_ESSL_LAPACK], [test $have_essl = yes -a $have_essl_lapack = no])
 ])

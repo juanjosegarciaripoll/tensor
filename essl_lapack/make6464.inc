@@ -1,10 +1,10 @@
 PLAT = _essl6464
-FORTRAN = xlf_r
-OPTS = -q64 -O -qnosave -qintsize=8
+FORTRAN = xlf_r -q64 -qnosave -qintsize=8
+OPTS = -O
 DRVOPTS  = $(OPTS)
 NOOPT    =
-LOADER   = xlf_r
-LOADOPTS =
+LOADER   = $(FORTRAN)
+LOADOPTS = $(OPTS)
 TIMER    = EXT_ETIME_
 ARCH     = ar
 ARCHFLAGS= cr
