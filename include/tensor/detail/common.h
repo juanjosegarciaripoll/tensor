@@ -32,4 +32,4 @@ namespace tensor {
 
 } // namespace tensor
 
-#endif TENSOR_DETAIL_COMMON_HPP
+#endif // TENSOR_DETAIL_COMMON_HPP
