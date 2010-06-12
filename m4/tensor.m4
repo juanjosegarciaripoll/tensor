@@ -40,6 +40,38 @@ AC_DEFUN([TENSOR_ATLAS],[
 
 
 dnl ----------------------------------------------------------------------
+dnl Find the ESSL library
+dnl
+AC_DEFUN([TENSOR_ESSL],[
+  AC_MSG_CHECKING([for ESSL library])
+  if test $ac_cv_sizeof_long = 8
+    
+    AC_CHECK_LIB([esslsmp6464], [esvsgemm],
+                 [have_essl=yes;
+                  ESSL_LIBS=-lesslsmp6464;
+                  ESSL_CXXFLAGS=-D_ESV6464],
+                 [have_essl=no])
+    if test $have_essl = no ; then
+      AC_CHECK_LIB([essl], [esvsgemm],
+                   [have_essl=yes;
+                    ESSL_LIBS=-lessl6464
+                    ESSL_CXXFLAGS=-D_ESV6464],
+                   [have_essl=no])
+    fi
+  else
+    AC_CHECK_LIB([esslsmp], [esvsgemm],
+                 [have_essl=yes; ESSL_LIBS=-lesslsmp], [have_essl=no])
+    if test $have_essl = no ; then
+      AC_CHECK_LIB([essl], [esvsgemm],
+                   [have_essl=yes; ESSL_LIBS=-lessl], [have_essl=no])
+    fi
+  fi
+  LIBS="$LIBS $ESSLIB"
+  AC_MSG_RESULT([$have_essl])
+])
+
+
+dnl ----------------------------------------------------------------------
 dnl Find the MKL library
 dnl
 AC_DEFUN([TENSOR_MKL],[
@@ -90,5 +122,11 @@ AC_DEFUN([TENSOR_CHOOSE_LIB],[
     AC_DEFINE(TENSOR_USE_ATLAS, [1], [Use Atlas for matrix operations])
     LIBS="$LIBS $ATLAS_LIBS"
     CXXFLAGS="$CXXFLAGS $ATLAS_CXXFLAGS"
+    have_essl=no
+  fi
+  if test $have_essl = yes; then
+    AC_DEFINE(TENSOR_USE_ESSL, [1], [Use ESSL for matrix operations])
+    LIBS="$LIBS $ESSL_LIBS"
+    CXXFLAGS="$CXXFLAGS $ESSL_CXXFLAGS"
   fi
 ])
