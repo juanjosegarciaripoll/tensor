@@ -1,10 +1,12 @@
 #!/bin/sh
-
+prefix=@prefix@
+exec_prefix=@exec_prefix@
 case $1 in
-    --cxxflags)	echo @CPPFLAGS@ @CXXFLAGS@;;
-    --ldflags)	echo @LDFLAGS@;;
+    --cppflags)	echo @CPPFLAGS@ -I@includedir@;;
+    --cxxflags)	echo @CXXFLAGS@;;
+    --ldflags)	echo -L@libdir@ -ltensor @LDFLAGS@;;
     *)		cat <<EOF
-tensor-config [--cflags | --ldflags]
+tensor-config [--cppflags | --cxxflags | --ldflags]
 
 	Outputs appropriate flags for compiling and linking programs
 	that make use of the Tensor library.
