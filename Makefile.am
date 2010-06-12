@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src include www
+SUBDIRS = src include www scripts
 
 include aminclude.am
 
@@ -8,7 +8,7 @@ EXTRA_DIST = autogen.sh $(DX_CONFIG) doc/html
 if HAVE_GTEST
 SUBDIRS += test
 endif
-if USE_ESSL
+if BUILD_ESSL_LAPACK
 SUBDIRS += essl_lapack
 endif
 

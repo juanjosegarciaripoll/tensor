@@ -1,5 +1,5 @@
 #
 # Scripts and utilities
 #
-bin_SCRIPTS = scripts/tensor-config
-CLEANFILES = $(bin_SCRIPTS)
+dist_bin_SCRIPTS = tensor-config
+CLEANFILES = $(dist_bin_SCRIPTS)
