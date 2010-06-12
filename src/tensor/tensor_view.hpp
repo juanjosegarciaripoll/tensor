@@ -242,7 +242,8 @@ namespace tensor {
   //
 
   template<typename elt_t> typename Tensor<elt_t>::mutable_view &
-  Tensor<elt_t>::mutable_view::operator=(const Tensor<elt_t>::mutable_view &t)
+  Tensor<elt_t>::mutable_view::operator=
+  (const typename Tensor<elt_t>::mutable_view &t)
   {
     assert(verify_tensor_dimensions_match(dims_, t.dims_));
     Range *r1 = ranges_;
