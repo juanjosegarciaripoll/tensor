@@ -33,8 +33,10 @@
 #define F77NAME(x) x##_
 #endif
 #ifdef TENSOR_USE_ATLAS
+extern "C" {
 #include <cblas.h>
 #include <clapack.h>
+}
 #define F77NAME(x) x##_
 #endif
 #if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL)
