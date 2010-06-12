@@ -163,5 +163,6 @@ AC_DEFUN([TENSOR_CHOOSE_LIB],[
     LIBS="$LIBS $ESSL_LIBS"
     CXXFLAGS="$CXXFLAGS $ESSL_CXXFLAGS"
   fi
-  AM_CONDITIONAL([BUILD_ESSL_LAPACK], [test $have_essl = yes -a $have_essl_lapack = no])
+  AM_CONDITIONAL([BUILD_ESSL_LAPACK],
+                 [test ${have_essl}${have_essl_lapack} = yesno])
 ])
