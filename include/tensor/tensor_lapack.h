@@ -32,7 +32,13 @@ namespace lapack {
 #ifdef TENSOR_USE_VECLIB
 #include <vecLib/clapack.h>
 #endif
-#ifdef TENSOR_USE_ATLAS
+#ifdef TENSOR_USE_ESSL
+#undef dgeev
+#undef zgeev
+#undef zgesvd
+#undef dgesvd
+#endif
+#if defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_ESSL)
 extern "C" {
   int F77NAME(dgeev)
     (char *jobvl, char *jobvr, __CLPK_integer *n, __CLPK_doublereal *

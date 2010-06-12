@@ -14,7 +14,8 @@ AC_CONFIG_MACRO_DIR([m4])		dnl Additional macro directories
 AC_CONFIG_AUX_DIR([config_aux])		dnl Where to put autoconf files
 AC_CONFIG_HEADERS([config_aux/config.h])	dnl Automatically generated
 AC_CONFIG_FILES([Makefile src/Makefile include/Makefile
-                 scripts/Makefile test/Makefile www/Makefile])
+                 scripts/Makefile test/Makefile www/Makefile
+                 essl_lapack/Makefile])
 AC_CONFIG_FILES([scripts/tensor-config], [chmod +x scripts/tensor-config])
 AC_CONFIG_HEADERS([include/tensor/config.h:include/tensor/config.h.in])
 
@@ -40,11 +41,14 @@ AC_PROG_CXX
 AC_LANG([C++])
 AC_PROG_LIBTOOL
 
+# Size of computer words
+TENSOR_BITS
+
 # Numerical libraries
 TENSOR_CHOOSE_LIB
 
 # Unit testing with google
-if which gtest-config >/dev/null; then
+if which gtest-config 2>/dev/null; then
   HAVE_GTEST=1
   GTEST_CFLAGS=`gtest-config --cppflags --cxxflags`
   GTEST_LDFLAGS=`gtest-config --ldflags --libs`
@@ -52,9 +56,6 @@ fi
 AM_CONDITIONAL([HAVE_GTEST], [test "x$HAVE_GTEST" != x])
 AC_SUBST(GTEST_CFLAGS)
 AC_SUBST(GTEST_LDFLAGS)
-
-# Size of computer words
-TENSOR_BITS
 
 # Doxygen support
 

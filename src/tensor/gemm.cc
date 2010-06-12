@@ -20,6 +20,9 @@
 #ifndef TENSOR_GEMM_CC
 #define TENSOR_GEMM_CC
 
+#ifdef TENSOR_USE_ESSL
+#include <essl.h>
+#endif
 #include <tensor/tensor_blas.h>
 
 namespace blas {
@@ -28,8 +31,12 @@ namespace blas {
                    double alpha, const double *A, integer lda, const double *B,
                    integer ldb, double beta, double *C, integer ldc)
   {
+#ifdef TENSOR_USE_ESSL
+    dgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+#else
     cblas_dgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
                 m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+#endif
   }
 
   inline void gemm(char op1, char op2, integer m, integer n, integer k,
@@ -37,8 +44,12 @@ namespace blas {
                    const tensor::cdouble *B, integer ldb, const tensor::cdouble &beta,
                    tensor::cdouble *C, integer ldc)
   {
+#ifdef TENSOR_USE_ESSL
+    zgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+#else
     cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
                 m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc);
+#endif
   }
 
 }

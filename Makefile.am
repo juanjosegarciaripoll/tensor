@@ -8,6 +8,9 @@ EXTRA_DIST = autogen.sh $(DX_CONFIG) doc/html
 if HAVE_GTEST
 SUBDIRS += test
 endif
+if USE_ESSL
+SUBDIRS += essl_lapack
+endif
 
 upload-doc: doxygen-doc
 	rsync -rauvz doc/html dreamhost:tream.dreamhosters.com/tensor/

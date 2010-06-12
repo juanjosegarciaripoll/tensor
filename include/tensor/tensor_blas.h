@@ -39,8 +39,12 @@ extern "C" {
 }
 #define F77NAME(x) x##_
 #endif
-#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL)
-# error "We need to use one of these libraries: VecLib, Atlas"
+#ifdef TENSOR_USE_ESSL
+#include <essl.h>
+#define F77NAME(x) x
+#endif
+#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL) && !defined(TENSOR_USE_ESSL)
+# error "We need to use one of these libraries: VecLib, Atlas, MKL, ESSL"
 #endif
 
 namespace blas {
@@ -59,6 +63,13 @@ namespace blas {
 #ifdef TENSOR_USE_MKL
   typedef MKL_INT integer;
   typedef struct { double re, im; } cdouble;
+#endif
+#ifdef TENSOR_USE_ESSL
+  typedef _ESVINT integer;
+  typedef _ESVCOM cdouble;
+  typedef _ESVINT __CLPK_integer;
+  typedef double __CLPK_doublereal;
+  typedef _ESVCOM __CLPK_doublecomplex;
 #endif
 
 #if defined(TENSOR_USE_VECLIB) || defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_MKL)
