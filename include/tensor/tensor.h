@@ -352,6 +352,7 @@ namespace tensor {
   inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
 
   const RTensor fold(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+  const RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
   const RTensor foldin(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
   const RTensor mmult(const RTensor &a, const RTensor &b);
 
@@ -368,6 +369,10 @@ namespace tensor {
   const CTensor to_complex(const RTensor &r);
   inline const CTensor to_complex(const CTensor &r) { return r; }
   const CTensor to_complex(const RTensor &r, const RTensor &i);
+
+  /**Complex conjugate of a real tensor. Returns the same tensor.*/
+  inline const RTensor conj(const RTensor &r) { return r; }
+  const CTensor conj(const CTensor &c);
 
   RTensor abs(const CTensor &t);
   CTensor cos(const CTensor &t);
@@ -389,6 +394,10 @@ namespace tensor {
   const CTensor fold(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
   const CTensor fold(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
   const CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
+
+  const CTensor foldc(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
+  const CTensor foldc(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
+  const CTensor foldc(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
 
   const CTensor mmult(const CTensor &a, const CTensor &b);
   const CTensor mmult(const RTensor &a, const CTensor &b);

@@ -44,11 +44,26 @@ namespace tensor {
     return output;
   }
 
+  /**Contraction of two tensors. The code \c C=foldc(A,n,B,m) acting on real
+     tensors does the same as \c fold(A,n,B,m).
+
+     \ingroup Tensors
+  */
+  const Tensor<double> foldc(const Tensor<double> &a, int ndx1,
+                             const Tensor<double> &b, int ndx2)
+  {
+    Tensor<double> output;
+    do_fold<double, false>(output, a, ndx1, b, ndx2);
+    return output;
+  }
+
   void fold_into(Tensor<double> &c, const Tensor<double> &a, int ndx1,
                  const Tensor<double> &b, int ndx2)
   {
     do_fold<double, false>(c, a, ndx1, b, ndx2);
   }
+
+  /**Matrix multiplication. \c mmult(A,B) is equivalent to \c fold(A,-1,B,0). */
 
   const Tensor<double> mmult(const Tensor<double> &m1, const Tensor<double> &m2)
   {
