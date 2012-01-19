@@ -40,6 +40,14 @@ namespace lapack {
 #endif
 #if defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_ESSL)
 extern "C" {
+  int F77NAME(dgesv)
+    (__CLPK_integer *n, __CLPK_integer *nrhs, __CLPK_doublereal *a,
+     __CLPK_integer *lda, __CLPK_integer *ipiv, __CLPK_doublereal *b,
+     __CLPK_integer *ldb, __CLPK_integer *info);
+  int F77NAME(zgesv)
+    (__CLPK_integer *n, __CLPK_integer *nrhs, __CLPK_doublecomplex *a,
+     __CLPK_integer *lda, __CLPK_integer *ipiv, __CLPK_doublecomplex *b,
+     __CLPK_integer *ldb, __CLPK_integer *info);
   int F77NAME(dgeev)
     (char *jobvl, char *jobvr, __CLPK_integer *n, __CLPK_doublereal *
      a, __CLPK_integer *lda, __CLPK_doublereal *wr, __CLPK_doublereal *wi,
