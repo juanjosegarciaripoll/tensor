@@ -417,8 +417,10 @@ namespace tensor {
 
   const RTensor scale(const RTensor &t, int ndx1, const RTensor &v);
   const CTensor scale(const CTensor &t, int ndx1, const CTensor &v);
+  const CTensor scale(const CTensor &t, int ndx1, const RTensor &v);
   void scale_inplace(RTensor &t, int ndx1, const RTensor &v);
   void scale_inplace(CTensor &t, int ndx1, const CTensor &v);
+  void scale_inplace(CTensor &t, int ndx1, const RTensor &v);
 
   const CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 } // namespace tensor

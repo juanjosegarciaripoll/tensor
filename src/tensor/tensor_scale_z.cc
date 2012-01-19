@@ -59,4 +59,15 @@ namespace tensor {
     doscale(t.begin(), v.begin_const(), d1, d2, d3);
   }
 
+  const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
+			      const Tensor<double> &v)
+  {
+    return scale(t, ndx, to_complex(v));
+  }
+
+  void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<double> &v)
+  {
+    scale_inplace(t, ndx, to_complex(v));
+  }
+
 } // namespace tensor
