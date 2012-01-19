@@ -29,7 +29,7 @@ namespace tensor {
      \ingroup Tensors
   */
   const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
-			      const Vector<cdouble> &v)
+			      const Tensor<cdouble> &v)
   {
     index d1, d2, d3;
     Tensor<cdouble> output(t.dimensions());
@@ -45,7 +45,7 @@ namespace tensor {
     return output;
   }
 
-  void scale_inplace(Tensor<cdouble> &t, int ndx, const Vector<cdouble> &v)
+  void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<cdouble> &v)
   {
     index d1, d2, d3;
     get_surrounding_dims(t.dimensions(), normalize_index(ndx, t.rank()),
