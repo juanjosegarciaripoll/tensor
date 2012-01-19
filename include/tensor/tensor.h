@@ -332,6 +332,8 @@ namespace tensor {
   /** Real Tensor with elements of type "double". */
   typedef Tensor<double> RTensor;
 
+  double sum(const RTensor &r);
+
   double norm0(const RTensor &r);
   double scprod(const RTensor &a, const RTensor &b);
   double norm2(const RTensor &r);
@@ -367,6 +369,8 @@ namespace tensor {
   extern template class Tensor<cdouble>;
   /** Complex Tensor with elements of type "cdouble". */
   typedef Tensor<cdouble> CTensor;
+
+  double sum(const RTensor &r);
 
   double norm0(const CTensor &r);
   cdouble scprod(const CTensor &a, const CTensor &b);

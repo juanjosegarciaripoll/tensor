@@ -43,6 +43,8 @@ libtensor_la_SOURCES = \
 	tensor/tensor_foldin_z.cc \
 	tensor/tensor_kron_d.cc \
 	tensor/tensor_kron_z.cc \
+	tensor/tensor_sum_d.cc \
+	tensor/tensor_sum_z.cc \
 	tensor/tensor_norm0_d.cc \
 	tensor/tensor_norm0_z.cc \
 	tensor/tensor_norm2_d.cc \
