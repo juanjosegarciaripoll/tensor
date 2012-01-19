@@ -28,6 +28,9 @@ namespace linalg {
   using tensor::RTensor;
   using tensor::CTensor;
 
+  const RTensor solve(const RTensor &A, const RTensor &B);
+  const CTensor solve(const CTensor &A, const CTensor &B);
+
   extern bool accurate_svd;
 
   RTensor svd(RTensor A, RTensor *pU = 0, RTensor *pVT = 0, bool economic = 0);
@@ -38,6 +41,9 @@ namespace linalg {
 
   RTensor eig_sym(RTensor A, RTensor *pR = 0);
   RTensor eig_sym(CTensor A, CTensor *pR = 0);
+
+  const RTensor expm(const RTensor &A, unsigned int order = 7);
+  const CTensor expm(const CTensor &A, unsigned int order = 7);
 
 } // namespace linalg
 

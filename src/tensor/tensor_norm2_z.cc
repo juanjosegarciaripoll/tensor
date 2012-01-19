@@ -23,7 +23,7 @@ namespace tensor {
 
   double norm2(const CTensor &r)
   {
-    return sqrt(real(scprod(r, r)));
+    return ::sqrt(real(scprod(r, r)));
   }
 
   cdouble scprod(const CTensor &a, const CTensor &b)

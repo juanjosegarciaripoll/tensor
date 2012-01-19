@@ -48,6 +48,7 @@ libtensor_la_SOURCES = \
 	tensor/tensor_scale_d.cc \
 	tensor/tensor_scale_z.cc \
 	generated/tensor_unop_abs_d.cc \
+	generated/tensor_unop_sqrt_d.cc \
 	generated/tensor_unop_exp_d.cc \
 	generated/tensor_unop_cos_d.cc \
 	generated/tensor_unop_sin_d.cc \
@@ -63,10 +64,13 @@ libtensor_la_SOURCES = \
 	generated/tensor_unop_sinh_z.cc \
 	generated/tensor_unop_tanh_z.cc \
 	generated/tensor_unop_exp_z.cc \
+	generated/tensor_unop_sqrt_z.cc \
 	linalg/eig_d.cc \
 	linalg/eig_z.cc \
 	linalg/svd_d.cc \
 	linalg/svd_z.cc \
+	linalg/solve_d.cc \
+	linalg/solve_z.cc \
 	views/range.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile

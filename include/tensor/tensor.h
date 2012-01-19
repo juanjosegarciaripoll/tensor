@@ -344,6 +344,7 @@ namespace tensor {
   RTensor sinh(const RTensor &t);
   RTensor tanh(const RTensor &t);
   RTensor exp(const RTensor &t);
+  RTensor sqrt(const RTensor &t);
 
   const RTensor diag(const RTensor &d, int which, int rows, int cols);
   const RTensor diag(const RTensor &d, int which = 0);
@@ -386,6 +387,7 @@ namespace tensor {
   CTensor sinh(const CTensor &t);
   CTensor tanh(const CTensor &t);
   CTensor exp(const CTensor &t);
+  CTensor sqrt(const CTensor &t);
 
   const CTensor diag(const CTensor &d, int which, int rows, int cols);
   const CTensor diag(const CTensor &d, int which = 0);
@@ -407,10 +409,10 @@ namespace tensor {
   const CTensor mmult(const RTensor &a, const CTensor &b);
   const CTensor mmult(const CTensor &a, const RTensor &b);
 
-  const RTensor scale(const RTensor &t, int ndx1, const Vector<double> &v);
-  const CTensor scale(const CTensor &t, int ndx1, const Vector<double> &v);
-  void scale_inplace(RTensor &t, int ndx1, const Vector<double> &v);
-  void scale_inplace(CTensor &t, int ndx1, const Vector<cdouble> &v);
+  const RTensor scale(const RTensor &t, int ndx1, const RTensor &v);
+  const CTensor scale(const CTensor &t, int ndx1, const CTensor &v);
+  void scale_inplace(RTensor &t, int ndx1, const RTensor &v);
+  void scale_inplace(CTensor &t, int ndx1, const CTensor &v);
 
   const CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 } // namespace tensor
