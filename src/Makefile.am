@@ -43,6 +43,8 @@ libtensor_la_SOURCES = \
 	tensor/tensor_kron_z.cc \
 	tensor/tensor_norm0_d.cc \
 	tensor/tensor_norm0_z.cc \
+	tensor/tensor_scale_d.cc \
+	tensor/tensor_scale_z.cc \
 	generated/tensor_unop_abs_d.cc \
 	generated/tensor_unop_exp_d.cc \
 	generated/tensor_unop_cos_d.cc \

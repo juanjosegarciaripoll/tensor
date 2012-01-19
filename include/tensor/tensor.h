@@ -403,6 +403,11 @@ namespace tensor {
   const CTensor mmult(const RTensor &a, const CTensor &b);
   const CTensor mmult(const CTensor &a, const RTensor &b);
 
+  const RTensor scale(const RTensor &t, int ndx1, const Vector<double> &v);
+  const CTensor scale(const CTensor &t, int ndx1, const Vector<double> &v);
+  void scale_inplace(RTensor &t, int ndx1, const Vector<double> &v);
+  void scale_inplace(CTensor &t, int ndx1, const Vector<cdouble> &v);
+
   const CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 } // namespace tensor
 
