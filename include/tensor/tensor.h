@@ -333,6 +333,8 @@ namespace tensor {
   typedef Tensor<double> RTensor;
 
   double norm0(const RTensor &r);
+  double scprod(const RTensor &a, const RTensor &b);
+  double norm2(const RTensor &r);
 
   RTensor abs(const RTensor &t);
   RTensor cos(const RTensor &t);
@@ -365,6 +367,8 @@ namespace tensor {
   typedef Tensor<cdouble> CTensor;
 
   double norm0(const CTensor &r);
+  cdouble scprod(const CTensor &a, const CTensor &b);
+  double norm2(const CTensor &r);
 
   const CTensor to_complex(const RTensor &r);
   inline const CTensor to_complex(const CTensor &r) { return r; }
