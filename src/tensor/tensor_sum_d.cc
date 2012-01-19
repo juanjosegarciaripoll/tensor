@@ -23,7 +23,7 @@ namespace tensor {
 
   double sum(const RTensor &r)
   {
-    return std::accumulate(r.begin(), r.end(), 0);
+    return std::accumulate(r.begin_const(), r.end_const(), (double)0.0);
   }
 
 } // namespace tensor
