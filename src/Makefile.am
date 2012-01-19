@@ -25,6 +25,8 @@ libtensor_la_SOURCES = \
 	tensor/tensor_z.cc \
 	tensor/tensor_to_complex.cc \
 	tensor/tensor_conj.cc \
+	tensor/matrix_norminf_d.cc \
+	tensor/matrix_norminf_z.cc \
 	tensor/matrix_adjoint_z.cc \
 	tensor/matrix_diag_d.cc \
 	tensor/matrix_diag_z.cc \
@@ -71,6 +73,8 @@ libtensor_la_SOURCES = \
 	linalg/svd_z.cc \
 	linalg/solve_d.cc \
 	linalg/solve_z.cc \
+	linalg/expm_d.cc \
+	linalg/expm_z.cc \
 	views/range.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
