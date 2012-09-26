@@ -48,14 +48,29 @@ TENSOR_BITS
 TENSOR_CHOOSE_LIB
 
 # Unit testing with google
-if which gtest-config 2>/dev/null; then
-  HAVE_GTEST=1
-  GTEST_CFLAGS=`gtest-config --cppflags --cxxflags`
-  GTEST_LDFLAGS=`gtest-config --ldflags --libs`
+if test -d "${top_srcdir}/test/googletest-read-only"; then
+  GTEST_DIR="${top_srcdir}/test/googletest-read-only"
+else
+  if test -d "${top_srcdir}/test/gtest-1.6.0"; then
+    GTEST_DIR="${top_srcdir}/test/gtest-1.6.0"
+  else
+    test -d "`pwd`/test" || mkdir "`pwd`/test"
+    ls -l test
+    if (which unzip > /dev/null && which curl > /dev/null && \
+        cd test && \
+        curl "http://googletest.googlecode.com/files/gtest-1.6.0.zip" > tmp.zip && \
+        unzip -x tmp.zip -d "`pwd`" && \
+        rm tmp.zip); then
+      GTEST_DIR="`pwd`/test/gtest-1.6.0"
+    else
+      GTEST_DIR=""
+      AC_MSG_WARN([Please download google test library in `pwd`/test/])
+    fi
+    ls -l test
+  fi
 fi
-AM_CONDITIONAL([HAVE_GTEST], [test "x$HAVE_GTEST" != x])
-AC_SUBST(GTEST_CFLAGS)
-AC_SUBST(GTEST_LDFLAGS)
+AM_CONDITIONAL([HAVE_GTEST], [test "x${GTEST_DIR}" != x])
+AC_SUBST(GTEST_DIR)
 
 # Doxygen support
 

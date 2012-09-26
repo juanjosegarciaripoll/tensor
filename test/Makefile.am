@@ -1,7 +1,11 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src \
-	-I$(top_builddir)/include @GTEST_CFLAGS@
+	-I$(top_builddir)/include -I"@GTEST_DIR@/include" -I"@GTEST_DIR@" 
+
+# All Google Test headers.  Usually you shouldn't change this
+# definition.
+GTEST_LDFLAGS = libgtest_main.a $(LDFLAGS)
 
 #
 # No rules here yet
@@ -12,102 +16,122 @@ check_PROGRAMS =
 TESTS += test_refcount
 check_PROGRAMS += test_refcount
 test_refcount_SOURCES = test_refcount.cc
-test_refcount_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_refcount_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_index
 check_PROGRAMS += test_index
 test_index_SOURCES = test_index.cc
-test_index_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_index_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_rand
 check_PROGRAMS += test_rand
 test_rand_SOURCES = test_rand.cc
-test_rand_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_rand_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_tensor
 check_PROGRAMS += test_tensor
 test_tensor_SOURCES = test_tensor_base.cc \
 	test_tensor_getset.cc
-test_tensor_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_tensor_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_tensor_unop
 check_PROGRAMS += test_tensor_unop
 test_tensor_unop_SOURCES = test_tensor_unop.cc
-test_tensor_unop_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_tensor_unop_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_tensor_binop
 check_PROGRAMS += test_tensor_binop
 test_tensor_binop_SOURCES = test_tensor_binop.cc
-test_tensor_binop_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_tensor_binop_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_tensor_binop_error
 check_PROGRAMS += test_tensor_binop_error
 test_tensor_binop_error_SOURCES = test_tensor_binop_error.cc
-test_tensor_binop_error_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_tensor_binop_error_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_tensor_kron
 check_PROGRAMS += test_tensor_kron
 test_tensor_kron_SOURCES = test_tensor_kron.cc
-test_tensor_kron_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_tensor_kron_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_tensor_permute
 check_PROGRAMS += test_tensor_permute
 test_tensor_permute_SOURCES = test_tensor_permute.cc
-test_tensor_permute_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_tensor_permute_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_view_read
 check_PROGRAMS += test_view_read
 test_view_read_SOURCES = test_view_read.cc
-test_view_read_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_view_read_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_view_set
 check_PROGRAMS += test_view_set
 test_view_set_SOURCES = test_view_set.cc
-test_view_set_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_view_set_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_view_errors
 check_PROGRAMS += test_view_errors
 test_view_errors_SOURCES = test_view_errors.cc
-test_view_errors_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_view_errors_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_matrix
 check_PROGRAMS += test_matrix
 test_matrix_SOURCES = test_matrix.cc
-test_matrix_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_matrix_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_sparse_base
 check_PROGRAMS += test_sparse_base
 test_sparse_base_SOURCES = test_sparse_base.cc
-test_sparse_base_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_sparse_base_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_sparse_kron
 check_PROGRAMS += test_sparse_kron
 test_sparse_kron_SOURCES = test_sparse_kron.cc
-test_sparse_kron_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_sparse_kron_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_mmult
 check_PROGRAMS += test_mmult
 test_mmult_SOURCES = test_mmult.cc
-test_mmult_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_mmult_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_fold
 check_PROGRAMS += test_fold
 test_fold_SOURCES = test_fold.cc
-test_fold_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_fold_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_linalg_svd
 check_PROGRAMS += test_linalg_svd
 test_linalg_svd_SOURCES = test_linalg_svd.cc
-test_linalg_svd_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_linalg_svd_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_linalg_eig
 check_PROGRAMS += test_linalg_eig
 test_linalg_eig_SOURCES = test_linalg_eig.cc
-test_linalg_eig_LDADD = libtestmain.a ../src/libtensor.la @GTEST_LDFLAGS@ #-lstdc++
+test_linalg_eig_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
+TESTS += test_linalg_eig_power
+check_PROGRAMS += test_linalg_eig_power
+test_linalg_eig_power_SOURCES = test_linalg_eig_power.cc
+test_linalg_eig_power_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 	 random_unitary_d.cc random_unitary_z.cc
+
+#
+# Build the Google Test library. The way this library has changed: we now have to
+# compile it for every project. However, since we have downloaded the library, we
+# cannot rely on automake and we have to generate the sources.
+#
+
+noinst_LIBRARIES += libgtest.a
+libgtest_a_SOURCES = gtest-all.cc
+
+noinst_LIBRARIES += libgtest_main.a
+libgtest_main_a_SOURCES = gtest-all.cc gtest_main.cc
+
+gtest-all.cc gtest_main.cc :
+	cp @GTEST_DIR@/src/$@ .
 
 OUTPUT_FLAGS = CXX CXXFLAGS LDFLAGS \
 	TENSOR_USE_VECLIB TENSOR_USE_MKL TENSOR_USE_ATLAS \
