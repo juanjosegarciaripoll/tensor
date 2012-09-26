@@ -36,7 +36,8 @@ namespace linalg {
     assert(A.rank() == 2);
     assert(A.rows() == A.columns());
 
-    char *jobvl, *jobvr;
+    char jobvl[2] = "N";
+    char jobvr[2] = "N";
     integer lda, ldvl, ldvr, lwork, info;
     cdouble *vl, *vr, *w;
     double *rwork;
@@ -53,17 +54,15 @@ namespace linalg {
     if (L) {
       (*L) = CTensor(n,n);
       vl = tensor_pointer(*L);
-      jobvl = "V";
+      jobvl[0] = 'V';
     } else {
-      jobvl = "N";
       vl = NULL;
     }
     if (R) {
       (*R) = CTensor(n,n);
       vr = tensor_pointer(*R);
-      jobvr = "V";
+      jobvr[0] = 'V';
     } else {
-      jobvr = "N";
       vr = NULL;
     }
 

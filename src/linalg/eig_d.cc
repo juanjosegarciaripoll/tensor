@@ -46,7 +46,8 @@ namespace linalg {
     assert(A.rank() == 2);
     assert(A.rows() == A.columns());
 
-    char *jobvl, *jobvr;
+    char jobvl[2] = "N";
+    char jobvr[2] = "N";
     integer lda, ldvl, ldvr, lwork, info;
     double *vl, *vr, *wr, *wi;
     RTensor aux(A);
@@ -63,19 +64,17 @@ namespace linalg {
     if (L) {
       realL = new RTensor(n,n);
       vl = tensor_pointer(*realL);
-      jobvl = "V";
+      jobvl[0] = 'V';
     } else {
       realL = NULL;
-      jobvl = "N";
       vl = NULL;
     }
     if (R) {
       realR = new RTensor(n, n);
       vr = tensor_pointer(*realR);
-      jobvr = "V";
+      jobvr[0] = 'V';
     } else {
       realR = NULL;
-      jobvr = "N";
       vr = NULL;
     }
     ldvl = ldvr = n;

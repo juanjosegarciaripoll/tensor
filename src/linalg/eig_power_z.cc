@@ -26,10 +26,10 @@ namespace linalg {
 
      \ingroup Linalg
   */
-  cdouble
+  tensor::cdouble
   eig_power_right(const CTensor &O, CTensor *vector, size_t iter)
   {
-    return eig_power_loop(O, R, 1, iter);
+    return eig_power_loop(O, vector, 1, iter);
   }
 
   /**Left eigenvalue and eigenvector with the largest absolute
@@ -37,10 +37,10 @@ namespace linalg {
 
      \ingroup Linalg
   */
-  cdouble
+  tensor::cdouble
   eig_power_left(const CTensor &O, CTensor *vector, size_t iter)
   {
-    return eig_power_left(O, R, 0, iter);
+    return eig_power_loop(O, vector, 0, iter);
   }
 
 } // namespace linalg

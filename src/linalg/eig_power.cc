@@ -23,26 +23,28 @@
 
 namespace linalg {
 
-  template<class tensor>
-  tensor::elt_t
-  eig_power_loop(const tensor &O, tensor *vector, bool right, size_t iter)
+  using namespace tensor;
+
+  template<typename elt_t>
+  elt_t eig_power_loop(const Tensor<elt_t> &O, Tensor<elt_t> *vector,
+                       bool right, size_t iter)
   {
-    if (R.columns() != R.rows()) {
+    if (O.columns() != O.rows()) {
       std::cerr << "eig_right_power cannot solve non-square problems";
       abort();
     }
     if (iter == 0) {
       iter = 20;
     }
-    tensor v(R.columns());
+    Tensor<elt_t> v(O.columns());
     v.randomize();
     v = v / norm2(v);
-    tensor::elt_t old_eig;
+    elt_t old_eig;
     for (size_t i = 0; i <= iter; i++) {
-      tensor v_new = fold(O, right? -1 : 0, v, 0);
+      Tensor<elt_t> v_new = fold(O, right? -1 : 0, v, 0);
       double n = norm2(v_new);
       v = v_new / n;
-      tensor::elt_t eig = scprod(v_new, v);
+      elt_t eig = scprod(v_new, v);
       if (i) {
         double confidence = abs(eig - old_eig);
         if (confidence < 1e-11 * abs(eig)) {
