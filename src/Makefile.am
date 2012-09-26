@@ -77,6 +77,8 @@ libtensor_la_SOURCES = \
 	linalg/solve_z.cc \
 	linalg/expm_d.cc \
 	linalg/expm_z.cc \
+	linalg/eig_power_d.cc \
+	linalg/eig_power_z.cc \
 	views/range.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile

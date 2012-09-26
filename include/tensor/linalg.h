@@ -39,6 +39,11 @@ namespace linalg {
   const CTensor eig(const RTensor &A, CTensor *R = 0, CTensor *L = 0);
   const CTensor eig(const CTensor &A, CTensor *R = 0, CTensor *L = 0);
 
+  const RTensor eig_power_right(const RTensor &A, RTensor *vector = 0, size_t iter = 0);
+  const RTensor eig_power_left(const RTensor &A, RTensor *vector = 0, size_t iter = 0);
+  const CTensor eig_power_right(const CTensor &A, CTensor *vector = 0, size_t iter = 0);
+  const CTensor eig_power_left(const CTensor &A, CTensor *vector = 0, size_t iter = 0);
+
   RTensor eig_sym(RTensor A, RTensor *pR = 0);
   RTensor eig_sym(CTensor A, CTensor *pR = 0);
 
