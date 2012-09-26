@@ -27,9 +27,9 @@ namespace linalg {
      \ingroup Linalg
   */
   double
-  eig_power_right(const RTensor &O, RTensor *vector, size_t iter)
+  eig_power_right(const RTensor &O, RTensor *vector, size_t iter, double tol)
   {
-    return eig_power_loop(O, vector, 1, iter);
+    return eig_power_loop(O, vector, 1, iter, tol);
   }
 
   /**Left eigenvalue and eigenvector with the largest absolute
@@ -38,9 +38,9 @@ namespace linalg {
      \ingroup Linalg
   */
   double
-  eig_power_left(const RTensor &O, RTensor *vector, size_t iter)
+  eig_power_left(const RTensor &O, RTensor *vector, size_t iter, double tol)
   {
-    return eig_power_loop(O, vector, 0, iter);
+    return eig_power_loop(O, vector, 0, iter, tol);
   }
 
 } // namespace linalg

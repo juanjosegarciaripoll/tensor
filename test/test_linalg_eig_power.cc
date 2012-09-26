@@ -65,7 +65,7 @@ namespace tensor_test {
     Tensor<elt_t> U = tensor_test::random_unitary<elt_t>(n);
     Tensor<elt_t> lambda(n);
     lambda.randomize();
-    lambda.at(1) = 3.0; // Larger than other eigenvalues
+    lambda.at(0) = 5.0; // Larger than other eigenvalues
     return mmult(U, mmult(diag(lambda), adjoint(U)));
   }
 
@@ -79,9 +79,9 @@ namespace tensor_test {
     }
     for (int times = 10; times; --times) {
       Tensor<elt_t> R, A = random_Hermitian_with_gap<elt_t>(n);
-      elt_t l = linalg::eig_power_right(A, &R);
-      EXPECT_TRUE(abs(l - 3.0) < EPSILON);
-      EXPECT_TRUE(approx_eq(mmult(A, R), l * R));
+      elt_t l = linalg::eig_power_right(A, &R, 30, 1e-13);
+      EXPECT_TRUE(abs(l - 5.0) < 1e-12);
+      EXPECT_TRUE(norm0(mmult(A, R) - l * R) < 1e-6);
     }
   }
 
@@ -95,9 +95,9 @@ namespace tensor_test {
     }
     for (int times = 10; times; --times) {
       Tensor<elt_t> L, A = random_Hermitian_with_gap<elt_t>(n);
-      elt_t l = linalg::eig_power_left(A, &L);
-      EXPECT_TRUE(abs(l - 3.0) < EPSILON);
-      EXPECT_TRUE(approx_eq(mmult(L, A), l * L));
+      elt_t l = linalg::eig_power_left(A, &L, 30, 1e-13);
+      EXPECT_TRUE(abs(l - 5.0) < 1e-12);
+      EXPECT_TRUE(norm0(mmult(L, A) - l * L) < 1e-6);
     }
   }
 

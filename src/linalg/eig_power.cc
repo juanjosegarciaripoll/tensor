@@ -27,7 +27,7 @@ namespace linalg {
 
   template<typename elt_t>
   elt_t eig_power_loop(const Tensor<elt_t> &O, Tensor<elt_t> *vector,
-                       bool right, size_t iter)
+                       bool right, size_t iter, double tol)
   {
     if (O.columns() != O.rows()) {
       std::cerr << "eig_right_power cannot solve non-square problems";
@@ -35,6 +35,9 @@ namespace linalg {
     }
     if (iter == 0) {
       iter = 20;
+    }
+    if (tol <= 0) {
+      tol = 1e-11;
     }
     Tensor<elt_t> v(O.columns());
     v.randomize();
@@ -47,7 +50,7 @@ namespace linalg {
       elt_t eig = scprod(v_new, v);
       if (i) {
         double confidence = abs(eig - old_eig);
-        if (confidence < 1e-11 * abs(eig)) {
+        if (confidence < tol * abs(eig)) {
           break;
         }
       }
