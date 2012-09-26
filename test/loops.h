@@ -240,7 +240,7 @@ namespace tensor_test {
   void
   test_over_all_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
                         int max_dimension = 10) {
-    for (size_t rank = 0; rank <= max_rank; rank++) {
+    for (int rank = 0; rank <= max_rank; rank++) {
       char rank_string[] = "rank:      ";
       sprintf(rank_string, "rank: %d", rank);
       SCOPED_TRACE(rank_string);
@@ -252,9 +252,9 @@ namespace tensor_test {
   void
   test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
                     int max_dimension = 10, int max_times = 15) {
-    for (size_t rank = 0; rank <= max_rank; rank++) {
+    for (int rank = 0; rank <= max_rank; rank++) {
       char rank_string[] = "rank:      ";
-      sprintf(rank_string, "rank: %d", rank);
+      sprintf(rank_string, "rank: %d", (int)rank);
       SCOPED_TRACE(rank_string);
       //
       // Test over random dimensions
