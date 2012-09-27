@@ -85,6 +85,9 @@ lib_LTLIBRARIES += libmps.la
 
 libmps_la_SOURCES = \
 	mps/quantum/spin.cc \
+	mps/tools/truncate.cc \
+	mps/tools/limited_svd_d.cc \
+	mps/tools/limited_svd_z.cc \
 	mps/itebd/itebd_d.cc \
 	mps/itebd/itebd_z.cc
 
