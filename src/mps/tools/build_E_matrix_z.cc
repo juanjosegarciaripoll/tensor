@@ -17,26 +17,10 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MPS_TOOLS_H
-#define MPS_TOOLS_H
+#include "build_E_matrix.hpp"
 
-#include <tensor/tensor.h>
+using namespace tensor;
 
-namespace mps {
+template CTensor mps::build_E_matrix<cdouble>(const CTensor &A, tensor::index *a, tensor::index *b);
 
-  using namespace tensor;
-
-  size_t where_to_truncate(const RTensor &s, tensor::index max_a2, double tol);
-
-  RTensor limited_svd(RTensor A, RTensor *U, RTensor *V, double tolerance = -1);
-
-  RTensor limited_svd(CTensor A, CTensor *U, CTensor *V, double tolerance = -1);
-
-  template<typename elt_t>
-  Tensor<elt_t> build_E_matrix(const Tensor<elt_t> &A, tensor::index *a = 0, tensor::index *b = 0);
-
-  template<typename elt_t>
-  Tensor<elt_t> build_E_matrix(const Tensor<elt_t> &A, const Tensor<elt_t> &B, tensor::index *a = 0, tensor::index *b = 0);
-}
-
-#endif // MPS_QUANTUM_H
+template CTensor mps::build_E_matrix<cdouble>(const CTensor &A, const CTensor &B, tensor::index *a, tensor::index *b);

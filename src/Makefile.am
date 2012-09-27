@@ -89,7 +89,9 @@ libmps_la_SOURCES = \
 	mps/tools/limited_svd_d.cc \
 	mps/tools/limited_svd_z.cc \
 	mps/itebd/itebd_d.cc \
-	mps/itebd/itebd_z.cc
+	mps/itebd/itebd_z.cc \
+	mps/tools/build_E_matrix_d.cc \
+	mps/tools/build_E_matrix_z.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\
