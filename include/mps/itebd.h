@@ -17,8 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MPS_QUANTUM_H
-#define MPS_QUANTUM_H
+#ifndef MPS_ITEBD_H
+#define MPS_ITEBD_H
 
 #include <tensor/tensor.h>
 
