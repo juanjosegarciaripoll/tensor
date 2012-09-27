@@ -27,3 +27,6 @@ nobase_include_HEADERS = \
 	tensor/tools.h \
 	tensor/vector.h \
 	$(top_builddir)/include/tensor/config.h
+	mps/quantum.h \
+	mps/itebd.h
+
