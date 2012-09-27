@@ -39,25 +39,29 @@ namespace linalg {
     if (tol <= 0) {
       tol = 1e-11;
     }
-    Tensor<elt_t> v(O.columns());
+    Tensor<elt_t> v(O.columns()), old_v;
     v.randomize();
     v = v / norm2(v);
-    elt_t old_eig;
+    elt_t eig, old_eig;
     for (size_t i = 0; i <= iter; i++) {
       Tensor<elt_t> v_new = fold(O, right? -1 : 0, v, 0);
       double n = norm2(v_new);
       v = v_new / n;
-      elt_t eig = scprod(v_new, v);
+      eig = scprod(v_new, v);
       if (i) {
-        double confidence = abs(eig - old_eig);
-        if (confidence < tol * abs(eig)) {
-          break;
+        double eig_change = abs(eig - old_eig);
+        if (eig_change < tol * abs(eig)) {
+          double vec_change = norm2(v - old_v);
+          if (vec_change < tol) {
+            break;
+          }
         }
       }
       old_eig = eig;
+      old_v = v;
     }
     *vector = v;
-    return old_eig;
+    return eig;
   }
 
 } // namespace linalg

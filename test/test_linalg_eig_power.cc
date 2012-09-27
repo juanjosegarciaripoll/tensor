@@ -81,7 +81,7 @@ namespace tensor_test {
       Tensor<elt_t> R, A = random_Hermitian_with_gap<elt_t>(n);
       elt_t l = linalg::eig_power_right(A, &R, 30, 1e-13);
       EXPECT_TRUE(abs(l - 5.0) < 1e-12);
-      EXPECT_TRUE(norm0(mmult(A, R) - l * R) < 1e-6);
+      EXPECT_TRUE(norm0(mmult(A, R) - l * R) < 1e-10);
     }
   }
 
@@ -97,7 +97,7 @@ namespace tensor_test {
       Tensor<elt_t> L, A = random_Hermitian_with_gap<elt_t>(n);
       elt_t l = linalg::eig_power_left(A, &L, 30, 1e-13);
       EXPECT_TRUE(abs(l - 5.0) < 1e-12);
-      EXPECT_TRUE(norm0(mmult(L, A) - l * L) < 1e-6);
+      EXPECT_TRUE(norm0(mmult(L, A) - l * L) < 1e-10);
     }
   }
 
