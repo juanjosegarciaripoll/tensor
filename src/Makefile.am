@@ -81,6 +81,11 @@ libtensor_la_SOURCES = \
 	linalg/eig_power_z.cc \
 	views/range.cc
 
+lib_LTLIBRARIES += libmps.la
+
+libmps_la_SOURCES = \
+	mps/quantum/spin.cc
+
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\
 	sed -e "s,TYPE[12],Tensor<double>,g;s,OPERATOR1,$$k,;s,OPERATOR2,std::$$k,g" $< > $@
