@@ -61,6 +61,13 @@ class Tensor {
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
   Tensor(const Tensor &other) : data_(other.data_), dims_(other.dims_) {}
 
+  /**Implicit coercion. */
+  template<typename e2> Tensor(const Tensor<e2> &other) :
+    data_(other.size()), dims_(other.dimensions())
+  {
+    std::copy(other.begin(), other.end(), begin());
+  }
+
   /**Create a one-dimensional tensor from data created with "gen" expressions.*/
   template<size_t n> Tensor(const StaticVector<elt_t,n> &t) :
     data_(t), dims_(igen << t.size())
