@@ -181,11 +181,12 @@ namespace mps {
 
   template<class Tensor>
   const iTEBD<Tensor>
-  iTEBD<Tensor>::apply_operator(const Tensor &U,
-				double tolerance = -1, tensor::index max_dim = 0) const
+  iTEBD<Tensor>::apply_operator(const Tensor &U, int site, double tolerance,
+                                tensor::index max_dim) const
   {
     tensor::index a, i, j, b;
-    Tensor GAB = fold(AlA_, -1, B_, 0);
+    Tensor GAB = (site & 1) ? fold(BlB_, -1, A_, 0) : fold(AlA_, -1, B_, 0);
+    Tensor lAB = (site & 1) ? lA_ : lB_;
     GAB.get_dimensions(&a, &i, &j, &b);
     GAB = reshape(foldin(U, -1, reshape(GAB, a, i*j, b), 1), a, i, j, b);
     return iTEBD<Tensor>(GAB, lB_);
