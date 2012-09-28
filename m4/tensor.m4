@@ -18,7 +18,6 @@ AC_DEFUN([TENSOR_VECLIB],[
   if test `uname` = "Darwin"; then
     have_veclib=yes
     VECLIB_LIBS="-framework veclib"
-    VECLIB_CXXFLAGS="-framework veclib"
   else
     have_veclib=no
   fi
