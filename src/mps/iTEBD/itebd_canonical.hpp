@@ -166,12 +166,29 @@ namespace mps {
   }
 
   template<class Tensor>
+  iTEBD<Tensor>::iTEBD(const Tensor &AB, const Tensor &lAB, double tolerance, tensor::index max_dim)
+  : canonical_(true)
+  {
+    split_tensor(AB, lAB, &A_, &lA_, &B_, &lB_, tolerance, max_dim);
+  }
+
+  template<class Tensor>
   const iTEBD<Tensor>
   iTEBD<Tensor>::canonical_form() const
   {
-    Tensor A, lA, B, lB;
-    split_tensor(fold(AlA_, -1, B_, 0), lB_, &A, &lA, &B, &lB, -1, 0);
-    return iTEBD<Tensor>(A, lA, B, lB, true);
+    return iTEBD<Tensor>(fold(AlA_, -1, B_, 0), lB_);
+  }
+
+  template<class Tensor>
+  const iTEBD<Tensor>
+  iTEBD<Tensor>::apply_operator(const Tensor &U,
+				double tolerance = -1, tensor::index max_dim = 0) const
+  {
+    tensor::index a, i, j, b;
+    Tensor GAB = fold(AlA_, -1, B_, 0);
+    GAB.get_dimensions(&a, &i, &j, &b);
+    GAB = reshape(foldin(U, -1, reshape(GAB, a, i*j, b), 1), a, i, j, b);
+    return iTEBD<Tensor>(GAB, lB_);
   }
 
 }

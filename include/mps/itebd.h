@@ -44,6 +44,7 @@ public:
   iTEBD(const Tensor &newA, const Tensor &newlA,
         const Tensor &newB, const Tensor &newlB,
         bool canonical = false);
+  iTEBD(const Tensor &AB, const Tensor &lAB, double tolerance, tensor::index max_dim);
 
   bool is_canonical() const { return canonical_; }
 
@@ -74,6 +75,8 @@ public:
                      const Tensor &Oplast, tensor::index separation,
                      int site = 0) const;
 
+  const iTEBD<Tensor> apply_operator(const Tensor &U, double tolerance, tensor::index max_dim) const;
+
   const iTEBD<Tensor> canonical_form() const;
 
   double entropy() const;
@@ -85,9 +88,6 @@ private:
   Tensor AlA_, BlB_;
   bool canonical_;
 };
-
-template<class Tensor>
-const iTEBD<Tensor> apply_operator(const iTEBD<Tensor> &psi, const Tensor &U, double tolerance = -1, tensor::index max_dim = 0);
 
 template<class Tensor>
 const iTEBD<Tensor> evolve_itime(const iTEBD<Tensor> &psi, const Tensor &H12, double dt, tensor::index nsteps, const iTEBD<Tensor> &psi, double tolerance = -1, tensor::index deltan = 1, tensor::index max_dim = 0);
