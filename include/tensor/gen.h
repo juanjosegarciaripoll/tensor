@@ -60,6 +60,14 @@ CTensor a = cgen << 1 << 3;
 \sa ListGenerator */
   extern const ListGenerator<cdouble> cgen;
 
+  /** Placeholder for statically creating a vector of elements, whose type
+is determined by the first element.
+\code
+RTensor a = gen << (double)1.0 << 3;
+\endcode
+\sa ListGenerator */
+  extern class FlexiListGenerator {} xgen;
+
   template<typename elt_t, size_t n>
   class StaticVector {
   public:
@@ -106,6 +114,11 @@ CTensor a = cgen << 1 << 3;
 
   template<typename t1, typename t2>
   StaticVector<t1,1> operator<<(const ListGenerator<t1> &g, const t2 x) {
+    return StaticVector<t1,1>(x);
+  }
+
+  template<typename t1>
+  StaticVector<t1,1> operator<<(const FlexiListGenerator &g, const t1 x) {
     return StaticVector<t1,1>(x);
   }
 
