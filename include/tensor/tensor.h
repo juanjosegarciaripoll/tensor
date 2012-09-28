@@ -377,7 +377,7 @@ namespace tensor {
   /** Complex Tensor with elements of type "cdouble". */
   typedef Tensor<cdouble> CTensor;
 
-  double sum(const RTensor &r);
+  cdouble sum(const CTensor &r);
 
   double norm0(const CTensor &r);
   cdouble scprod(const CTensor &a, const CTensor &b);
