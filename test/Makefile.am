@@ -183,5 +183,4 @@ upload_tests: report.xml report_nfailures
 	  rsync -rauvz $(NAME) $${host}src/tensor_logs/; \
 	fi
 
-clean:
-	rm -f *.xml report_nfailures
+CLEANFILES = *.xml report_nfailures
