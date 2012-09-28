@@ -26,6 +26,16 @@ namespace linalg {
   using namespace lapack;
 
   /**Eigenvalue decomposition of a complex matrix.
+     Given a square matrix A, we find a diagonal matrix D and a set of vectors R
+     or L such that
+     A R = R D
+     or
+     L A = D L
+
+     The eigenvalue decomposition is computed using the ZGEEV routine
+     from the LAPACK library. By default, only the diagonal elements of S are
+     computed. However, also the U and V matrices can be computed if pointers to
+     the associated variables are supplied.
 
      \ingroup Linalg
   */

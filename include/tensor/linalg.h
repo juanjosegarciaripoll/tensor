@@ -23,6 +23,7 @@
 #include <tensor/tensor.h>
 
 /*!\addtogroup Linalg*/
+/** Namespace for Linear Algebra functions based on BLAS, LAPACK, Lanczos and related algorithms. */
 namespace linalg {
 
   using tensor::RTensor;
@@ -36,7 +37,10 @@ namespace linalg {
   RTensor svd(RTensor A, RTensor *pU = 0, RTensor *pVT = 0, bool economic = 0);
   RTensor svd(CTensor A, CTensor *pU = 0, CTensor *pVT = 0, bool economic = 0);
 
+  /**Eigenvalue decomposition of a real matrix.*/
   const CTensor eig(const RTensor &A, CTensor *R = 0, CTensor *L = 0);
+
+  /**Eigenvalue decomposition of a complex matrix.*/
   const CTensor eig(const CTensor &A, CTensor *R = 0, CTensor *L = 0);
 
   double eig_power_right(const RTensor &A, RTensor *vector,

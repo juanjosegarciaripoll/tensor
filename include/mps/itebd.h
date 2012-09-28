@@ -23,17 +23,19 @@
 #include <tensor/tensor.h>
 
 /*!\addtogroup MPS*/
-/* @{ */
-/**An infinite Matrix Product State with translational invariance
-   but using two tensors: one for odd and one for even sites. This
-   algorithm follows the iTBD implementation sketched by R. Orus
-   and G. Vidal in Phys. Rev. B 78, 155117 (2008)
-   \see \ref sec_mps
-*/
+/** Namespace for classes and algorithms related to Matrix Product States, DMRG and similar methods. */
 namespace mps {
 
 using namespace tensor;
 
+/*!\addtogroup MPS*/
+/* @{ */
+/**An infinite Matrix Product State with translational invariance
+   but using two tensors: one for odd and one for even sites. This
+   algorithm follows the iTBD implementation sketched by R. Orus
+   and G. Vidal in <a href='http://arxiv.org/abs/0711.3960'>
+   Phys. Rev. B 78, 155117 (2008)</a>
+*/
 template<class Tensor>
 class iTEBD {
 public:
@@ -48,7 +50,7 @@ public:
   /** Create a product state iTEBD with two wavefunctions. */
   iTEBD(const Tensor &newA, const Tensor &newB);
 
-  /** Create an iTEBD with \Gamma and \lambda matrices. */
+  /** Create an iTEBD with \f$\Gamma\f$ and \f$\lambda\f$ matrices. */
   iTEBD(const Tensor &newA, const Tensor &newlA,
         const Tensor &newB, const Tensor &newlB,
         bool canonical = false);
@@ -110,28 +112,33 @@ private:
     return diag(right_vector(site) * right_vector(site));
   }
 
-  /** Fold a \Gamma matrix with its neighboring vector \lambda . */
+  /** Fold a \f$\Gamma\f$ matrix with its neighboring vector \f$\lambda\f$ . */
   const Tensor &combined_matrix(int site) const {
     return (site & 1)? BlB_ : AlA_;
   }
 
-  /** Return the vector \lambda to the left of this site. */
+  /** Return the vector \f$\lambda\f$ to the left of this site. */
   const Tensor &left_vector(int site) const {
     return (site & 1)? lA_ : lB_;
   }
 
-  /** Return the vector \lambda to the right of this site. */
+  /** Return the vector \f$\lambda\f$ to the right of this site. */
   const Tensor &right_vector(int site) const {
     return (site & 1)? lB_ : lA_;
   }
 };
 
-  /** Evolve an iTEBD in imaginary time, using the local Hamiltonian H_{12}. */
+/** Evolve an iTEBD in imaginary time, using the local Hamiltonian \a H12 on
+ state \a psi. Given a Hamiltonian which is a composition of local Hamiltonians
+ acting on pairs of sites, \f$H=\sum_{i} H_{i,i+1}\f$, we evolve the iTEBD state
+ \a psi using \a nsteps repetitions of the elementary time interval \a dt. \a
+ tolerance and \a max_dim determine the truncation strategy of the state, while
+ \a deltan (if nonzero) instructs the program to report the properties of the
+ state on the standard text output. */
 template<class Tensor>
-const iTEBD<Tensor> evolve_itime(iTEBD<Tensor> psi, const Tensor &H12, double dt, tensor::index nsteps, const iTEBD<Tensor> &psi, double tolerance = -1, tensor::index max_dim = 0, tensor::index deltan = 1);
-
-template<class Tensor>
-const Tensor reduced_density_matrix(const iTEBD<Tensor> &psi);
+const iTEBD<Tensor> evolve_itime(iTEBD<Tensor> psi, const Tensor &H12, double dt,
+                                 tensor::index nsteps, double tolerance = -1,
+                                 tensor::index max_dim = 0, tensor::index deltan = 1);
 
 /* @} */
 

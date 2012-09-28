@@ -32,7 +32,7 @@ namespace linalg {
      or
      L A = D L
 
-     The eigenvalue decomposition is computed using the DGEEV/ZGEEV routines
+     The eigenvalue decomposition is computed using the DGEEV routine
      from the LAPACK library. By default, only the diagonal elements of S are
      computed. However, also the U and V matrices can be computed if pointers to
      the associated variables are supplied.

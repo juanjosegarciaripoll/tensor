@@ -14,4 +14,8 @@ Some links you should read before going any further:
 \li \subpage sec_tensor_op
 \li \subpage sec_sparse
 
+In addition to this, Tensor ships with a library for numerical computation in
+one-dimensional quantum mechanical systems, using the methods of MPS, DMRG,
+iTEBD, etc.
+
 */
