@@ -37,34 +37,63 @@ using namespace tensor;
 template<class Tensor>
 class iTEBD {
 public:
-
   typedef typename Tensor::elt_t elt_t;
 
   iTEBD(const Tensor &newA);
   iTEBD(const Tensor &newA, const Tensor &newB);
   iTEBD(const Tensor &newA, const Tensor &newlA,
-        const Tensor &newB, const Tensor &newlB);
+        const Tensor &newB, const Tensor &newlB,
+        bool canonical = false);
 
-  Tensor reduced_density_matrix() const;
+  bool is_canonical() const { return canonical_; }
+
+  const Tensor &combined_matrix(int site) const {
+    return (site & 1)? AlA_ : BlB_;
+  }
+
+  const Tensor &left_vector(int site) const {
+    return (site & 1)? lB_ : lA_;
+  }
+
+  const Tensor &right_vector(int site) const {
+    return (site & 1)? lA_ : lB_;
+  }
+
+  const Tensor left_boundary(int site) const {
+    return diag(left_vector(site) * left_vector(site));
+  }
+
+  tensor::index site_dimension(int site) const {
+    return ((site & 1)? A_ : B_).dimension(1);
+  }
 
   elt_t expected_value(const Tensor &Op, int site = 0) const;
   elt_t expected_value(const Tensor &Op1, const Tensor &Op2,
                        tensor::index separation = 0, int site = 0) const;
   elt_t string_order(const Tensor &Opfirst, const Tensor &Opmiddle,
-                     const Tensor &Oplast, tensor::index separation) const;
+                     const Tensor &Oplast, tensor::index separation,
+                     int site = 0) const;
 
-  void apply_operator(const Tensor &U, double tolerance = -1);
-
-  double evolve_itime(const Tensor &H12, double dt, tensor::index nsteps,
-                      double tolerance = -1, tensor::index deltan = 1);
+  const iTEBD<Tensor> canonical_form() const;
 
   double entropy() const;
 
 private:
   iTEBD();
-  iTEBD(const iTEBD &other);
-  Tensor A, lA, B, lB;
+
+  Tensor A_, B_, lA_, lB_;
+  Tensor AlA_, BlB_;
+  bool canonical_;
 };
+
+template<class Tensor>
+const iTEBD<Tensor> apply_operator(const iTEBD<Tensor> &psi, const Tensor &U, double tolerance = -1, tensor::index max_dim = 0);
+
+template<class Tensor>
+const iTEBD<Tensor> evolve_itime(const iTEBD<Tensor> &psi, const Tensor &H12, double dt, tensor::index nsteps, const iTEBD<Tensor> &psi, double tolerance = -1, tensor::index deltan = 1, tensor::index max_dim = 0);
+
+template<class Tensor>
+const Tensor reduced_density_matrix(const iTEBD<Tensor> &psi);
 
 }
 

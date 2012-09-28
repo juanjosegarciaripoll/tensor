@@ -19,6 +19,7 @@
 
 #include <tensor/tensor.h>
 #include "itebd.hpp"
+#include "itebd_canonical.hpp"
 
 //
 // Explicitely instantiate an specialization of Tensor. This generates
