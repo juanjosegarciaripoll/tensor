@@ -13,6 +13,10 @@ GTEST_LDFLAGS = libgtest_main.a $(LDFLAGS)
 TESTS =
 check_PROGRAMS =
 
+#####################################################################
+# TENSOR LIBRARY TESTS
+#
+
 TESTS += test_refcount
 check_PROGRAMS += test_refcount
 test_refcount_SOURCES = test_refcount.cc
@@ -114,10 +118,19 @@ check_PROGRAMS += test_linalg_eig_power
 test_linalg_eig_power_SOURCES = test_linalg_eig_power.cc
 test_linalg_eig_power_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+#####################################################################
+# MPS LIBRARY TESTS
+#
+
 TESTS += test_quantum_spin
 check_PROGRAMS += test_quantum_spin
 test_quantum_spin_SOURCES = test_quantum_spin.cc
 test_quantum_spin_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
+TESTS += test_itebd_base
+check_PROGRAMS += test_itebd_base
+test_itebd_base_SOURCES = test_itebd_base.cc
+test_itebd_base_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
