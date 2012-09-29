@@ -28,7 +28,9 @@ namespace mps {
     B_(igen << 1 << dimension << 1),
     lA_(igen << 1, gen<elt_t>(1)),
     lB_(igen << 1, gen<elt_t>(1))
-  {}
+  {
+    assert(dimension > 0);
+  }
     
   template<class Tensor>
   iTEBD<Tensor>::iTEBD(const Tensor &A)

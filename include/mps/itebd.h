@@ -58,11 +58,6 @@ public:
   /** Is this iTEBD state in canonical form? */
   bool is_canonical() const { return canonical_; }
 
-  /** Physical dimension of the given site. */
-  tensor::index site_dimension(int site) const {
-    return ((site & 1)? B_ : A_).dimension(1);
-  }
-
   /** Expected value of an operator acting on 'site'. */
   elt_t expected_value(const Tensor &Op, int site = 0) const;
 
@@ -93,6 +88,41 @@ public:
   /** Average entropy for even and odd sites. */
   double entropy() const { return entropy(0) + entropy(1); }
 
+  /** Return the \f$\Gamma\f$ matrix for the lattice 'site'. */
+  const Tensor &matrix(int site) const {
+    return (site & 1)? B_ : A_;
+  }
+
+  /** Fold a \f$\Gamma\f$ matrix with its neighboring vector \f$\lambda\f$ . */
+  const Tensor &combined_matrix(int site) const {
+    return (site & 1)? BlB_ : AlA_;
+  }
+
+  /** Return the vector \f$\lambda\f$ to the left of this site. */
+  const Tensor &left_vector(int site) const {
+    return (site & 1)? lA_ : lB_;
+  }
+
+  /** Return the vector \f$\lambda\f$ to the right of this site. */
+  const Tensor &right_vector(int site) const {
+    return (site & 1)? lB_ : lA_;
+  }
+
+  /** Physical dimension of the given site. */
+  tensor::index site_dimension(int site) const {
+    return matrix(site).dimension(1);
+  }
+
+  /** Return dimension of the MPS to the left of this site. */
+  tensor::index left_dimension(int site) const {
+    return matrix(site).dimension(0);
+  }
+
+  /** Return dimension of the MPS to the right of this site. */
+  tensor::index right_dimension(int site) const {
+    return matrix(site).dimension(2);
+  }
+
 private:
   /* Avoid initializing empty iTEBD states. */
   iTEBD();
@@ -110,21 +140,6 @@ private:
 
   const Tensor right_boundary(int site) const {
     return diag(right_vector(site) * right_vector(site));
-  }
-
-  /** Fold a \f$\Gamma\f$ matrix with its neighboring vector \f$\lambda\f$ . */
-  const Tensor &combined_matrix(int site) const {
-    return (site & 1)? BlB_ : AlA_;
-  }
-
-  /** Return the vector \f$\lambda\f$ to the left of this site. */
-  const Tensor &left_vector(int site) const {
-    return (site & 1)? lA_ : lB_;
-  }
-
-  /** Return the vector \f$\lambda\f$ to the right of this site. */
-  const Tensor &right_vector(int site) const {
-    return (site & 1)? lB_ : lA_;
   }
 };
 

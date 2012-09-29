@@ -19,9 +19,13 @@
 
 #include "itebd_itime.hpp"
 
-template
-iTEBD<RTensor>
-evolve_itime(iTEBD<RTensor> psi, const RTensor &H12,
-	     double dt, tensor::index nsteps,
-	     double tolerance, tensor::index deltan);
+namespace mps {
 
+  template
+  const iTEBD<RTensor>
+  evolve_itime(iTEBD<RTensor> psi, const RTensor &H12,
+	       double dt, tensor::index nsteps,
+	       double tolerance, tensor::index max_dim,
+	       tensor::index deltan);
+
+}

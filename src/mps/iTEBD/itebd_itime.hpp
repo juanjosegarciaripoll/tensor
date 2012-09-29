@@ -44,10 +44,11 @@ namespace mps {
   }
 
   template<class Tensor>
-  iTEBD<Tensor>
+  const iTEBD<Tensor>
   evolve_itime(iTEBD<Tensor> psi, const Tensor &H12,
 	       double dt, tensor::index nsteps,
-	       double tolerance, tensor::index deltan)
+	       double tolerance, tensor::index max_dim,
+	       tensor::index deltan)
   {
     static const double FR_param[5] = {0.67560359597983, 1.35120719195966, -0.17560359597983, -1.70241438391932};
 
@@ -56,15 +57,15 @@ namespace mps {
     switch (method) {
     case 1:
       /* Second order Trotter expansion */
-      eH12[1] = linalg::expm(to_complex(-dt/2, 0) * H12);
+      eH12[1] = linalg::expm((-dt/2) * H12);
     case 0:
       /* First order Trotter expansion */
-      eH12[0] = linalg::expm(to_complex(-dt, 0) * H12);
+      eH12[0] = linalg::expm((-dt) * H12);
       break;
     default:
       /* Fourth order Trotter expansion */
       for (int i = 0; i < 4; i++) {
-	eH12[i] = linalg::expm(to_complex(-dt*FR_param[i], 0) * H12);
+	eH12[i] = linalg::expm((-dt*FR_param[i]) * H12);
       }
     }
     Tensor Id = Tensor::eye(H12.rows());
@@ -108,7 +109,8 @@ namespace mps {
       time += dt;
       if (deltan && (i % deltan  == 0)) {
 	std::cout << "t=" << time << ";\tE=" << E << ";\tS=" << S
-		  << ";\tl=" << lA.size() << " " << lB.size()
+		  << ";\tl=" << std::max(psi.left_dimension(0),
+					 psi.right_dimension(0))
 		  << std::endl;
 	std::cout << "\tdS=" << dS << ";\tdE=" << dE << std::endl;
 	std::cout << "\tdSdt=" << dSdt << ";\tdEdt=" << dEdt << std::endl;
