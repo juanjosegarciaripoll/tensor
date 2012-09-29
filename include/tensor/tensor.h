@@ -80,9 +80,9 @@ class Tensor {
     assert(data_.size() == d.total_size());
   }
 
-  /**Build a 1D Tensor given the size and the raw C data.*/
+  /**Build a 1D Tensor or vector.*/
   explicit Tensor(index length);
-  /**Build a matrix.*/
+  /**Build a 2D Tensor or matrix.*/
   Tensor(index rows, index cols);
   /**Build a 3D Tensor.*/
   Tensor(index d1, index d2, index d3);
@@ -160,6 +160,21 @@ class Tensor {
   void fill_with_zeros() { fill_with(number_zero<elt_t>()); }
   /**Fills with random numbers.*/
   void randomize();
+
+  /**Build a random 1D Tensor. */
+  static const Tensor<elt_t> random(index length);
+  /**Build a random 2D Tensor.*/
+  static const Tensor<elt_t> random(index rows, index cols);
+  /**Build a random 3D Tensor.*/
+  static const Tensor<elt_t> random(index d1, index d2, index d3);
+  /**Build a random 4D Tensor.*/
+  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4);
+  /**Build a random 5D Tensor.*/
+  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4, index d5);
+  /**Build a random 6D Tensor.*/
+  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4, index d5, index d6);
+  /**Build a random Tensor with arbitrary dimensions. */
+  static const Tensor<elt_t> random(const Indices &dimensions);
 
   //
   // Tensor slicing

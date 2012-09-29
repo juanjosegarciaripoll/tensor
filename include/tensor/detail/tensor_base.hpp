@@ -352,6 +352,62 @@ void Tensor<elt_t>::randomize() {
   }
 }
 
+template<typename elt_t>
+const Tensor<elt_t>
+Tensor<elt_t>::random(index length) {
+  Tensor<elt_t> t(length);
+  t.randomize();
+  return t;
+}
+
+template<typename elt_t>
+const Tensor<elt_t>
+Tensor<elt_t>::random(index rows, index cols) {
+  Tensor<elt_t> t(rows, cols);
+  t.randomize();
+  return t;
+}
+
+template<typename elt_t>
+const Tensor<elt_t>
+Tensor<elt_t>::random(index d1, index d2, index d3) {
+  Tensor<elt_t> t(d1, d2, d3);
+  t.randomize();
+  return t;
+}
+
+template<typename elt_t>
+const Tensor<elt_t>
+Tensor<elt_t>::random(index d1, index d2, index d3, index d4) {
+  Tensor<elt_t> t(d1, d2, d3, d4);
+  t.randomize();
+  return t;
+}
+
+template<typename elt_t>
+const Tensor<elt_t>
+Tensor<elt_t>::random(index d1, index d2, index d3, index d4, index d5) {
+  Tensor<elt_t> t(d1, d2, d3, d4, d5);
+  t.randomize();
+  return t;
+}
+
+template<typename elt_t>
+const Tensor<elt_t>
+Tensor<elt_t>::random(index d1, index d2, index d3, index d4, index d5, index d6) {
+  Tensor<elt_t> t(d1, d2, d3, d4, d5, d6);
+  t.randomize();
+  return t;
+}
+
+template<typename elt_t>
+const Tensor<elt_t>
+Tensor<elt_t>::random(const Indices &dims) {
+  Tensor<elt_t> t(dims);
+  t.randomize();
+  return t;
+}
+
 } // namespace tensor
 
 #endif // !TENSOR_DETAIL_TENSOR_BASE_H
