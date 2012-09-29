@@ -48,21 +48,30 @@ TENSOR_BITS
 TENSOR_CHOOSE_LIB
 
 # Unit testing with google
-if test -d "${top_srcdir}/test/googletest-read-only"; then
-  GTEST_DIR="${top_srcdir}/test/googletest-read-only"
+AC_MSG_CHECKING([for googletest-read-only in sources])
+if test -d "${ac_confdir}/test/googletest-read-only"; then
+  AC_MSG_RESULT([yes])
+  GTEST_DIR="${ac_confdir}/test/googletest-read-only"
 else
-  if test -d "${top_srcdir}/test/gtest-1.6.0"; then
-    GTEST_DIR="${top_srcdir}/test/gtest-1.6.0"
+  AC_MSG_RESULT([no])
+  AC_MSG_CHECKING([for gtest-1.6.0 in sources])	
+  if test -d "${ac_confdir}/test/gtest-1.6.0"; then
+    AC_MSG_RESULT([yes])
+    GTEST_DIR="${ac_confdir}/test/gtest-1.6.0"
   else
+    AC_MSG_RESULT([no])
     test -d "`pwd`/test" || mkdir "`pwd`/test"
     ls -l test
-    if (which unzip > /dev/null && which curl > /dev/null && \
+    AC_MSG_CHECKING([trying to download Google Test library])
+    if (which unzip && which curl && \
         cd test && \
         curl "http://googletest.googlecode.com/files/gtest-1.6.0.zip" > tmp.zip && \
         unzip -x tmp.zip -d "`pwd`" && \
-        rm tmp.zip); then
+        rm tmp.zip) >&AS_MESSAGE_LOG_FD; then
+      AC_MSG_RESULT([worked])
       GTEST_DIR="`pwd`/test/gtest-1.6.0"
     else
+      AC_MSG_RESULT([unable])
       GTEST_DIR=""
       AC_MSG_WARN([Please download google test library in `pwd`/test/])
     fi
