@@ -23,25 +23,37 @@
 #include <tensor/config.h>
 
 #ifdef TENSOR_USE_MKL
-#include <mkl_cblas.h>
-#include <mkl_lapack.h>
-#define F77NAME(x)
+# include <mkl_cblas.h>
+# include <mkl_lapack.h>
+# define F77NAME(x)
 #endif
+
 #ifdef TENSOR_USE_VECLIB
-#include <vecLib/cblas.h>
-#include <vecLib/clapack.h>
-#define F77NAME(x) x##_
+# if defined(HAVE_VECLIB_CBLAS_H)
+#  include <vecLib/cblas.h>
+#  include <vecLib/clapack.h>
+# else
+#  error "Missing cblas.h"
+# endif
+# define F77NAME(x) x##_
 #endif
 #ifdef TENSOR_USE_ATLAS
 extern "C" {
-#include <cblas.h>
-#include <clapack.h>
+# ifdef HAVE_ATLAS_CBLAS_H
+#  include <atlas/cblas.h>
+#  include <atlas/clapack.h>
+# elif defined(HAVE_CBLAS_H)
+#  include <cblas.h>
+#  include <clapack.h>
+# else
+#  error "Header cblas.h not found"
+# endif
 }
-#define F77NAME(x) x##_
+# define F77NAME(x) x##_
 #endif
 #ifdef TENSOR_USE_ESSL
-#include <essl.h>
-#define F77NAME(x) x
+# include <essl.h>
+# define F77NAME(x) x
 #endif
 #if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL) && !defined(TENSOR_USE_ESSL)
 # error "We need to use one of these libraries: VecLib, Atlas, MKL, ESSL"

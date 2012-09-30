@@ -18,6 +18,7 @@ AC_DEFUN([TENSOR_VECLIB],[
   if test `uname` = "Darwin"; then
     have_veclib=yes
     VECLIB_LIBS="-framework veclib"
+    AC_CHECK_HEADERS_ONCE([vecLib/cblas.h])
   else
     have_veclib=no
   fi
@@ -33,6 +34,7 @@ AC_DEFUN([TENSOR_ATLAS],[
   if test $have_atlas = yes ; then
     ATLAS_LIBS="$LIBS -llapack -lcblas -latlas"
     ATLAS_CXXFLAGS=""
+    AC_CHECK_HEADERS_ONCE([atlas/cblas.h cblas.h])
   fi
   AC_MSG_RESULT([$have_atlas])
 ])
