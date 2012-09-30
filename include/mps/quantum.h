@@ -26,7 +26,7 @@ namespace mps {
 
   using namespace tensor;
 
-  void spin_operators(double s, CTensor *sx, CTensor *sy, CTensor *sy);
+  void spin_operators(double s, CTensor *sx, CTensor *sy, CTensor *sz);
 
 }
 
