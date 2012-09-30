@@ -19,6 +19,8 @@
 
 #include <cassert>
 
+/**\cond IGNORE */
+
 namespace tensor {
 
   ////////////////////////////////////////////////////////////
@@ -278,7 +280,6 @@ namespace tensor {
     return *this;
   }
 
-
-
 } // namespace tensor
 
+/**\endcond */
