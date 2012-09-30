@@ -21,6 +21,10 @@
 
 using namespace tensor;
 
+/**\cond IGNORED */
+
 template CTensor mps::build_E_matrix<cdouble>(const CTensor &A, tensor::index *a, tensor::index *b);
 
 template CTensor mps::build_E_matrix<cdouble>(const CTensor &A, const CTensor &B, tensor::index *a, tensor::index *b);
+
+/**\endcond */

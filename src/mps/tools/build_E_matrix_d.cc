@@ -21,6 +21,10 @@
 
 using namespace tensor;
 
+/**\cond IGNORED */
+
 template RTensor mps::build_E_matrix<double>(const RTensor &A, tensor::index *a, tensor::index *b);
 
 template RTensor mps::build_E_matrix<double>(const RTensor &A, const RTensor &B, tensor::index *a, tensor::index *b);
+
+/**\endcond */
