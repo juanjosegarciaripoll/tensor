@@ -352,7 +352,11 @@ namespace tensor {
 
   extern template class Tensor<double>;
   /** Real Tensor with elements of type "double". */
+#ifdef DOXYGEN_ONLY
+  struct RTensor : public Tensor<double> {}
+#else
   typedef Tensor<double> RTensor;
+#endif
 
   double sum(const RTensor &r);
 
@@ -390,7 +394,11 @@ namespace tensor {
 
   extern template class Tensor<cdouble>;
   /** Complex Tensor with elements of type "cdouble". */
+#ifdef DOXYGEN_ONLY
+  struct CTensor : public Tensor<cdouble> {}
+#else
   typedef Tensor<cdouble> CTensor;
+#endif
 
   cdouble sum(const CTensor &r);
 
