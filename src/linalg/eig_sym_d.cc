@@ -18,7 +18,7 @@
 */
 
 #include <tensor/tensor.h>
-#include <tensor/clapack.h>
+#include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
 
 namespace linalg {
@@ -43,8 +43,9 @@ namespace linalg {
   RTensor
   eig_sym(const RTensor &A, RTensor *V)
   {
-    if (accurate_svd)
-      return block_eig_sym(A, V);
+    assert(A.rows() > 0);
+    assert(A.rank() == 2);
+    assert(A.rows() == A.columns());
 
     integer n = A.rows();
     if ((size_t)n != A.columns()) {
@@ -54,10 +55,10 @@ namespace linalg {
     }
 
     RTensor aux(A);
-    double *a = aux.pointer();
+    double *a = tensor_pointer(aux);
     integer lda = n, lwork, info[1];
-    const char *jobz = (V == 0)? "N" : "V";
-    const char *uplo = "U";
+    char jobz[2] = { (V == 0)? 'N' : 'V', 0 };
+    char uplo[2] = { 'U', 0 };
     RTensor output(n);
     double *w = tensor_pointer(output);
 
@@ -66,13 +67,10 @@ namespace linalg {
     F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, info);
     lwork = (int)work0[0];
 
-    double *work = new_atomic double[lwork];
+    double *work = new double[lwork];
     F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work, &lwork, info);
     delete[] work;
 
-    Indices ndx = sort_indices(output, false);
-    output = output(Range(ndx));
-    if (V) *V = aux(Range(), Range(ndx));
     return output;
   }
 

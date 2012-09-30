@@ -79,6 +79,8 @@ libtensor_la_SOURCES = \
 	linalg/expm_z.cc \
 	linalg/eig_power_d.cc \
 	linalg/eig_power_z.cc \
+	linalg/eig_sym_d.cc \
+	linalg/eig_sym_z.cc \
 	views/range.cc
 
 lib_LTLIBRARIES += libmps.la

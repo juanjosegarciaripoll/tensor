@@ -18,7 +18,7 @@
 */
 
 #include <tensor/tensor.h>
-#include <tensor/clapack.h>
+#include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
 
 namespace linalg {
@@ -55,8 +55,8 @@ namespace linalg {
     CTensor aux(A);
     cdouble *a = tensor_pointer(aux);
     integer lda = n, lwork, info[1];
-    const char *jobz = (V == 0)? "N" : "V";
-    const char *uplo = "U";
+    char jobz[2] = { (V == 0)? 'N' : 'V', 0 };
+    char uplo[2] = { 'U', 0 };
     RTensor output(n);
     double *w = tensor_pointer(output);
     double *rwork = new double[3*n];
@@ -64,16 +64,13 @@ namespace linalg {
     lwork = -1;
     cdouble work0[1];
     F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, rwork, info);
-    lwork = (int)re_part(work0[0]);
+    lwork = (int)real(work0[0]);
 
     cdouble *work = new cdouble[lwork];
     F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, work, &lwork, rwork, info);
     delete[] work;
     delete[] rwork;
 
-    UIVector ndx = sort_indices(output, false);
-    output = output(Range(ndx));
-    if (V) *V = aux(Range(), Range(ndx));
     return output;
   }
 
