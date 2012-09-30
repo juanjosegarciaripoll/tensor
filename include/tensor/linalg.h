@@ -52,8 +52,8 @@ namespace linalg {
   tensor::cdouble eig_power_left(const CTensor &A, CTensor *vector,
                                  size_t iter = 0, double tol = 1e-11);
 
-  RTensor eig_sym(RTensor A, RTensor *pR = 0);
-  RTensor eig_sym(CTensor A, CTensor *pR = 0);
+  RTensor eig_sym(const RTensor &A, RTensor *pR = 0);
+  RTensor eig_sym(const CTensor &A, CTensor *pR = 0);
 
   const RTensor expm(const RTensor &A, unsigned int order = 7);
   const CTensor expm(const CTensor &A, unsigned int order = 7);
