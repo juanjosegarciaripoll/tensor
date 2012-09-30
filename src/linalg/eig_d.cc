@@ -23,6 +23,7 @@
 
 namespace linalg {
 
+  using namespace tensor;
   using namespace lapack;
 
   /**Eigenvalue decomposition of a real matrix.

@@ -23,9 +23,12 @@
 
 namespace linalg {
 
+  using namespace tensor;
   using namespace lapack;
 
-  /**Eigenvalue decomposition of a complex matrix.
+  /**
+     \overload const CTensor eig(const CTensor &A, CTensor *R, CTensor *L)
+     Eigenvalue decomposition of a complex matrix.
      Given a square matrix A, we find a diagonal matrix D and a set of vectors R
      or L such that
      A R = R D
