@@ -115,6 +115,11 @@ check_PROGRAMS += test_linalg_eig
 test_linalg_eig_SOURCES = test_linalg_eig.cc
 test_linalg_eig_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_linalg_eig_sym
+check_PROGRAMS += test_linalg_eig_sym
+test_linalg_eig_sym_SOURCES = test_linalg_eig_sym.cc
+test_linalg_eig_sym_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_linalg_eig_power
 check_PROGRAMS += test_linalg_eig_power
 test_linalg_eig_power_SOURCES = test_linalg_eig_power.cc

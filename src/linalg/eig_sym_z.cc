@@ -43,6 +43,10 @@ namespace linalg {
   RTensor
   eig_sym(const CTensor &A, CTensor *V)
   {
+    assert(A.rows() > 0);
+    assert(A.rank() == 2);
+    assert(A.rows() == A.columns());
+
     //if (accurate_svd)
     //  return block_eig_sym(A, V);
     integer n = A.rows();
@@ -71,6 +75,7 @@ namespace linalg {
     delete[] work;
     delete[] rwork;
 
+    if (V) *V = aux;
     return output;
   }
 

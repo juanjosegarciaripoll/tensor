@@ -71,6 +71,7 @@ namespace linalg {
     F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work, &lwork, info);
     delete[] work;
 
+    if (V) *V = aux;
     return output;
   }
 
