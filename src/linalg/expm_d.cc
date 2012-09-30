@@ -34,6 +34,8 @@ namespace linalg {
    The current algorithm has been adapted from Scientific Python, the version
    written by Travis Oliphant (2002). It is slightly more accurate than the
    same Matlab version when computed with the default order of 7.
+
+   \ingroup Linalg
 */
   const RTensor
   expm(const RTensor &Aunorm, unsigned int order)
