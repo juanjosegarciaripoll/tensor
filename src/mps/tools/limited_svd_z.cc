@@ -23,7 +23,7 @@
 
 namespace mps {
 
-  RTensor
+  const RTensor
   limited_svd(CTensor A, CTensor *U, CTensor *V, double tolerance, tensor::index max_dim)
   {
     RTensor s = linalg::svd(A, U, V, true /* economic */);

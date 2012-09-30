@@ -90,6 +90,8 @@ libmps_la_SOURCES = \
 	mps/tools/limited_svd_z.cc \
 	mps/tools/build_E_matrix_d.cc \
 	mps/tools/build_E_matrix_z.cc \
+	mps/tools/propagate_mps_d.cc \
+	mps/tools/propagate_mps_z.cc \
 	mps/iTEBD/itebd_d.cc \
 	mps/iTEBD/itebd_z.cc \
 	mps/iTEBD/itebd_itime_d.cc \

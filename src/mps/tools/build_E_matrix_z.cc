@@ -19,12 +19,22 @@
 
 #include "build_E_matrix.hpp"
 
+namespace mps {
+
 using namespace tensor;
 
 /**\cond IGNORED */
 
-template CTensor mps::build_E_matrix<cdouble>(const CTensor &A, tensor::index *a, tensor::index *b);
+const CTensor build_E_matrix(const CTensor &A, tensor::index *a, tensor::index *b)
+{
+  return mps::do_build_E_matrix(A, A, a, b);
+}
 
-template CTensor mps::build_E_matrix<cdouble>(const CTensor &A, const CTensor &B, tensor::index *a, tensor::index *b);
+const CTensor build_E_matrix(const CTensor &A, const CTensor &B, tensor::index *a, tensor::index *b)
+{
+  return mps::do_build_E_matrix(A, B, a, b);
+}
 
 /**\endcond */
+
+}

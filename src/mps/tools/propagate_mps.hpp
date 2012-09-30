@@ -22,8 +22,8 @@
 namespace mps {
 
   template<class Tensor>
-  const Tensor
-  propagate_right(const Tensor &v, const Tensor &A, const Tensor &op)
+  static inline const Tensor
+  do_propagate_right(Tensor v, const Tensor &A, const Tensor &op)
   {
     /* v(a,a') A(a',i,b) */
     v = fold(v, -1, A, 0);

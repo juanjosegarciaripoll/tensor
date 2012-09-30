@@ -19,12 +19,22 @@
 
 #include "build_E_matrix.hpp"
 
+namespace mps {
+
 using namespace tensor;
 
 /**\cond IGNORED */
 
-template RTensor mps::build_E_matrix<double>(const RTensor &A, tensor::index *a, tensor::index *b);
+const RTensor build_E_matrix(const RTensor &A, tensor::index *a, tensor::index *b)
+{
+  return mps::do_build_E_matrix(A, A, a, b);
+}
 
-template RTensor mps::build_E_matrix<double>(const RTensor &A, const RTensor &B, tensor::index *a, tensor::index *b);
+const RTensor build_E_matrix(const RTensor &A, const RTensor &B, tensor::index *a, tensor::index *b)
+{
+  return mps::do_build_E_matrix(A, B, a, b);
+}
 
 /**\endcond */
+
+}
