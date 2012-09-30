@@ -23,7 +23,8 @@
 
 namespace linalg {
 
-  using namespace tensor;
+  using tensor::RTensor;
+  using tensor::CTensor;
   using namespace lapack;
 
   /**
