@@ -13,6 +13,8 @@ GTEST_LDFLAGS = libgtest_main.a $(LDFLAGS) -lpthread
 TESTS =
 check_PROGRAMS =
 
+AM_TESTS_FD_REDIRECT = --gtest_death_test_style=threadsafe
+
 #####################################################################
 # TENSOR LIBRARY TESTS
 #
