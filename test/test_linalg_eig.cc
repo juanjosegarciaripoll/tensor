@@ -100,4 +100,4 @@ namespace tensor_test {
     test_over_integers(0, 32, test_random_eig<cdouble>);
   }
 
-} // namespace linalg_test
+} // namespace tensor_test
