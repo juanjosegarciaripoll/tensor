@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <tensor/tensor.h>
 #include <tensor/linalg.h>
+#include <tensor/io.h>
 
 namespace linalg {
 
@@ -56,19 +57,19 @@ namespace linalg {
     RTensor X = A;
 
     for (size_t k = 2; k <= order; k++) {
-      c = c * (order-k+1) / (k*(2*order-k+1));
-      X = fold(A, -1, X, 0);
+      c = (c * (order-k+1)) / (k*(2*order-k+1));
+      X = mmult(A, X);
       RTensor cX = c * X;
       N = N + cX;
-	if ((k & 1) == 0) {
-	    D = N + cX;
-	} else {
-	    D = N - cX;
-	}
+      if ((k & 1) == 0) {
+        D = D + cX;
+      } else {
+        D = D - cX;
+      }
     }
     X = solve(D, N);
     for (size_t k = 1; k <= j; k++) {
-	X = fold(X, -1, X, 0);
+      X = mmult(X, X);
     }
     return X;
 }

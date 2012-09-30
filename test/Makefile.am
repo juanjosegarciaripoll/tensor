@@ -125,6 +125,11 @@ check_PROGRAMS += test_linalg_eig_power
 test_linalg_eig_power_SOURCES = test_linalg_eig_power.cc
 test_linalg_eig_power_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_linalg_expm
+check_PROGRAMS += test_linalg_expm
+test_linalg_expm_SOURCES = test_linalg_expm.cc
+test_linalg_expm_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 #####################################################################
 # MPS LIBRARY TESTS
 #
