@@ -54,6 +54,11 @@ extern "C" {
      __CLPK_doublereal *vl, __CLPK_integer *ldvl, __CLPK_doublereal *vr,
      __CLPK_integer *ldvr, __CLPK_doublereal *work,
      __CLPK_integer *lwork, __CLPK_integer *info);
+  void F77NAME(dsyev)
+    (char *jobz, char *uplo,
+     __CLPK_integer *n, __CLPK_doublereal *a, __CLPK_integer *lda,
+     __CLPK_doublereal *w, __CLPK_doublereal *work, __CLPK_integer *lwork,
+     __CLPK_integer *info);
   int F77NAME(zgeev)
     (char *jobvl, char *jobvr, __CLPK_integer *n, 
      __CLPK_doublecomplex *a, __CLPK_integer *lda, __CLPK_doublecomplex *w,
@@ -71,6 +76,11 @@ extern "C" {
      __CLPK_doublecomplex *a, __CLPK_integer *lda, __CLPK_doublereal *s,
      __CLPK_doublecomplex *u, __CLPK_integer *ldu, __CLPK_doublecomplex *vt,
      __CLPK_integer *ldvt, __CLPK_doublecomplex *work, 
+     __CLPK_integer *lwork, __CLPK_doublereal *rwork, __CLPK_integer *info);
+  void F77NAME(zheev)
+    (char *jobz, char *uplo,
+     __CLPK_integer *n, __CLPK_doublecomplex *a, __CLPK_integer *lda,
+     __CLPK_doublereal *w, __CLPK_doublecomplex *work,
      __CLPK_integer *lwork, __CLPK_doublereal *rwork, __CLPK_integer *info);
 }
 #endif
