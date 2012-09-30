@@ -150,6 +150,6 @@ RTensor a = gen << (double)1.0 << 3;
   }
 
 } // namespace tensor
-/*}@*/
+/*@}*/
 
 #endif // TENSOR_GEN_H
