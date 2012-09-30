@@ -55,6 +55,10 @@ namespace tensor_test {
     test_over_integers(0, 32, test_expm_diag<double>);
   }
 
+  /*
+   * We compute the exponential of a linear combination of Pauli
+   * matrices, for which we have an exact formula.
+   */
   TEST(RMatrixTest, ExpmPauliTest) {
     RTensor sx(igen << 2 << 2, rgen << 0.0 << 1.0 << 1.0 << 0.0);
     RTensor sz(igen << 2 << 2, rgen << 1.0 << 0.0 << 0.0 << -1.0);
@@ -78,6 +82,10 @@ namespace tensor_test {
     test_over_integers(0, 32, test_expm_diag<cdouble>);
   }
 
+  /*
+   * We compute the exponential of a linear combination of Pauli
+   * matrices, for which we have an exact formula.
+   */
   TEST(CMatrixTest, ExpmPauliTest) {
     CTensor sx(igen << 2 << 2, cgen << 0.0 << 1.0 << 1.0 << 0.0);
     CTensor sz(igen << 2 << 2, cgen << 1.0 << 0.0 << 0.0 << -1.0);
