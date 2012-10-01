@@ -33,18 +33,53 @@ namespace tensor_test {
   //
 
   template<typename elt_t>
+  const Tensor<elt_t>
+  expm_diag(int n, Tensor<elt_t> *pexponent)
+  {
+    /*
+     * Create a random diagonal matrix, and exponentiate it
+     * in a very precise way (the exponential of a diagonal is
+     * a diagonal of exponentials)
+     */
+    Tensor<elt_t> d = Tensor<elt_t>::random(n);
+    Tensor<elt_t> exponent = diag(d);
+    Tensor<elt_t> simple = diag(exp(d));
+    if (pexponent) *pexponent = exponent;
+    return linalg::expm(exponent);
+  }
+
+  static const RTensor sx(igen << 2 << 2, rgen << 0.0 << 1.0 << 1.0 << 0.0);
+  static const RTensor sz(igen << 2 << 2, rgen << 1.0 << 0.0 << 0.0 << -1.0);
+  static const RTensor id = RTensor::eye(2,2);
+
+  RTensor
+  pauli_exponential(double theta, double phi, RTensor *pexponent)
+  {
+      RTensor A = cos(theta) * sx + sin(theta) * sz;
+      RTensor fA = phi * A;
+      if (pexponent) *pexponent = fA;
+      return cosh(phi) * id + sinh(phi) * A;
+  }
+
+  CTensor
+  pauli_exponential(double theta, double phi, CTensor *pexponent)
+  {
+      CTensor A = cos(theta) * sx + sin(theta) * sz;
+      CTensor fA = to_complex(0.0,phi) * A;
+      if (pexponent) *pexponent = fA;
+      return cos(phi) * id + to_complex(0.0,sin(phi)) * A;
+  }
+
+  template<typename elt_t>
   void test_expm_diag(int n) {
-#ifndef NDEBUG
     if (n == 0) {
+#ifndef NDEBUG
       ASSERT_DEATH(linalg::expm(Tensor<elt_t>(0)),".*");
+#endif
       return;
     }
-#endif
-    Tensor<elt_t> d = Tensor<elt_t>::random(n);
-    Tensor<elt_t> A = diag(d);
-    Tensor<elt_t> simple = diag(exp(d));
-    Tensor<elt_t> full = linalg::expm(A);
-    EXPECT_TRUE(approx_eq(simple, full, 1e-12));
+    Tensor<elt_t> exponent, exponential = expm_diag(n, &exponent);
+    EXPECT_TRUE(approx_eq(linalg::expm(exponent), exponential));
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -60,17 +95,29 @@ namespace tensor_test {
    * matrices, for which we have an exact formula.
    */
   TEST(RMatrixTest, ExpmPauliTest) {
-    RTensor sx(igen << 2 << 2, rgen << 0.0 << 1.0 << 1.0 << 0.0);
-    RTensor sz(igen << 2 << 2, rgen << 1.0 << 0.0 << 0.0 << -1.0);
-    RTensor id = RTensor::eye(2,2);
     for (int i = 0; i < 30; i++) {
       double theta = rand(M_PI);
       double phi = rand(M_PI);
-      RTensor A = cos(theta) * sx + sin(theta) * sz;
-      RTensor fA = phi * A;
-      RTensor expfA = cosh(phi) * id + sinh(phi) * A;
-      RTensor expmfA = linalg::expm(fA);
-      EXPECT_TRUE(approx_eq(expmfA, expfA, 1e-13));
+      RTensor fA, expfA = pauli_exponential(theta, phi, &fA);
+      EXPECT_TRUE(approx_eq(linalg::expm(fA), expfA, 1e-13));
+    }
+  }
+
+  /*
+   * exp(A + B) = exp(A) exp(B) if A and B commute
+   */
+  TEST(RMatrixTest, ExpmKronecker) {
+    for (int n = 1; n < 4; n++) {
+      for (int i = 0; i < 30; i++) {
+        double theta = rand(M_PI);
+        double phi = rand(M_PI);
+        RTensor fA, expfA = pauli_exponential(theta, phi, &fA);
+        RTensor B, expB = expm_diag(n, &B);
+        RTensor in = RTensor::eye(n,n);
+        RTensor C = kron(fA, in) + kron(id, B);
+        RTensor expC = kron(expfA, expB);
+        EXPECT_TRUE(approx_eq(linalg::expm(C), expC, 1e-13));
+      }
     }
   }
 
@@ -87,17 +134,29 @@ namespace tensor_test {
    * matrices, for which we have an exact formula.
    */
   TEST(CMatrixTest, ExpmPauliTest) {
-    CTensor sx(igen << 2 << 2, cgen << 0.0 << 1.0 << 1.0 << 0.0);
-    CTensor sz(igen << 2 << 2, cgen << 1.0 << 0.0 << 0.0 << -1.0);
-    CTensor id = CTensor::eye(2,2);
     for (int i = 0; i < 30; i++) {
       double theta = rand(M_PI);
       double phi = rand(M_PI);
-      CTensor A = cos(theta) * sx + sin(theta) * sz;
-      CTensor fA = to_complex(0.0,phi) * A;
-      CTensor expfA = cos(phi) * id + to_complex(0.0,sin(phi)) * A;
-      CTensor expmfA = linalg::expm(fA);
-      EXPECT_TRUE(approx_eq(expmfA, expfA, 1e-13));
+      CTensor fA, expfA = pauli_exponential(theta, phi, &fA);
+      EXPECT_TRUE(approx_eq(linalg::expm(fA), expfA, 1e-13));
+    }
+  }
+
+  /*
+   * exp(A + B) = exp(A) exp(B) if A and B commute
+   */
+  TEST(CMatrixTest, ExpmKronecker) {
+    for (int n = 1; n < 4; n++) {
+      for (int i = 0; i < 30; i++) {
+        double theta = rand(M_PI);
+        double phi = rand(M_PI);
+        CTensor fA, expfA = pauli_exponential(theta, phi, &fA);
+        CTensor B, expB = expm_diag(n, &B);
+        CTensor in = CTensor::eye(n,n);
+        CTensor C = kron(fA, in) + kron(CTensor(id), B);
+        CTensor expC = kron(expfA, expB);
+        EXPECT_TRUE(approx_eq(linalg::expm(C), expC, 1e-13));
+      }
     }
   }
 
