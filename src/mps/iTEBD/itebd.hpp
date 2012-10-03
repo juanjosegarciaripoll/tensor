@@ -83,28 +83,38 @@ namespace mps {
 
   template<class Tensor>
   typename Tensor::elt_t
-  iTEBD<Tensor>::expected_value(const Tensor &Op1, const Tensor &Op2,
-                                tensor::index separation, int site) const
+  iTEBD<Tensor>::expected_value(const Tensor &Op1, const Tensor &Op2) const
   {
-    return string_order(Op1, Tensor(), Op2, separation, site);
+    return string_order(Op1, 0, Tensor(), Op2, 1);
   }
 
   template<class Tensor>
   typename Tensor::elt_t
-  iTEBD<Tensor>::string_order(const Tensor &Opfirst, const Tensor &Opmiddle,
-                              const Tensor &Oplast, tensor::index separation,
-                              int site) const
+  iTEBD<Tensor>::expected_value(const Tensor &Op1, int i, const Tensor &Op2, int j) const
   {
+    return string_order(Op1, i, Tensor(), Op2, j);
+  }
+
+  template<class Tensor>
+  typename Tensor::elt_t
+  iTEBD<Tensor>::string_order(const Tensor &Opi, int i, const Tensor &Opmiddle,
+                              const Tensor &Opj, int j) const
+  {
+    if (i > j)
+      return string_order(Opj, j, Opmiddle, Opi, i);
     assert(is_canonical());
+    int site = i;
     Tensor v1 = left_boundary(site);
     Tensor v2 = v1;
-    v1 = propagate_right(v1, combined_matrix(++site), Opfirst);
+    v1 = propagate_right(v1, combined_matrix(site), Opi);
     v2 = propagate_right(v2, combined_matrix(site));
-    for (tensor::index i = 0; i < separation; i++) {
-      v1 = propagate_right(v1, combined_matrix(++site), Opmiddle);
+    ++site;
+    while (site < j) {
+      v1 = propagate_right(v1, combined_matrix(site), Opmiddle);
       v2 = propagate_right(v2, combined_matrix(site));
+      ++site;
     }
-    elt_t value = trace(propagate_right(v1, combined_matrix(++site), Oplast));
+    elt_t value = trace(propagate_right(v1, combined_matrix(site), Opj));
     elt_t norm = trace(propagate_right(v2, combined_matrix(site))); 
     return value / real(norm);
   }

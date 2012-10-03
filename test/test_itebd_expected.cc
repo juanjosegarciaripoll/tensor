@@ -43,7 +43,7 @@ namespace tensor_test {
   template<class Tensor>
   void test_expected_product_norm(int d)
   {
-    for (int i = 1; i < 10; i++) {
+    for (int i = 1; i < 100; i++) {
       Tensor id = Tensor::eye(d,d);
       typename Tensor::elt_t one = id(0,0);
       iTEBD<Tensor> psiAA = random_product<Tensor>(d, true);
@@ -72,7 +72,7 @@ namespace tensor_test {
   template<class Tensor>
   void test_expected_projectors(int d)
   {
-    for (int i = 1; i < 10; i++) {
+    for (int i = 1; i < 100; i++) {
       Tensor A, B;
       iTEBD<Tensor> psi = random_product<Tensor>(d, true, &A, &B);
       Tensor PA = projector(A); // Projector onto A

@@ -61,14 +61,15 @@ public:
   /** Expected value of an operator acting on 'site'. */
   elt_t expected_value(const Tensor &Op, int site = 0) const;
 
-  /** Expected value of two operators, acting on 'site' and on 'site + separation'. */
-  elt_t expected_value(const Tensor &Op1, const Tensor &Op2,
-                       tensor::index separation = 0, int site = 0) const;
+  /** Expected value of two operators, acting on sites '0' and '1'. */
+  elt_t expected_value(const Tensor &Op1, const Tensor &Op2) const;
 
-  /** String order parameter between 'site' and 'site + separation'. */
-  elt_t string_order(const Tensor &Opfirst, const Tensor &Opmiddle,
-                     const Tensor &Oplast, tensor::index separation,
-                     int site = 0) const;
+  /** Expected value of two operators, acting on sites 'i' and 'j'. */
+  elt_t expected_value(const Tensor &Opi, int i, const Tensor &Opj, int j) const;
+
+  /** String order parameter between sites 'i' and 'j', both included. */
+  elt_t string_order(const Tensor &Opi, int i, const Tensor &Opmiddle,
+                     const Tensor &Opj, int j) const;
 
   /** Expected value of the two-site operator Op12 acting on 'site' and 'site+1'. */
   elt_t expected_value12(const Tensor &Op12, int site = 0) const;
