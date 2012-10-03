@@ -128,7 +128,7 @@ test_linalg_eig_power_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS)
 TESTS += test_linalg_expm
 check_PROGRAMS += test_linalg_expm
 test_linalg_expm_SOURCES = test_linalg_expm.cc
-test_linalg_expm_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+test_linalg_expm_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 #####################################################################
 # MPS LIBRARY TESTS
@@ -143,6 +143,11 @@ TESTS += test_itebd_base
 check_PROGRAMS += test_itebd_base
 test_itebd_base_SOURCES = test_itebd_base.cc
 test_itebd_base_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
+TESTS += test_itebd_expected
+check_PROGRAMS += test_itebd_expected
+test_itebd_expected_SOURCES = test_itebd_expected.cc
+test_itebd_expected_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \

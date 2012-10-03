@@ -50,6 +50,22 @@ namespace tensor_test {
   }
 
   /*
+   * Approximately equal numbers.
+   */
+  template<typename elt_t>
+  bool simeq(elt_t a, elt_t b, double epsilon = 2*EPSILON)
+  {
+    double x = abs(a - b);
+    if (x > epsilon) {
+      std::cout << x << std::endl;
+      return false;
+    }
+    return true;
+  }
+
+#define EXPECT_CEQ(a, b) EXPECT_TRUE(simeq(a, b))
+
+  /*
    * Approximately equal tensors.
    */
   template<class Tensor>

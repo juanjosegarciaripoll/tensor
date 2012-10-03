@@ -54,18 +54,11 @@ namespace tensor_test {
   }
 
   TEST(RMPSTest, SpinHalf) {
-    RTensor sx(igen << 2 << 2,
-               rgen << 0 << 1.0/2.0 << 1.0/2.0 << 0.0);
-    CTensor sy(igen << 2 << 2,
-               cgen << 0.0 << to_complex(0,1.0/2.0)
-               << to_complex(0,-1.0/2.0) << 0.0);
-    RTensor sz(igen << 2 << 2,
-               rgen << 1/2.0 << 0 << 0 << -1/2.0);
     CTensor S[3];
     mps::spin_operators(0.5, S, S+1, S+2);
-    EXPECT_EQ(sx, S[0]);
-    EXPECT_EQ(sy, S[1]);
-    EXPECT_EQ(sz, S[2]);
+    EXPECT_EQ(mps::Pauli_x/2.0, S[0]);
+    EXPECT_EQ(mps::Pauli_y/2.0, S[1]);
+    EXPECT_EQ(mps::Pauli_z/2.0, S[2]);
   }
 
 }

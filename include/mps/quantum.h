@@ -28,6 +28,10 @@ namespace mps {
 
   void spin_operators(double s, CTensor *sx, CTensor *sy, CTensor *sz);
 
+  extern const RTensor Pauli_id;
+  extern const RTensor Pauli_x;
+  extern const RTensor Pauli_z;
+  extern const CTensor Pauli_y;
 }
 
 #endif // MPS_QUANTUM_H

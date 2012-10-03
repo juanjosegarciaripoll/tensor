@@ -23,10 +23,15 @@
 #include <gtest/gtest-death-test.h>
 #include <tensor/tensor.h>
 #include <tensor/linalg.h>
+#include <mps/quantum.h>
 
 namespace tensor_test {
 
   using namespace tensor;
+
+  static const RTensor &sx = mps::Pauli_x;
+  static const RTensor &sz = mps::Pauli_z;
+  static const RTensor &id = mps::Pauli_id;
 
   //////////////////////////////////////////////////////////////////////
   // MATRIX EXPONENTIALS
@@ -47,10 +52,6 @@ namespace tensor_test {
     if (pexponent) *pexponent = exponent;
     return linalg::expm(exponent);
   }
-
-  static const RTensor sx(igen << 2 << 2, rgen << 0.0 << 1.0 << 1.0 << 0.0);
-  static const RTensor sz(igen << 2 << 2, rgen << 1.0 << 0.0 << 0.0 << -1.0);
-  static const RTensor id = RTensor::eye(2,2);
 
   RTensor
   pauli_exponential(double theta, double phi, RTensor *pexponent)
