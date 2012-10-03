@@ -11,6 +11,9 @@ libtensor_la_SOURCES = \
 	tools/tictoc.cc \
 	rand/rand.cc \
 	indices/indices.cc \
+	indices/concat.cc \
+	indices/linspace_d.cc \
+	indices/linspace_z.cc \
 	sparse/full_d.cc \
 	sparse/full_z.cc \
 	sparse/sparse_d.cc \

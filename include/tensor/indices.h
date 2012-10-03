@@ -44,6 +44,8 @@ namespace tensor {
     index total_size() const;
   };
 
+  const Indices operator<<(const Indices &a, const Indices &b);
+
   //////////////////////////////////////////////////////////////////////
   // RANGE OF INTEGERS
   //
