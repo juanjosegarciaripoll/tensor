@@ -25,6 +25,9 @@ libtensor_la_SOURCES = \
 	tensor/tensor_z.cc \
 	tensor/tensor_to_complex.cc \
 	tensor/tensor_conj.cc \
+	tensor/tensor_imag_d.cc \
+	tensor/tensor_real_z.cc \
+	tensor/tensor_imag_z.cc \
 	tensor/matrix_norminf_d.cc \
 	tensor/matrix_norminf_z.cc \
 	tensor/matrix_adjoint_z.cc \

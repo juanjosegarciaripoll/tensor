@@ -407,6 +407,11 @@ namespace tensor {
   double norm2(const CTensor &r);
   double matrix_norminf(const CTensor &r);
 
+  inline const RTensor real(const RTensor &r) { return r; }
+  const RTensor imag(const RTensor &r);
+  const RTensor real(const CTensor &r);
+  const RTensor imag(const CTensor &r);
+
   const CTensor to_complex(const RTensor &r);
   inline const CTensor to_complex(const CTensor &r) { return r; }
   const CTensor to_complex(const RTensor &r, const RTensor &i);

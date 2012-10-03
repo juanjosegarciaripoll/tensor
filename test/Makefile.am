@@ -149,6 +149,11 @@ check_PROGRAMS += test_itebd_expected
 test_itebd_expected_SOURCES = test_itebd_expected.cc
 test_itebd_expected_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_itebd_itime
+check_PROGRAMS += test_itebd_itime
+test_itebd_itime_SOURCES = test_itebd_itime.cc
+test_itebd_itime_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 	 random_unitary_d.cc random_unitary_z.cc
