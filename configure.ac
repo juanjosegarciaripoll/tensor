@@ -47,6 +47,9 @@ TENSOR_BITS
 # Numerical libraries
 TENSOR_CHOOSE_LIB
 
+# Backtraces
+TENSOR_BACKTRACE
+
 # Unit testing with google
 AC_MSG_CHECKING([for googletest-read-only in sources])
 if test -d "${ac_confdir}/test/googletest-read-only"; then

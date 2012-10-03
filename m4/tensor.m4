@@ -9,6 +9,21 @@ AC_DEFUN([TENSOR_BITS],[
   fi
 ])
 
+dnl ------------------------------------------------------------
+dnl Backtraces
+dnl
+AC_DEFUN([TENSOR_BACKTRACE],[
+  AC_CHECK_FUNCS( [dladdr backtrace backtrace_symbols] )
+  AC_CHECK_HEADERS_ONCE( [dlfnc.h] )
+  AC_RUN_IFELSE(
+    [AC_LANG_SOURCE([[
+      void *foo() { return __builtin_return_address(1); }
+      int main() {
+        return (foo() == 0);
+      }]])],
+    [AC_DEFINE(HAVE___BUILTIN_RETURN_ADDRESS, [1], [GCC builtin return address])],
+    [])
+])
 
 dnl ----------------------------------------------------------------------
 dnl Find veclib framework
