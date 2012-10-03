@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <tensor/io.h>
 #include <mps/tools.h>
 #include <mps/itebd.h>
 
@@ -77,7 +78,7 @@ namespace mps {
     assert(is_canonical());
     Tensor v = left_boundary(site);
     elt_t value = trace(propagate_right(v, combined_matrix(site), Op));
-    elt_t norm = trace(propagate_right(v, combined_matrix(site), Op));
+    elt_t norm = trace(propagate_right(v, combined_matrix(site)));
     return value / real(norm);
   }
 
@@ -127,6 +128,8 @@ namespace mps {
     const Tensor &AlA = (site & 1) ? BlB_ : AlA_;
     const Tensor &B = (site & 1) ? A_ : B_;
     const Tensor &lB = (site & 1) ? lA_ : lB_;
+    AlA.get_dimensions(&a, &i, &b);
+    B.get_dimensions(&b, &j, &c);
     Tensor AlAB = reshape(fold(AlA, -1, B, 0), a, i*j, c);
     Tensor v = left_boundary(site);
     elt_t value = trace(propagate_right(v, AlAB, Op12));

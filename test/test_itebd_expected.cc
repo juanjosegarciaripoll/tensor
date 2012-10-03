@@ -69,6 +69,11 @@ namespace tensor_test {
     return mmult(Am, adjoint(Am));
   }
 
+  /*
+   * When computing correlations, ensure that operators act on the right
+   * sites and that expectation values are translationally invariant with
+   * period two.
+   */
   template<class Tensor>
   void test_expected_projectors(int d)
   {
@@ -83,6 +88,11 @@ namespace tensor_test {
       typename Tensor::elt_t one = number_one<typename Tensor::elt_t>();
       typename Tensor::elt_t zero = number_zero<typename Tensor::elt_t>();
 
+      EXPECT_CEQ(one, psi.expected_value(PA, 0));
+      EXPECT_CEQ(zero, psi.expected_value(PnA, 0));
+      EXPECT_CEQ(one, psi.expected_value(PB, 1));
+      EXPECT_CEQ(zero, psi.expected_value(PnB, 1));
+
       EXPECT_CEQ(one, psi.expected_value(PA, PB));
       EXPECT_CEQ(zero, psi.expected_value(PA, PnB));
       EXPECT_CEQ(zero, psi.expected_value(PnA, PB));
@@ -92,8 +102,43 @@ namespace tensor_test {
       EXPECT_CEQ(one, psi.expected_value(id, PB));
       EXPECT_CEQ(zero, psi.expected_value(id, PnB));
       EXPECT_CEQ(zero, psi.expected_value(PnA, id));
+
+      EXPECT_CEQ(one, psi.expected_value(PA, 0));
+      EXPECT_CEQ(zero, psi.expected_value(PnA, 0));
+      EXPECT_CEQ(one, psi.expected_value(PB, 1));
+      EXPECT_CEQ(zero, psi.expected_value(PnB, 1));
     }
-  }    
+  }
+
+  /*
+   * Verify the implementation of expected12() by checking with kronecker
+   * products of projectors.
+   */
+  template<class Tensor>
+  void test_expected12_projectors(int d)
+  {
+    for (int i = 1; i < 100; i++) {
+      Tensor A, B;
+      iTEBD<Tensor> psi = random_product<Tensor>(d, true, &A, &B);
+      Tensor PA = projector(A); // Projector onto A
+      Tensor PB = projector(B); // Projector onto B
+      Tensor id = Tensor::eye(d,d);
+      Tensor PnA = id - PA; // Orthogonal projectors
+      Tensor PnB = id - PB;
+      typename Tensor::elt_t one = number_one<typename Tensor::elt_t>();
+      typename Tensor::elt_t zero = number_zero<typename Tensor::elt_t>();
+
+      EXPECT_CEQ(one, psi.expected_value12(kron(PA, PB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron(PA, PnB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron(PnA, PB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron(PnA, PnB)));
+
+      EXPECT_CEQ(one, psi.expected_value12(kron(PA, id)));
+      EXPECT_CEQ(one, psi.expected_value12(kron(id, PB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron(id, PnB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron(PnA, id)));
+    }
+  }
 
   ////////////////////////////////////////////////////////////
   /// ITEBD WITH REAL TENSORS
@@ -107,6 +152,10 @@ namespace tensor_test {
     test_over_integers(1, 6, test_expected_projectors<RTensor>);
   }
 
+  TEST(RiTEBDTest, RiTEBDExpected12Pauli) {
+    test_over_integers(1, 6, test_expected12_projectors<RTensor>);
+  }
+
   ////////////////////////////////////////////////////////////
   /// ITEBD WITH COMPLEX TENSORS
   ///
@@ -117,6 +166,10 @@ namespace tensor_test {
 
   TEST(CiTEBDTest, CiTEBDExpectedPauli) {
     test_over_integers(1, 6, test_expected_projectors<CTensor>);
+  }
+
+  TEST(CiTEBDTest, CiTEBDExpected12Pauli) {
+    test_over_integers(1, 6, test_expected12_projectors<CTensor>);
   }
 
 }
