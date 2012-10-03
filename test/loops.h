@@ -64,6 +64,7 @@ namespace tensor_test {
   }
 
 #define EXPECT_CEQ(a, b) EXPECT_TRUE(simeq(a, b))
+#define ASSERT_CEQ(a, b) ASSERT_TRUE(simeq(a, b))
 
   /*
    * Approximately equal tensors.
