@@ -119,7 +119,7 @@ namespace tensor_test {
   {
     for (int i = 1; i < 100; i++) {
       Tensor A, B;
-      iTEBD<Tensor> psi = random_product<Tensor>(d, true, &A, &B);
+      iTEBD<Tensor> psi = random_product<Tensor>(d, false, &A, &B);
       Tensor PA = projector(A); // Projector onto A
       Tensor PB = projector(B); // Projector onto B
       Tensor id = Tensor::eye(d,d);
@@ -128,15 +128,53 @@ namespace tensor_test {
       typename Tensor::elt_t one = number_one<typename Tensor::elt_t>();
       typename Tensor::elt_t zero = number_zero<typename Tensor::elt_t>();
 
-      EXPECT_CEQ(one, psi.expected_value12(kron(PA, PB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron(PA, PnB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron(PnA, PB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron(PnA, PnB)));
+      EXPECT_CEQ(one, psi.expected_value12(kron2(PA, PB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(PA, PnB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnA, PB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnA, PnB)));
 
-      EXPECT_CEQ(one, psi.expected_value12(kron(PA, id)));
-      EXPECT_CEQ(one, psi.expected_value12(kron(id, PB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron(id, PnB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron(PnA, id)));
+      EXPECT_CEQ(one, psi.expected_value12(kron2(PA, id)));
+      EXPECT_CEQ(one, psi.expected_value12(kron2(id, PB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(id, PnB)));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnA, id)));
+
+      EXPECT_CEQ(one, psi.expected_value12(kron2(PB, PA), 1));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnB, PA), 1));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(PB, PnA), 1));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnB, PnA), 1));
+
+      EXPECT_CEQ(one, psi.expected_value12(kron2(id, PA), 1));
+      EXPECT_CEQ(one, psi.expected_value12(kron2(PB, id), 1));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnB, id), 1));
+      EXPECT_CEQ(zero, psi.expected_value12(kron2(id, PnA), 1));
+    }
+  }
+
+  /*
+   * Verify the implementation of expected12() by checking with kronecker
+   * products of projectors.
+   */
+  template<class Tensor>
+  void test_energy_projectors(int d)
+  {
+    for (int i = 1; i < 100; i++) {
+      Tensor A, B;
+      iTEBD<Tensor> psi = random_product<Tensor>(d, true, &A, &B);
+      Tensor PA = projector(A); // Projector onto A
+      Tensor id = Tensor::eye(d,d);
+      Tensor PnA = id - PA; // Orthogonal projectors
+      typename Tensor::elt_t one = number_one<typename Tensor::elt_t>();
+      typename Tensor::elt_t zero = number_zero<typename Tensor::elt_t>();
+
+      EXPECT_CEQ(2.0, psi.energy(kron(PA, PA)));
+      EXPECT_CEQ(0.0, psi.energy(kron(PA, PnA)));
+      EXPECT_CEQ(0.0, psi.energy(kron(PnA, PA)));
+      EXPECT_CEQ(0.0, psi.energy(kron(PnA, PnA)));
+
+      EXPECT_CEQ(2.0, psi.energy(kron(PA, id)));
+      EXPECT_CEQ(2.0, psi.energy(kron(id, PA)));
+      EXPECT_CEQ(0.0, psi.energy(kron(id, PnA)));
+      EXPECT_CEQ(0.0, psi.energy(kron(PnA, id)));
     }
   }
 
@@ -148,12 +186,16 @@ namespace tensor_test {
     test_over_integers(1, 6, test_expected_product_norm<RTensor>);
   }
 
-  TEST(RiTEBDTest, RiTEBDExpectedPauli) {
+  TEST(RiTEBDTest, RiTEBDExpectedProjectors) {
     test_over_integers(1, 6, test_expected_projectors<RTensor>);
   }
 
-  TEST(RiTEBDTest, RiTEBDExpected12Pauli) {
+  TEST(RiTEBDTest, RiTEBDExpected12Projectors) {
     test_over_integers(1, 6, test_expected12_projectors<RTensor>);
+  }
+
+  TEST(RiTEBDTest, RiTEBDEnergyProjectors) {
+    test_over_integers(1, 6, test_energy_projectors<RTensor>);
   }
 
   ////////////////////////////////////////////////////////////
@@ -164,12 +206,16 @@ namespace tensor_test {
     test_over_integers(1, 6, test_expected_product_norm<CTensor>);
   }
 
-  TEST(CiTEBDTest, CiTEBDExpectedPauli) {
+  TEST(CiTEBDTest, CiTEBDExpectedProjectors) {
     test_over_integers(1, 6, test_expected_projectors<CTensor>);
   }
 
-  TEST(CiTEBDTest, CiTEBDExpected12Pauli) {
+  TEST(CiTEBDTest, CiTEBDExpected12Projectors) {
     test_over_integers(1, 6, test_expected12_projectors<CTensor>);
+  }
+
+  TEST(CiTEBDTest, CiTEBDEnergyProjectors) {
+    test_over_integers(1, 6, test_energy_projectors<CTensor>);
   }
 
 }
