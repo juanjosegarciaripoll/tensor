@@ -31,14 +31,6 @@ where_to_truncate(const RTensor &s, tensor::index max_a2, double tol)
    * is smaller than MAX_A2.
    */
   size_t L = s.size();
-  if (tol <= 0) {
-    if (max_a2 == 0 || L <= max_a2) {
-      return L;
-    } else {
-      return max_a2;
-    }
-  }
-
   double *cumulated = new double[L];
   double total = 0;
   /*
