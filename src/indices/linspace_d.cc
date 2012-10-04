@@ -22,10 +22,7 @@
 
 namespace tensor {
 
-  /** Concatenate two sets of indices. For example, example: (igen <<
-   *  1 << 2) << (igen << 3 << 4) is equivalent to Indices(igen << 1
-   *  << 2 << 3 << 4)
-   */
+  /**Vector of 'n' equally spaced numbers in the interval [min, max].*/
   const RTensor
   linspace(double min, double max, index n)
   {
@@ -34,6 +31,7 @@ namespace tensor {
     return linspace(a, b, n);
   }
 
+  /**Tensor of 'n' equally spaced vectors in the interval [min, max].*/
   const RTensor
   linspace(const RTensor &min, const RTensor &max, index n)
   {

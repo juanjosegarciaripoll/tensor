@@ -460,9 +460,9 @@ namespace tensor {
   const CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 
   const RTensor linspace(double min, double max, tensor::index n = 100);
-  const RTensor linspace(RTensor min, RTensor max, tensor::index n = 100);
+  const RTensor linspace(const RTensor &min, const RTensor &max, tensor::index n = 100);
   const CTensor linspace(cdouble min, cdouble max, tensor::index n = 100);
-  const CTensor linspace(CTensor min, CTensor max, tensor::index n = 100);
+  const CTensor linspace(const CTensor min, const CTensor &max, tensor::index n = 100);
 } // namespace tensor
 
 /* @} */

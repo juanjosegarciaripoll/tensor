@@ -25,7 +25,7 @@
 namespace tensor {
 
   template<typename elt_t>
-  inline const Tensor<elt_t>
+  static inline const Tensor<elt_t>
   do_linspace(const Tensor<elt_t> &min, const Tensor<elt_t> &max, index n = 100)
   {
     index d = min.size();
