@@ -23,7 +23,7 @@
 namespace mps {
 
 size_t
-where_to_truncate(const RTensor &s, tensor::index max_a2, double tol)
+where_to_truncate(const RTensor &s, double tol, tensor::index max_a2)
 {
   /* S is a vector of positive numbers arranged in decreasing order.  This
    * routine looks for a point to truncate S such that the norm-2 error made
@@ -45,16 +45,12 @@ where_to_truncate(const RTensor &s, tensor::index max_a2, double tol)
   if (max_a2 == 0 || max_a2 > L) {
     max_a2 = L;
   }
-  if (max_a2 > 16) {
-    std::cerr << "Error, matrices got too large";
-    abort();
-  }
   /* Due to the precision limits in current processors, we automatically
    * relax the tolerance to DOUBLE_EPSILON, which is a floating point number
    * such that added to 1.0 gives 1.0. In other words, a tolerance <=
    * DOUBLE_EPSILON is irrelevant for all purposes.
    */
-  if (tol < 0) {
+  if (tol <= 0) {
     tol = DBL_EPSILON;
   }
   double limit = tol * total;
