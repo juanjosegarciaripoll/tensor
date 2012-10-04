@@ -19,38 +19,46 @@
 
 #include <tensor/io.h>
 #include <mps/tools.h>
+#include <mps/quantum.h>
 #include <mps/itebd.h>
 
 namespace mps {
 
   template<class Tensor>
+  static const Tensor normalize(const Tensor &v)
+  {
+    return v / norm2(v);
+  }
+
+  template<class Tensor>
   iTEBD<Tensor>::iTEBD(tensor::index dimension) : 
-    A_(igen << 1 << dimension << 1),
-    B_(igen << 1 << dimension << 1),
+    A_(normalize(Tensor::random(1, dimension, 1))),
+    B_(normalize(Tensor::random(1, dimension, 1))),
     lA_(igen << 1, gen<elt_t>(1)),
-    lB_(igen << 1, gen<elt_t>(1))
+    lB_(igen << 1, gen<elt_t>(1)),
+    AlA_(A_), BlB_(B_), canonical_(true)
   {
     assert(dimension > 0);
   }
     
   template<class Tensor>
   iTEBD<Tensor>::iTEBD(const Tensor &A)
-  : A_(reshape(A / norm2(A), igen << 1 << A.dimension(0) << 1)),
-    B_(reshape(A / norm2(A), igen << 1 << A.dimension(0) << 1)),
+  : A_(reshape(normalize(A), igen << 1 << A.dimension(0) << 1)),
+    B_(A_),
     lA_(igen << 1, gen<elt_t>(1.0)),
     lB_(igen << 1, gen<elt_t>(1.0)),
-    AlA_(A_), BlB_(B_), canonical_(1)
+    AlA_(A_), BlB_(B_), canonical_(true)
   {
     assert(A.rank() == 1);
   }
 
   template<class Tensor>
   iTEBD<Tensor>::iTEBD(const Tensor &A, const Tensor &B) :
-    A_(reshape(A / norm2(A), igen << 1 << A.dimension(0) << 1)),
-    B_(reshape(B / norm2(B), igen << 1 << A.dimension(0) << 1)),
+    A_(reshape(normalize(A), igen << 1 << A.dimension(0) << 1)),
+    B_(reshape(normalize(B), igen << 1 << B.dimension(0) << 1)),
     lA_(igen << 1, gen<elt_t>(1.0)),
     lB_(igen << 1, gen<elt_t>(1.0)),
-    AlA_(A_), BlB_(B_), canonical_(1)
+    AlA_(A_), BlB_(B_), canonical_(true)
   {
     assert(A.rank() == 1);
     assert(A.rank() == 1);
@@ -60,7 +68,7 @@ namespace mps {
   iTEBD<Tensor>::iTEBD(const Tensor &A, const Tensor &lA,
 		       const Tensor &B, const Tensor &lB,
                        bool canonical) :
-    A_(A), lA_(lA), B_(B), lB_(lB),
+    A_(A), B_(B), lA_(lA), lB_(lB),
     AlA_(scale(A, -1, lA)), BlB_(scale(B, -1, lB)),
     canonical_(canonical)
   {
@@ -147,13 +155,7 @@ namespace mps {
   template<class Tensor>
   double iTEBD<Tensor>::entropy(int site) const
   {
-    Tensor l = left_boundary(site);
-    double ltot = abs(sum(l)), s = 0.0;
-    for (size_t i = 0; i < l.size(); i++) {
-      double li = abs(l[i]) / ltot;
-      s -= li * log(li);
-    }
-    return s;
+    return mps::entropy(abs(left_boundary(site)));
   }
 
 }
