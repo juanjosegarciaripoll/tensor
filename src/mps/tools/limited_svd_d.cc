@@ -26,13 +26,7 @@ namespace mps {
   limited_svd(RTensor A, RTensor *U, RTensor *V, double tolerance, tensor::index max_dim)
   {
     RTensor s = linalg::svd(A, U, V, true /* economic */);
-    tensor::index c;
-    if (max_dim && (tolerance < 0)) {
-      c = std::min(max_dim, s.size());
-    } else {
-      c = where_to_truncate(s, 0, tolerance);
-      if (max_dim && c > max_dim) c = max_dim;
-    }
+    tensor::index c = where_to_truncate(s, tolerance, max_dim);
     *U = (*U)(range(), range(0,c-1));
     *V = (*V)(range(0,c-1), range());
     s = s(range(0,c-1));
