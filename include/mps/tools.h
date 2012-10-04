@@ -26,7 +26,7 @@ namespace mps {
 
   using namespace tensor;
 
-  size_t where_to_truncate(const RTensor &s, tensor::index max_a2, double tol);
+  size_t where_to_truncate(const RTensor &s, double tol = -1, tensor::index max_a2 = 0);
 
   const RTensor limited_svd(RTensor A, RTensor *U, RTensor *V, double tolerance = -1, tensor::index max_dim = 0);
 
