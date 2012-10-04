@@ -94,6 +94,7 @@ lib_LTLIBRARIES += libmps.la
 
 libmps_la_SOURCES = \
 	mps/quantum/spin.cc \
+	mps/tools/entropy.cc \
 	mps/tools/truncate.cc \
 	mps/tools/limited_svd_d.cc \
 	mps/tools/limited_svd_z.cc \

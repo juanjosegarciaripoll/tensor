@@ -17,23 +17,33 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MPS_QUANTUM_H
-#define MPS_QUANTUM_H
-
-#include <tensor/tensor.h>
+#include <tensor/linalg.h>
+#include <mps/quantum.h>
 
 namespace mps {
 
-  using namespace tensor;
+  /**Compute the von Neumann entropy. If the input tensor is a vector,
+     it assumes it is a list of eigenvalues from a density matrix and
+     computes the associated entropy, \f$-\sum_i \lambda_l
+     \log(\lambda_i)\f$. If the input state is a matrix, this matrix
+     is diagonalized and the eigenvalues are used to compute the
+     entropy. */
+  double entropy(const RTensor &t)
+  {
+    if (t.rank() == 1) {
+      const RTensor &l = t;
+      double ltot = abs(sum(l)), s = 0.0;
+      for (size_t i = 0; i < l.size(); i++) {
+	double li = abs(l[i]) / ltot;
+	s -= li * log(li);
+      }
+      return s;
+    } else if (t.rank() == 2) {
+      return entropy(linalg::eig_sym(t));
+    } else {
+      assert(t.rank() == 1 || t.rank() == 2);
+      abort();
+    }
+  }
 
-  void spin_operators(double s, CTensor *sx, CTensor *sy, CTensor *sz);
-
-  double entropy(const RTensor &lambdas);
-
-  extern const RTensor Pauli_id;
-  extern const RTensor Pauli_x;
-  extern const RTensor Pauli_z;
-  extern const CTensor Pauli_y;
 }
-
-#endif // MPS_QUANTUM_H
