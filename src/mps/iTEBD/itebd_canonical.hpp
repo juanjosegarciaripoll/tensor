@@ -145,6 +145,7 @@ namespace mps {
      */
     GAB.get_dimensions(&a,&i,&j,&b);
     canonical_form(reshape(GAB, a,i*j,b), lAB, &GAB, &lAB, tolerance, max_dim);
+    a = b = lAB.size();
     /*
      * Now the state is given by
      *		|psi> = lB(a) GAB(a,i,j,b) lB(b) |a>|i,j>|b>
