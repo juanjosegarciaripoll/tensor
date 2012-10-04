@@ -131,7 +131,8 @@ private:
   /* Given a two-site wavefunction, split it. */
   iTEBD(const Tensor &AB, const Tensor &lAB, double tolerance, tensor::index max_dim);
 
-  Tensor A_, B_, lA_, lB_;
+  Tensor A_, B_;
+  Tensor lA_, lB_;
   Tensor AlA_, BlB_;
   bool canonical_;
 
