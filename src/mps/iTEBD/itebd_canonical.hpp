@@ -143,8 +143,8 @@ namespace mps {
      * coefficients associated to this tensor. We first find the canonical form
      * so that the left and right basis are orthogonalized.
      */
-    canonical_form(GAB, lAB, &GAB, &lAB, tolerance, max_dim);
     GAB.get_dimensions(&a,&i,&j,&b);
+    canonical_form(reshape(GAB, a,i*j,b), lAB, &GAB, &lAB, tolerance, max_dim);
     /*
      * Now the state is given by
      *		|psi> = lB(a) GAB(a,i,j,b) lB(b) |a>|i,j>|b>
@@ -170,6 +170,8 @@ namespace mps {
   : canonical_(true)
   {
     split_tensor(AB, lAB, &A_, &lA_, &B_, &lB_, tolerance, max_dim);
+    AlA_ = scale(A_, -1, lA_);
+    BlB_ = scale(B_, -1, lB_);
   }
 
   template<class Tensor>
@@ -186,10 +188,10 @@ namespace mps {
   {
     tensor::index a, i, j, b;
     Tensor GAB = (site & 1) ? fold(BlB_, -1, A_, 0) : fold(AlA_, -1, B_, 0);
-    Tensor lAB = (site & 1) ? lA_ : lB_;
+    const Tensor &lAB = (site & 1) ? lA_ : lB_;
     GAB.get_dimensions(&a, &i, &j, &b);
     GAB = reshape(foldin(U, -1, reshape(GAB, a, i*j, b), 1), a, i, j, b);
-    return iTEBD<Tensor>(GAB, lB_);
+    return iTEBD<Tensor>(GAB, lAB, tolerance, max_dim);
   }
 
 }
