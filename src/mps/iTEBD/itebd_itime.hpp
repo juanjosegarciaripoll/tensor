@@ -72,8 +72,7 @@ namespace mps {
     double time = 0;
     double E = psi.energy(H12), S = psi.entropy();
     std::cout.precision(5);
-    std::cout << nsteps << ", " << dt << " x " << deltan <<
-      " = " << dt * deltan << std::endl;
+    std::cout << nsteps << ", " << dt << " x " << deltan << " = " << dt * deltan << std::endl;
     RTensor S_growth((deltan < 10)? 10 : deltan);
     RTensor E_growth((deltan < 10)? 10 : deltan);
     S_growth.fill_with_zeros();
@@ -115,7 +114,7 @@ namespace mps {
 	std::cout << "\tdS=" << dS << ";\tdE=" << dE << std::endl;
 	std::cout << "\tdSdt=" << dSdt << ";\tdEdt=" << dEdt << std::endl;
       }
-      if (abs(dSdt) < 1e-9 && abs(dEdt) < 1e-9) {
+      if (i > E_growth.size() && (abs(dSdt) < 1e-9 || dEdt < -1e-9)) {
 	std::cout << "Entropy and energy converged" << std::endl;
 	break;
       }
