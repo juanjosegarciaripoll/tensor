@@ -247,7 +247,8 @@ namespace tensor {
   Tensor<elt_t>::mutable_view::operator=
   (const typename Tensor<elt_t>::mutable_view &t)
   {
-    assert(verify_tensor_dimensions_match(dims_, t.dims_));
+    //assert(verify_tensor_dimensions_match(dims_, t.dims_));
+    assert(dims_.total_size() == t.dims_.total_size());
     Range *r1 = ranges_;
     Range *r2 = t.ranges_;
     r1->reset();
@@ -262,7 +263,8 @@ namespace tensor {
   template<typename elt_t> typename Tensor<elt_t>::mutable_view &
   Tensor<elt_t>::mutable_view::operator=(const Tensor<elt_t> &t)
   {
-    assert(verify_tensor_dimensions_match(dims_, t.dimensions()));
+    //assert(verify_tensor_dimensions_match(dims_, t.dimensions()));
+    assert(dims_.total_size() == t.dims_.total_size());
     ranges_->reset();
     for (index i = 0, j; (j = ranges_->pop()) != ranges_->nomore(); i++) {
       data_.at(j) = t[i];
