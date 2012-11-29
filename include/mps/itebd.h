@@ -86,6 +86,9 @@ public:
   /** Estimate the entanglement entropy associated to splitting the state around 'site' */
   double entropy(int site) const;
 
+  /** Schmidt numbers. */
+  const Tensor schmidt(int site = 0) const;
+
   /** Average entropy for even and odd sites. */
   double entropy() const { return entropy(0) + entropy(1); }
 

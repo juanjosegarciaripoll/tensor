@@ -155,7 +155,14 @@ namespace mps {
   template<class Tensor>
   double iTEBD<Tensor>::entropy(int site) const
   {
-    return mps::entropy(abs(left_boundary(site)));
+    Tensor lambda = left_vector(site);
+    return mps::entropy(abs(lambda*lambda));
+  }
+
+  template<class Tensor>
+  const Tensor iTEBD<Tensor>::schmidt(int site) const
+  {
+    return abs(left_vector(site)) * abs(left_vector(site));
   }
 
 }
