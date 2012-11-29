@@ -45,7 +45,7 @@ class Vector {
   explicit Vector(index size) : data_(size) {}
 
   Vector(const Vector<elt_t> &v) : data_(v.data_) {}
-  Vector &operator=(const Vector<elt_t> &v) { data_ = v.data_; }
+  Vector &operator=(const Vector<elt_t> &v) { data_ = v.data_; return *this; }
 
   index size() const {
     return data_.size();
