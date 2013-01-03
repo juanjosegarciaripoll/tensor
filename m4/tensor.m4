@@ -7,6 +7,7 @@ AC_DEFUN([TENSOR_BITS],[
   if test $ac_cv_sizeof_long = 8; then
     AC_DEFINE(TENSOR_64BITS, [1], [Words are 64-bits])
   fi
+  AC_C_BIGENDIAN([AC_DEFINE(TENSOR_BIGENDIAN, [1], [Machine is big endian])],[],[])
 ])
 
 dnl ------------------------------------------------------------
