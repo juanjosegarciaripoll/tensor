@@ -88,7 +88,10 @@ libtensor_la_SOURCES = \
 	linalg/eig_power_z.cc \
 	linalg/eig_sym_d.cc \
 	linalg/eig_sym_z.cc \
-	views/range.cc
+	views/range.cc \
+	sdf/data_file.cc \
+	sdf/idata_file.cc \
+	sdf/odata_file.cc
 
 lib_LTLIBRARIES += libmps.la
 

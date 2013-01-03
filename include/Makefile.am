@@ -20,6 +20,7 @@ nobase_include_HEADERS = \
 	tensor/numbers.h \
 	tensor/rand.h \
 	tensor/refcount.h \
+	tensor/sdf.h \
 	tensor/sparse.h \
 	tensor/tensor.h \
 	tensor/tensor_blas.h \
