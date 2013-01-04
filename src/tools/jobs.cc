@@ -128,8 +128,9 @@ Job::Job(int argc, const char **argv) :
     } else if (!strcmp(argv[i], "--this-job")) {
       if (++i == argc) {
 	std::cerr << "Missing argument to --this-job" << std::endl;
-	_this_job = atoi(argv[i]);
+	abort();
       }
+      _this_job = atoi(argv[i]);
     } else if (!strcmp(argv[i], "--variable")) {
       if (++i == argc) {
 	std::cerr << "Missing argument after --variable" << std::endl;
