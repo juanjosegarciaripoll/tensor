@@ -176,83 +176,83 @@ const Vector InDataFile::load_vector()
 }
 
 void
-InDataFile::load(RTensor &t, const std::string &name) {
+InDataFile::load(RTensor *t, const std::string &name) {
   read_tag(name, TAG_RTENSOR);
   Indices dims = load_vector<Indices>();
-  t = RTensor(dims, load_vector<RTensor>());
+  *t = RTensor(dims, load_vector<RTensor>());
 }
 
 void
-InDataFile::load(CTensor &t, const std::string &name) {
+InDataFile::load(CTensor *t, const std::string &name) {
   read_tag(name, TAG_CTENSOR);
   Indices dims = load_vector<Indices>();
-  t = CTensor(dims, load_vector<CTensor>());
+  *t = CTensor(dims, load_vector<CTensor>());
 }
 
 void
-InDataFile::load(std::vector<RTensor> &m, const std::string &name)
+InDataFile::load(std::vector<RTensor> *m, const std::string &name)
 {
   read_tag(name, TAG_RTENSOR_VECTOR);
   size_t l;
   read_raw(l);
-  m.resize(l);
+  m->resize(l);
   for (size_t k = 0; k < l; k++) {
-    load(m.at(k));
+    load(&m->at(k));
   }
 }
 
 void
-InDataFile::load(std::vector<CTensor> &m, const std::string &name)
+InDataFile::load(std::vector<CTensor> *m, const std::string &name)
 {
   read_tag(name, TAG_CTENSOR_VECTOR);
   size_t l;
   read_raw(l);
-  m.resize(l);
+  m->resize(l);
   for (size_t k = 0; k < l; k++) {
-    load(m.at(k));
+    load(&m->at(k));
   }
 }
 
 void
-InDataFile::load(double &value, const std::string &name)
+InDataFile::load(double *value, const std::string &name)
 {
   RTensor t;
-  load(t, name);
+  load(&t, name);
   if (t.size() > 1) {
     std::cerr << "While reading file " << _filename << " found a tensor of size "
 	      << t.size() << " while a single value was expected.";
     abort();
   }
-  value = t[0];
+  *value = t[0];
 }
 
 void
-InDataFile::load(cdouble &value, const std::string &name)
+InDataFile::load(cdouble *value, const std::string &name)
 {
   CTensor t;
-  load(t, name);
+  load(&t, name);
   if (t.size() > 1) {
     std::cerr << "While reading file " << _filename << " found a tensor of size "
 	      << t.size() << " while a single value was expected.";
     abort();
   }
-  value = t[0];
+  *value = t[0];
 }
 
 void
-InDataFile::load(size_t &v, const std::string &name)
+InDataFile::load(size_t *v, const std::string &name)
 {
-  double aux = v;
-  load(aux, name);
-  v = (size_t)aux;
+  double aux;
+  load(&aux, name);
+  *v = (size_t)aux;
 }
 
 void
-InDataFile::load(int &v, const std::string &name)
+InDataFile::load(int *v, const std::string &name)
 {
-  double aux = v;
-  load(aux, name);
-  v = (int)aux;
+  double aux;
+  load(&aux, name);
+  *v = (int)aux;
 }
 
 void

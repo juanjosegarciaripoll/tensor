@@ -110,14 +110,14 @@ namespace sdf {
 
     InDataFile(const std::string &a_filename, bool lock = true);
 
-    void load(int &r, const std::string &name = "");
-    void load(size_t &r, const std::string &name = "");
-    void load(double &r, const std::string &name = "");
-    void load(cdouble &r, const std::string &name = "");
-    void load(RTensor &t, const std::string &name = "");
-    void load(CTensor &t, const std::string &name = "");
-    void load(std::vector<RTensor> &m, const std::string &name = "");
-    void load(std::vector<CTensor> &m, const std::string &name = "");
+    void load(int *r, const std::string &name = "");
+    void load(size_t *r, const std::string &name = "");
+    void load(double *r, const std::string &name = "");
+    void load(cdouble *r, const std::string &name = "");
+    void load(RTensor *t, const std::string &name = "");
+    void load(CTensor *t, const std::string &name = "");
+    void load(std::vector<RTensor> *m, const std::string &name = "");
+    void load(std::vector<CTensor> *m, const std::string &name = "");
 
     void close();
 
