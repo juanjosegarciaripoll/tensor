@@ -135,6 +135,11 @@ check_PROGRAMS += test_jobs
 test_jobs_SOURCES = test_jobs.cc
 test_jobs_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_sdf
+check_PROGRAMS += test_sdf
+test_sdf_SOURCES = test_sdf.cc
+test_sdf_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 #####################################################################
 # MPS LIBRARY TESTS
 #
