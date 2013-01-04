@@ -30,11 +30,13 @@ namespace tensor {
   {
     index d = min.size();
     Tensor<elt_t> output(d, n);
-    if (n) {
+    if (n == 1) {
+      output = min;
+    } else if (n) {
       const Tensor<elt_t> base = reshape(max, d);
       const Tensor<elt_t> delta = reshape((max - min) / (n - 1.0), d);
       for (index i = 0; i < n; i++) {
-	output.at(range(), range(i)) = delta * (double)i + min;
+        output.at(range(), range(i)) = delta * (double)i + min;
       }
     }
     return reshape(output, min.dimensions() << (igen << n));
