@@ -21,10 +21,15 @@
 #define MPS_QUANTUM_H
 
 #include <tensor/tensor.h>
+#include <tensor/sparse.h>
 
 namespace mps {
 
   using namespace tensor;
+
+  /*
+   * Angular momentum operators.
+   */
 
   void spin_operators(double s, CTensor *sx, CTensor *sy, CTensor *sz);
 
@@ -34,6 +39,14 @@ namespace mps {
   extern const RTensor Pauli_x;
   extern const RTensor Pauli_z;
   extern const CTensor Pauli_y;
+
+  /*
+   * Fock space operators.
+   */
+
+  RSparse number_operator(int nmax);
+  RSparse destruction_operator(int nmax);
+  RSparse creation_operator(int nmax);
 }
 
 #endif // MPS_QUANTUM_H
