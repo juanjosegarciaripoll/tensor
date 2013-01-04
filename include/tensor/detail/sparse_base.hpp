@@ -23,6 +23,7 @@
 #define TENSOR_DETAIL_SPARSE_BASE_HPP
 
 #include <cassert>
+#include <algorithm>
 #include <tensor/rand.h>
 #include <tensor/detail/common.h>
 
@@ -60,10 +61,58 @@ namespace tensor {
   }
 
   template<typename elt_t>
+  struct sparse_triplet {
+    index row, col;
+    elt_t value;
+    sparse_triplet() {};
+    sparse_triplet(index r, index c, elt_t v) : row(r), col(c), value(v) {}
+    bool operator<(const sparse_triplet &other) const {
+      if (row < other.row)
+        return 1;
+      if (row == other.row)
+        return col < other.col;
+      return 0;
+    }
+  };
+
+  template<typename elt_t>
   Sparse<elt_t>::Sparse(const Indices &dims, const Indices &rows,
                         const Indices &cols, const Vector<elt_t> &data) :
-    dims_(dims), row_start_(rows), column_(cols), data_(data)
+    dims_(dims), row_start_(dims[0]+1), column_(cols.size()), data_(data.size())
   {
+    index i, j, last_row, last_col, l = rows.size();
+    assert(cols.size() == l);
+    assert(data.size() == l);
+
+    /* Organize data in sparse_triplets (row,column,value), sorted in the
+     * same order in which we store data in Sparse
+     */
+    std::vector<sparse_triplet<elt_t> > sorted_data(l);
+    for (i = 0; i < l; i++) {
+      sorted_data.at(i) = sparse_triplet<elt_t>(rows[i], cols[i], data[i]);
+    }
+    std::sort(sorted_data.begin(), sorted_data.end());
+
+    /* Fill in the Sparse structure.
+     */
+    std::fill(row_start_.begin(), row_start_.end(), 0);
+    for (last_row = -1, j = i = 0; i < l; i++) {
+      const sparse_triplet<elt_t> &d = sorted_data[i];
+      if (d.row == last_row) {
+        if (d.col == last_col)
+          continue;
+      } else {
+        while(last_row < d.row) {
+          row_start_.at(++last_row) = j;
+        }
+      }
+      column_.at(j) = d.col;
+      data_.at(j) = d.value;
+      j++;
+    }
+    while (last_row < dims[0]) {
+      row_start_.at(++last_row) = j;
+    }
   }
 
   template<typename elt_t>
