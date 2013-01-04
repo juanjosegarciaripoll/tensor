@@ -130,6 +130,11 @@ check_PROGRAMS += test_linalg_expm
 test_linalg_expm_SOURCES = test_linalg_expm.cc
 test_linalg_expm_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_jobs
+check_PROGRAMS += test_jobs
+test_jobs_SOURCES = test_jobs.cc
+test_jobs_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 #####################################################################
 # MPS LIBRARY TESTS
 #
