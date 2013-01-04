@@ -23,9 +23,9 @@
 using namespace jobs;
 
 static inline
-bool is_space(char c)
+bool is_separator(char c)
 {
-  return (c == ' ') || (c == '\t') || (c == '\n');
+  return (c == ' ') || (c == '\t') || (c == '\n') || (c == ',') || (c == ';');
 }
 
 std::vector<std::string>
@@ -34,12 +34,12 @@ split_string(const std::string &s)
   std::vector<std::string> output;
   size_t i = 0, l = s.size();
   while (i != l) {
-    while (is_space(s[i])) {
+    while (is_separator(s[i])) {
       if (++i == l)
 	return output;
     }
     size_t j;
-    for (j = i+1; (j < l) && !is_space(s[j]); j++) {
+    for (j = i+1; (j < l) && !is_separator(s[j]); j++) {
       (void)0;
     }
     output.push_back(s.substr(i, j-i));
@@ -55,11 +55,12 @@ Job::parse_line(const std::string &s)
 {
   std::vector<std::string> data = split_string(s);
   // Format:
-  //  variable_name min_value max_value [n_steps]
+  //  variable_name separator min_value separator max_value [separator n_steps]
   // where
   //  variable_name is any string
   //  min_value, max_value are real
   //  n_steps is a non-negative integer, defaulting to 10
+  //  separator is any number of spaces, tabs, newlines, commas or semicolons
   if (data.size() == 0)
     return no_variable;
   if (data.size() == 1) {
@@ -95,7 +96,8 @@ Job::parse_file(std::istream &s, std::vector<Variable> &data)
   return 0;
 }
 
-Job::Job(int argc, const char **argv)
+Job::Job(int argc, const char **argv) :
+  _filename("no file")
 {
   bool loaded = false;
   bool print_jobs = false;
@@ -123,10 +125,42 @@ Job::Job(int argc, const char **argv)
 	std::cerr << "Missing argument to --this-job" << std::endl;
 	_this_job = atoi(argv[i]);
       }
+    } else if (strcmp(argv[i], "--variable")) {
+      if (++i == argc) {
+	std::cerr << "Missing argument after --variable" << std::endl;
+	abort();
+      }
+      Variable v = parse_line(argv[i]);
+      if (v.name().size() == 0) {
+	std::cerr << "Syntax error parsing --variable argument:" << std::endl
+		  << argv[i] << std::endl;
+	abort();
+      }
+      _variables.push_back(v);
+      loaded = true;
+    } else if (strcmp(argv[i], "--help")) {
+      std::cout << "Arguments:\n"
+	"--help\n"
+	"\tShow this message and exit.\n"
+	"--print-jobs\n"
+	"\tShow number of jobs and exit.\n"
+	"--this-job n\n"
+	"\tChoose which job this is.\n"
+	"--variable name,min,max[,nsteps]\n"
+	"\tDefine variable and the range it runs, including number of steps.\n"
+	"\t'min' and 'max' are floating point numbers; 'name' is a string\n"
+	"\twithout spaces; 'nsteps' is a positive (>0) integer denoting how\n"
+	"\tmany values in the interval [min,max] are used. There can be many\n"
+	"\t--variable arguments, as a substitute for a job file.\n"
+	"--job filename\n"
+	"\tParse file, loading variable ranges from them using the syntax above,\n"
+	"\tbut allowing spaces or tabs instead of commas as separators."
+		<< std::endl;
+      exit(0);
     }
   }
   if (!loaded) {
-    std::cerr << "Missing --job file option" << std::endl;
+    std::cerr << "Missing --job or --variable options" << std::endl;
     abort();
   } else if (_variables.size() == 0) {
     std::cerr << "Job file " << _filename << " contained no varibles" << std::endl;
