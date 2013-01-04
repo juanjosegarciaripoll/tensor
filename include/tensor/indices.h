@@ -161,8 +161,8 @@ namespace tensor {
   inline PRange range() { return new FullRange(); }
 
   /**Return a vector of integers from 'start' to 'end' (included) in 'steps'. */
-  Indices iota(index start, index end, index step = 1) {
-    return Indices(start, end, step);
+  inline Indices iota(index start, index end, index step = 1) {
+    return Indices::range(start, end, step);
   }
 
   template<size_t n>
