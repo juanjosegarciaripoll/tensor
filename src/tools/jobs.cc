@@ -67,18 +67,23 @@ Job::parse_line(const std::string &s)
     std::cerr << "Missing minimum value for variable " << data[0] << std::endl;
     return no_variable;
   }
-  double min = atof(data[1].c_str());
+  double max, min = atof(data[1].c_str());
+  tensor::index nsteps;
   if (data.size() == 2) {
-    std::cerr << "Missing maximum value for variable " << data[0] << std::endl;
-    return no_variable;
+    max = min;
+    nsteps = 1;
+  } else {
+    max = atof(data[2].c_str());
+    if (data.size() == 3) {
+      nsteps = 10;
+    } else if (data.size() > 4) {
+      std::cerr << "Too many arguments for variable " << data[0] << std::endl;
+      return no_variable;
+    } else {
+      nsteps = atoi(data[3].c_str());
+    }
   }
-  double max = atof(data[2].c_str());
-  if (data.size() > 4) {
-    std::cerr << "Too many arguments for variable " << data[0] << std::endl;
-    return no_variable;
-  }
-  tensor::index n = (data.size() == 3)? 10 : atoi(data[3].c_str());
-  return Variable(data[0], min, max, n);
+  return Variable(data[0], min, max, nsteps);
 }
 
 int
@@ -146,12 +151,14 @@ Job::Job(int argc, const char **argv) :
 	"\tShow number of jobs and exit.\n"
 	"--this-job n\n"
 	"\tChoose which job this is.\n"
-	"--variable name,min,max[,nsteps]\n"
+	"--variable name,min[,max[,nsteps]]\n"
 	"\tDefine variable and the range it runs, including number of steps.\n"
 	"\t'min' and 'max' are floating point numbers; 'name' is a string\n"
 	"\twithout spaces; 'nsteps' is a positive (>0) integer denoting how\n"
 	"\tmany values in the interval [min,max] are used. There can be many\n"
-	"\t--variable arguments, as a substitute for a job file.\n"
+	"\t--variable arguments, as a substitute for a job file. If both 'max'\n"
+	"\tand 'nsteps' are missing, the variable takes a unique, constant\n"
+	"\tvalue, 'min'.\n"
 	"--job filename\n"
 	"\tParse file, loading variable ranges from them using the syntax above,\n"
 	"\tbut allowing spaces or tabs instead of commas as separators."
