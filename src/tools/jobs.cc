@@ -109,7 +109,7 @@ Job::Job(int argc, const char **argv) :
   _this_job = 0;
   int i;
   for (i = 0; i < argc; i++) {
-    if (strcmp(argv[i], "--job") == 0) {
+    if (!strcmp(argv[i], "--job")) {
       if (++i == argc) {
 	std::cerr << "Missing argument after --job" << std::endl;
 	abort();
@@ -123,14 +123,14 @@ Job::Job(int argc, const char **argv) :
 	abort();
       }
       loaded = true;
-    } else if (strcmp(argv[i], "--print-jobs")) { 
+    } else if (!strcmp(argv[i], "--print-jobs")) { 
       print_jobs = true;
-    } else if (strcmp(argv[i], "--this-job")) {
+    } else if (!strcmp(argv[i], "--this-job")) {
       if (++i == argc) {
 	std::cerr << "Missing argument to --this-job" << std::endl;
 	_this_job = atoi(argv[i]);
       }
-    } else if (strcmp(argv[i], "--variable")) {
+    } else if (!strcmp(argv[i], "--variable")) {
       if (++i == argc) {
 	std::cerr << "Missing argument after --variable" << std::endl;
 	abort();
@@ -143,7 +143,7 @@ Job::Job(int argc, const char **argv) :
       }
       _variables.push_back(v);
       loaded = true;
-    } else if (strcmp(argv[i], "--help")) {
+    } else if (!strcmp(argv[i], "--help")) {
       std::cout << "Arguments:\n"
 	"--help\n"
 	"\tShow this message and exit.\n"
