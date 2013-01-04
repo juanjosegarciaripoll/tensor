@@ -160,6 +160,11 @@ namespace tensor {
   /**Create a Range which covers all indices. \ref sec_tensor_view*/
   inline PRange range() { return new FullRange(); }
 
+  /**Return a vector of integers from 'start' to 'end' (included) in 'steps'. */
+  Indices iota(index start, index end, index step = 1) {
+    return Indices(start, end, step);
+  }
+
   template<size_t n>
   bool operator==(const tensor::Indices &v2,
                   const tensor::StaticVector<tensor::index,n> &v1)
