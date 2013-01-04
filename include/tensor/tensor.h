@@ -241,6 +241,11 @@ class Tensor {
   // Only for testing purposes
   int ref_count() const { return data_.ref_count(); }
 
+  /**Take a diagonal from a tensor.*/
+  const Tensor<elt_t> diag(int which = 0, int ndx1 = 0, int ndx2 = -1) {
+    return take_diag(*this, which, ndx1, ndx2);
+  }
+
  private:
   Vector<elt_t> data_;
   Indices dims_;
