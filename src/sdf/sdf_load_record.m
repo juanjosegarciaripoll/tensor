@@ -1,0 +1,80 @@
+function [obj,name] = sdf_load_record(f)
+[name, code] = sdf_load_tag(f);
+switch code
+ case -1
+  name = '';
+  obj = [];
+ case 0
+  obj = sdf_load_tensor(f, 0);
+ case 1
+  obj = sdf_load_tensor(f, 1);
+ case 2
+  obj = sdf_load_mp(f, 0);
+ case 3
+  obj = sdf_load_mp(f, 1);
+ otherwise
+  error(['Wrong tag, ' num2str(code) ', found while reading ' f{2}]);
+end
+
+
+function v = read_longs(fid, n)
+global SDF_TAG_TYPE;
+v = fread(fid, n, SDF_TAG_TYPE);
+
+
+function [name,code] = sdf_load_tag(f, expected)
+global SDF_TAG_TYPE;
+name = fread(f{1}, 64, 'char');
+if ~isempty(name) && all(name(1:3) == [115; 100; 102]) % sdf
+  if name(5) == '4'
+    SDF_TAG_TYPE='int32';
+  elseif name(5) == '8'
+    SDF_TAG_TYPE='int64';
+  else
+    error(['Unsupported tag size ', name(5)]);
+  end;
+  name = fread(f{1}, 64, 'char');
+end;
+if feof(f{1})
+  name = '';
+  code = -1;
+else
+  code = read_longs(f{1}, 1);
+  name = char(name(find(name ~= 0)));
+end;
+if nargin == 2 && (code ~= expected)
+  error(['Found object of type ' code ' instead of ' expected
+         ' while reading ' f{2}]);
+end;
+name = name(:)';
+
+
+function Pk = sdf_load_tensor(f, cplx)
+rank = read_longs(f{1}, 1);
+dims = read_longs(f{1}, rank)';
+L    = read_longs(f{1}, 1);
+if cplx
+  [Pk,size] = fread(f{1}, L*2, 'double');
+  Pk = complex(Pk(1:2:end),Pk(2:2:end));
+else
+  Pk = fread(f{1}, L, 'double');
+end;
+if rank > 1
+  Pk = reshape(Pk, dims);
+end;
+
+
+function P = sdf_load_mp(f, cplx)
+global SDF_LOAD_MPS;
+L = read_longs(f{1}, 1);
+if isempty(SDF_LOAD_MPS)
+  for k = 1:L
+    sdf_load_record(f);
+  end;
+  P = [];
+else
+  P = create_mp(L);
+  for k = 1:L
+    set_matrix(sdf_load_record(f), P, k);
+  end;
+end;
