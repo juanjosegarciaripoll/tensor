@@ -139,6 +139,16 @@ namespace tensor {
       (s1.priv_data() == s2.priv_data());
   }
 
+  template<typename t1, typename t2>
+  inline bool operator==(const Sparse<t1> &s1, const Tensor<t2> &s2) {
+    return full(s1) == s2;
+  }
+
+  template<typename t1, typename t2>
+  inline bool operator==(const Tensor<t1> &s1, const Sparse<t2> &s2) {
+    return full(s2) == s1;
+  }
+
 } // namespace tensor
 
 #ifdef TENSOR_LOAD_IMPL
