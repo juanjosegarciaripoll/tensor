@@ -55,10 +55,12 @@ namespace sdf {
     static const enum endianness endian = LITTLE_ENDIAN_FILE;
 #endif
 
-    DataFile(const std::string &a_filename);
+    DataFile(const std::string &a_filename, bool lock);
     ~DataFile();
     const char *tag_to_name(size_t tag);
     void close();
+    bool is_open() { return _open; }
+    bool is_locked() { return _lock; }
   };
 
 
@@ -66,7 +68,7 @@ namespace sdf {
 
   public:
 
-    OutDataFile(const std::string &a_filename);
+    OutDataFile(const std::string &a_filename, bool lock = true);
     ~OutDataFile();
 
     void dump(const int r, const std::string &name = "");
@@ -84,15 +86,15 @@ namespace sdf {
 
     std::ofstream _stream;
 
-    void write_no_error(const char *data, size_t n);
-    void write_no_error(const int *data, size_t n);
-    void write_no_error(const long *data, size_t n);
-    void write_no_error(const size_t *data, size_t n);
-    void write_no_error(const double *data, size_t n);
-    void write_no_error(const cdouble *data, size_t n);
+    void write_raw(const char *data, size_t n);
+    void write_raw(const int *data, size_t n);
+    void write_raw(const long *data, size_t n);
+    void write_raw(const size_t *data, size_t n);
+    void write_raw(const double *data, size_t n);
+    void write_raw(const cdouble *data, size_t n);
 
-    template<typename t> void write_no_error(t v) {
-	write_no_error(&v, 1);
+    template<typename t> void write_raw(t v) {
+	write_raw(&v, 1);
     }
 
     template<class Vector> void dump_vector(const Vector &v);
@@ -106,7 +108,7 @@ namespace sdf {
 
   public:
 
-    InDataFile(const std::string &a_filename);
+    InDataFile(const std::string &a_filename, bool lock = true);
 
     void load(int &r, const std::string &name = "");
     void load(size_t &r, const std::string &name = "");
@@ -123,15 +125,15 @@ namespace sdf {
 
     std::ifstream _stream;
 
-    void read_no_error(char *data, size_t n);
-    void read_no_error(int *data, size_t n);
-    void read_no_error(size_t *data, size_t n);
-    void read_no_error(long *data, size_t n);
-    void read_no_error(double *data, size_t n);
-    void read_no_error(cdouble *data, size_t n);
+    void read_raw(char *data, size_t n);
+    void read_raw(int *data, size_t n);
+    void read_raw(size_t *data, size_t n);
+    void read_raw(long *data, size_t n);
+    void read_raw(double *data, size_t n);
+    void read_raw(cdouble *data, size_t n);
 
-    template<typename t> void read_no_error(t &v) {
-	read_no_error(&v, 1);
+    template<typename t> void read_raw(t &v) {
+	read_raw(&v, 1);
     }
 
     template<class Vector> const Vector load_vector();

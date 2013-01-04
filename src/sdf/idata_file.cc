@@ -23,7 +23,7 @@ using namespace sdf;
 
 #if !defined(aix)
 template <class number>
-void read_no_error_with_endian(std::ifstream &s, number *data, size_t n)
+void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
 {
   s.read((char *)data, n * sizeof(number));
   if (s.bad()) {
@@ -33,7 +33,7 @@ void read_no_error_with_endian(std::ifstream &s, number *data, size_t n)
 }
 #else
 template <class number>
-void read_no_error_with_endian(std::ifstream &s, number *data, size_t n)
+void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
 {
   const int size = sizeof(number);
   if (size == 1) {
@@ -82,53 +82,59 @@ void read_no_error_with_endian(std::ifstream &s, number *data, size_t n)
 }
 #endif
 
-InDataFile::InDataFile(const std::string &a_filename) :
-  DataFile(a_filename), _stream(a_filename.c_str())
+InDataFile::InDataFile(const std::string &a_filename, bool lock) :
+  DataFile(a_filename, lock), _stream(a_filename.c_str())
 {
   read_header();
 }
 
 void
-InDataFile::read_no_error(char *data, size_t n)
+InDataFile::read_raw(char *data, size_t n)
 {
-  read_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  read_raw_with_endian(_stream, data, n);
 }
 
 void
-InDataFile::read_no_error(int *data, size_t n)
+InDataFile::read_raw(int *data, size_t n)
 {
-  read_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  read_raw_with_endian(_stream, data, n);
 }
 
 void
-InDataFile::read_no_error(long *data, size_t n)
+InDataFile::read_raw(long *data, size_t n)
 {
-  read_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  read_raw_with_endian(_stream, data, n);
 }
 
 void
-InDataFile::read_no_error(size_t *data, size_t n)
+InDataFile::read_raw(size_t *data, size_t n)
 {
-  read_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  read_raw_with_endian(_stream, data, n);
 }
 
 void
-InDataFile::read_no_error(double *data, size_t n)
+InDataFile::read_raw(double *data, size_t n)
 {
-  read_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  read_raw_with_endian(_stream, data, n);
 }
 
 void
-InDataFile::read_no_error(cdouble *data, size_t n)
+InDataFile::read_raw(cdouble *data, size_t n)
 {
-  read_no_error_with_endian(_stream, (double*)data, 2*n);
+  assert(is_open());
+  read_raw_with_endian(_stream, (double*)data, 2*n);
 }
 
 size_t
 InDataFile::read_tag_code()
 {
   size_t output;
-  read_no_error(output);
+  read_raw(output);
   return output;
 }
 
@@ -136,7 +142,7 @@ std::string
 InDataFile::read_variable_name()
 {
   char buffer[var_name_size];
-  read_no_error(buffer, var_name_size);
+  read_raw(buffer, var_name_size);
   return std::string(buffer);
 }
 
@@ -163,9 +169,9 @@ template<class Vector>
 const Vector InDataFile::load_vector()
 {
   size_t length;
-  read_no_error(length);
+  read_raw(length);
   Vector v(length);
-  read_no_error(v.begin(), length);
+  read_raw(v.begin(), length);
   return v;
 }
 
@@ -188,7 +194,7 @@ InDataFile::load(std::vector<RTensor> &m, const std::string &name)
 {
   read_tag(name, TAG_RTENSOR_VECTOR);
   size_t l;
-  read_no_error(l);
+  read_raw(l);
   m.resize(l);
   for (size_t k = 0; k < l; k++) {
     load(m.at(k));
@@ -200,7 +206,7 @@ InDataFile::load(std::vector<CTensor> &m, const std::string &name)
 {
   read_tag(name, TAG_CTENSOR_VECTOR);
   size_t l;
-  read_no_error(l);
+  read_raw(l);
   m.resize(l);
   for (size_t k = 0; k < l; k++) {
     load(m.at(k));

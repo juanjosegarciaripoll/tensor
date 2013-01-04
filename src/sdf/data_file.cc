@@ -59,9 +59,9 @@ static void giveup_lock(int fd, char const *lockName)
 
 const size_t DataFile::var_name_size;
 
-DataFile::DataFile(const std::string &a_filename) :
+DataFile::DataFile(const std::string &a_filename, bool lock) :
   _filename(a_filename), _lock_filename(a_filename + ".lck"),
-  _lock(get_lock(_lock_filename.c_str(), true)),
+  _lock(lock? get_lock(_lock_filename.c_str(), true) : 0),
   _open(true)
 {
 }
@@ -74,9 +74,11 @@ DataFile::~DataFile()
 void
 DataFile::close()
 {
-  if (_open) {
+  if (is_open()) {
     _open = false;
-    giveup_lock(_lock, _lock_filename.c_str());
+    if (is_locked()) {
+      giveup_lock(_lock, _lock_filename.c_str());
+    }
   }
 }
 

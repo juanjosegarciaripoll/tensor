@@ -24,7 +24,7 @@ using namespace sdf;
 #if !defined(aix)
 
 template <class number>
-void write_no_error_with_endian(std::ofstream &s, const number *data, size_t n)
+void write_raw_with_endian(std::ofstream &s, const number *data, size_t n)
 {
   s.write((char *)data, n * sizeof(number));
   if (s.bad()) {
@@ -36,7 +36,7 @@ void write_no_error_with_endian(std::ofstream &s, const number *data, size_t n)
 #else
 
 template <class number>
-void write_no_error_with_endian(std::ofstream &s, const number *data, size_t n)
+void write_raw_with_endian(std::ofstream &s, const number *data, size_t n)
 {
   const int size = sizeof(number);
   if (size == 1) {
@@ -92,8 +92,8 @@ void write_no_error_with_endian(std::ofstream &s, const number *data, size_t n)
 // COMMON I/O ROUTINES
 //
 
-OutDataFile::OutDataFile(const std::string &a_filename) :
-  DataFile(a_filename)
+OutDataFile::OutDataFile(const std::string &a_filename, bool lock) :
+  DataFile(a_filename, lock)
 {
   _stream.open(a_filename.c_str());
   write_header();
@@ -107,38 +107,45 @@ OutDataFile::~OutDataFile()
 void
 OutDataFile::close()
 {
-  if (_open) _stream.close();
-  DataFile::close();
+  if (is_open()) {
+    _stream.close();
+    DataFile::close();
+  }
 }
 
 void
-OutDataFile::write_no_error(const char *data, size_t n)
+OutDataFile::write_raw(const char *data, size_t n)
 {
-  write_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  write_raw_with_endian(_stream, data, n);
 }
 
 void
-OutDataFile::write_no_error(const int *data, size_t n)
+OutDataFile::write_raw(const int *data, size_t n)
 {
-  write_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  write_raw_with_endian(_stream, data, n);
 }
 
 void
-OutDataFile::write_no_error(const size_t *data, size_t n)
+OutDataFile::write_raw(const size_t *data, size_t n)
 {
-  write_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  write_raw_with_endian(_stream, data, n);
 }
 
 void
-OutDataFile::write_no_error(const double *data, size_t n)
+OutDataFile::write_raw(const double *data, size_t n)
 {
-  write_no_error_with_endian(_stream, data, n);
+  assert(is_open());
+  write_raw_with_endian(_stream, data, n);
 }
 
 void
-OutDataFile::write_no_error(const cdouble *data, size_t n)
+OutDataFile::write_raw(const cdouble *data, size_t n)
 {
-  write_no_error_with_endian(_stream, (double*)data, 2*n);
+  assert(is_open());
+  write_raw_with_endian(_stream, (double*)data, 2*n);
 }
 
 void
@@ -147,21 +154,21 @@ OutDataFile::write_variable_name(const std::string &name)
   char buffer[var_name_size];
   memset(buffer, 0, var_name_size);
   strncpy(buffer, name.c_str(), std::min<size_t>(var_name_size - 1, name.size()));
-  write_no_error(buffer, var_name_size);
+  write_raw(buffer, var_name_size);
 }
 
 void
 OutDataFile::write_tag(const std::string &name, size_t type)
 {
   write_variable_name(name);
-  write_no_error(type);
+  write_raw(type);
 }
 
 template<class Vector>
 void OutDataFile::dump_vector(const Vector &v)
 {
-  write_no_error(v.size());
-  write_no_error(v.begin(), v.size());
+  write_raw(v.size());
+  write_raw(v.begin(), v.size());
 }
 
 void
@@ -185,7 +192,7 @@ OutDataFile::dump(const std::vector<RTensor> &m, const std::string &name)
 {
   size_t l = m.size();
   write_tag(name, TAG_RTENSOR_VECTOR);
-  write_no_error(l);
+  write_raw(l);
   for (size_t k = 0; k < l; k++) {
     dump(m[k]);
   }
@@ -196,7 +203,7 @@ OutDataFile::dump(const std::vector<CTensor> &m, const std::string &name)
 {
   size_t l = m.size();
   write_tag(name, TAG_CTENSOR_VECTOR);
-  write_no_error(l);
+  write_raw(l);
   for (size_t k = 0; k < l; k++) {
     dump(m[k]);
   }
