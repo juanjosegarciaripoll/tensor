@@ -186,7 +186,7 @@ void
 InDataFile::load(CTensor &t, const std::string &name) {
   read_tag(name, TAG_CTENSOR);
   Indices dims = load_vector<Indices>();
-  t = CTensor(dims, load_vector<RTensor>());
+  t = CTensor(dims, load_vector<CTensor>());
 }
 
 void
