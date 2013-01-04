@@ -128,6 +128,13 @@ OutDataFile::write_raw(const int *data, size_t n)
 }
 
 void
+OutDataFile::write_raw(const long *data, size_t n)
+{
+  assert(is_open());
+  write_raw_with_endian(_stream, data, n);
+}
+
+void
 OutDataFile::write_raw(const size_t *data, size_t n)
 {
   assert(is_open());
