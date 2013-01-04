@@ -10,6 +10,8 @@ lib_LTLIBRARIES = libtensor.la
 libtensor_la_SOURCES = \
 	tools/tictoc.cc \
 	tools/backtrace.cc \
+	tools/jobs.cc \
+	tools/jobs_save.cc \
 	rand/rand.cc \
 	indices/indices.cc \
 	indices/concat.cc \

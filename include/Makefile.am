@@ -16,6 +16,7 @@ nobase_include_HEADERS = \
 	tensor/gen.h \
 	tensor/indices.h \
 	tensor/io.h \
+	tensor/jobs.h \
 	tensor/linalg.h \
 	tensor/numbers.h \
 	tensor/rand.h \
