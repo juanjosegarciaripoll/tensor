@@ -60,6 +60,8 @@ libtensor_la_SOURCES = \
 	tensor/tensor_norm2_z.cc \
 	tensor/tensor_scale_d.cc \
 	tensor/tensor_scale_z.cc \
+	tensor/tensor_take_diag_d.cc \
+	tensor/tensor_take_diag_z.cc \
 	generated/tensor_unop_abs_d.cc \
 	generated/tensor_unop_sqrt_d.cc \
 	generated/tensor_unop_exp_d.cc \
@@ -99,6 +101,7 @@ lib_LTLIBRARIES += libmps.la
 
 libmps_la_SOURCES = \
 	mps/quantum/spin.cc \
+	mps/quantum/fock.cc \
 	mps/tools/entropy.cc \
 	mps/tools/truncate.cc \
 	mps/tools/limited_svd_d.cc \

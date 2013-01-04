@@ -93,6 +93,8 @@ class Tensor {
   /**Build a 6D Tensor.*/
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
 
+  operator Vector<elt_t>() const { return data_; }
+
   /**Returns total number of elements in Tensor.*/
   index size() const { return data_.size(); }
   /**Does the tensor have elements?*/
@@ -377,6 +379,7 @@ namespace tensor {
 
   const RTensor diag(const RTensor &d, int which, int rows, int cols);
   const RTensor diag(const RTensor &d, int which = 0);
+  const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
   double trace(const RTensor &d);
 
   const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
@@ -432,6 +435,7 @@ namespace tensor {
 
   const CTensor diag(const CTensor &d, int which, int rows, int cols);
   const CTensor diag(const CTensor &d, int which = 0);
+  const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
   cdouble trace(const CTensor &d);
 
   const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);

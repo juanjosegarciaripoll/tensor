@@ -95,6 +95,11 @@ check_PROGRAMS += test_sparse_kron
 test_sparse_kron_SOURCES = test_sparse_kron.cc
 test_sparse_kron_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_sparse_indices
+check_PROGRAMS += test_sparse_indices
+test_sparse_indices_SOURCES = test_sparse_indices.cc
+test_sparse_indices_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_mmult
 check_PROGRAMS += test_mmult
 test_mmult_SOURCES = test_mmult.cc
@@ -140,6 +145,11 @@ check_PROGRAMS += test_sdf
 test_sdf_SOURCES = test_sdf.cc
 test_sdf_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_tensor_take_diag
+check_PROGRAMS += test_tensor_take_diag
+test_tensor_take_diag_SOURCES = test_tensor_take_diag.cc
+test_tensor_take_diag_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 #####################################################################
 # MPS LIBRARY TESTS
 #
@@ -148,6 +158,11 @@ TESTS += test_quantum_spin
 check_PROGRAMS += test_quantum_spin
 test_quantum_spin_SOURCES = test_quantum_spin.cc
 test_quantum_spin_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
+TESTS += test_quantum_fock
+check_PROGRAMS += test_quantum_fock
+test_quantum_fock_SOURCES = test_quantum_fock.cc
+test_quantum_fock_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_itebd_base
 check_PROGRAMS += test_itebd_base
