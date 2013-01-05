@@ -47,6 +47,8 @@ namespace mps {
   RSparse number_operator(int nmax);
   RSparse destruction_operator(int nmax);
   RSparse creation_operator(int nmax);
+  RTensor coherent_state(double alpha, int nmax);
+  CTensor coherent_state(cdouble alpha, int nmax);
 }
 
 #endif // MPS_QUANTUM_H

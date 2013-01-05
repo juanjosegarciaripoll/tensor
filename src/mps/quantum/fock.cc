@@ -59,4 +59,34 @@ namespace mps {
     RTensor n = sqrt(linspace(1.0, nmax, nmax));
     return RSparse(igen << d << d, row, col, n);
   }
+
+  /**Return the wavefunction of a coherent state.
+     \ingroup QM
+  */
+  RTensor coherent_state(double alpha, int nmax)
+  {
+    RTensor output(nmax+1);
+    double c = exp(-alpha*alpha/2.0);
+    for (int i = 0; i <= nmax; ) {
+      output.at(i) = c;
+      c = c * alpha / sqrt((double)(++i));
+    }
+    return output;
+  }
+
+  /**Return the wavefunction of a coherent state.
+     \ingroup QM
+  */
+  CTensor coherent_state(cdouble alpha, int nmax)
+  {
+    CTensor output(nmax+1);
+    double a2 = abs(alpha);
+    cdouble c = exp(-a2*a2/2.0);
+    for (int i = 0; i <= nmax; ) {
+      output.at(i) = c;
+      c = c * alpha / sqrt((double)(++i));
+    }
+    return output;
+  }
+
 }
