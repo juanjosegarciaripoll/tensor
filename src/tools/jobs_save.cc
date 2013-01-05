@@ -24,9 +24,7 @@ using namespace jobs;
 void
 Job::dump_variables(sdf::OutDataFile &file) const
 {
-  for (std::vector<Variable>::const_iterator it = _variables.begin();
-       it != _variables.end();
-       it++) {
+  for (var_list::const_iterator it = variables_.begin(); it != variables_.end(); it++) {
     file.dump(it->value(), it->name());
   }
 }

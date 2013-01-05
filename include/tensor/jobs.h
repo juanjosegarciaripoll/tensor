@@ -32,43 +32,50 @@ namespace jobs {
   public:
     Job(int argc, const char **argv);
 
-    tensor::index this_job() const;
-    tensor::index number_of_jobs() const { return _number_of_jobs; };
+    tensor::index number_of_jobs() const { return number_of_jobs_; };
+    tensor::index current_job() const { return this_job_; };
+    void operator++();
+    bool to_do();
+
     double get_value_with_default(const std::string &variable, double def) const;
     double get_value(const std::string &variable) const;
     void dump_variables(sdf::OutDataFile &file) const;
-    void select_job(tensor::index which);
 
   private:
     class Variable {
     public:
       Variable(const std::string name, double min, double max, tensor::index n = 10) :
-        _name(name), _values(tensor::linspace(min, max, n)), _which(0)
+        name_(name), values_(tensor::linspace(min, max, n)), which_(0)
       {}
       Variable() :
-        _name(""), _values(), _which(0)
+        name_(""), values_(), which_(0)
       {}
 
-      const std::string &name() const { return _name; }
-      const tensor::RTensor &values() const { return _values; }
-      const tensor::index size() const { return _values.size(); }
-      void select(tensor::index i) { _which = i; }
-      double value() const { return _values[_which]; }
+      const std::string &name() const { return name_; }
+      const tensor::RTensor &values() const { return values_; }
+      const tensor::index size() const { return values_.size(); }
+      void select(tensor::index i) { which_ = i; }
+      double value() const { return values_[which_]; }
 
     private:
-      std::string _name;
-      tensor::RTensor _values;
-      tensor::index _which;
+      std::string name_;
+      tensor::RTensor values_;
+      tensor::index which_;
     };
 
+    typedef std::vector<Variable> var_list;
+
+    static const Variable no_variable;
+    std::string filename_;
+    var_list variables_;
+    tensor::index number_of_jobs_;
+    tensor::index this_job_, first_job_, last_job_;
+
+    const Variable *find_variable(const std::string &name) const;
     static const Variable parse_line(const std::string &s);
     static int parse_file(std::istream &s, std::vector<Variable> &data);
-    static const Variable no_variable;
-
-    std::string _filename;
-    std::vector<Variable> _variables;
-    tensor::index _number_of_jobs;
-    tensor::index _this_job;
+    tensor::index compute_number_of_jobs() const;
+    void select_job(tensor::index which);
   };
 
 } // namespace jobs

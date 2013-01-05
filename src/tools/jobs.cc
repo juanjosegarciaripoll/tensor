@@ -87,7 +87,7 @@ Job::parse_line(const std::string &s)
 }
 
 int
-Job::parse_file(std::istream &s, std::vector<Variable> &data)
+Job::parse_file(std::istream &s, var_list &data)
 {
   std::string buffer;
   int line;
@@ -102,11 +102,16 @@ Job::parse_file(std::istream &s, std::vector<Variable> &data)
 }
 
 Job::Job(int argc, const char **argv) :
-  _filename("no file")
+  filename_("no file")
 {
   bool loaded = false;
   bool print_jobs = false;
-  _this_job = 0;
+  bool first_job_found = false;
+  bool last_job_found = false;
+  bool job_blocks_found = false;
+  bool this_job_found = false;
+  tensor::index blocks;
+  tensor::index current_job;
   int i;
   for (i = 0; i < argc; i++) {
     if (!strcmp(argv[i], "--job")) {
@@ -114,11 +119,11 @@ Job::Job(int argc, const char **argv) :
 	std::cerr << "Missing argument after --job" << std::endl;
 	abort();
       }
-      _filename = std::string(argv[i]);
+      filename_ = std::string(argv[i]);
       std::ifstream s(argv[i]);
-      int line = parse_file(s, _variables);
+      int line = parse_file(s, variables_);
       if (line) {
-	std::cerr << "Syntax error in line " << line << " of job file " << _filename
+	std::cerr << "Syntax error in line " << line << " of job file " << filename_
 		  << std::endl;
 	abort();
       }
@@ -130,7 +135,36 @@ Job::Job(int argc, const char **argv) :
 	std::cerr << "Missing argument to --this-job" << std::endl;
 	abort();
       }
-      _this_job = atoi(argv[i]);
+      current_job = atoi(argv[i]);
+    } else if (!strcmp(argv[i], "--job-blocks")) {
+      if (++i == argc) {
+	std::cerr << "Missing argument to --job-blocks" << std::endl;
+	abort();
+      }
+      blocks = atoi(argv[i]);
+      job_blocks_found = true;
+    } else if (!strcmp(argv[i], "--first-job")) {
+      if (this_job_found) {
+        std::cerr << "Cannot use --first-job and --this-job simultaneously." << std::endl;
+        abort();
+      }
+      if (++i == argc) {
+	std::cerr << "Missing argument to --first-job" << std::endl;
+	abort();
+      }
+      first_job_ = atoi(argv[i]);
+      first_job_found = true;
+    } else if (!strcmp(argv[i], "--last-job")) {
+      if (!first_job_found) {
+        std::cerr << "--last-job without preceding --first-job" << std::endl;
+        abort();
+      }
+      if (++i == argc) {
+	std::cerr << "Missing argument to --last-job" << std::endl;
+	abort();
+      }
+      last_job_ = atoi(argv[i]);
+      last_job_found = true;
     } else if (!strcmp(argv[i], "--variable")) {
       if (++i == argc) {
 	std::cerr << "Missing argument after --variable" << std::endl;
@@ -142,7 +176,7 @@ Job::Job(int argc, const char **argv) :
 		  << argv[i] << std::endl;
 	abort();
       }
-      _variables.push_back(v);
+      variables_.push_back(v);
       loaded = true;
     } else if (!strcmp(argv[i], "--help")) {
       std::cout << "Arguments:\n"
@@ -150,8 +184,13 @@ Job::Job(int argc, const char **argv) :
 	"\tShow this message and exit.\n"
 	"--print-jobs\n"
 	"\tShow number of jobs and exit.\n"
+        "--first-job / --last-job n\n"
+        "\tRun this program completing the selected interval of jobs.\n"
 	"--this-job n\n"
-	"\tChoose which job this is.\n"
+	"\tSelect to run one job or one job block.\n"
+        "--jobs-blocks n\n"
+        "\tSplit the number of blocks into 'n' blocks and run the jobs in the\n"
+        "\tblock selected by --this-job.\n"
 	"--variable name,min[,max[,nsteps]]\n"
 	"\tDefine variable and the range it runs, including number of steps.\n"
 	"\t'min' and 'max' are floating point numbers; 'name' is a string\n"
@@ -167,43 +206,92 @@ Job::Job(int argc, const char **argv) :
       exit(0);
     }
   }
-  if (!loaded) {
-    std::cerr << "Missing --job or --variable options" << std::endl;
-    abort();
-  } else if (_variables.size() == 0) {
-    std::cerr << "Job file " << _filename << " contained no varibles" << std::endl;
-    abort();
-  } else {
-    tensor::index i = _this_job;
-    _number_of_jobs = 1;
-    for (std::vector<Variable>::iterator it = _variables.begin();
-	 it != _variables.end();
-	 it++) {
-      tensor::index n = it->size();
-      _number_of_jobs *= n;
-      it->select(i % n);
-      i = i / n;
-    }
-  }
+  number_of_jobs_ = compute_number_of_jobs();
   if (print_jobs) {
-    std::cout << number_of_jobs();
+    std::cout << number_of_jobs_;
     exit(0);
   }
+  if (job_blocks_found) {
+    /*
+     * We split the number of jobs into sets and we are going to run the
+     * set indicated by --this-job (which defaults to 0)
+     */
+    if (first_job_found || last_job_found) {
+      std::cerr << "The options --job-blocks and --first/last-job cannot be used together."
+                << std::endl;
+      abort();
+    }
+    if (blocks <= 0) {
+      std::cerr << "The number of job blocks cannot be zero or negative.";
+      abort();
+    }
+    tensor::index delta = std::max(number_of_jobs_ / blocks, (tensor::index)1);
+    tensor::index actual_blocks = number_of_jobs_ / delta;
+    if (current_job >= actual_blocks) {
+      std::cerr << "warning: the value of --this-job exceeds the value of --job-blocks."
+                << std::endl;
+      abort();
+    }
+    first_job_ = current_job = current_job * delta;
+    last_job_ = std::min(number_of_jobs_ - 1, first_job_ + delta - 1);
+  } else if (first_job_found) {
+    /*
+     * --first-job and --last-job combined
+     */
+    if (first_job_ < 0) {
+      std::cerr << "--first-job is negative" << std::endl;
+      abort();
+    } else if (first_job_ >= number_of_jobs_) {
+      std::cerr << "--first-job exceeds the number of jobs" << std::endl;
+      abort();
+    }
+    if (last_job_found) {
+      if (last_job_ >= number_of_jobs_) {
+        std::cerr << "warning: --last-job exceeds the number of jobs" << std::endl;
+        last_job_ = std::max<tensor::index>(0, number_of_jobs_ - 1);
+      }
+      if (last_job_ < first_job_) {
+        std::cerr << "--last-job is smaller than --first-job" << std::endl;
+        abort();
+      }
+    }
+    current_job = first_job_;
+  } else if (first_job_found) {
+    /*
+     * Only --this-job, which allows us to do only one thing
+     */
+    first_job_ = last_job_ = current_job;
+  } else {
+    /*
+     * No options: we run over all jobs
+     */
+    first_job_ = current_job = 0;
+    last_job_ = number_of_jobs_ - 1;
+  }
+  select_job(current_job);
+}
+
+tensor::index
+Job::compute_number_of_jobs() const
+{
+  tensor::index n = 1;
+  for (var_list::const_iterator it = variables_.begin();
+       it != variables_.end();
+       it++) {
+    n *= it->size();
+  }
+  return n;
 }
 
 void
 Job::select_job(tensor::index which)
 {
-  if (which >= _number_of_jobs || which < 0) {
-    std::cerr << "Cannot select job " << which << " out of "
-	      << _number_of_jobs << " in Job file " << _filename
-	      << std::endl;
-    abort();
-  } else {
-    tensor::index i = _this_job = which;
-    for (std::vector<Variable>::iterator it = _variables.begin();
-	 it != _variables.end();
-	 it++) {
+  assert(which >= 0);
+  tensor::index i = this_job_ = which;
+  if (which <= number_of_jobs_) {
+    for (var_list::iterator it = variables_.begin();
+         it != variables_.end();
+         it++) {
       tensor::index n = it->size();
       it->select(i % n);
       i = i / n;
@@ -211,31 +299,48 @@ Job::select_job(tensor::index which)
   }
 }
 
-double
-Job::get_value(const std::string &variable) const
+void
+Job::operator++()
 {
-  for (std::vector<Variable>::const_iterator it = _variables.begin();
-       it != _variables.end();
-       it++) {
-    if (it->name() == variable) {
-      return it->value();
+  select_job(this_job_ + 1);
+}
+
+bool
+Job::to_do()
+{
+  return (this_job_ >= 0) &&
+    (this_job_ < number_of_jobs_) &&
+    (this_job_ >= first_job_) &&
+    (this_job_ <= last_job_);
+}
+
+const Job::Variable *
+Job::find_variable(const std::string &name) const
+{
+  for (var_list::const_iterator it = variables_.begin(); it != variables_.end(); it++) {
+    if (it->name() == name) {
+      return &(*it);
     }
   }
-  std::cerr << "Variable " << variable << " not found in job file "
-	    << _filename << std::endl;
-  abort();
+  return NULL;
+}
+
+double
+Job::get_value(const std::string &name) const
+{
+  const Variable *which = find_variable(name);
+  if (!which) {
+    std::cerr << "Variable " << name << " not found in job file "
+              << filename_ << std::endl;
+    abort();
+  }
+  return which->value();
 }
 
 
 double
-Job::get_value_with_default(const std::string &variable, double def) const
+Job::get_value_with_default(const std::string &name, double def) const
 {
-  for (std::vector<Variable>::const_iterator it = _variables.begin();
-       it != _variables.end();
-       it++) {
-    if (it->name() == variable) {
-      return it->value();
-    }
-  }
-  return def;
+  const Variable *which = find_variable(name);
+  return which? which->value() : def;
 }
