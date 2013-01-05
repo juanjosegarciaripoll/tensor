@@ -127,9 +127,16 @@ AC_DEFUN([TENSOR_MKL],[
   if test -d $MKL_DIR ; then
     case ${host_cpu} in
       ia64*)    MKL_LIBS="-L$MKL_DIR/lib/64";;
-      x86_64*)  MKL_LIBS="-L$MKL_DIR/lib/emt64";;
+      x86_64*)  MKL_LIBS="-L$MKL_DIR/lib/em64t";;
       *)        MKL_LIBS="-L$MKL_DIR/lib/32";;
     esac
+    if test "${enable_rpath}" != "no"; then
+      case ${host_cpu} in
+        ia64*)    MKL_LIBS="$MKL_LIBS -Wl,-rpath,$MKL_DIR/lib/64";;
+        x86_64*)  MKL_LIBS="$MKL_LIBS -Wl,-rpath,$MKL_DIR/lib/em64t";;
+        *)        MKL_LIBS="$MKL_LIBS -Wl,-rpath,$MKL_DIR/lib/32";;
+      esac
+    fi
     MKL_CXXFLAGS="-I$MKL_DIR/include"
     LDFLAGS="$LDFLAGS $MKL_LIBS"
   fi
