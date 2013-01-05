@@ -77,7 +77,8 @@ namespace mps {
     RTensor E_growth((deltan < 10)? 10 : deltan);
     S_growth.fill_with_zeros();
     E_growth.fill_with_zeros();
-    for (size_t i = 0; i < nsteps; i++) {
+    bool stop = false;
+    for (size_t i = 0; (i < nsteps) && (!stop); i++) {
       switch (method) {
       case 0:
 	psi = psi.apply_operator(eH12[0], 0, tolerance, max_dim);
@@ -106,17 +107,17 @@ namespace mps {
       S = newS;
       E = newE;
       time += dt;
-      if (deltan && (i % deltan  == 0)) {
+      if (i > E_growth.size() && ((abs(dSdt) < 1e-9) && (dEdt <= 1e-9))) {
+	std::cout << "Entropy and energy converged" << std::endl;
+	stop = true;
+      }
+      if ((deltan && (i % deltan  == 0)) || stop) {
 	std::cout << "t=" << time << ";\tE=" << E << ";\tS=" << S
 		  << ";\tl=" << std::max(psi.left_dimension(0),
 					 psi.right_dimension(0))
 		  << std::endl;
 	std::cout << "\tdS=" << dS << ";\tdE=" << dE << std::endl;
 	std::cout << "\tdSdt=" << dSdt << ";\tdEdt=" << dEdt << std::endl;
-      }
-      if (i > E_growth.size() && (abs(dSdt) < 1e-9 || dEdt < -1e-9)) {
-	std::cout << "Entropy and energy converged" << std::endl;
-	break;
       }
     }
     return psi;
