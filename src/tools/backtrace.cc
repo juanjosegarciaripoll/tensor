@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <tensor/config.h>
+#include <tensor/tools.h>
 
 #ifdef HAVE_DLADDR
 # ifdef HAVE_DLFCN_H
@@ -126,18 +127,15 @@ dump_backtrace(int size)
 
 #undef abort
 
-void
+static void
 tensor_abort(int signal)
 {
   dump_backtrace(32);
   exit(-1);
 }
 
-
-static const class Foo {
-public:
-  Foo() {
-    signal(SIGABRT, tensor_abort);
-  }
-} aux;
-
+void
+tensor::tensor_abort_handler()
+{
+  signal(SIGABRT, tensor_abort);
+}

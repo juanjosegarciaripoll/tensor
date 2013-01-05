@@ -25,6 +25,8 @@ namespace tensor {
 void tic();
 double toc();
 
+void tensor_abort_handler();
+
 } // namespace tensor
 
 #endif
