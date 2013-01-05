@@ -1,17 +1,20 @@
-function [obj,name] = sdf_load_record(f)
+function [obj,name,dims] = sdf_load_record(f)
 [name, code] = sdf_load_tag(f);
 switch code
  case -1
   name = '';
   obj = [];
+  dims = [length(name)];
  case 0
-  obj = sdf_load_tensor(f, 0);
+  [obj,dims] = sdf_load_tensor(f, 0);
  case 1
-  obj = sdf_load_tensor(f, 1);
+  [obj,dims] = sdf_load_tensor(f, 1);
  case 2
   obj = sdf_load_mp(f, 0);
+  dims = [length(obj)];
  case 3
   obj = sdf_load_mp(f, 1);
+  dims = [length(obj)];
  otherwise
   error(['Wrong tag, ' num2str(code) ', found while reading ' f{2}]);
 end
@@ -49,7 +52,7 @@ end;
 name = name(:)';
 
 
-function Pk = sdf_load_tensor(f, cplx)
+function [Pk,dims] = sdf_load_tensor(f, cplx)
 rank = read_longs(f{1}, 1);
 dims = read_longs(f{1}, rank)';
 L    = read_longs(f{1}, 1);

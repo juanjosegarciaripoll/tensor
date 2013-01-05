@@ -8,14 +8,15 @@ data = [];
 if f{1} >= 0
   %try
     while ~feof(f{1})
-      [obj,name] = sdf_load_record(f);
+      [obj,name,dims] = sdf_load_record(f);
       if isempty(name)
         if isempty(obj)
           break;
         end;
       else
-        while isfield(data, name)
-          name = [name '_'];
+        if isfield(data, name)
+          old = getfield(data, name);
+          obj = cat(length(dims)+1, old, obj);
         end;
         data = setfield(data, name, obj);
       end;
