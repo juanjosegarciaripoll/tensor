@@ -34,6 +34,7 @@ namespace jobs {
 
     tensor::index this_job() const;
     tensor::index number_of_jobs() const { return _number_of_jobs; };
+    double get_value_with_default(const std::string &variable, double def) const;
     double get_value(const std::string &variable) const;
     void dump_variables(sdf::OutDataFile &file) const;
     void select_job(tensor::index which);

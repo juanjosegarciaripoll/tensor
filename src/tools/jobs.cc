@@ -225,3 +225,17 @@ Job::get_value(const std::string &variable) const
 	    << _filename << std::endl;
   abort();
 }
+
+
+double
+Job::get_value_with_default(const std::string &variable, double def) const
+{
+  for (std::vector<Variable>::const_iterator it = _variables.begin();
+       it != _variables.end();
+       it++) {
+    if (it->name() == variable) {
+      return it->value();
+    }
+  }
+  return def;
+}
