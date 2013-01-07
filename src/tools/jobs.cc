@@ -136,6 +136,7 @@ Job::Job(int argc, const char **argv) :
 	abort();
       }
       current_job = atoi(argv[i]);
+      this_job_found = true;
     } else if (!strcmp(argv[i], "--job-blocks")) {
       if (++i == argc) {
 	std::cerr << "Missing argument to --job-blocks" << std::endl;
