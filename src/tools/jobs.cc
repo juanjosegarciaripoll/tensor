@@ -256,7 +256,7 @@ Job::Job(int argc, const char **argv) :
       }
     }
     current_job = first_job_;
-  } else if (first_job_found) {
+  } else if (this_job_found) {
     /*
      * Only --this-job, which allows us to do only one thing
      */
