@@ -29,11 +29,12 @@ AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 dist-zip subdir-objects])
 #
 # Command line arguments
 #
-AC_ARG_WITH([mkl-dir],
- [AS_HELP_STRING([--with-mkl-dir],
-     [provide location of the Intel MKL Library])],
- [MKL_DIR=$with_mkl_dir],
- [])
+AC_ARG_ENABLE([rpath],
+ [AS_HELP_STRING([--enable-rpath],
+     [hard-code the location of the libraries in the binaries])],
+ [enable_rpath=yes],
+ [enable_rpath=no],
+ [enable_rpath=yes])
 
 # Programs used to build the library
 AC_PROG_CC

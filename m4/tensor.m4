@@ -123,34 +123,16 @@ dnl ----------------------------------------------------------------------
 dnl Find the MKL library
 dnl
 AC_DEFUN([TENSOR_MKL],[
-  OLD_LDFLAGS="$LDFLAGS"
-  if test -d $MKL_DIR ; then
-    case ${host_cpu} in
-      ia64*)    MKL_LIBS="-L$MKL_DIR/lib/64";;
-      x86_64*)  MKL_LIBS="-L$MKL_DIR/lib/em64t";;
-      *)        MKL_LIBS="-L$MKL_DIR/lib/32";;
-    esac
-    if test "${enable_rpath}" != "no"; then
-      case ${host_cpu} in
-        ia64*)    MKL_LIBS="$MKL_LIBS -Wl,-rpath,$MKL_DIR/lib/64";;
-        x86_64*)  MKL_LIBS="$MKL_LIBS -Wl,-rpath,$MKL_DIR/lib/em64t";;
-        *)        MKL_LIBS="$MKL_LIBS -Wl,-rpath,$MKL_DIR/lib/32";;
-      esac
-    fi
-    MKL_CXXFLAGS="-I$MKL_DIR/include"
-    LDFLAGS="$LDFLAGS $MKL_LIBS"
-  fi
   AC_CHECK_LIB([mkl_core], [mkl_lapack_cbdsqr], [have_mkl=yes], [have_mkl=no])
   AC_MSG_CHECKING([for MKL library])
   if test $have_mkl = yes ; then
     case ${host_cpu} in
-      ia64*)    MKL_LIBS="$MKL_LIBS -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
-      x86_64*)  MKL_LIBS="$MKL_LIBS -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
-      *)        MKL_LIBS="$MKL_LIBS -lmkl_intel -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
+      ia64*)    MKL_LIBS="-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
+      x86_64*)  MKL_LIBS="-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
+      *)        MKL_LIBS="-lmkl_intel -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
     esac
   fi
   AC_MSG_RESULT([$have_mkl])
-  LDFLAGS="$OLD_LDFLAGS"
 ])
 
 dnl ----------------------------------------------------------------------
