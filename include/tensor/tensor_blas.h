@@ -25,7 +25,7 @@
 #ifdef TENSOR_USE_MKL
 # include <mkl_cblas.h>
 # include <mkl_lapack.h>
-# define F77NAME(x)
+# define F77NAME(x) x
 #endif
 
 #ifdef TENSOR_USE_VECLIB
@@ -74,7 +74,7 @@ namespace blas {
 #endif
 #ifdef TENSOR_USE_MKL
   typedef MKL_INT integer;
-  typedef struct { double re, im; } cdouble;
+  typedef MKL_Complex16 cdouble;
 #endif
 #ifdef TENSOR_USE_ESSL
   typedef _ESVINT integer;
