@@ -16,7 +16,11 @@ if f{1} >= 0
       else
         if isfield(data, name)
           old = getfield(data, name);
-          obj = cat(length(dims)+1, old, obj);
+          l = length(dims);
+          if l > 1
+              l = l+1
+          end
+          obj = cat(l, old, obj);
         end;
         data = setfield(data, name, obj);
       end;
@@ -26,6 +30,8 @@ if f{1} >= 0
   %  fclose(f{1});
   %  rethrow(lasterror);
   %end;
+else
+    error(['Cannot open file ' filename]);
 end;
 if nargin == 1
   varargout{1} = data;
