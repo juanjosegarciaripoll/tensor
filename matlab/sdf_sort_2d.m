@@ -1,4 +1,4 @@
-function record = sdf_sort_2d(record, fieldx, fieldy, rows, varargin)
+function record = sdf_sort_2d(record, fieldx, fieldy, rows, cols)
 if ~isfield(record, fieldx)
     error([fieldx ' is not a valid field name into the SDF ' ...
            'structure']);
@@ -17,6 +17,10 @@ l = numel(datax);
 if l ~= numel(datay)
     error(['The fields ' fieldx ' and ' fieldy ' have different ' ...
            'size']);
+end
+if nargin < 3
+    x = datax(1);
+    rows = length(find(datax == x));
 end
 if nargin < 4
     cols = l / rows
