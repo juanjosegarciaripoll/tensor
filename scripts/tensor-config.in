@@ -4,7 +4,7 @@ exec_prefix=@exec_prefix@
 case $1 in
     --cppflags)	echo @CPPFLAGS@ -I@includedir@;;
     --cxxflags)	echo @CXXFLAGS@;;
-    --ldflags)	echo -L@libdir@ -ltensor @LDFLAGS@ @LIBS@;;
+    --ldflags)	echo -L@libdir@ -lmps -ltensor @LDFLAGS@ @LIBS@;;
     *)		cat <<EOF
 tensor-config [--cppflags | --cxxflags | --ldflags]
 
