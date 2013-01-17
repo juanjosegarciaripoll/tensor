@@ -12,3 +12,4 @@ tensor-config [--cppflags | --cxxflags | --ldflags]
 	that make use of the Tensor library.
 EOF
 esac
+cd
