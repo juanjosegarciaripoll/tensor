@@ -25,13 +25,12 @@ end
 if nargin < 4
     cols = l / rows
     if fix(cols) ~= cols
-        error([field ' cannot be reshaped to have ' num2str(rows) ...
+        error([fieldy ' cannot be reshaped to have ' num2str(rows) ...
                ' rows']);
     end
 else
-    cols = varargin{1};
     if cols*rows ~= l
-        error([field ' does not have the requested shape [' num2str(rows) ...
+        error([fieldy ' does not have the requested shape [' num2str(rows) ...
                ', ' num2str(cols) ']']);
     end
 end
