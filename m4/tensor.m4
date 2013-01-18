@@ -123,7 +123,7 @@ dnl ----------------------------------------------------------------------
 dnl Find the MKL library
 dnl
 AC_DEFUN([TENSOR_MKL],[
-  AC_CHECK_LIB([mkl_core], [mkl_lapack_cbdsqr], [have_mkl=yes], [have_mkl=no])
+  AC_CHECK_HEADER([mkl.h], [have_mkl=yes], [have_mkl=no])
   AC_MSG_CHECKING([for MKL library])
   if test $have_mkl = yes ; then
     case ${host_cpu} in
