@@ -5,6 +5,9 @@ include aminclude.am
 
 EXTRA_DIST = autogen.sh $(DX_CONFIG) doc/html
 
+if TENSOR_ARPACK
+SUBDIRS += arpack-ng
+endif
 if HAVE_GTEST
 SUBDIRS += test
 endif
