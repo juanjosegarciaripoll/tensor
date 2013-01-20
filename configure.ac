@@ -39,8 +39,7 @@ AC_ARG_ENABLE([rpath],
 AC_ARG_WITH([arpack],
  [AS_HELP_STRING([--with-arpack],
      [link in with the arpack-ng library])],
- [with_arpack=yes],
- [with_arpack=no],
+ [],
  [with_arpack=yes])
 
 # Programs used to build the library
@@ -52,9 +51,6 @@ AC_PROG_LIBTOOL
 # Fortran stuff
 AC_PROG_F77([f77])
 AC_F77_LIBRARY_LDFLAGS
-if test "x$F77" = "x"; then
-   with_arpack=no
-fi
 AM_CONDITIONAL(TENSOR_ARPACK, [test $with_arpack = yes])
 
 # Size of computer words
