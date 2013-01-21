@@ -132,6 +132,8 @@ generated/tensor_unop_abs_d.cc: tensor/tensor_unop.cc Makefile
 	sed -e "s,TYPE1,Tensor<double>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" $< > $@
 generated/tensor_unop_abs_z.cc: tensor/tensor_unop.cc Makefile
 	sed -e "s,TYPE1,Tensor<cdouble>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" $< > $@
+../arpack-ng/libarpack.la: ../arpack-ng/Makefile
+	cd $(top_builddir)/arpack-ng && make
 
 if HAVE_64BITS
 libtensor_la_SOURCES += rand/rand64.cc
