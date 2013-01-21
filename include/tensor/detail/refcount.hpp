@@ -101,6 +101,11 @@ RefPointer<elt_t>::RefPointer(size_t new_size) {
 }
 
 template<class elt_t>
+RefPointer<elt_t>::RefPointer(elt_t *data, size_t new_size) {
+  ref_ = new SharedPtr<elt_t>(data, new_size);
+}
+
+template<class elt_t>
 RefPointer<elt_t>::RefPointer(const RefPointer<elt_t> &p) {
   ref_ = p.ref_->ro_reference();
 }

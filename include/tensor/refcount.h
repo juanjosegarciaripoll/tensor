@@ -100,6 +100,8 @@ public:
   RefPointer(size_t new_size);
   /** Copy constructor that increases the reference count. */
   RefPointer(const RefPointer<elt_t> &p);
+  /** Reference count a given data */
+  RefPointer(elt_t *data, size_t size);
 
   /** Destructor that deletes no longer reference data. */
   ~RefPointer();

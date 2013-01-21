@@ -58,6 +58,11 @@ class Tensor {
   /**Consturcts an N-D Tensor with given initial data.*/
   Tensor(const Indices &new_dims, const Tensor<elt_t> &data);
 
+  /**Constructs a 1-D Tensor from a vector.*/
+  Tensor(const Vector<elt_t> &data) : dims_(1), data_(data) {
+    dims_.at(0) = data.size();
+  }
+
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
   Tensor(const Tensor &other) : data_(other.data_), dims_(other.dims_) {}
 
