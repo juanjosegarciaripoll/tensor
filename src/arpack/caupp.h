@@ -38,9 +38,9 @@
 #include "arpackf.h"
 
 inline void caupp(int& ido, char bmat, int n, const char* which, int nev,
-                  double& tol, cdouble resid[], int ncv,
-                  cdouble V[], int ldv, int iparam[], int ipntr[],
-                  cdouble workd[], cdouble workl[],
+                  double& tol, tensor::cdouble resid[], int ncv,
+                  tensor::cdouble V[], int ldv, int iparam[], int ipntr[],
+                  tensor::cdouble workd[], tensor::cdouble workl[],
                   int lworkl, double rwork[], int& info)
 
 /*
@@ -301,9 +301,13 @@ inline void caupp(int& ido, char bmat, int n, const char* which, int nev,
 
 {
 
-  F77_FUNC(znaupd,ZNAUPD)(&ido, &bmat, &n, which, &nev, &tol, resid, &ncv,
-                          &V[0], &ldv, &iparam[0], &ipntr[0], &workd[0],
-                          &workl[0], &lworkl, &rwork[0], &info);
+  F77_FUNC(znaupd,ZNAUPD)(&ido, &bmat, &n, which, &nev, &tol,
+                          reinterpret_cast<blas::cdouble*>(resid), &ncv,
+                          reinterpret_cast<blas::cdouble*>(V), &ldv,
+                          iparam, ipntr,
+                          reinterpret_cast<blas::cdouble*>(workd),
+                          reinterpret_cast<blas::cdouble*>(workl),
+                          &lworkl, rwork, &info);
 
 } // caupp (cdouble).
 

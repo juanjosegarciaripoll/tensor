@@ -37,12 +37,12 @@
 
 #include "arpackf.h"
 
-inline void ceupp(bool rvec, char HowMny, cdouble d[],
-                  cdouble Z[], int ldz, cdouble sigma,
-                  cdouble workev[], char bmat, int n, const char* which,
-                  int nev, double tol, cdouble resid[], int ncv,
-                  cdouble V[], int ldv, int iparam[], int ipntr[],
-                  cdouble workd[], cdouble workl[],
+inline void ceupp(bool rvec, char HowMny, tensor::cdouble d[],
+                  tensor::cdouble Z[], int ldz, tensor::cdouble sigma,
+                  tensor::cdouble workev[], char bmat, int n, const char* which,
+                  int nev, double tol, tensor::cdouble resid[], int ncv,
+                  tensor::cdouble V[], int ldv, int iparam[], int ipntr[],
+                  tensor::cdouble workd[], tensor::cdouble workl[],
                   int lworkl, double rwork[], int& info)
 
 /*
@@ -185,16 +185,23 @@ inline void ceupp(bool rvec, char HowMny, cdouble d[],
 
   logical  irvec;
   logical* iselect;
-  cdouble* iZ;
+  blas::cdouble* iZ;
 
   irvec   = rvec;
   iselect = new logical[ncv];
-  iZ = (Z == NULL) ? &V[0] : Z;
+  iZ = reinterpret_cast<blas::cdouble*>((Z == NULL) ? V : Z);
 
-  F77_FUNC(zneupd,ZNEUPD)(&irvec, &HowMny, iselect, d, iZ, &ldz, &sigma,
-                          &workev[0], &bmat, &n, which, &nev, &tol, &resid[0],
-                          &ncv, &V[0], &ldv, &iparam[0], &ipntr[0],
-                          &workd[0], &workl[0], &lworkl, &rwork[0], &info);
+  F77_FUNC(zneupd,ZNEUPD)(&irvec, &HowMny, iselect,
+                          reinterpret_cast<blas::cdouble*>(d), iZ, &ldz,
+                          reinterpret_cast<blas::cdouble*>(&sigma),
+                          reinterpret_cast<blas::cdouble*>(workev),
+                          &bmat, &n, which, &nev, &tol,
+                          reinterpret_cast<blas::cdouble*>(resid),
+                          &ncv, reinterpret_cast<blas::cdouble*>(V),
+                          &ldv, &iparam[0], &ipntr[0],
+                          reinterpret_cast<blas::cdouble*>(workd),
+                          reinterpret_cast<blas::cdouble*>(workl),
+                          &lworkl, &rwork[0], &info);
 
   delete[] iselect;
 
