@@ -21,5 +21,56 @@
 #include <functional>
 #include <tensor/tensor.h>
 
-#define ELT_T double
-#include "tensor_sort.h"
+namespace tensor {
+
+  const RTensor
+  sort(const RTensor &v, bool reverse)
+  {
+    RTensor output(v);
+    if (reverse) {
+      std::sort(output.begin(), output.end(), std::greater<double>());
+    } else {
+      std::sort(output.begin(), output.end(), std::less<double>());
+    }
+    return output;
+  }
+
+  template<typename elt_t>
+  struct Compare {
+    const elt_t *p;
+
+    Compare(const elt_t *newp) : p(newp) {};
+    int operator()(size_t i1, size_t i2) {
+      return p[i1] < p [i2];
+    }
+  };
+
+  template<typename elt_t>
+  struct CompareInv {
+    const elt_t *p;
+
+    CompareInv(const elt_t *newp) : p(newp) {};
+    int operator()(size_t i1, size_t i2) {
+      return p[i1] > p[i2];
+    }
+  };
+
+  const Indices
+  sort_indices(const RTensor &v, bool reverse)
+  {
+    if (v.size()) {
+      Indices output = iota(0,v.size()-1);
+      if (reverse) {
+        CompareInv<double> c(v.begin());
+        std::sort(output.begin(), output.end(), c);
+      } else {
+        Compare<double> c(v.begin());
+        std::sort(output.begin(), output.end(), c);
+      }
+      return output;
+    } else {
+      return Indices();
+    }
+  }
+
+}
