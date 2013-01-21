@@ -60,6 +60,7 @@ libtensor_la_SOURCES = \
 	tensor/tensor_norm2_z.cc \
 	tensor/tensor_scale_d.cc \
 	tensor/tensor_scale_z.cc \
+	tensor/tensor_sort_d.cc \
 	tensor/tensor_take_diag_d.cc \
 	tensor/tensor_take_diag_z.cc \
 	generated/tensor_unop_abs_d.cc \
@@ -92,6 +93,8 @@ libtensor_la_SOURCES = \
 	linalg/eig_power_z.cc \
 	linalg/eig_sym_d.cc \
 	linalg/eig_sym_z.cc \
+	arpack/arpack_d.cc \
+	arpack/arpack_z.cc \
 	views/range.cc \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \

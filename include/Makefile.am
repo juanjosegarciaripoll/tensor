@@ -1,5 +1,8 @@
 
 nobase_include_HEADERS = \
+	tensor/arpack.h \
+	tensor/arpack_d.h \
+	tensor/arpack_z.h \
 	tensor/detail/common.h \
 	tensor/detail/functional.h \
 	tensor/detail/io.hpp \

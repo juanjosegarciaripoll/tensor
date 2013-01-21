@@ -477,6 +477,10 @@ namespace tensor {
   const RTensor linspace(const RTensor &min, const RTensor &max, tensor::index n = 100);
   const CTensor linspace(cdouble min, cdouble max, tensor::index n = 100);
   const CTensor linspace(const CTensor &min, const CTensor &max, tensor::index n = 100);
+
+  const RTensor sort(const RTensor &v, bool reverse = false);
+  const Indices sort_indices(const RTensor &v, bool reverse = false);
+
 } // namespace tensor
 
 /* @} */
