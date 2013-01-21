@@ -481,6 +481,9 @@ namespace tensor {
   const RTensor sort(const RTensor &v, bool reverse = false);
   const Indices sort_indices(const RTensor &v, bool reverse = false);
 
+  const CTensor sort(const CTensor &v, bool reverse = false);
+  const Indices sort_indices(const CTensor &v, bool reverse = false);
+
 } // namespace tensor
 
 /* @} */
