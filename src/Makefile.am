@@ -96,6 +96,10 @@ libtensor_la_SOURCES = \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \
 	sdf/odata_file.cc
+libtensor_la_LIBADD = ../arpack-ng/libarpack.la
+if TENSOR_ARPACK
+libtensor_la_LDFLAGS = $(FLIBS)
+endif
 
 lib_LTLIBRARIES += libmps.la
 
