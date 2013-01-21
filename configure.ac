@@ -77,7 +77,6 @@ else
   else
     AC_MSG_RESULT([no])
     test -d "`pwd`/test" || mkdir "`pwd`/test"
-    ls -l test
     AC_MSG_CHECKING([trying to download Google Test library])
     if (which unzip && which curl && \
         cd test && \
@@ -91,7 +90,6 @@ else
       GTEST_DIR=""
       AC_MSG_WARN([Please download google test library in `pwd`/test/])
     fi
-    ls -l test
   fi
 fi
 AM_CONDITIONAL([HAVE_GTEST], [test "x${GTEST_DIR}" != x])
