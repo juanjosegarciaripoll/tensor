@@ -18,14 +18,11 @@
 */
 
 #include <tensor/arpack.h>
-
-#define ARPACK RArpack
-#define ELT_T double
-#define COMPLEX
 #include "caupp.h"
 #include "ceupp.h"
 
-#include "saupp.h"
-#include "seupp.h"
+#define ARPACK CArpack
+#define ELT_T tensor::cdouble
+#define COMPLEX
 
 #include "arpack_t.cc"
