@@ -93,8 +93,6 @@ libtensor_la_SOURCES = \
 	linalg/eig_power_z.cc \
 	linalg/eig_sym_d.cc \
 	linalg/eig_sym_z.cc \
-	arpack/arpack_d.cc \
-	arpack/arpack_z.cc \
 	views/range.cc \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \
