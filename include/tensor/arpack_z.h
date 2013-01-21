@@ -17,8 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef TENSOR_ARPACK_D_H
-#define TENSOR_ARPACK_D_H
+#ifndef TENSOR_ARPACK_Z_H
+#define TENSOR_ARPACK_Z_H
 
 #include <tensor/tensor.h>
 
@@ -68,7 +68,7 @@ class CArpack {
     tensor::CTensor get_y();
     void set_y(const tensor::CTensor &y);
     tensor::CTensor get_data(tensor::CTensor *vectors);
-    tensor::CTensor get_data(cdouble *z);
+    tensor::CTensor get_data(tensor::cdouble *z);
     std::string error_message() { return std::string(error); };
     enum Status get_status() { return status; };
     size_t get_vector_size() { return n; };
