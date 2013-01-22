@@ -43,7 +43,7 @@ namespace linalg {
                        const tensor::RTensor::elt_t *initial_guess = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse matrix.*/
-  tensor::RTensor eigss(const tensor::RSparse &A, int eig_type, size_t neig,
+  tensor::RTensor eigs(const tensor::RSparse &A, int eig_type, size_t neig,
                        tensor::RTensor *vectors = NULL,
                        const tensor::RTensor::elt_t *initial_guess = NULL);
 
