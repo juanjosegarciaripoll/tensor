@@ -338,6 +338,7 @@ namespace tensor_test {
   template<typename elt_t> Tensor<elt_t> random_unitary(int n, int iterations = -1);
   template<> Tensor<double> random_unitary(int n, int iterations);
   template<> Tensor<cdouble> random_unitary(int n, int iterations);
+  Tensor<double> random_permutation(int n, int iterations);
 
 } // namespace tensor_test
 
