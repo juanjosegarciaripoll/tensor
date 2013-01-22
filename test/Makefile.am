@@ -150,6 +150,11 @@ check_PROGRAMS += test_tensor_take_diag
 test_tensor_take_diag_SOURCES = test_tensor_take_diag.cc
 test_tensor_take_diag_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_linalg_eigs
+check_PROGRAMS += test_linalg_eigs
+test_linalg_eigs_SOURCES = test_linalg_eigs.cc
+test_linalg_eigs_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 #####################################################################
 # MPS LIBRARY TESTS
 #
