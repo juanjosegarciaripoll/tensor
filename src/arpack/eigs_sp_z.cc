@@ -16,10 +16,6 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// CMPS library
-//
-// (c) 2004 Juan Jose Garcia Ripoll
-//
 //----------------------------------------------------------------------
 // ARPACK DRIVER FOR NONSYMMETRIC SPARSE EIGENVALUE PROBLEMS
 //
@@ -61,8 +57,3 @@ eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
     }
     return CTensor();
 }
-
-/// Local variables:
-/// mode: c++
-/// fill-column: 80
-/// c-basic-offset: 4

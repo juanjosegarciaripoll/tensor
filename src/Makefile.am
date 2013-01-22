@@ -95,6 +95,8 @@ libtensor_la_SOURCES = \
 	linalg/eig_sym_z.cc \
 	arpack/arpack_d.cc \
 	arpack/arpack_z.cc \
+	arpack/eigs_d.cc \
+	arpack/eigs_z.cc \
 	views/range.cc \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \

@@ -21,10 +21,8 @@
 // ARPACK DRIVER FOR NONSYMMETRIC SPARSE EIGENVALUE PROBLEMS
 //
 
-#include "linalg.h"
-#include "arpack.h"
-
-#undef COMPLEX
+#include <tensor/linalg.h>
+#include <tensor/arpack.h>
 
 RTensor
 eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
@@ -58,8 +56,3 @@ eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
     }
     return RTensor();
 }
-
-/// Local variables:
-/// mode: c++
-/// fill-column: 80
-/// c-basic-offset: 4

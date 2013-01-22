@@ -24,10 +24,9 @@
 #include "linalg.h"
 #include "arpack.h"
 
-#undef COMPLEX
-
-Tensor
-eigs(const Sparse &A, int eig_type, size_t neig, Tensor *eigenvectors,
+Tensor<ELT_T>
+eigs(const Sparse<ELT_T> &A, int eig_type, size_t neig,
+     Tensor<ELT_T> *eigenvectors,
      const Tensor::elt_t *initial_guess)
 {
     Arpack::EigType t = (Arpack::EigType)eig_type;
@@ -56,10 +55,5 @@ eigs(const Sparse &A, int eig_type, size_t neig, Tensor *eigenvectors,
         std::cerr << data.error_message() << '\n';
 	myabort();
     }
-    return Tensor();
+    return Tensor<ELT_T>();
 }
-
-/// Local variables:
-/// mode: c++
-/// fill-column: 80
-/// c-basic-offset: 4
