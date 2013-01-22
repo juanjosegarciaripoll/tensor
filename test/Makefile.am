@@ -181,7 +181,7 @@ test_itebd_itime_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GT
 
 noinst_LIBRARIES = libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
-	 random_unitary_d.cc random_unitary_z.cc
+	 random_unitary_d.cc random_unitary_z.cc random_permutation.cc \
 
 #
 # Build the Google Test library. The way this library has changed: we now have to
