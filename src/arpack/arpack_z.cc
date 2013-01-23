@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/arpack.h>
+#include <tensor/arpack_z.h>
 #include "caupp.h"
 #include "ceupp.h"
 

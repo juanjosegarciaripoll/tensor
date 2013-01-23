@@ -20,7 +20,8 @@
 #ifndef TENSOR_ARPACK_Z_H
 #define TENSOR_ARPACK_Z_H
 
-#include <tensor/tensor.h>
+#include <tensor/tensor_blas.h>
+#include <tensor/arpack.h>
 
 namespace linalg {
 
@@ -31,19 +32,7 @@ namespace linalg {
 class CArpack {
  public:
     typedef tensor::cdouble elt_t;
-
-    /**Type of eigenvalues that we are looking for.*/
-    enum EigType {
-	Default = 0, /*!<Eigenvalues with smallest modulus.*/
-	LargestMagnitude = 0, /*!<Eigenvalues with smallest modulus.*/
-	SmallestMagnitude = 1, /*!<Eigenvalues with largest modulus.*/
-	LargestReal = 2, /*!<Eigenvalues with largest real part.*/
-	LargestAlgebraic = 2, /*!<Eigenvalues with largest real part.*/
-	SmallestReal = 3, /*!<Eigenvalues with smallest real part.*/
-	SmallestAlgebraic = 3, /*!<Eigenvalues with smallest real part.*/
-	LargestImag = 4, //@COMPLEX
-	SmallestImag = 5 //@COMPLEX
-    };
+    typedef blas::integer integer;
 
     enum Status {
 	Uninitialized = 0,
@@ -82,10 +71,10 @@ class CArpack {
     enum Status status;
     enum EigType which_eig;
 
-    int     n;          // Dimension of the eigenproblem.
-    int     nev;        // Number of eigenvalues to be computed. 0 < nev < n-1.
-    int     ncv;        // Number of Arnoldi vectors generated at each iteration.
-    int     maxit;      // Maximum number of Arnoldi update iterations allowed.
+    integer n;          // Dimension of the eigenproblem.
+    integer nev;        // Number of eigenvalues to be computed. 0 < nev < n-1.
+    integer ncv;        // Number of Arnoldi vectors generated at each iteration.
+    integer maxit;      // Maximum number of Arnoldi update iterations allowed.
     const char* which;  // Specify which of the Ritz values of OP to compute.
     double  tol;        // Stopping criterion (relative accuracy of Ritz values).
     elt_t   sigma;      // Shift (for nonsymmetric problems).
@@ -100,15 +89,15 @@ class CArpack {
                         // generalized ('G") eigenproblem.
     char    hwmny;      // Indicates if eigenvectors ('A') or Schur vectors ('P')
                         // were requested (not referenced if rvec = false).
-    int     ido;        // Original ARPACK reverse communication flag.
-    int     info;       // Original ARPACK error flag.
-    int     mode;       // Indicates the type of the eigenproblem (regular,
+    integer ido;        // Original ARPACK reverse communication flag.
+    integer info;       // Original ARPACK error flag.
+    integer mode;       // Indicates the type of the eigenproblem (regular,
                         // shift and invert, etc).
-    int     lworkl;     // Dimension of array workl.
-    int     lworkv;     // Dimension of array workv.
-    int     lrwork;     // Dimension of array rwork.
-    int     iparam[12]; // CVector that handles original ARPACK parameters.
-    int     ipntr[15];  // CVector that handles original ARPACK pointers.
+    integer lworkl;     // Dimension of array workl.
+    integer lworkv;     // Dimension of array workv.
+    integer lrwork;     // Dimension of array rwork.
+    integer iparam[12]; // CVector that handles original ARPACK parameters.
+    integer ipntr[15];  // CVector that handles original ARPACK pointers.
     double  *rwork;     // Original ARPACK internal vector.
     elt_t   *workl;     // Original ARPACK internal vector.
     elt_t   *workd;     // Original ARPACK internal vector.
@@ -117,7 +106,7 @@ class CArpack {
 
     // a.3) Pure output variables.
 
-    int     nconv;      // Number of "converged" Ritz values.
+    integer nconv;      // Number of "converged" Ritz values.
 
     const char *error;
 };

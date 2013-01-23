@@ -22,7 +22,7 @@
 //
 
 #include <tensor/linalg.h>
-#include <tensor/arpack.h>
+#include <tensor/arpack_d.h>
 #include "gemv.cc"
 
 namespace linalg {
@@ -33,7 +33,7 @@ namespace linalg {
   eigs(const RTensor &A, int eig_type, size_t neig, RTensor *eigenvectors,
        const RTensor::elt_t *initial_guess)
   {
-    RArpack::EigType t = (RArpack::EigType)eig_type;
+    EigType t = (EigType)eig_type;
     size_t n = A.columns();
 
     if ((A.rank() != 2) || (A.rows() != n)) {

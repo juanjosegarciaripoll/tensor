@@ -16,12 +16,13 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+
 //----------------------------------------------------------------------
 // ARPACK DRIVER FOR NONSYMMETRIC SPARSE EIGENVALUE PROBLEMS
 //
 
-#include "linalg.h"
-#include "arpack.h"
+#include <tensor/linalg.h>
+#include <tensor/arpack_z.h>
 
 #define COMPLEX
 

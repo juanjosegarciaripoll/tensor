@@ -21,7 +21,7 @@
 //
 
 #include <tensor/linalg.h>
-#include <tensor/arpack.h>
+#include <tensor/arpack_z.h>
 #include "gemv.cc"
 
 namespace linalg {
@@ -32,7 +32,7 @@ namespace linalg {
   eigs(const CTensor &A, int eig_type, size_t neig, CTensor *eigenvectors,
        const CTensor::elt_t *initial_guess)
   {
-    CArpack::EigType t = (CArpack::EigType)eig_type;
+    EigType t = (EigType)eig_type;
     size_t n = A.columns();
 
     if ((A.rank() != 2) || (A.rows() != n)) {

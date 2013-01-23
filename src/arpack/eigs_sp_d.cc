@@ -22,7 +22,7 @@
 //
 
 #include <tensor/linalg.h>
-#include <tensor/arpack.h>
+#include <tensor/arpack_d.h>
 
 RTensor
 eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,

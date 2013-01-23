@@ -22,10 +22,20 @@
 
 #include <tensor/tensor.h>
 #include <tensor/sparse.h>
-#include <tensor/arpack_d.h>
-#include <tensor/arpack_z.h>
 
 namespace linalg {
+
+  /**Type of eigenvalues that we are looking for.*/
+  enum EigType {
+    LargestMagnitude = 0, /*!<Eigenvalues with smallest modulus.*/
+    SmallestMagnitude = 1, /*!<Eigenvalues with largest modulus.*/
+    LargestReal = 2, /*!<Eigenvalues with largest real part.*/
+    LargestAlgebraic = 2, /*!<Eigenvalues with largest real part.*/
+    SmallestReal = 3, /*!<Eigenvalues with smallest real part.*/
+    SmallestAlgebraic = 3, /*!<Eigenvalues with smallest real part.*/
+    LargestImag = 4, /*!<Eigenvalues with the largest imaginary part.*/
+    SmallestImag = 5 /*!<Eigenvalues with the smallest imaginary part.*/
+  };
 
   /**Find out a few eigenvalues and eigenvectors of a complex nonsymmetric matrix.*/
   tensor::CTensor eigs(const tensor::CTensor &A, int eig_type, size_t neig,
