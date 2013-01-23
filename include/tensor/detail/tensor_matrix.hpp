@@ -55,6 +55,14 @@ Tensor<elt_t> Tensor<elt_t>::ones(index rows, index cols) {
   return output;
 }
 
+
+template<typename elt_t>
+Tensor<elt_t> Tensor<elt_t>::ones(const Indices &dimensions) {
+  Tensor<elt_t> output(dimensions);
+  output.fill_with(number_one<elt_t>());
+  return output;
+}
+
 } // namespace tensor
 
 #endif // !TENSOR_DETAIL_TENSOR_MATRIX_H

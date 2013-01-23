@@ -225,12 +225,14 @@ class Tensor {
   static Tensor<elt_t> zeros(index rows) { return zeros(rows, rows); }
   /**Matrix of zeros.*/
   static Tensor<elt_t> zeros(index rows, index cols);
-  /**Matrix of zeros.*/
+  /**Tensor of zeros.*/
   static Tensor<elt_t> zeros(const Indices &dimensions);
   /**Matrix of ones.*/
   static Tensor<elt_t> ones(index rows) { return ones(rows, rows); }
   /**Matrix of ones.*/
   static Tensor<elt_t> ones(index rows, index cols);
+  /**Tensor of ones.*/
+  static Tensor<elt_t> ones(const Indices &dimensions);
 
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
