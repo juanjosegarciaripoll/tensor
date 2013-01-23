@@ -27,8 +27,23 @@ ARPACK::ARPACK(size_t _n, enum EigType _t, size_t _nev)
 #ifdef COMPLEX
   static const char *whichs[6] = {"LM", "SM", "LR", "SR", "LI", "SI"};
 #else
-  static const char *whichs[4] = {"LM", "SM", "LA", "SA"};
+  static const char *whichs[6] = {"LM", "SM", "LA", "SA", NULL, NULL};
+  if (_t == LargestImaginary) {
+    std::cerr << "Cannot use LargestImaginary eigenvalue selector with real problems."
+              << std::endl;
+    abort();
+  }
+  if (_t == SmallestImaginary) {
+    std::cerr << "Cannot use SmallestImaginary eigenvalue selector with real problems."
+              << std::endl;
+    abort();
+  }
 #endif
+  if (_t < 0 || _t > 6) {
+    std::cerr << "Invalid argument EigType passed to Arpack constructor"
+              << std::endl;
+    abort();
+  }
 
   // Select the type of problem
   which_eig = _t;
@@ -214,10 +229,13 @@ Tensor<ELT_T> ARPACK::get_data(Tensor<ELT_T>::elt_t *z) {
               << messages[(info < -16 || info > 0) ? 0 : (-info)] << std::endl
               << "N=" << n << std::endl
               << "NEV=" << n << std::endl
-              << "IPARAM=" << iparam << std::endl
               << "WHICH=" << which << std::endl
               << "BMAT=" << bmat << std::endl
               << "LWORKL=" << workl << std::endl;
+    for (int i = 0; i < 12; i++)
+      std::cerr << "IPARAM[" << i << "]=" << iparam[i] << std::endl;
+    for (int i = 8; i < 11; i++)
+      std::cerr << "IPNTR[" << i << "]=" << ipntr[i] << std::endl;
     abort();
   }
   return output(range(0,nev-1));
@@ -300,10 +318,10 @@ ARPACK::sort_values(const CTensor &values, EigType t)
   case SmallestMagnitude:
     aux = abs(values);
     break;
-  case LargestImag:
+  case LargestImaginary:
     aux = -imag(values);
     break;
-  case SmallestImag:
+  case SmallestImaginary:
     aux = imag(values);
     break;
   case SmallestReal:

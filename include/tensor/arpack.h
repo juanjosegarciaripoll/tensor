@@ -33,8 +33,8 @@ namespace linalg {
     LargestAlgebraic = 2, /*!<Eigenvalues with largest real part.*/
     SmallestReal = 3, /*!<Eigenvalues with smallest real part.*/
     SmallestAlgebraic = 3, /*!<Eigenvalues with smallest real part.*/
-    LargestImag = 4, /*!<Eigenvalues with the largest imaginary part.*/
-    SmallestImag = 5 /*!<Eigenvalues with the smallest imaginary part.*/
+    LargestImaginary = 4, /*!<Eigenvalues with the largest imaginary part.*/
+    SmallestImaginary = 5 /*!<Eigenvalues with the smallest imaginary part.*/
   };
 
   /**Find out a few eigenvalues and eigenvectors of a complex nonsymmetric matrix.*/
