@@ -56,11 +56,11 @@ namespace linalg {
       CTensor values = eig(A, NULL, eigenvectors? &vectors : 0);
       Indices ndx = RArpack::sort_values(values, t);
       Indices ndx_out(neig);
-      std::copy(ndx_out.begin(), ndx_out.end(), ndx.begin());
+      std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
       if (eigenvectors) {
         *eigenvectors = real(vectors(range(), range(ndx_out)));
       }
-      return real(values(range(ndx)));
+      return real(values(range(ndx_out)));
     }
 
     RTensor output;
