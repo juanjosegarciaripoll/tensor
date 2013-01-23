@@ -17,23 +17,27 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <tensor/rand.h>
 #include <tensor/tensor.h>
+#include <tensor/sparse.h>
 
 namespace tensor_test {
 
+  using namespace tensor;
+
   Tensor<double> random_permutation(int n, int iterations)
   {
-    RSparse output = RTensor::eye(n);
+    RTensor output = RTensor::eye(n);
     if (n > 1) {
       if (iterations <= 0)
 	iterations = 2*n;
       Indices rows = iota(0, n-1);
-      Tensor<double> diagonal = ones(n);
+      Tensor<double> diagonal = RTensor::ones(n);
       while (iterations--) {
 	Indices columns = rows;
 	int i = rand<int>(0, n);
 	int j = (i + rand<int>(1, n)) % n;
-	output = mmult(RSparse(rows, columns, diag), output);
+	output = mmult(RSparse(igen << n << n, rows, columns, diagonal), output);
       }
     }
     return output;
