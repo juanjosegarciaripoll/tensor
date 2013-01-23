@@ -21,6 +21,7 @@
 #define TENSOR_TENSOR_BLAS_H
 
 #include <tensor/config.h>
+#include <tensor/tensor.h>
 
 #ifdef TENSOR_USE_MKL
 # include <mkl_cblas.h>
