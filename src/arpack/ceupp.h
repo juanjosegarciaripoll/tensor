@@ -182,8 +182,7 @@ inline void ceupp(bool rvec, char HowMny, tensor::cdouble d[],
 */
 
 {
-
-  logical  irvec;
+  integer irvec;
   logical* iselect;
   blas::cdouble* iZ;
 

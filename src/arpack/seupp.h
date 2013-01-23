@@ -153,9 +153,9 @@ inline void seupp(bool rvec, char HowMny, double d[], double Z[],
 
 {
 
-  int      irvec;
+  integer irvec;
   logical* iselect;
-  double*  iZ;
+  double* iZ;
 
   irvec   = (int) rvec;
   iselect = new logical[ncv];
