@@ -54,6 +54,9 @@ AC_F77_LIBRARY_LDFLAGS
 AC_F77_WRAPPERS
 AM_CONDITIONAL(TENSOR_ARPACK, [test $with_arpack = yes])
 
+# Initialization code for the fortran library
+TENSOR_F77_INIT_CODE
+
 # Size of computer words
 TENSOR_BITS
 

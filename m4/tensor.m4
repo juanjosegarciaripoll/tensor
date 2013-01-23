@@ -172,3 +172,24 @@ AC_DEFUN([TENSOR_CHOOSE_LIB],[
   AM_CONDITIONAL([BUILD_ESSL_LAPACK],
                  [test ${have_essl}${have_essl_lapack} = yesno])
 ])
+
+dnl ------------------------------------------------------------
+dnl f2c code needs to invoke certain functions at boot and exit
+dnl
+AC_DEFUN([TENSOR_F77_INIT_CODE],[
+  OLDLIBS="$LIBS"
+  LIBS="$FLIBS $LIBS"
+  AC_LINK_IFELSE(
+    [AC_LANG_SOURCE([[
+      extern void libf2c_init(int argc, char **argv);
+      extern void libf2c_close();
+      int main(int argc, char **argv) {
+        libf2c_init(argc, argv);
+	libf2c_close();
+	return 0;
+      }]])],
+    [AC_DEFINE(HAVE_LIBF2C_INIT, [1], [F77 init code])],
+    [])
+  LIBS="$OLDLIBS"
+])
+
