@@ -37,11 +37,11 @@
 
 #include "arpackf.h"
 
-inline void caupp(int& ido, char bmat, int n, const char* which, int nev,
-                  double& tol, tensor::cdouble resid[], int ncv,
-                  tensor::cdouble V[], int ldv, int iparam[], int ipntr[],
+inline void caupp(integer& ido, char bmat, integer n, const char* which, integer nev,
+                  double& tol, tensor::cdouble resid[], integer ncv,
+                  tensor::cdouble V[], integer ldv, integer iparam[], integer ipntr[],
                   tensor::cdouble workd[], tensor::cdouble workl[],
-                  int lworkl, double rwork[], int& info)
+                  integer lworkl, double rwork[], integer& info)
 
 /*
   c++ version of ARPACK routine znaupd that implements the
@@ -300,7 +300,6 @@ inline void caupp(int& ido, char bmat, int n, const char* which, int nev,
 */
 
 {
-
   F77_FUNC(znaupd,ZNAUPD)(&ido, &bmat, &n, which, &nev, &tol,
                           reinterpret_cast<blas::cdouble*>(resid), &ncv,
                           reinterpret_cast<blas::cdouble*>(V), &ldv,
@@ -308,14 +307,6 @@ inline void caupp(int& ido, char bmat, int n, const char* which, int nev,
                           reinterpret_cast<blas::cdouble*>(workd),
                           reinterpret_cast<blas::cdouble*>(workl),
                           &lworkl, rwork, &info);
-
 } // caupp (cdouble).
 
 #endif // CAUPP_H
-
-
-
-// Local variables:
-// mode: c++
-// fill-column: 80
-// c-basic-offset: 4

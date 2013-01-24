@@ -37,13 +37,13 @@
 
 #include "arpackf.h"
 
-inline void ceupp(bool rvec, char HowMny, tensor::cdouble d[],
-                  tensor::cdouble Z[], int ldz, tensor::cdouble sigma,
-                  tensor::cdouble workev[], char bmat, int n, const char* which,
-                  int nev, double tol, tensor::cdouble resid[], int ncv,
-                  tensor::cdouble V[], int ldv, int iparam[], int ipntr[],
+inline void ceupp(integer rvec, char HowMny, tensor::cdouble d[],
+                  tensor::cdouble Z[], integer ldz, tensor::cdouble sigma,
+                  tensor::cdouble workev[], char bmat, integer n, const char* which,
+                  integer nev, double tol, tensor::cdouble resid[], integer ncv,
+                  tensor::cdouble V[], integer ldv, integer iparam[], integer ipntr[],
                   tensor::cdouble workd[], tensor::cdouble workl[],
-                  int lworkl, double rwork[], int& info)
+                  integer lworkl, double rwork[], int& info)
 
 /*
   c++ version of ARPACK routine zneupd.
@@ -182,15 +182,10 @@ inline void ceupp(bool rvec, char HowMny, tensor::cdouble d[],
 */
 
 {
-  integer irvec;
-  logical* iselect;
-  blas::cdouble* iZ;
+  logical* iselect = new logical[ncv];
+  blas::cdouble* iZ = reinterpret_cast<blas::cdouble*>((Z == NULL) ? V : Z);
 
-  irvec   = rvec;
-  iselect = new logical[ncv];
-  iZ = reinterpret_cast<blas::cdouble*>((Z == NULL) ? V : Z);
-
-  F77_FUNC(zneupd,ZNEUPD)(&irvec, &HowMny, iselect,
+  F77_FUNC(zneupd,ZNEUPD)(&rvec, &HowMny, iselect,
                           reinterpret_cast<blas::cdouble*>(d), iZ, &ldz,
                           reinterpret_cast<blas::cdouble*>(&sigma),
                           reinterpret_cast<blas::cdouble*>(workev),
