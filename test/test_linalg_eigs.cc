@@ -26,6 +26,7 @@
 namespace tensor_test {
 
   using namespace tensor;
+  using namespace linalg;
 
   //////////////////////////////////////////////////////////////////////
   // EIGENVALUE DECOMPOSITIONS
@@ -35,42 +36,21 @@ namespace tensor_test {
   void test_eye_eigs(int n) {
     if (n == 0) {
 #ifndef NDEBUG
-      ASSERT_DEATH(linalg::eig_sym(Tensor<elt_t>::eye(n,n)), ".*");
+      ASSERT_DEATH(eigs(Tensor<elt_t>::eye(n,n), 1, LargestMagnitude), ".*");
 #endif
       return;
     }
     Tensor<elt_t> Inn = Tensor<elt_t>::eye(n,n);
     Tensor<elt_t> V1 = Tensor<elt_t>::ones(n);
-    for (int neig = 1; i < 4; i++) {
-      CTensor U, E = linalg::eigs(Inn, RArpack::Default, neig, &U);
-      EXPECT_EQ(1.0, norm(U));
+    for (int neig = 1; neig < std::min(n,4); neig++) {
+      Tensor<elt_t> U;
+      CTensor E = eigs(Inn, LargestMagnitude, neig, &U);
+      EXPECT_CEQ(sqrt((double)neig), norm2(U));
       EXPECT_EQ(2, U.rank());
       EXPECT_EQ(n, U.dimension(0));
-      EXPECT_EQ(i, U.dimension(1));
+      EXPECT_EQ(neig, U.dimension(1));
       EXPECT_EQ(neig, E.size());
-      EXPECT_EQ(CTensor::ones(neig), E);
-    }
-  }
-
-  template<typename elt_t>
-  void test_random_eig_sym(int n) {
-    if (n == 0) {
-#ifndef NDEBUG
-      ASSERT_DEATH(linalg::eig_sym(Tensor<elt_t>::eye(n,n)), ".*");
-#endif
-      return;
-    }
-    for (int times = 10; times; --times) {
-      Tensor<elt_t> R, A = Tensor<elt_t>::random(n,n);
-      A = mmult(A, adjoint(A)) / norm0(A);
-      RTensor s = linalg::eig_sym(A, &R);
-      Tensor<elt_t> L = adjoint(R);
-      RTensor dS = diag(s);
-      EXPECT_TRUE(norm0(abs(s) - s) < 1e-13);
-      EXPECT_TRUE(unitaryp(R, 1e-10));
-      EXPECT_TRUE(approx_eq(mmult(A, R), mmult(R, dS), 1e-12));
-      EXPECT_TRUE(approx_eq(mmult(L, A), mmult(dS, L), 1e-12));
-      EXPECT_TRUE(approx_eq(A, mmult(R, mmult(dS, L)), 1e-12));
+      EXPECT_CEQ(CTensor::ones(igen << neig), E);
     }
   }
 
@@ -79,7 +59,7 @@ namespace tensor_test {
   //
 
   TEST(RMatrixTest, EyeEigsTest) {
-    test_over_integers(0, 32, test_eye_eigs_sym<double>);
+    test_over_integers(0, 32, test_eye_eigs<double>);
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -87,7 +67,8 @@ namespace tensor_test {
   //
 
   TEST(CMatrixTest, EyeEigsTest) {
-    test_over_integers(0, 32, test_eye_eigs_sym<cdouble>);
+    std::cout << "----------\n";
+    test_over_integers(0, 32, test_eye_eigs<cdouble>);
   }
 
 } // namespace linalg_test
