@@ -44,14 +44,49 @@ namespace tensor_test {
     Tensor<elt_t> V1 = Tensor<elt_t>::ones(n);
     for (int neig = 1; neig < std::min(n,4); neig++) {
       Tensor<elt_t> U;
-      CTensor E = eigs(Inn, LargestMagnitude, neig, &U);
-      EXPECT_CEQ(sqrt((double)neig), norm2(U));
-      EXPECT_EQ(2, U.rank());
-      EXPECT_EQ(n, U.dimension(0));
-      EXPECT_EQ(neig, U.dimension(1));
-      EXPECT_EQ(neig, E.size());
-      EXPECT_CEQ(CTensor::ones(igen << neig), E);
+      for (int type = 0; type < LargestImaginary; type++) {
+        CTensor E = eigs(Inn, LargestMagnitude, neig, &U);
+        EXPECT_CEQ(sqrt((double)neig), norm2(U));
+        EXPECT_EQ(2, U.rank());
+        EXPECT_EQ(n, U.dimension(0));
+        EXPECT_EQ(neig, U.dimension(1));
+        EXPECT_EQ(neig, E.size());
+        EXPECT_CEQ(CTensor::ones(igen << neig), E);
+      }
     }
+  }
+
+  template<typename elt_t>
+  void test_eigs_permuted_diagonal(int n) {
+    RTensor p = random_permutation(n, n);
+    RTensor d = diag(linspace((double)1.0, n, n), 0);
+
+    Tensor<elt_t> e1 = RTensor::zeros(igen << n);
+    e1.at(0) = 1.0;
+    e1 = mmult(p, e1);
+
+    Tensor<elt_t> en = RTensor::zeros(igen << n);
+    en.at(n-1) = 1.0;
+    en = mmult(p, en);
+
+    Tensor<elt_t> A = mmult(adjoint(p), mmult(d, p));
+    Tensor<elt_t> U;
+
+    CTensor E = eigs(A, SmallestMagnitude, 1, &U);
+    EXPECT_EQ(2, U.rank());
+    EXPECT_EQ(n, U.dimension(0));
+    EXPECT_EQ(1, U.dimension(1));
+    EXPECT_EQ(1, E.size());
+    EXPECT_CEQ(number_one<cdouble>(), E(0));
+    EXPECT_CEQ(1.0, abs(fold(e1, 0, U, 0))(0));
+
+    E = eigs(A, LargestMagnitude, 1, &U);
+    EXPECT_EQ(2, U.rank());
+    EXPECT_EQ(n, U.dimension(0));
+    EXPECT_EQ(1, U.dimension(1));
+    EXPECT_EQ(1, E.size());
+    EXPECT_TRUE(simeq(to_complex((double)n), E(0), 15*EPSILON));
+    EXPECT_CEQ(1.0, abs(fold(en, 0, U, 0))(0));
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -62,13 +97,20 @@ namespace tensor_test {
     test_over_integers(0, 32, test_eye_eigs<double>);
   }
 
+  TEST(RMatrixTest, PermutedDiagonalEigsTest) {
+    test_over_integers(1, 32, test_eigs_permuted_diagonal<double>);
+  }
+
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
 
   TEST(CMatrixTest, EyeEigsTest) {
-    std::cout << "----------\n";
     test_over_integers(0, 32, test_eye_eigs<cdouble>);
+  }
+
+  TEST(CMatrixTest, PermutedDiagonalEigsTest) {
+    test_over_integers(1, 32, test_eigs_permuted_diagonal<cdouble>);
   }
 
 } // namespace linalg_test
