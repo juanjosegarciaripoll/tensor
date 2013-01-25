@@ -39,9 +39,11 @@ namespace mps {
 	     bool periodic) :
     parent(length)
   {
-    tensor::Indices d(length);
-    std::fill(d.begin(), d.end(), physical_dimension);
-    presize_mps(*this, d, bond_dimension, periodic);
+    if (physical_dimension) {
+      tensor::Indices d(length);
+      std::fill(d.begin(), d.end(), physical_dimension);
+      presize_mps(*this, d, bond_dimension, periodic);
+    }
   }
 
   RMPS::RMPS(const tensor::Indices &physical_dimensions, index bond_dimension,

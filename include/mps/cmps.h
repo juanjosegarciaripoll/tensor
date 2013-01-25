@@ -31,7 +31,7 @@ namespace mps {
   class CMPS : public MP<tensor::CTensor> {
   public:
     CMPS(const RMPS &real_mps);
-    CMPS(index size, index physical_dimension, index bond_dimension = 1,
+    CMPS(index size, index physical_dimension = 0, index bond_dimension = 1,
          bool periodic = false);
     CMPS(const tensor::Indices &physical_dimension, index bond_dimension = 1,
          bool periodic = false);
@@ -46,15 +46,6 @@ namespace mps {
     /**Create a random MPS. */
     static const CMPS random(const tensor::Indices &physical_dimensions,
                              index bond_dimension, bool periodic = false);
-
-    /**Create a product state. */
-    static const CMPS product_state(index length, const tensor::CTensor &local_state);
-
-    /**Create a GHZ state.*/
-    static const CMPS ghz_state(bool periodic = false);
-
-    /**Create a cluster state.*/
-    static const CMPS cluster_state();
 
   private:
     typedef MP<elt_t> parent;

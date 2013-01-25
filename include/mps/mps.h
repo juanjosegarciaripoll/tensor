@@ -26,6 +26,8 @@
 
 namespace mps {
 
+  using namespace tensor;
+
 /*!\defgroup TheMPS Matrix product states
 
    A Matrix Product State (MPS) represents a 1D quantum state made of N sites,
@@ -58,6 +60,19 @@ namespace mps {
    a scalar product with scprod(), expected values with correlation(), or
    obtain a vector that represents the same state with to_basis().
 */
+
+  /**Create a product state. */
+  const RMPS product_state(index length, const tensor::RTensor &local_state);
+
+  /**Create a product state. */
+  const CMPS product_state(index length, const tensor::CTensor &local_state);
+
+  /**Create a GHZ state.*/
+  const RMPS ghz_state(bool periodic = false);
+
+  /**Create a cluster state.*/
+  const RMPS cluster_state();
+
 }
 
 #endif /* !TENSOR_MPS_H */

@@ -18,40 +18,20 @@
 */
 
 #include <algorithm>
-#include <mps/cmps.h>
-#include "mps_presize.h"
+#include <mps/mps.h>
 
 namespace mps {
 
-  template class MP<tensor::CTensor>;
-
-  bool CMPS::is_periodic() const {
-    index l = size();
-    if (l) {
-      index d0 = (*this)[0].dimension(0);
-      index dl = (*this)[l-1].dimension(-1);
-      if (d0 == dl && d0 > 1)
-	return true;
-    }
-    return false;
-  }
-
-  CMPS::CMPS(index length, index physical_dimension, index bond_dimension,
-	     bool periodic) :
-    parent(length)
+  const CMPS product_state(index length, const tensor::CTensor &local_state)
   {
-    if (physical_dimension) {
-      tensor::Indices d(length);
-      std::fill(d.begin(), d.end(), physical_dimension);
-      presize_mps(*this, d, bond_dimension, periodic);
-    }
-  }
+    assert(local_state.rank() == 1);
+    assert(local_state.size());
+    assert(length > 0);
 
-  CMPS::CMPS(const tensor::Indices &physical_dimensions, index bond_dimension,
-	     bool periodic) :
-    parent(physical_dimensions.size())
-  {
-    presize_mps(*this, physical_dimensions, bond_dimension, periodic);
+    index d = local_state.size();
+    CMPS output(length);
+    std::fill(output.begin(), output.end(), reshape(local_state, 1, d, 1));
+    return output;
   }
 
 } // namespace mps

@@ -30,7 +30,7 @@ namespace mps {
   /**Real matrix product structure.*/
   class RMPS : public MP<tensor::RTensor> {
   public:
-    RMPS(index size, index physical_dimension, index bond_dimension = 1,
+    RMPS(index size, index physical_dimension = 0, index bond_dimension = 1,
          bool periodic = false);
     RMPS(const tensor::Indices &physical_dimension, index bond_dimension = 1,
          bool periodic = false);
@@ -45,15 +45,6 @@ namespace mps {
     /**Create a random MPS. */
     static const RMPS random(const tensor::Indices &physical_dimensions,
                              index bond_dimension, bool periodic = false);
-
-    /**Create a product state. */
-    static const RMPS product_state(index length, const tensor::RTensor &local_state);
-
-    /**Create a GHZ state.*/
-    static const RMPS ghz_state(bool periodic = false);
-
-    /**Create a cluster state.*/
-    static const RMPS cluster_state();
 
   private:
     typedef MP<elt_t> parent;

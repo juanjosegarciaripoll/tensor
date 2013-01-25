@@ -116,28 +116,47 @@ namespace tensor_test {
     }
   }
 
+  template<class MPS>
+  void test_mps_product_state(int size) {
+    typename MPS::elt_t psi = MPS::elt_t::random(3);
+    MPS state = product_state(size, psi);
+    EXPECT_EQ(state.size(), size);
+    psi = reshape(psi, 1, psi.size(), 1);
+    for (int i = 0; i < size; i++) {
+      EXPECT_EQ(state[i], psi);
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////
   // REAL SPECIALIZATIONS
   //
 
-  TEST(RMPS, RMPSConstructor) {
+  TEST(RMPS, Constructor) {
     test_mps_constructor<RMPS>();
   }
 
-  TEST(RMPS, RMPSRandom) {
+  TEST(RMPS, Random) {
     test_mps_random<RMPS>();
+  }
+
+  TEST(RMPS, ProductState) {
+    test_over_integers(1,10,test_mps_product_state<CMPS>);
   }
 
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
 
-  TEST(CMPS, CMPSConstructor) {
+  TEST(CMPS, Constructor) {
     test_mps_constructor<CMPS>();
   }
 
-  TEST(CMPS, CMPSRandom) {
+  TEST(CMPS, Random) {
     test_mps_random<CMPS>();
+  }
+
+  TEST(CMPS, ProductState) {
+    test_over_integers(1,10,test_mps_product_state<CMPS>);
   }
 
 } // namespace linalg_test
