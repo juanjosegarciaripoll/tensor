@@ -20,9 +20,9 @@
 #ifndef MPS_MPS_H
 #define MPS_MPS_H
 
-#include <tools.h>
-#include <rmps.h>
-#include <cmps.h>
+#include <mps/tools.h>
+#include <mps/rmps.h>
+#include <mps/cmps.h>
 
 namespace mps {
 
