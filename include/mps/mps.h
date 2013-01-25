@@ -68,10 +68,16 @@ namespace mps {
   const CMPS product_state(index length, const tensor::CTensor &local_state);
 
   /**Create a GHZ state.*/
-  const RMPS ghz_state(bool periodic = false);
+  const RMPS ghz_state(index length, bool periodic = false);
 
   /**Create a cluster state.*/
-  const RMPS cluster_state();
+  const RMPS cluster_state(index length);
+
+  /**Convert a RMPS to a complex vector, contracting all tensors.*/
+  const RTensor mps_to_vector(const RMPS &mps);
+
+  /**Convert a CMPS to a complex vector, contracting all tensors.*/
+  const CTensor mps_to_vector(const CMPS &mps);
 
 }
 
