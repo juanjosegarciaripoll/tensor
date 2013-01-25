@@ -21,7 +21,7 @@
 #include <gtest/gtest.h>
 #include <gtest/gtest-death-test.h>
 #include <tensor/tensor.h>
-#include <tensor/arpack.h>
+#include <tensor/linalg.h>
 
 namespace tensor_test {
 
@@ -32,20 +32,21 @@ namespace tensor_test {
   // EIGENVALUE DECOMPOSITIONS
   //
 
-  template<typename elt_t>
-  void test_eye_eigs(int n) {
+  template<class Matrix>
+  void test_eigs_eye(int n) {
     if (n == 0) {
 #ifndef NDEBUG
-      ASSERT_DEATH(eigs(Tensor<elt_t>::eye(n,n), 1, LargestMagnitude), ".*");
+      ASSERT_DEATH(eigs(Matrix::eye(n,n), 1, LargestMagnitude), ".*");
 #endif
       return;
     }
-    Tensor<elt_t> Inn = Tensor<elt_t>::eye(n,n);
+    typedef typename Matrix::elt_t elt_t;
+    Matrix A = Matrix::eye(n,n);
     Tensor<elt_t> V1 = Tensor<elt_t>::ones(n);
     for (int neig = 1; neig < std::min(n,4); neig++) {
       Tensor<elt_t> U;
       for (int type = 0; type < LargestImaginary; type++) {
-        CTensor E = eigs(Inn, LargestMagnitude, neig, &U);
+        CTensor E = eigs(A, LargestMagnitude, neig, &U);
         EXPECT_CEQ(sqrt((double)neig), norm2(U));
         EXPECT_EQ(2, U.rank());
         EXPECT_EQ(n, U.dimension(0));
@@ -56,8 +57,9 @@ namespace tensor_test {
     }
   }
 
-  template<typename elt_t>
+  template<class Matrix>
   void test_eigs_permuted_diagonal(int n) {
+    typedef typename Matrix::elt_t elt_t;
     RTensor p = random_permutation(n, n);
     RTensor d = diag(linspace((double)1.0, n, n), 0);
 
@@ -69,7 +71,8 @@ namespace tensor_test {
     en.at(n-1) = 1.0;
     en = mmult(p, en);
 
-    Tensor<elt_t> A = mmult(adjoint(p), mmult(d, p));
+    typedef typename Matrix::elt_t elt_t;
+    Matrix A = mmult(adjoint(p), mmult(d, p));
     Tensor<elt_t> U;
 
     CTensor E = eigs(A, SmallestMagnitude, 1, &U);
@@ -85,7 +88,7 @@ namespace tensor_test {
     EXPECT_EQ(n, U.dimension(0));
     EXPECT_EQ(1, U.dimension(1));
     EXPECT_EQ(1, E.size());
-    EXPECT_TRUE(simeq(to_complex((double)n), E(0), 15*EPSILON));
+    EXPECT_TRUE(simeq(to_complex((double)n), E(0), 20*EPSILON));
     EXPECT_CEQ(1.0, abs(fold(en, 0, U, 0))(0));
   }
 
@@ -93,24 +96,40 @@ namespace tensor_test {
   // REAL SPECIALIZATIONS
   //
 
-  TEST(RMatrixTest, EyeEigsTest) {
-    test_over_integers(0, 32, test_eye_eigs<double>);
+  TEST(RArpackTest, EigsEye) {
+    test_over_integers(0, 32, test_eigs_eye<RTensor>);
   }
 
-  TEST(RMatrixTest, PermutedDiagonalEigsTest) {
-    test_over_integers(1, 32, test_eigs_permuted_diagonal<double>);
+  TEST(RArpackTest, EigsPermutedDiagonal) {
+    test_over_integers(1, 32, test_eigs_permuted_diagonal<RTensor>);
+  }
+
+  TEST(RArpackTest, EigsRSparseEye) {
+    test_over_integers(0, 32, test_eigs_eye<RTensor>);
+  }
+
+  TEST(RArpackTest, EigsRSparsePermutedDiagonal) {
+    test_over_integers(1, 32, test_eigs_permuted_diagonal<RTensor>);
   }
 
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
 
-  TEST(CMatrixTest, EyeEigsTest) {
-    test_over_integers(0, 32, test_eye_eigs<cdouble>);
+  TEST(CArpackTest, EigsEye) {
+    test_over_integers(0, 32, test_eigs_eye<CTensor>);
   }
 
-  TEST(CMatrixTest, PermutedDiagonalEigsTest) {
-    test_over_integers(1, 32, test_eigs_permuted_diagonal<cdouble>);
+  TEST(CArpackTest, EigsPermutedDiagonal) {
+    test_over_integers(1, 32, test_eigs_permuted_diagonal<CTensor>);
+  }
+
+  TEST(CArpackTest, EigsCSparseEye) {
+    test_over_integers(0, 32, test_eigs_eye<CTensor>);
+  }
+
+  TEST(CArpackTest, EigsCSparsePermutedDiagonal) {
+    test_over_integers(1, 32, test_eigs_permuted_diagonal<CTensor>);
   }
 
 } // namespace linalg_test

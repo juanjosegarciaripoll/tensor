@@ -17,10 +17,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-//----------------------------------------------------------------------
-// ARPACK DRIVER FOR NONSYMMETRIC EIGENVALUE PROBLEMS
-//
-
 #include <tensor/linalg.h>
 #include <tensor/arpack_d.h>
 #include "gemv.cc"

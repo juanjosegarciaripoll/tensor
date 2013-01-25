@@ -21,7 +21,7 @@
 #define TENSOR_ARPACK_D_H
 
 #include <tensor/tensor_blas.h>
-#include <tensor/arpack.h>
+#include <tensor/linalg.h>
 
 namespace linalg {
 
