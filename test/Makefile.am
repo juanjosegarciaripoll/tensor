@@ -169,6 +169,11 @@ check_PROGRAMS += test_quantum_fock
 test_quantum_fock_SOURCES = test_quantum_fock.cc
 test_quantum_fock_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_mps_mps
+check_PROGRAMS += test_mps_mps
+test_mps_mps_SOURCES = test_mps_mps.cc
+test_mps_mps_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_itebd_base
 check_PROGRAMS += test_itebd_base
 test_itebd_base_SOURCES = test_itebd_base.cc
