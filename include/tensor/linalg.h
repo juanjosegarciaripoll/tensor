@@ -76,42 +76,42 @@ namespace linalg {
   /**Find out a few eigenvalues and eigenvectors of a complex nonsymmetric matrix.*/
   CTensor eigs(const CTensor &A, int eig_type, size_t neig,
                CTensor *vectors = NULL,
-               const Celt_t *initial_guess = NULL);
+               const tensor::cdouble *initial_guess = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a nonsymmetric complex sparse matrix.*/
   CTensor eigs(const CSparse &A, int eig_type, size_t neig,
                CTensor *vectors = NULL,
-               const Celt_t *initial_guess = NULL);
+               const tensor::cdouble *initial_guess = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a real nonsymmetric matrix.*/
   RTensor eigs(const RTensor &A, int eig_type, size_t neig,
                RTensor *vectors = NULL,
-               const Relt_t *initial_guess = NULL);
+               const double *initial_guess = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse matrix.*/
   RTensor eigs(const RSparse &A, int eig_type, size_t neig,
                RTensor *vectors = NULL,
-               const Relt_t *initial_guess = NULL);
+               const double *initial_guess = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a symmetric real matrix.*/
   RTensor eigs_sym(const RTensor &A, int eig_type, size_t neig,
                    RTensor *vectors = NULL,
-                   const Relt_t *initial_guess = NULL);
+                   const double *initial_guess = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a symmetric real matrix.*/
   RTensor eigs_sym(const CTensor &A, int eig_type, size_t neig,
                    CTensor *vectors = NULL,
-                   const Celt_t *initial_guess = NULL);
+                   const tensor::cdouble *initial_guess = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a symmetric real sparse matrix.*/
   RTensor eigs_sym(const RSparse &A, int eig_type, size_t neig,
                    RTensor *vectors = NULL,
-                   const Relt_t *initial_guess = NULL);
+                   const double *initial_guess = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a hermitian complex sparse matrix.*/
   RTensor eigs_sym(const CSparse &A, int eig_type, size_t neig,
                    CTensor *vectors = NULL,
-                   const Celt_t *initial_guess = NULL);
+                   const tensor::cdouble *initial_guess = NULL);
 
 } // namespace linalg
 
