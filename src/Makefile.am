@@ -126,7 +126,12 @@ libmps_la_SOURCES = \
 	mps/iTEBD/itebd_d.cc \
 	mps/iTEBD/itebd_z.cc \
 	mps/iTEBD/itebd_itime_d.cc \
-	mps/iTEBD/itebd_itime_z.cc
+	mps/iTEBD/itebd_itime_z.cc \
+	mps/mps/rmps.cc \
+	mps/mps/rmps_random.cc \
+	mps/mps/cmps.cc \
+	mps/mps/cmps_random.cc \
+	mps/mps/cmps_from_rmps.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\

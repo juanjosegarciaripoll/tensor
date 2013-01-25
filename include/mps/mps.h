@@ -1,0 +1,63 @@
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+/*
+    Copyright (c) 2010 Juan Jose Garcia Ripoll
+
+    Tensor is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Library General Public License as published
+    by the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Library General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
+#ifndef MPS_MPS_H
+#define MPS_MPS_H
+
+#include <tools.h>
+#include <rmps.h>
+#include <cmps.h>
+
+namespace mps {
+
+/*!\defgroup TheMPS Matrix product states
+
+   A Matrix Product State (MPS) represents a 1D quantum state made of N sites,
+   particles or spins. Each site has a tensor associated to it, so that the
+   whole state may be written as a contraction of these tensors
+   \f[
+   |\psi\rangle = \sum_{i,\alpha,\beta} A^{i_1}_{\alpha_1\alpha_2}
+   A^{i_2}_{\alpha_2\alpha_3}\cdot A^{i_N}_{\alpha_N,\alpha_1}
+   |i_1,i_2,\ldots,i_N\rangle
+   \f]
+   Each of the tensors in this product may be different and have different sizes.
+   The indices \f$i_k\f$ denote the physical state of the k-th site. The indices
+   \f$\alpha_k\f$ have no direct physical interpretation. However, the larger the
+   these indices can be, the more accurately we can approximate arbitrary states
+   using the previous representation. Finally, in problems with open boundary
+   conditions, the index \f$\alpha_1\f$ need only have size 1.
+
+   From the point of view of the programmer, a MPS is just a collection of
+   tensors. The user is allowed to put and retrieve the tensor associated to
+   the k-th site using get(k) or set(k,A), where A is the new tensor. Each tensor
+   typically has three indices and is organized as A(a,i,b), where \c a and \c b
+   are the \f$\alpha\f$ and \f$\beta\f$ from the previous formula, and \c i
+   is the phyisical degree of freedom.
+
+   Other operations, such as orthogonalize() or orthonormalize() are related
+   to the \ref Algorithms algorithms for evolution and computation of ground
+   states.
+
+   Finally, since the MPS are actually vectors, one can compute the norm(),
+   a scalar product with scprod(), expected values with correlation(), or
+   obtain a vector that represents the same state with to_basis().
+*/
+}
+
+#endif /* !TENSOR_MPS_H */
