@@ -45,6 +45,8 @@ libtensor_la_SOURCES = \
 	tensor/matrix_diag_z.cc \
 	tensor/matrix_trace_d.cc \
 	tensor/matrix_trace_z.cc \
+	tensor/tensor_trace_d.cc \
+	tensor/tensor_trace_z.cc \
 	tensor/matrix_transpose_d.cc \
 	tensor/matrix_transpose_z.cc \
 	tensor/tensor_permute_d.cc \
@@ -132,8 +134,7 @@ libmps_la_SOURCES = \
 	mps/mps/cmps.cc \
 	mps/mps/rmps_product_state.cc \
 	mps/mps/cmps_random.cc \
-	mps/mps/cmps_from_rmps.cc \
-	mps/mps/cmps_product_state.cc
+	mps/mps/cmps_from_rmps.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\

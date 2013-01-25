@@ -395,6 +395,7 @@ namespace tensor {
   const RTensor diag(const RTensor &d, int which = 0);
   const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
   double trace(const RTensor &d);
+  const RTensor trace(const RTensor &A, index i1, index i2);
 
   const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
   const RTensor transpose(const RTensor &a);
@@ -451,6 +452,7 @@ namespace tensor {
   const CTensor diag(const CTensor &d, int which = 0);
   const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
   cdouble trace(const CTensor &d);
+  const CTensor trace(const CTensor &A, index i1, index i2);
 
   const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
   const CTensor transpose(const CTensor &a);

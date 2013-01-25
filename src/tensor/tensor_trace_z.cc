@@ -17,21 +17,13 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/tensor.h>
+#include "tensor_trace.cc"
 
 namespace tensor {
 
-  template<typename n>
-  static const n do_trace(const Tensor<n> &t)
+  const CTensor trace(const CTensor &a, index i1, index i2)
   {
-    n output = number_zero<n>();
-    const index r = t.rows();
-    const index c = t.columns();
-    typename Tensor<n>::const_iterator it = t.begin();
-    for (index j = std::min(r,c); j--; it += (r+1)) {
-      output += *it;
-    }
-    return output;
+    return do_trace(a, i1, i2);
   }
 
 } // namespace tensor
