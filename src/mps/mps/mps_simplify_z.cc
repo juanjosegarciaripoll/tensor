@@ -17,27 +17,15 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <mps/mps_algorithms.h>
-#include "mps_prop_matrix.cc"
+#include <mps/mps.h>
+#include "mps_simplify.cc"
 
 namespace mps {
 
-  const CTensor prop_matrix_close(const CTensor &N)
+  double simplify(CMPS *P, const CMPS &Q, int *sense, bool periodicbc,
+		  index sweeps, bool normalize)
   {
-    return do_prop_close(N);
+    return do_simplify(P, Q, sense, periodicbc, sweeps, normalize);
   }
 
-  const CTensor prop_matrix(const CTensor &M0, int sense, const CTensor &Q,
-			    const CTensor &P, const CTensor *op)
-  {
-    if (M0.is_empty()) {
-      return do_prop_init(Q, P, op);
-    } else if (sense > 0) {
-      return do_prop_right(M0, Q, P, op);
-    } else {
-      return do_prop_left(M0, Q, P, op);
-    }
-  }
-
-} //namespace mps
-  
+} // namespace mps

@@ -71,5 +71,54 @@ namespace mps {
     return foldc(reshape(Q, a0,i0*a1), -1, reshape(M, b0,i0*a1,a2,b2), 1);
   }
 
+  template<class Tensor>
+  static const Tensor prop_matrix_sub_qform(const Tensor &L, const Tensor &R)
+  {
+    index a1,a2,a3,b1,b2,b3;
+    Tensor Q;
+    //
+    // We have some quadratic function expressed as
+    //	E = L([a3,b3],a1,b1) P'(a1,i,a2) Op(i,j) P(b1,j,b2) R(a2,b2,[a3,b3])
+    //	E = P'(i,a1,a2) Q([i,a1,a2],[j,b1,b2]) P(j,b1,b2)
+    // where
+    //	Q([a1,i,a2],[b1,j,b2]) = Op(i,j) (R*L)
+    //
+    // Notice that in L(a1,[a3,b3],b1), 'a1' is the index associated with the
+    // complex conjugate of P, while in R(b2,[a3,b3],a2) it is 'a2', the last
+    // one. IT IS CRITICAL THAT WE GET THE ORDER OF THE a's AND b's IN Q RIGHT.
+    // Use effective_Hamiltonian_test(), by setting opts.debug=1 in
+    // ground_state() to detect bugs in these functions.
+    //
+    if (L.is_empty()) {
+	// P is the matrix corresponding to the first site, and thus there is no
+	// "L" matrix or rather L(a1,b1,a3,b3) = delta(a1,a3)\delta(b1,b3).
+	if (R.is_empty()) {
+	    // This state has a single site.
+	    a2 = b2 = a1 = b1 = 1;
+	    Q = Tensor::eye(1);
+	} else {
+	    R.get_dimensions(&a2, &b2, &a1, &b1);
+	    // R(a2,b2,a1,b1) -> R(b1,b2,a1,a2) -> R(a1,a2,b1,b2) =: Q
+	    Q = transpose(reshape(permute(R, 0,3), b1*b2,a1*a2));
+	}
+    } else if (R.is_empty()) {
+	// Similar as before, but P is the matrix is the one of the last site
+	// and R(a2,b2,a3,b3) = delta(a2,a3)delta(b2,b3)
+	L.get_dimensions(&a2, &b2, &a1, &b1);
+	// L(a2,b2,a1,b1) -> L(b1,b2,a1,a2) -> L(a1*a2,b1*b2) =: Q
+	Q = transpose(reshape(permute(L, 0,3), b1*b2,a1*a2));
+    } else {
+	L.get_dimensions(&a3, &b3, &a1, &b1);
+	R.get_dimensions(&a2, &b2, &a3, &b3);
+	// L(a3,b3,a1,b1)R(a2,b2,a3,b3) -> Q(a1,b1,a2,b2)
+	Q = fold(reshape(L, a3*b3,a1,b1),0, reshape(R, a2,b2,a3*b3),2);
+	// Q(a1,b1,a2,b2) -> Q(a1,a2,b1,b2)
+	Q = reshape(permute(Q, 1,2), a1*a2,b1*b2);
+    }
+    return Q;
+}
+
+
+
 } //namespace mps
   

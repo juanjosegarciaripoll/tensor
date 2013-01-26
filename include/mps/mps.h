@@ -79,6 +79,18 @@ namespace mps {
   /**Convert a CMPS to a complex vector, contracting all tensors.*/
   const CTensor mps_to_vector(const CMPS &mps);
 
+  /**Norm of a RMPS.*/
+  double norm2(const RMPS &psi);
+
+  /**Norm of a CMPS.*/
+  double norm2(const CMPS &psi);
+
+  /**Scalar product between MPS.*/
+  double scprod(const RMPS &psi1, const RMPS &psi2);
+
+  /**Scalar product between MPS.*/
+  cdouble scprod(const CMPS &psi1, const CMPS &psi2);
+
   /**Compute a single-site expected value.*/
   double expected(const RMPS &a, const RTensor &Op1, index k);
 

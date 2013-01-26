@@ -24,21 +24,21 @@
 
 namespace mps {
 
-  const RTensor prop_init(const RTensor &Q, const RTensor &P,
-			  const RTensor *op = NULL);
-
-  const RTensor prop_close(const RTensor &N);
+  const RTensor prop_matrix_close(const RTensor &N);
 
   const RTensor prop_matrix(const RTensor &M0, int sense, const RTensor &Q,
 			    const RTensor &P, const RTensor *op = NULL);
 
-  const CTensor prop_init(const CTensor &Q, const CTensor &P,
-			  const CTensor *op = NULL);
-
-  const CTensor prop_close(const CTensor &N);
+  const CTensor prop_matrix_close(const CTensor &N);
 
   const CTensor prop_matrix(const CTensor &M0, int sense, const CTensor &Q,
 			    const CTensor &P, const CTensor *op = NULL);
+
+  double simplify(RMPS *P, const RMPS &Q, int *sense, bool periodicbc,
+		  index sweeps, bool normalize);
+
+  double simplify(CMPS *P, const CMPS &Q, int *sense, bool periodicbc,
+		  index sweeps, bool normalize);
 
 } // namespace mps
 

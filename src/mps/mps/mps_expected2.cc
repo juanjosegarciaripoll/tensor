@@ -48,7 +48,7 @@ namespace mps {
 	}
 	M = prop_matrix(M, +1, Pk, Pk, op);
       }
-      prop_close(M);
+      prop_matrix_close(M);
       return M[0];
     }
   }

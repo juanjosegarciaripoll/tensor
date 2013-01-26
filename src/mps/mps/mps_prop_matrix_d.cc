@@ -22,12 +22,7 @@
 
 namespace mps {
 
-  const RTensor prop_init(const RTensor &Q, const RTensor &P, const RTensor *op)
-  {
-    return do_prop_init(Q, P, op);
-  }
-
-  const RTensor prop_close(const RTensor &N)
+  const RTensor prop_matrix_close(const RTensor &N)
   {
     return do_prop_close(N);
   }
