@@ -47,7 +47,7 @@ namespace mps {
   /* STATE NORM */
 
   template <class MPS>
-  double state_norm(const MPS &a)
+  static const double state_norm(const MPS &a)
   {
     typename MPS::elt_t M;
     for (index k = 0; k < a.size(); k++) {
@@ -59,7 +59,7 @@ namespace mps {
   /* STATE NORM */
 
   template <class MPS>
-  typename MPS::elt_t::elt_t scalar_product(const MPS &a, const MPS &b)
+  static const typename MPS::elt_t::elt_t scalar_product(const MPS &a, const MPS &b)
   {
     typename MPS::elt_t M;
     assert(a.size() == b.size());
