@@ -142,6 +142,10 @@ libmps_la_SOURCES = \
 	mps/mps/cmps_to_vector.cc \
 	mps/mps/mps_prop_matrix_d.cc \
 	mps/mps/mps_prop_matrix_z.cc \
+	mps/mps/mps_norm_d.cc \
+	mps/mps/mps_norm_z.cc \
+	mps/mps/mps_scprod_d.cc \
+	mps/mps/mps_scprod_z.cc \
 	mps/mps/mps_expected1_d.cc \
 	mps/mps/mps_expected1_dz.cc \
 	mps/mps/mps_expected1_z.cc \

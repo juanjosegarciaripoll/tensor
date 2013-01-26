@@ -18,38 +18,13 @@
 */
 
 #include <mps/mps.h>
-#include <mps/mps_algorithms.h>
+#include "mps_expected1.cc"
 
 namespace mps {
 
-  using namespace tensor;
-
-  /* TWO-SITE CORRELATION FUNCTION */
-
-  template <class MPS, class Tensor>
-  typename Tensor::elt_t two_sites_expected(const MPS &a, const Tensor &Op1, size_t k1,
-					   const Tensor &Op2, size_t k2)
+  cdouble scprod(const CMPS &psi1, const CMPS &psi2)
   {
-    if (k1 == k2) {
-      return expected(a, mmult(Op1, Op2), k1);
-    } else {
-      Tensor M;
-      const Tensor *op;
-      k1 = a.normal_index(k1);
-      k2 = a.normal_index(k2);
-      for (index k = 0; k < a.size(); k++) {
-	Tensor Pk = a[k];
-	if (k == k1) {
-	  op = &Op1;
-	} else if (k == k2) {
-	  op = &Op2;
-	} else {
-	  op = NULL;
-	}
-	M = prop_matrix(M, +1, Pk, Pk, op);
-      }
-      return prop_matrix_close(M)[0];
-    }
+    return scalar_product(psi1, psi2);
   }
 
 } // namespace mps

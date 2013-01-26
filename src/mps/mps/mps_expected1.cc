@@ -41,8 +41,32 @@ namespace mps {
       }
       M = prop_matrix(M, +1, Pk, Pk, op);
     }
-    prop_matrix_close(M);
-    return M[0];
+    return prop_matrix_close(M)[0];
+  }
+
+  /* STATE NORM */
+
+  template <class MPS>
+  double state_norm(const MPS &a)
+  {
+    typename MPS::elt_t M;
+    for (index k = 0; k < a.size(); k++) {
+      M = prop_matrix(M, +1, a[k], a[k], NULL);
+    }
+    return sqrt(real(prop_matrix_close(M)[0]));
+  }
+
+  /* STATE NORM */
+
+  template <class MPS>
+  typename MPS::elt_t::elt_t scalar_product(const MPS &a, const MPS &b)
+  {
+    typename MPS::elt_t M;
+    assert(a.size() == b.size());
+    for (index k = 0; k < a.size(); k++) {
+      M = prop_matrix(M, +1, a[k], b[k], NULL);
+    }
+    return real(prop_matrix_close(M)[0]);
   }
 
 } // namespace mps
