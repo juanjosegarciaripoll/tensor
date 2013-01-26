@@ -26,6 +26,7 @@ namespace tensor_test {
 
   using namespace tensor;
   using namespace mps;
+  using tensor::index;
 
   //////////////////////////////////////////////////////////////////////
   // CONSTRUCTING SMALL MPS
@@ -127,6 +128,19 @@ namespace tensor_test {
     }
   }
 
+  void test_ghz_state(int size) {
+    RMPS ghz = ghz_state(size);
+    RTensor psi = mps_to_vector(ghz);
+    double v = 1/sqrt((double)2.0);
+    EXPECT_EQ(ghz.size(), size);
+    EXPECT_EQ(psi.size(), 2 << (size-1));
+    for (index i = 0; i < psi.size(); i++) {
+      double psi_i = ((i == 0) || (i == psi.size()-1)) ? v : 0.0;
+      EXPECT_DOUBLE_EQ(psi[i], psi_i);
+    }
+    EXPECT_DOUBLE_EQ(norm2(psi), 1.0);
+  }
+
   //////////////////////////////////////////////////////////////////////
   // REAL SPECIALIZATIONS
   //
@@ -140,7 +154,11 @@ namespace tensor_test {
   }
 
   TEST(RMPS, ProductState) {
-    test_over_integers(1,10,test_mps_product_state<CMPS>);
+    test_over_integers(1,4,test_mps_product_state<CMPS>);
+  }
+
+  TEST(RMPS, GHZState) {
+    test_over_integers(1,10,test_ghz_state);
   }
 
   //////////////////////////////////////////////////////////////////////
