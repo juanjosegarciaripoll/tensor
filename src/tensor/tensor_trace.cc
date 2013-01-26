@@ -59,7 +59,7 @@ namespace tensor {
       i1 = i1 + D.rank();
     if (i2 < 0)
       i2 = i2 + D.rank();
-    if (i2 > i1) {
+    if (i1 > i2) {
       std::swap(i1,i2);
     } else if (i2 == i1) {
       std::cerr << "In trace(D, i, j), indices 'i' and 'j' are the same." << std::endl;
@@ -68,14 +68,15 @@ namespace tensor {
 
     index a1, a2, a3, a4, a5, i, rank;
     Indices dimensions(std::max(D.rank() - 2, 1));
-    for (a1 = 1, i = rank = 0; i < i1; ) {
+    dimensions.at(rank=0) = 1;
+    for (a1 = 1, i = 0; i < i1; ) {
       a1 *= (dimensions.at(rank++) = D.dimension(i++));
     }
     a2 = D.dimension(i++);
     for (a3 = 1; i < i2; )
       a3 *= (dimensions.at(rank++) = D.dimension(i++));
     a4 = D.dimension(i++);
-    for (a5 = 1; i < i2; )
+    for (a5 = 1; i < D.rank(); )
       a5 *= (dimensions.at(rank++) = D.dimension(i++));
 
     Tensor<elt_t> output = RTensor::zeros(dimensions);
