@@ -39,15 +39,19 @@ namespace tensor_test {
       MPS psi = product_state(2, e0);
       psi.at(1) = reshape(e1, 1,2,1);
 
+      // The state is normalized
       EXPECT_CEQ(norm2(psi), 1.0);
       EXPECT_CEQ(scprod(psi, psi), 1.0);
 
+      // A change of sign does not affect the norm but it does
+      // change the scalar product
       MPS psi2 = psi;
       psi2.at(1) = -psi[1];
       EXPECT_CEQ(norm2(psi2), 1.0);
       EXPECT_CEQ(scprod(psi2, psi2), 1.0);
       EXPECT_CEQ(scprod(psi, psi2), -1.0);
 
+      // Changing one state makes the states orthogonal
       psi2.at(0) = reshape(e1, 1,2,1);
       EXPECT_CEQ(scprod(psi, psi2), 0.0);
     }
