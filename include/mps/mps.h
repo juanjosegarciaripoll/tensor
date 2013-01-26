@@ -79,6 +79,24 @@ namespace mps {
   /**Convert a CMPS to a complex vector, contracting all tensors.*/
   const CTensor mps_to_vector(const CMPS &mps);
 
+  /**Compute a single-site expected value.*/
+  double expected(const RMPS &a, const RTensor &Op1, size_t k);
+
+  /**Add the expectation values a single-site operator over the lattice.*/
+  double expected(const RMPS &a, const RTensor &Op1);
+
+  /**Compute a single-site expected value.*/
+  cdouble expected(const RMPS &a, const CTensor &Op1, size_t k);
+
+  /**Add the expectation values a single-site operator over the lattice.*/
+  cdouble expected(const RMPS &a, const CTensor &Op1);
+
+  /**Compute a single-site expected value.*/
+  cdouble expected(const CMPS &a, const CTensor &Op1, size_t k);
+
+  /**Add the expectation values a single-site operator over the lattice.*/
+  cdouble expected(const CMPS &a, const CTensor &Op1);
+
 }
 
 #endif /* !TENSOR_MPS_H */

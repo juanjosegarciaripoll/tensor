@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <cassert>
 #include <mps/rmps.h>
 #include "mps_presize.h"
 
@@ -33,6 +34,17 @@ namespace mps {
 	return true;
     }
     return false;
+  }
+
+  index RMPS::normal_index(index mps_index) const {
+    index mps_size = size();
+    if (mps_index < 0) {
+      assert(mps_index >= -mps_size);
+      return mps_index + mps_size;
+    } else {
+      assert(mps_index < mps_size);
+      return mps_index;
+    }
   }
 
   RMPS::RMPS(index length, index physical_dimension, index bond_dimension,

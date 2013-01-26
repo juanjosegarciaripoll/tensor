@@ -36,6 +36,17 @@ namespace mps {
     return false;
   }
 
+  index CMPS::normal_index(index mps_index) const {
+    index mps_size = size();
+    if (mps_index < 0) {
+      assert(mps_index >= -mps_size);
+      return mps_index + mps_size;
+    } else {
+      assert(mps_index < mps_size);
+      return mps_index;
+    }
+  }
+
   CMPS::CMPS(index length, index physical_dimension, index bond_dimension,
 	     bool periodic) :
     parent(length)

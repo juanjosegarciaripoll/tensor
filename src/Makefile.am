@@ -141,7 +141,10 @@ libmps_la_SOURCES = \
 	mps/mps/cmps_product_state.cc \
 	mps/mps/cmps_to_vector.cc \
 	mps/mps/mps_prop_matrix_d.cc \
-	mps/mps/mps_prop_matrix_z.cc
+	mps/mps/mps_prop_matrix_z.cc \
+	mps/mps/mps_expected1_d.cc \
+	mps/mps/mps_expected1_dz.cc \
+	mps/mps/mps_expected1_z.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\

@@ -36,6 +36,8 @@ namespace mps {
     CMPS(const tensor::Indices &physical_dimension, index bond_dimension = 1,
          bool periodic = false);
 
+    index normal_index(index i) const;
+
     /**Can the CMP be used for a periodic boundary condition problem?*/
     bool is_periodic() const;
 
