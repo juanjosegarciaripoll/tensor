@@ -179,6 +179,11 @@ check_PROGRAMS += test_mps_mps
 test_mps_mps_SOURCES = test_mps_mps.cc
 test_mps_mps_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_mps_norm
+check_PROGRAMS += test_mps_norm
+test_mps_norm_SOURCES = test_mps_norm.cc
+test_mps_norm_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_mps_expected
 check_PROGRAMS += test_mps_expected
 test_mps_expected_SOURCES = test_mps_expected.cc
