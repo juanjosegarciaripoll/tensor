@@ -131,15 +131,17 @@ libmps_la_SOURCES = \
 	mps/iTEBD/itebd_itime_z.cc \
 	mps/mps/rmps.cc \
 	mps/mps/rmps_random.cc \
-	mps/mps/cmps.cc \
 	mps/mps/rmps_product_state.cc \
 	mps/mps/rmps_ghz_state.cc \
 	mps/mps/rmps_cluster_state.cc \
 	mps/mps/rmps_to_vector.cc \
+	mps/mps/cmps.cc \
 	mps/mps/cmps_random.cc \
 	mps/mps/cmps_from_rmps.cc \
 	mps/mps/cmps_product_state.cc \
-	mps/mps/cmps_to_vector.cc
+	mps/mps/cmps_to_vector.cc \
+	mps/mps/mps_prop_matrix_d.cc \
+	mps/mps/mps_prop_matrix_z.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\
