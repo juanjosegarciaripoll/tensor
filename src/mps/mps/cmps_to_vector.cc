@@ -33,7 +33,7 @@ namespace mps {
     index d = output.dimension(1);
     for (index i = 1; i < mps.size(); i++) {
       output = fold(output, -1, mps[i], 0);
-      output = reshape(output, d0, d = d*output.dimension(3), output.dimension(4));
+      output = reshape(output, d0, output.dimension(1)*output.dimension(2), output.dimension(3));
     }
     if (d0 > 1)
       output = trace(output, 0, -1);
