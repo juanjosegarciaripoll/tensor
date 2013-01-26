@@ -80,22 +80,31 @@ namespace mps {
   const CTensor mps_to_vector(const CMPS &mps);
 
   /**Compute a single-site expected value.*/
-  double expected(const RMPS &a, const RTensor &Op1, size_t k);
+  double expected(const RMPS &a, const RTensor &Op1, index k);
 
   /**Add the expectation values a single-site operator over the lattice.*/
   double expected(const RMPS &a, const RTensor &Op1);
 
   /**Compute a single-site expected value.*/
-  cdouble expected(const RMPS &a, const CTensor &Op1, size_t k);
+  cdouble expected(const RMPS &a, const CTensor &Op1, index k);
 
   /**Add the expectation values a single-site operator over the lattice.*/
   cdouble expected(const RMPS &a, const CTensor &Op1);
 
   /**Compute a single-site expected value.*/
-  cdouble expected(const CMPS &a, const CTensor &Op1, size_t k);
+  cdouble expected(const CMPS &a, const CTensor &Op1, index k);
 
   /**Add the expectation values a single-site operator over the lattice.*/
   cdouble expected(const CMPS &a, const CTensor &Op1);
+
+  /**Compute a two-site correlation.*/
+  double expected(const RMPS &a, const RTensor &op1, index k1, const RTensor &op2, index k2);
+
+  /**Compute a two-site correlation.*/
+  cdouble expected(const RMPS &a, const CTensor &op1, index k1, const CTensor &op2, index k2);
+
+  /**Compute a two-site correlation.*/
+  cdouble expected(const CMPS &a, const CTensor &op1, index k1, const CTensor &op2, index k2);
 
 }
 
