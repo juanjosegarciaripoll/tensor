@@ -52,8 +52,8 @@ namespace tensor_test {
   /*
    * Approximately equal numbers.
    */
-  template<typename elt_t>
-  bool simeq(elt_t a, elt_t b, double epsilon = 2*EPSILON)
+  template<typename elt_t1, typename elt_t2>
+  bool simeq(elt_t1 a, elt_t2 b, double epsilon = 2*EPSILON)
   {
     double x = abs(a - b);
     if (x > epsilon) {
