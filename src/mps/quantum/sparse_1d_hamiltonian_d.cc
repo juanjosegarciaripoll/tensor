@@ -34,7 +34,8 @@ namespace mps {
      
      \ingroup QM
   */
-  RSparse sparse_1d_hamiltonian(const RSparse &H12, const RSparse &H1, index N, bool periodic)
+  const RSparse sparse_1d_hamiltonian(const RSparse &H12, const RSparse &H1,
+				      index N, bool periodic)
   {
     assert(N > 0);
     return do_pair_Hamiltonian<RSparse,RTensor>(H12, H1, N, periodic);

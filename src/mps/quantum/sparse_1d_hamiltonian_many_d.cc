@@ -18,27 +18,15 @@
 */
 
 #include <mps/quantum.h>
-#include "sparse_1d_hamiltonian.cc"
+#include "sparse_1d_hamiltonian_many.cc"
 
 namespace mps {
 
-  /**Create the Hamiltonian of a translationary invariant model. Given a nearest
-     neighbor interaction \c H12, and a local term \c H1, this function
-     constructs a sparse matrix representing the Hamiltonian
-     \f[ H = \sum_{i=1}^{n} \left[H^{(12)}_{i,i+1} + H^{(1)}_i\right]\f]
-     
-     Only if the flag \c periodic is true, the term for the interaction between
-     the last and first particle will be included, \f$H^{(12)}_{1N}\f$.
-
-     If any of the matrices H12 or H1 is empty, it is not used.
-     
-     \ingroup QM
-  */
-  const CSparse sparse_1d_hamiltonian(const CSparse &H12, const CSparse &H1,
-				      index N, bool periodic)
+  const RSparse sparse_1d_hamiltonian(const std::vector<RSparse> &H12,
+				      const std::vector<RSparse> &H1,
+				      bool periodic)
   {
-    assert(N > 0);
-    return do_pair_Hamiltonian<CSparse,CTensor>(H12, H1, N, periodic);
+    return do_sparse_1d_hamiltonian<RSparse,RTensor>(H12, H1, periodic);
   }
 
 } // namespace mps

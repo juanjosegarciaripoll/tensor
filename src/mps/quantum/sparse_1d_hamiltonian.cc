@@ -28,7 +28,7 @@ namespace mps {
   //
 
   template <class sparse, class tensor>
-  static sparse
+  static const sparse
   do_pair_Hamiltonian(const sparse &H12, const sparse &H1, index N, bool periodic)
   {
     if (H12.is_empty() && H1.is_empty()) {
