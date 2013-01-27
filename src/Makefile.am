@@ -120,6 +120,14 @@ lib_LTLIBRARIES += libmps.la
 libmps_la_SOURCES = \
 	mps/quantum/spin.cc \
 	mps/quantum/fock.cc \
+	mps/quantum/sparse_1d_hamiltonian_d.cc \
+	mps/quantum/sparse_1d_hamiltonian_z.cc \
+	mps/quantum/sparse_1d_hamiltonian_many_d.cc \
+	mps/quantum/sparse_1d_hamiltonian_many_z.cc \
+	mps/hamiltonian/hamiltonian.cc \
+	mps/hamiltonian/hamiltonian_expected_d.cc \
+	mps/hamiltonian/hamiltonian_expected_z.cc \
+	mps/hamiltonian/sparse_hamiltonian.cc \
 	mps/tools/entropy.cc \
 	mps/tools/truncate.cc \
 	mps/tools/limited_svd_d.cc \
