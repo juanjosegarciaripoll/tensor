@@ -85,15 +85,15 @@ namespace tensor_test {
   // EXPECTATION VALUES OVER RMPS
   //
 
-  TEST(MPSExpected, RMPSBasic) {
+  TEST(MPSNorm, RMPSBasic) {
     test_norm_basic<RMPS>();
   }
 
-  TEST(MPSExpected, RMPSOrder) {
+  TEST(MPSNorm, RMPSOrder) {
     test_over_integers(1, 10, test_norm_order<RMPS>);
   }
 
-  TEST(MPSExpected, GHZ) {
+  TEST(MPSNorm, GHZ) {
     for (index i = 1; i < 4; i++) {
       RMPS ghz = ghz_state(i);
       EXPECT_CEQ(norm2(ghz), 1.0);
@@ -101,18 +101,24 @@ namespace tensor_test {
     }
   }
 
+  TEST(MPSNorm, Cluster) {
+    for (index i = 1; i < 10; i++) {
+      RMPS cluster = cluster_state(i);
+      EXPECT_CEQ(norm2(cluster), 1.0);
+      EXPECT_CEQ(scprod(cluster, cluster), 1.0);
+    }
+  }
+
   ////////////////////////////////////////////////////////////
   // EXPECTATION VALUES OVER CMPS
   //
 
-  TEST(MPSExpected, CMPSBasic) {
+  TEST(MPSNorm, CMPSBasic) {
     test_norm_basic<CMPS>();
   }
 
-  TEST(MPSExpected, CMPSOrder) {
+  TEST(MPSNorm, CMPSOrder) {
     test_over_integers(1, 10, test_norm_order<CMPS>);
   }
-
-
 
 } // namespace tensor_test
