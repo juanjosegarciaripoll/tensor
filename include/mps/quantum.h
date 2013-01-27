@@ -26,6 +26,7 @@
 namespace mps {
 
   using namespace tensor;
+  using tensor::index;
 
   /*
    * Angular momentum operators.
@@ -37,27 +38,40 @@ namespace mps {
 
   /** Two by two identity matrix. */
   extern const RTensor Pauli_id;
-  /** \$\sigma_x\$ Pauli matrix. */
+  /** \f$\sigma_x\f$ Pauli matrix. */
   extern const RTensor Pauli_x;
-  /** \$\sigma_z\$ Pauli matrix. */
+  /** \f$\sigma_z\f$ Pauli matrix. */
   extern const RTensor Pauli_z;
-  /** \$\sigma_y\$ Pauli matrix. */
+  /** \f$\sigma_y\f$ Pauli matrix. */
   extern const CTensor Pauli_y;
 
   /*
    * Fock space operators.
    */
 
-  /* Fock number operator truncated to a maximum of 'nmax' bosons. */
+  /** Fock number operator truncated to a maximum of 'nmax' bosons. */
   RSparse number_operator(int nmax);
-  /* Fock destruction operator truncated to a maximum of 'nmax' bosons. */
+  /** Fock destruction operator truncated to a maximum of 'nmax' bosons. */
   RSparse destruction_operator(int nmax);
-  /* Fock creation operator truncated to a maximum of 'nmax' bosons. */
+  /** Fock creation operator truncated to a maximum of 'nmax' bosons. */
   RSparse creation_operator(int nmax);
-  /* Real coherent state truncated to a maximum of 'nmax' bosons. */
+  /** Real coherent state truncated to a maximum of 'nmax' bosons. */
   RTensor coherent_state(double alpha, int nmax);
-  /* Complex coherent state truncated to a maximum of 'nmax' bosons. */
+  /** Complex coherent state truncated to a maximum of 'nmax' bosons. */
   CTensor coherent_state(cdouble alpha, int nmax);
+
+  /* Create a sparse Hamiltonian with given local interaction and nearest
+   * neighbor interaction. */
+  CSparse sparse_1d_hamiltonian(const CTensor &H12, const CTensor &Hlocal,
+                                index size, bool periodic = false);
+
+  /* Create a sparse Hamiltonian with given local interaction and nearest
+   * neighbor interaction. */
+  RSparse sparse_1d_hamiltonian(const RTensor &H12, const RTensor &Hlocal,
+                                index size, bool periodic = false);
+
+  void decompose_operator(const RTensor &H12, RTensor *H1, RTensor *H2);
+  void decompose_operator(const CTensor &H12, CTensor *H1, CTensor *H2);
 
 }
 
