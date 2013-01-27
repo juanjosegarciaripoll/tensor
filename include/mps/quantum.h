@@ -35,20 +35,30 @@ namespace mps {
 
   double entropy(const RTensor &lambdas);
 
+  /** Two by two identity matrix. */
   extern const RTensor Pauli_id;
+  /** \$\sigma_x\$ Pauli matrix. */
   extern const RTensor Pauli_x;
+  /** \$\sigma_z\$ Pauli matrix. */
   extern const RTensor Pauli_z;
+  /** \$\sigma_y\$ Pauli matrix. */
   extern const CTensor Pauli_y;
 
   /*
    * Fock space operators.
    */
 
+  /* Fock number operator truncated to a maximum of 'nmax' bosons. */
   RSparse number_operator(int nmax);
+  /* Fock destruction operator truncated to a maximum of 'nmax' bosons. */
   RSparse destruction_operator(int nmax);
+  /* Fock creation operator truncated to a maximum of 'nmax' bosons. */
   RSparse creation_operator(int nmax);
+  /* Real coherent state truncated to a maximum of 'nmax' bosons. */
   RTensor coherent_state(double alpha, int nmax);
+  /* Complex coherent state truncated to a maximum of 'nmax' bosons. */
   CTensor coherent_state(cdouble alpha, int nmax);
+
 }
 
 #endif // MPS_QUANTUM_H
