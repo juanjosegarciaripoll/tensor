@@ -41,8 +41,14 @@ namespace mps {
     index size() const { return data_.size(); }
     void resize(index new_size) { data_.resize(new_size); }
 
-    const Tensor &operator[](index n) const { return data_[n]; }
-    Tensor &at(index n) { return data_.at(n); }
+    const Tensor &operator[](index n) const {
+      assert((n>=0) && (n<size()));
+      return data_[n];
+    }
+    Tensor &at(index n) {
+      assert((n>=0) && (n<size()));
+      return data_.at(n);
+    }
 
     iterator begin() { return data_.begin(); }
     const_iterator begin() const { return data_.begin(); }
