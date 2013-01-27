@@ -62,13 +62,25 @@ namespace mps {
 
   /* Create a sparse Hamiltonian with given local interaction and nearest
    * neighbor interaction. */
-  CSparse sparse_1d_hamiltonian(const CTensor &H12, const CTensor &Hlocal,
-                                index size, bool periodic = false);
+  const CSparse sparse_1d_hamiltonian(const CSparse &H12, const CSparse &Hlocal,
+                                      index size, bool periodic = false);
 
   /* Create a sparse Hamiltonian with given local interaction and nearest
    * neighbor interaction. */
-  RSparse sparse_1d_hamiltonian(const RTensor &H12, const RTensor &Hlocal,
-                                index size, bool periodic = false);
+  const RSparse sparse_1d_hamiltonian(const RSparse &H12, const RSparse &Hlocal,
+                                      index size, bool periodic = false);
+
+  /* Create a sparse Hamiltonian with given local interaction and nearest
+   * neighbor interaction. */
+  const CSparse sparse_1d_hamiltonian(const std::vector<CSparse> &H12,
+                                      const std::vector<CSparse> &Hlocal,
+                                      bool periodic = false);
+
+  /* Create a sparse Hamiltonian with given local interaction and nearest
+   * neighbor interaction. */
+  const RSparse sparse_1d_hamiltonian(const std::vector<RSparse> &H12,
+                                      const std::vector<RSparse> &Hlocal,
+                                      bool periodic = false);
 
   void decompose_operator(const RTensor &H12, RTensor *H1, RTensor *H2);
   void decompose_operator(const CTensor &H12, CTensor *H1, CTensor *H2);
