@@ -397,6 +397,7 @@ namespace tensor {
   double trace(const RTensor &d);
   const RTensor trace(const RTensor &A, index i1, index i2);
 
+  const RTensor squeeze(const RTensor &t);
   const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
   const RTensor transpose(const RTensor &a);
   inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
@@ -454,6 +455,7 @@ namespace tensor {
   cdouble trace(const CTensor &d);
   const CTensor trace(const CTensor &A, index i1, index i2);
 
+  const CTensor squeeze(const CTensor &t);
   const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
   const CTensor transpose(const CTensor &a);
   const CTensor adjoint(const CTensor &a);

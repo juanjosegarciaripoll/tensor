@@ -67,6 +67,9 @@ libtensor_la_SOURCES = \
 	tensor/tensor_scale_d.cc \
 	tensor/tensor_scale_z.cc \
 	tensor/tensor_sort_d.cc \
+	tensor/tensor_squeeze.cc \
+	tensor/tensor_squeeze_d.cc \
+	tensor/tensor_squeeze_z.cc \
 	tensor/tensor_take_diag_d.cc \
 	tensor/tensor_take_diag_z.cc \
 	generated/tensor_unop_abs_d.cc \
