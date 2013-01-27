@@ -158,6 +158,12 @@ namespace mps {
     if (sweeps == 0) {
       return normQ2 + square(norm2(P)) - 2 * real(scprod(Q, P));
     }
+    if (Q.size() == 1) {
+      std::cerr << "The mps::simplify() function is designed to "
+	"work with states that have more than one site."
+		<< std::endl;
+      abort();
+    }
 
     index N = P.size();
     MPS A(N), B(N);
