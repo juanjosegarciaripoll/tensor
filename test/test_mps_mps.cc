@@ -20,6 +20,7 @@
 #include "loops.h"
 #include <gtest/gtest.h>
 #include <gtest/gtest-death-test.h>
+#include <mps/quantum.h>
 #include <mps/mps.h>
 
 namespace tensor_test {
@@ -141,6 +142,34 @@ namespace tensor_test {
     EXPECT_DOUBLE_EQ(norm2(psi), 1.0);
   }
 
+  const RMPS apply_cluster_state_stabilizer(RMPS state, int site) {
+    int left = site - 1;
+    if (left >= 0)
+      state = apply_local_operator(state, mps::Pauli_z, left);
+    state = apply_local_operator(state, mps::Pauli_x, site);
+    int right = site + 1;
+    if (right < state.size())
+      state = apply_local_operator(state, mps::Pauli_z, site);
+    return state;
+  }
+
+  void test_cluster_state(int size) {
+    RMPS cluster = cluster_state(size);
+    RTensor psi = mps_to_vector(cluster);
+    EXPECT_EQ(cluster.size(), size);
+    EXPECT_EQ(psi.size(), 2 << (size-1));
+    EXPECT_DOUBLE_EQ(norm2(psi), 1.0);
+    for (index i = 1; i < cluster.size(); i++) {
+      RTensor psi2 = mps_to_vector(apply_cluster_state_stabilizer(cluster, i));
+      if (!simeq(psi, psi2)) {
+        std::cout << "psi2=" << psi2 << std::endl;
+        std::cout << "psi=" << psi << std::endl;
+        abort();
+      }
+      EXPECT_CEQ(psi, psi2);
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////
   // REAL SPECIALIZATIONS
   //
@@ -159,6 +188,10 @@ namespace tensor_test {
 
   TEST(RMPS, GHZState) {
     test_over_integers(1,10,test_ghz_state);
+  }
+
+  TEST(RMPS, ClusterState) {
+    test_over_integers(4,10,test_cluster_state);
   }
 
   //////////////////////////////////////////////////////////////////////

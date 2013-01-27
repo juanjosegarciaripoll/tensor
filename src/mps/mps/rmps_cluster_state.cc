@@ -43,8 +43,16 @@ namespace mps {
       for (index i = 1; i < (length - 1); i++) {
 	RTensor &P = output.at(i);
 	P.fill_with_zeros();
+#if 1
 	P.at(0,0,0) = P.at(0,0,1) = P.at(0,1,0) = v;
 	P.at(1,1,1) = -(v);
+#else
+        // This definition is used in D. Perez-Garcia's paper,
+        // but it is not consistent with our stabilizers
+        // (see test_mps_mps)
+	P.at(1,0,0) = P.at(1,0,1) = 1.0;
+        P.at(0,1,0) = P.at(0,1,1) = -1.0;
+#endif
       }
       return output;
     }
