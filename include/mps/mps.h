@@ -73,6 +73,12 @@ namespace mps {
   /**Create a cluster state.*/
   const RMPS cluster_state(index length);
 
+  /** Apply a local operator on the given site. */
+  const RMPS apply_local_operator(const RMPS &psi, const RTensor &op, index site);
+
+  /** Apply a local operator on the given site. */
+  const CMPS apply_local_operator(const CMPS &psi, const CTensor &op, index site);
+
   /**Convert a RMPS to a complex vector, contracting all tensors.*/
   const RTensor mps_to_vector(const RMPS &mps);
 
