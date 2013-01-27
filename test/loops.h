@@ -79,6 +79,7 @@ namespace tensor_test {
   }
 
 #define EXPECT_CEQ(a, b) EXPECT_TRUE(simeq(a, b))
+#define EXPECT_CEQ3(a, b, c) EXPECT_TRUE(simeq(a, b, c))
 #define ASSERT_CEQ(a, b) ASSERT_TRUE(simeq(a, b))
 
   /*

@@ -194,6 +194,11 @@ check_PROGRAMS += test_mps_correlation
 test_mps_correlation_SOURCES = test_mps_correlation.cc
 test_mps_correlation_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_mps_simplify
+check_PROGRAMS += test_mps_simplify
+test_mps_simplify_SOURCES = test_mps_simplify.cc
+test_mps_simplify_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_itebd_base
 check_PROGRAMS += test_itebd_base
 test_itebd_base_SOURCES = test_itebd_base.cc
