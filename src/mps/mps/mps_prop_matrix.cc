@@ -64,9 +64,9 @@ namespace mps {
     P.get_dimensions(&b0,&i0,&b1);
     t M = op?
       // P(b0,j0,b1) Op(i0,j0) M(a1,b1,a2,b2) -> M(b0,i0,a1,a2,b2)
-      M = fold(fold(P, 1, *op, -1), 1, M0, 1) :
+      fold(fold(P, 1, *op, -1), 1, M0, 1) :
       // P(b0,i0,b1) M(a1,b1,a2,b2) -> M(b0,i0,a1,a2,b2)
-      M = fold(P, -1, M0, 1);
+      fold(P, -1, M0, 1);
     // Q'(a0,[i0,a1]) M(b0,[i0,a1],a2,b2) -> M(a0,b0,a2,b2)
     return foldc(reshape(Q, a0,i0*a1), -1, reshape(M, b0,i0*a1,a2,b2), 1);
   }
