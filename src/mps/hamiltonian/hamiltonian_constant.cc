@@ -25,75 +25,78 @@
 
 namespace mps {
 
-  TIHamiltonian::TIHamiltonian(index N, const CTensor &H12, const CTensor &H1,
-			       bool periodic) :
-    size_(N), H12_(H12), H1_(H1), periodic_(periodic)
+  ConstantHamiltonian::ConstantHamiltonian(index N, bool periodic) :
+    H12_(N), H12_left_(N), H12_right_(N), H1_(N), periodic_(periodic)
   {
-    if (H12.is_empty()) {
-      std::cerr << "In TIHamiltonian::get_interaction_H(). You forgot to set the value of\n"
-		<< "the interaction Hamiltonian.";
-      abort();
-    }
-    if (H1.is_empty()) {
-      std::cerr << "In TIHamiltonian::get_interaction_H(). You forgot to set the value of\n"
-		<< "the local Hamiltonian.";
-      abort();
-    }
-    split_interaction(H12_, &H12_left_, &H12_right_);
   }
 
   const Hamiltonian *
-  TIHamiltonian::duplicate() const
+  ConstantHamiltonian::duplicate() const
   {
-    return new TIHamiltonian(*this);
+    return new ConstantHamiltonian(*this);
   }
 
   index
-  TIHamiltonian::size() const
+  ConstantHamiltonian::size() const
   {
-    return size_;
+    return H12_.size();
   }
 
   bool
-  TIHamiltonian::is_constant() const
+  ConstantHamiltonian::is_constant() const
   {
     return 1;
   }
 
   bool
-  TIHamiltonian::is_periodic() const
+  ConstantHamiltonian::is_periodic() const
   {
     return periodic_;
   }
 
   const CTensor
-  TIHamiltonian::interaction(index k, double t) const
+  ConstantHamiltonian::interaction(index k, double t) const
   {
-    return H12_;
+    return H12_[k];
   }
 
   const CTensor
-  TIHamiltonian::interaction_left(index k, index ndx, double t) const
+  ConstantHamiltonian::interaction_left(index k, index ndx, double t) const
   {
-    return H12_left_[k];
+    return H12_left_[k][ndx];
   }
 
   const CTensor
-  TIHamiltonian::interaction_right(index k, index ndx, double t) const
+  ConstantHamiltonian::interaction_right(index k, index ndx, double t) const
   {
-    return H12_right_[k];
+    return H12_right_[k][ndx];
   }
 
   index
-  TIHamiltonian::interaction_depth(index k, double t) const
+  ConstantHamiltonian::interaction_depth(index k, double t) const
   {
-    return H12_left_.size();
+    return H12_left_[k].size();
   }
 
   const CTensor
-  TIHamiltonian::local_term(index k, double t) const
+  ConstantHamiltonian::local_term(index k, double t) const
   {
-    return H1_;
+    return H1_[k];
+  }
+
+  void
+  ConstantHamiltonian::set_local_term(index k, const CTensor &H1)
+  {
+    assert((k >= 0) && (k <= H1_.size()));
+    H1_.at(k) = H1;
+  }
+
+  void
+  ConstantHamiltonian::set_interaction(index k, const CTensor &H12)
+  {
+    assert((k >= 0) && (k <= H12_.size()));
+    H12_.at(k) = H12;
+    split_interaction(H12, &H12_left_.at(k), &H12_right_.at(k));
   }
 
 } // namespace mps

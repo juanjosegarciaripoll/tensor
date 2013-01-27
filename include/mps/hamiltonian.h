@@ -65,7 +65,7 @@ namespace mps {
   public:
     TIHamiltonian(index N, const CTensor &newH12, const CTensor &newH1, bool periodic = 0);
 
-    virtual const TIHamiltonian *duplicate() const;
+    virtual const Hamiltonian *duplicate() const;
     virtual index size() const;
     virtual bool is_periodic() const;
     virtual bool is_constant() const;
@@ -87,12 +87,12 @@ namespace mps {
   class ConstantHamiltonian: public Hamiltonian {
 
   public:
-    ConstantHamiltonian(index N, index int_depth, bool periodic = 0);
+    ConstantHamiltonian(index N, bool periodic = false);
 
-    void set_interaction(index k, const CTensor &H);
-    void set_local(index k, const CTensor &H);
+    void set_interaction(index k, const CTensor &H1);
+    void set_local_term(index k, const CTensor &H12);
 
-    virtual const ConstantHamiltonian *duplicate() const;
+    virtual const Hamiltonian *duplicate() const;
     virtual index size() const;
     virtual bool is_periodic() const;
     virtual bool is_constant() const;
@@ -104,9 +104,9 @@ namespace mps {
 
   private:
 
-    std::vector<CTensor> H12, H1;
-    std::vector<std::vector<CTensor> > O1, O2;
-    bool periodic;
+    std::vector<CTensor> H12_, H1_;
+    std::vector<std::vector<CTensor> > H12_left_, H12_right_;
+    bool periodic_;
   };
 
   void split_interaction(const CTensor &H12, std::vector<CTensor> *v1, std::vector<CTensor> *v2);
