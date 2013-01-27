@@ -120,6 +120,8 @@ lib_LTLIBRARIES += libmps.la
 libmps_la_SOURCES = \
 	mps/quantum/spin.cc \
 	mps/quantum/fock.cc \
+	mps/quantum/decompose_operator_d.cc \
+	mps/quantum/decompose_operator_z.cc \
 	mps/quantum/sparse_1d_hamiltonian_d.cc \
 	mps/quantum/sparse_1d_hamiltonian_z.cc \
 	mps/quantum/sparse_1d_hamiltonian_many_d.cc \
