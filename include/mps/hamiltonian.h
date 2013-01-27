@@ -76,10 +76,11 @@ namespace mps {
     virtual const CTensor local_term(index k, double t) const;
 
   private:
-    CTensor H12;
-    std::vector<CTensor> O1, O2;
-    CTensor H1;
-    bool periodic;
+    index size_;
+    CTensor H12_;
+    CTensor H1_;
+    bool periodic_;
+    std::vector<CTensor> H12_left_, H12_right_;
   };
 
   /**1D, no translational invariance*/
@@ -104,9 +105,11 @@ namespace mps {
   private:
 
     std::vector<CTensor> H12, H1;
-    std::vector<std::list<CTensor> > O1, O2;
+    std::vector<std::vector<CTensor> > O1, O2;
     bool periodic;
   };
+
+  void split_interaction(const CTensor &H12, std::vector<CTensor> *v1, std::vector<CTensor> *v2);
 
   /**@}*/
 

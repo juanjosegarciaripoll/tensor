@@ -128,6 +128,8 @@ libmps_la_SOURCES = \
 	mps/hamiltonian/hamiltonian_expected_d.cc \
 	mps/hamiltonian/hamiltonian_expected_z.cc \
 	mps/hamiltonian/sparse_hamiltonian.cc \
+	mps/hamiltonian/hamiltonian_ti.cc \
+	mps/hamiltonian/split_interaction.cc \
 	mps/tools/entropy.cc \
 	mps/tools/truncate.cc \
 	mps/tools/limited_svd_d.cc \
