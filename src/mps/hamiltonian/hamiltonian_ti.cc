@@ -25,6 +25,10 @@
 
 namespace mps {
 
+  /**Create a translationally invariant Hamiltonian. 'N' is the number of lattice
+   * sites, 'H12' is the nearest neighbor interaction between every two sites,
+   * 'H1' is the local term and 'periodic' determines whether there is also
+   * interaction between sites 1 and N. */
   TIHamiltonian::TIHamiltonian(index N, const CTensor &H12, const CTensor &H1,
 			       bool periodic) :
     size_(N), H12_(H12), H1_(H1), periodic_(periodic)

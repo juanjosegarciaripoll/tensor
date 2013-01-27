@@ -25,6 +25,8 @@
 
 namespace mps {
 
+  /** Create the ConstantHamiltonian, reserving space for the local
+      terms and interactions.*/
   ConstantHamiltonian::ConstantHamiltonian(index N, bool periodic) :
     H12_(N), H12_left_(N), H12_right_(N), H1_(N), periodic_(periodic)
   {
@@ -84,6 +86,7 @@ namespace mps {
     return H1_[k];
   }
 
+  /** Add a local term on the k-th site.*/
   void
   ConstantHamiltonian::set_local_term(index k, const CTensor &H1)
   {
@@ -91,6 +94,7 @@ namespace mps {
     H1_.at(k) = H1;
   }
 
+  /** Add a nearest-neighbor interaction between sites 'k' and 'k+1'.*/
   void
   ConstantHamiltonian::set_interaction(index k, const CTensor &H12)
   {

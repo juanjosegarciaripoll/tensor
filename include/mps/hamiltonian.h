@@ -34,16 +34,22 @@ namespace mps {
   public:
     virtual ~Hamiltonian();
 
+    /**Create a copy of this object.*/
     virtual const Hamiltonian *duplicate() const = 0;
 
     virtual index size() const = 0;
+    /**Is there interaction between the first and the last sites?*/
     virtual bool is_periodic() const = 0;
+    /**Does the Hamiltonian depend on time? */
     virtual bool is_constant() const = 0;
+    /**Nearest neighbor interaction between sites 'k' and 'k+1'*/
     virtual const CTensor interaction(index k, double t = 0.0) const = 0;
     virtual const CTensor interaction_left(index k, index n, double t = 0.0) const;
     virtual const CTensor interaction_right(index k, index n, double t = 0.0) const;
     virtual index interaction_depth(index k, double t = 0.0) const;
+    /**Local term of the Hamiltonian on site 'k'.*/
     virtual const CTensor local_term(index k, double t) const = 0;
+    /**Dimension of the Hilbert space on the k-th site.*/
     virtual index dimension(index k) const;
     const Indices dimensions() const;
 
@@ -59,7 +65,7 @@ namespace mps {
   /** Create a sparse matrix using the information in Hamiltonian.*/
   const CSparse sparse_hamiltonian(const Hamiltonian &H, double t = 0.0);
 
-  /**1D, translationally invariant lattice Hamiltonians*/
+  /**1D Hamiltonian, translationally invariant and constant.*/
   class TIHamiltonian: public Hamiltonian {
 
   public:
@@ -83,7 +89,7 @@ namespace mps {
     std::vector<CTensor> H12_left_, H12_right_;
   };
 
-  /**1D, no translational invariance*/
+  /**1D Hamiltonian, constant but with no translational invariance*/
   class ConstantHamiltonian: public Hamiltonian {
 
   public:
