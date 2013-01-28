@@ -345,6 +345,8 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
   const Tensor<elt_t> kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b);
   template<typename elt_t>
   const Tensor<elt_t> kron2(const Tensor<elt_t> &a, const Tensor<elt_t> &b);
+  template<typename elt_t>
+  const Tensor<elt_t> kron2_sum(const Tensor<elt_t> &a, const Tensor<elt_t> &b);
 
 } // namespace tensor
 
