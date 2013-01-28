@@ -186,6 +186,8 @@ libmps_la_SOURCES = \
 	mps/mps/mps_simplify_z.cc \
 	mps/mps/apply_local_operator_d.cc \
 	mps/mps/apply_local_operator_z.cc
+#	mps/dmrg/rdmrg.cc
+#	mps/dmrg/cdmrg.cc
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\
