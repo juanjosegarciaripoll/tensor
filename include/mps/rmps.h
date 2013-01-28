@@ -34,6 +34,7 @@ namespace mps {
          bool periodic = false);
     RMPS(const tensor::Indices &physical_dimension, index bond_dimension = 1,
          bool periodic = false);
+    RMPS();
 
     index normal_index(index i) const;
 

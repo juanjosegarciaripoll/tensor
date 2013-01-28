@@ -124,6 +124,12 @@ namespace mps {
   /**Compute a two-site correlation.*/
   cdouble expected(const CMPS &a, const CTensor &op1, index k1, const CTensor &op2, index k2);
 
+  /**Rewrite a RMPS in canonical form.*/
+  const RMPS orthonormalize(const RMPS &psi);
+
+  /**Rewrite a CMPS in canonical form.*/
+  const CMPS orthonormalize(const CMPS &psi);
+
 }
 
 #endif /* !TENSOR_MPS_H */

@@ -47,6 +47,11 @@ namespace mps {
     }
   }
 
+  RMPS::RMPS() :
+    parent()
+  {
+  }
+
   RMPS::RMPS(index length, index physical_dimension, index bond_dimension,
 	     bool periodic) :
     parent(length)
