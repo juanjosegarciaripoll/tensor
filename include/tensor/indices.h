@@ -47,6 +47,8 @@ namespace tensor {
 
   const Indices operator<<(const Indices &a, const Indices &b);
 
+  extern template class Vector<bool>;
+
   /** Vector of boolean values. */
   class Booleans : public Vector<bool> {
   public:
