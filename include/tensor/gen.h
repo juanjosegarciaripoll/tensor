@@ -59,6 +59,12 @@ CTensor a = cgen << 1 << 3;
 \endcode
 \sa ListGenerator */
   extern const ListGenerator<cdouble> cgen;
+  /** Placeholder for statically creating a vector of complex numbers.
+\code
+Booleans a = bgen << true << false;
+\endcode
+\sa ListGenerator */
+  extern const ListGenerator<cdouble> bgen;
 
   /** Placeholder for statically creating a vector of elements, whose type
 is determined by the first element.

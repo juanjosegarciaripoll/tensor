@@ -25,4 +25,6 @@ namespace tensor {
 
   class Booleans;
 
+  const ListGenerator<bool> bgen = {};
+
 } // namespace tensor
