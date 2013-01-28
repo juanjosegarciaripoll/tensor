@@ -17,6 +17,8 @@ libtensor_la_SOURCES = \
 	indices/concat.cc \
 	indices/linspace_d.cc \
 	indices/linspace_z.cc \
+	indices/booleans.cc \
+	indices/which.cc \
 	sparse/full_d.cc \
 	sparse/full_z.cc \
 	sparse/sparse_d.cc \

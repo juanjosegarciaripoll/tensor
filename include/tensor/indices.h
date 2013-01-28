@@ -31,6 +31,7 @@ namespace tensor {
 
   extern template class Vector<index>;
 
+  /** Vector of 'index' type, where 'index' fits the indices of a tensor.*/
   class Indices : public Vector<index> {
   public:
     Indices() : Vector<index>() {}
@@ -45,6 +46,16 @@ namespace tensor {
   };
 
   const Indices operator<<(const Indices &a, const Indices &b);
+
+  /** Vector of boolean values. */
+  class Booleans : public Vector<bool> {
+  public:
+    Booleans() : Vector<bool>() {}
+    Booleans(const Booleans &b) : Vector<bool>(b) {}
+    explicit Booleans(index size) : Vector<bool>(size) {}
+  };
+
+  const Indices which(const Booleans &b);
 
   //////////////////////////////////////////////////////////////////////
   // RANGE OF INTEGERS
