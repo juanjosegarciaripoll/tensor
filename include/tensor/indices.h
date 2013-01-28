@@ -56,7 +56,7 @@ namespace tensor {
     Booleans(const Booleans &b) : Vector<bool>(b) {}
     explicit Booleans(index size) : Vector<bool>(size) {}
   };
-
+  const Booleans operator!(const Booleans &b);
   const Indices which(const Booleans &b);
 
   //////////////////////////////////////////////////////////////////////

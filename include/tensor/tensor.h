@@ -411,6 +411,27 @@ namespace tensor {
   void foldin_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b, int ndx2);
   void mmult_into(RTensor &output, const RTensor &a, const RTensor &b);
 
+  const Booleans operator==(const RTensor &a, const RTensor &b);
+  const Booleans operator<(const RTensor &a, const RTensor &b);
+  const Booleans operator>(const RTensor &a, const RTensor &b);
+  const Booleans operator<=(const RTensor &a, const RTensor &b);
+  const Booleans operator>=(const RTensor &a, const RTensor &b);
+  const Booleans operator!=(const RTensor &a, const RTensor &b);
+
+  const Booleans operator==(const RTensor &a, double b);
+  const Booleans operator<(const RTensor &a, double b);
+  const Booleans operator>(const RTensor &a, double b);
+  const Booleans operator<=(const RTensor &a, double b);
+  const Booleans operator>=(const RTensor &a, double b);
+  const Booleans operator!=(const RTensor &a, double b);
+
+  inline const Booleans operator==(double a, const RTensor &b) { return b == a; }
+  inline const Booleans operator<(double a, const RTensor &b) { return b >= a; }
+  inline const Booleans operator>(double a, const RTensor &b) { return b <= a; }
+  inline const Booleans operator<=(double a, const RTensor &b) { return b > a; }
+  inline const Booleans operator>=(double a, const RTensor &b) {  return b < a; }
+  inline const Booleans operator!=(double a, const RTensor &b) { return b != a; }
+
   extern template class Tensor<cdouble>;
   /** Complex Tensor with elements of type "cdouble". */
 #ifdef DOXYGEN_ONLY
