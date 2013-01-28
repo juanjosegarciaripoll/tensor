@@ -48,7 +48,7 @@ namespace mps {
     virtual const CTensor interaction_right(index k, index n, double t = 0.0) const;
     virtual index interaction_depth(index k, double t = 0.0) const;
     /**Local term of the Hamiltonian on site 'k'.*/
-    virtual const CTensor local_term(index k, double t) const = 0;
+    virtual const CTensor local_term(index k, double t = 0.0) const = 0;
     /**Dimension of the Hilbert space on the k-th site.*/
     virtual index dimension(index k) const;
     const Indices dimensions() const;
