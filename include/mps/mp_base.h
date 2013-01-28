@@ -35,6 +35,7 @@ namespace mps {
     typedef typename data_type::iterator iterator;
     typedef typename data_type::const_iterator const_iterator;
 
+    MP() : data_() {}
     MP(size_t size) : data_(size) {}
     MP(const MP<Tensor> &other) : data_(other.data_) {}
 
