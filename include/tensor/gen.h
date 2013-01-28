@@ -64,7 +64,7 @@ CTensor a = cgen << 1 << 3;
 Booleans a = bgen << true << false;
 \endcode
 \sa ListGenerator */
-  extern const ListGenerator<cdouble> bgen;
+  extern const ListGenerator<bool> bgen;
 
   /** Placeholder for statically creating a vector of elements, whose type
 is determined by the first element.
