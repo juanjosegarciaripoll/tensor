@@ -47,7 +47,7 @@ namespace mps {
     }
   }
 
-  RMPS::RMPS() :
+  CMPS::CMPS() :
     parent()
   {
   }
