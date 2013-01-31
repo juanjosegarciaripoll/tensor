@@ -133,7 +133,7 @@ namespace tensor {
   //
   template<typename t1, typename t2>
   inline bool all_equal(const Sparse<t1> &s1, const Sparse<t2> &s2) {
-    return (s1.dimensions() == s2.dimensions()) &&
+    return all_equal(s1.dimensions(), s2.dimensions()) &&
       all_equal(s1.priv_row_start(), s2.priv_row_start()) &&
       all_equal(s1.priv_column(), s2.priv_column()) &&
       all_equal(s1.priv_data(), s2.priv_data());
