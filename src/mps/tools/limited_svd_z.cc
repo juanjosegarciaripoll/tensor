@@ -18,7 +18,6 @@
 */
 
 #include <tensor/linalg.h>
-#include <tensor/indices.h>
 #include <mps/tools.h>
 
 namespace mps {
@@ -31,7 +30,6 @@ namespace mps {
     *U = (*U)(range(), range(0,c-1));
     *V = (*V)(range(0,c-1), range());
     s = s(range(0,c-1));
-    std::cout << "max_dim=" << max_dim << ", c=" << c << std::endl;
     return s / norm2(s);
   }
 
