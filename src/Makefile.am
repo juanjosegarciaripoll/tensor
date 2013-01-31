@@ -129,6 +129,8 @@ if TENSOR_ARPACK
 libtensor_la_LDFLAGS = $(FLIBS)
 endif
 
+if BUILD_MPS
+
 lib_LTLIBRARIES += libmps.la
 
 libmps_la_SOURCES = \
@@ -188,6 +190,8 @@ libmps_la_SOURCES = \
 	mps/mps/apply_local_operator_z.cc
 #	mps/dmrg/rdmrg.cc
 #	mps/dmrg/cdmrg.cc
+
+endif
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
 	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\

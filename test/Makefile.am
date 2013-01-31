@@ -12,6 +12,7 @@ GTEST_LDFLAGS = libgtest_main.a $(LDFLAGS) -lpthread
 #
 TESTS =
 check_PROGRAMS =
+noinst_LIBRARIES =
 
 AM_TESTS_FD_REDIRECT = --gtest_death_test_style=threadsafe
 
@@ -169,6 +170,8 @@ test_linalg_eigs_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-ls
 # MPS LIBRARY TESTS
 #
 
+if BUILD_MPS
+
 TESTS += test_quantum_spin
 check_PROGRAMS += test_quantum_spin
 test_quantum_spin_SOURCES = test_quantum_spin.cc
@@ -219,9 +222,11 @@ check_PROGRAMS += test_itebd_itime
 test_itebd_itime_SOURCES = test_itebd_itime.cc
 test_itebd_itime_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
-noinst_LIBRARIES = libtestmain.a
+noinst_LIBRARIES += libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 	 random_unitary_d.cc random_unitary_z.cc random_permutation.cc
+
+endif
 
 #
 # Build the Google Test library. The way this library has changed: we now have to
@@ -229,11 +234,11 @@ libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 # cannot rely on automake and we have to generate the sources.
 #
 
-noinst_LIBRARIES += libgtest.a
+if HAVE_GTEST
+noinst_LIBRARIES += libgtest.a libgtest_main.a
 libgtest_a_SOURCES = gtest-all.cc
-
-noinst_LIBRARIES += libgtest_main.a
 libgtest_main_a_SOURCES = gtest-all.cc gtest_main.cc
+endif
 
 gtest-all.cc gtest_main.cc :
 	cp @GTEST_DIR@/src/$@ .
