@@ -69,7 +69,7 @@ TENSOR_BACKTRACE
 # Unit testing with google
 here=`pwd`
 GTEST_URL=http://googletest.googlecode.com/files/gtest-1.6.0.zip
-GTEST_NAME=`basename $GTEST_URL`
+GTEST_NAME=`basename $GTEST_URL .zip`
 GTEST_TMP="${here}/test/tmp.zip"
 AC_MSG_CHECKING([for googletest-read-only in sources])
 if test -d "${ac_confdir}/test/googletest-read-only"; then
