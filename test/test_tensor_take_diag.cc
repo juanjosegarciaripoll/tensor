@@ -31,7 +31,7 @@ namespace tensor_test {
       Tensor<elt_t> orig = Tensor<elt_t>::random(l);
       Tensor<elt_t> m = diag(orig, i);
       Tensor<elt_t> other = take_diag(m, i);
-      EXPECT_EQ(orig, other);
+      EXPECT_TRUE(all_equal(orig, other));
     }
   }
 
@@ -43,9 +43,9 @@ namespace tensor_test {
       RTensor d0(igen << 2, rgen << 1.0 << 4.0);
       RTensor d1(igen << 1, rgen << 2.0);
       RTensor dm1(igen << 1, rgen << 3.0);
-      EXPECT_EQ(d0, take_diag(m, 0));
-      EXPECT_EQ(d1, take_diag(m, 1));
-      EXPECT_EQ(dm1, take_diag(m, -1));
+      EXPECT_TRUE(all_equal(d0, take_diag(m, 0)));
+      EXPECT_TRUE(all_equal(d1, take_diag(m, 1)));
+      EXPECT_TRUE(all_equal(dm1, take_diag(m, -1)));
     }
     {
       RTensor m(igen << 2 << 3);
@@ -55,10 +55,10 @@ namespace tensor_test {
       RTensor d1(igen << 2, rgen << 2.0 << 6.0);
       RTensor d2(igen << 1, rgen << 3.0);
       RTensor dm1(igen << 1, rgen << 4.0);
-      EXPECT_EQ(d0, take_diag(m, 0));
-      EXPECT_EQ(d1, take_diag(m, 1));
-      EXPECT_EQ(d2, take_diag(m, 2));
-      EXPECT_EQ(dm1, take_diag(m, -1));
+      EXPECT_TRUE(all_equal(d0, take_diag(m, 0)));
+      EXPECT_TRUE(all_equal(d1, take_diag(m, 1)));
+      EXPECT_TRUE(all_equal(d2, take_diag(m, 2)));
+      EXPECT_TRUE(all_equal(dm1, take_diag(m, -1)));
     }
   }
 

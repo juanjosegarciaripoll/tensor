@@ -186,7 +186,7 @@ namespace tensor_test {
       Tensor<elt_t> P2(copy, P);
       EXPECT_EQ(i+1, P2.rank());
       EXPECT_EQ(P.size(), P2.size());
-      EXPECT_EQ(copy, P2.dimensions());
+      EXPECT_TRUE(all_equal(copy, P2.dimensions()));
       unchanged(P2, P);
     }
   }
@@ -217,12 +217,12 @@ namespace tensor_test {
       {
 	Tensor<elt_t> P2 = reshape(P, new_dimensions);
 	unchanged(P2, P);
-	EXPECT_EQ(P2.dimensions(), new_dimensions);
+	EXPECT_TRUE(all_equal(P2.dimensions(), new_dimensions));
       }
       {
 	Tensor<elt_t> P2 = alternate_reshape(P, new_dimensions);
 	unchanged(P2, P);
-	EXPECT_EQ(P2.dimensions(), new_dimensions);
+	EXPECT_TRUE(all_equal(P2.dimensions(), new_dimensions));
       }
     }
   }

@@ -28,14 +28,14 @@ TEST(Fock, Number) {
     RSparse n0 = number_operator(0);
     RTensor n0_manual(igen << 1 << 1,
                       rgen << 0.0);
-    EXPECT_EQ(n0, n0_manual);
+    EXPECT_TRUE(all_equal(n0, n0_manual));
   }
   {
     RSparse n1 = number_operator(1);
     RTensor n1_manual(igen << 2 << 2,
                       rgen << 0.0 << 0.0
                            << 0.0 << 1.0);
-    EXPECT_EQ(n1, n1_manual);
+    EXPECT_TRUE(all_equal(n1, n1_manual));
   }
   {
     RSparse n2 = number_operator(2);
@@ -43,7 +43,7 @@ TEST(Fock, Number) {
                       rgen << 0.0 << 0.0 << 0.0
                            << 0.0 << 1.0 << 0.0
                            << 0.0 << 0.0 << 2.0);
-    EXPECT_EQ(n2, n2_manual);
+    EXPECT_TRUE(all_equal(n2, n2_manual));
   }
 }
 
@@ -52,14 +52,14 @@ TEST(Fock, Creation) {
     RSparse a0 = creation_operator(0);
     RTensor a0_manual(igen << 1 << 1,
                       rgen << 0.0);
-    EXPECT_EQ(a0, a0_manual);
+    EXPECT_TRUE(all_equal(a0, a0_manual));
   }
   {
     RSparse a1 = creation_operator(1);
     RTensor a1_manual(igen << 2 << 2,
                       rgen << 0.0 << 1.0
                            << 0.0 << 0.0);
-    EXPECT_EQ(a1, a1_manual);
+    EXPECT_TRUE(all_equal(a1, a1_manual));
   }
   {
     RSparse a2 = creation_operator(2);
@@ -67,12 +67,13 @@ TEST(Fock, Creation) {
                       rgen << 0.0 << 1.0 << 0.0
                            << 0.0 << 0.0 << sqrt(2.0)
                            << 0.0 << 0.0 << 0.0);
-    EXPECT_EQ(a2, a2_manual);
+    EXPECT_TRUE(all_equal(a2, a2_manual));
   }
 }
 
 TEST(Fock, Destruction) {
   for (int i = 0; i < 10; i++) {
-    EXPECT_EQ(creation_operator(i), transpose(full(destruction_operator(i))));
+    EXPECT_TRUE(all_equal(creation_operator(i),
+                          transpose(full(destruction_operator(i)))));
   }
 }

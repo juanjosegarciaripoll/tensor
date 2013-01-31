@@ -68,8 +68,8 @@ namespace tensor_test {
         Sparse<elt_t> sb(*(it++));
         Sparse<elt_t> sk(*(it++));
 
-        ASSERT_EQ(sk, kron(sa, sb));
-        ASSERT_EQ(kron(sb, sa), kron2(sa, sb));
+        ASSERT_TRUE(all_equal(sk, kron(sa, sb)));
+        ASSERT_TRUE(all_equal(kron(sb, sa), kron2(sa, sb)));
       }
   }
 
@@ -92,7 +92,7 @@ namespace tensor_test {
     Sparse<elt_t> sb = Sparse<elt_t>::random(b.rows(), b.columns());
     a = full(sa);
     b = full(sb);
-    ASSERT_EQ(kron(a,b), full(kron(sa,sb)));
+    ASSERT_TRUE(all_equal(kron(a,b), full(kron(sa,sb))));
   }
 
   TEST(RTensorKronTest, CompareWithTensorKron) {

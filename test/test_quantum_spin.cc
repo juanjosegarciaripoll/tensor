@@ -56,9 +56,9 @@ namespace tensor_test {
   TEST(RMPSTest, SpinHalf) {
     CTensor S[3];
     mps::spin_operators(0.5, S, S+1, S+2);
-    EXPECT_EQ(mps::Pauli_x/2.0, S[0]);
-    EXPECT_EQ(mps::Pauli_y/2.0, S[1]);
-    EXPECT_EQ(mps::Pauli_z/2.0, S[2]);
+    EXPECT_TRUE(all_equal(to_complex(mps::Pauli_x/2.0), S[0]));
+    EXPECT_TRUE(all_equal(mps::Pauli_y/2.0, S[1]));
+    EXPECT_TRUE(all_equal(to_complex(mps::Pauli_z/2.0), S[2]));
   }
 
 }

@@ -41,7 +41,7 @@ namespace tensor_test {
     }
     Tensor<elt_t> U, Inn = Tensor<elt_t>::eye(n,n);
     elt_t s = linalg::eig_power_right(Inn, &U);
-    EXPECT_EQ(U, mmult(Inn, U));
+    EXPECT_TRUE(all_equal(U, mmult(Inn, U)));
     EXPECT_TRUE(abs(s - 1.0) < EPSILON);
   }
 
@@ -55,7 +55,7 @@ namespace tensor_test {
     }
     Tensor<elt_t> U, Inn = Tensor<elt_t>::eye(n,n);
     elt_t s = linalg::eig_power_left(Inn, &U);
-    EXPECT_EQ(U, mmult(U, Inn));
+    EXPECT_TRUE(all_equal(U, mmult(U, Inn)));
     EXPECT_TRUE(abs(s - 1.0) < EPSILON);
   }
 

@@ -89,7 +89,7 @@ namespace tensor_test {
   bool approx_eq(const Tensor &A, const Tensor &B, double epsilon = 2*EPSILON)
   {
     if (A.rank() == B.rank()) {
-      if (A.dimensions() == B.dimensions()) {
+      if (all_equal(A.dimensions(), B.dimensions())) {
         double x = norm0(A - B);
         if (x > epsilon) {
           std::cout << x << std::endl;

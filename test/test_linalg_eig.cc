@@ -40,12 +40,10 @@ namespace tensor_test {
       return;
     }
     Tensor<elt_t> Inn = Tensor<elt_t>::eye(n,n);
-    Tensor<elt_t> V1(n);
-    V1.fill_with(number_one<elt_t>());
     CTensor U, V, s = linalg::eig(Inn, &U, &V);
-    EXPECT_EQ(Inn, U);
-    EXPECT_EQ(Inn, V);
-    EXPECT_EQ(s, V1);
+    EXPECT_TRUE(all_equal(CTensor::eye(n), U));
+    EXPECT_TRUE(all_equal(CTensor::eye(n), V));
+    EXPECT_TRUE(all_equal(s, CTensor::ones(igen << n)));
   }
 
   template<typename elt_t>

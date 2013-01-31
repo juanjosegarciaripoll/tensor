@@ -36,31 +36,31 @@ namespace tensor_test {
     Sparse<elt_t> S;
     EXPECT_EQ(0, S.rows());
     EXPECT_EQ(0, S.columns());
-    EXPECT_EQ(igen << 0, S.priv_row_start());
+    EXPECT_TRUE(all_equal(igen << 0, S.priv_row_start()));
     //EXPECT_EQ(S.priv_row_start(), (igen << 0));
     EXPECT_EQ(0, S.priv_column().size());
     EXPECT_EQ(0, S.priv_data().size());
-    EXPECT_EQ(full(S), Tensor<elt_t>(0,0));
+    EXPECT_TRUE(all_equal(full(S), Tensor<elt_t>(0,0)));
     }
     {
     SCOPED_TRACE("0x1");
     Sparse<elt_t> S(0,2);
     EXPECT_EQ(0, S.rows());
     EXPECT_EQ(2, S.columns());
-    EXPECT_EQ(igen << 0, S.priv_row_start());
+    EXPECT_TRUE(all_equal(igen << 0, S.priv_row_start()));
     EXPECT_EQ(0, S.priv_column().size());
     EXPECT_EQ(0, S.priv_data().size());
-    EXPECT_EQ(full(S), Tensor<elt_t>::zeros(0,2));
+    EXPECT_TRUE(all_equal(full(S), Tensor<elt_t>::zeros(0,2)));
     }
     {
     SCOPED_TRACE("2x0");
     Sparse<elt_t> S(2,0);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(0, S.columns());
-    EXPECT_EQ(igen << 0 << 0 << 0, S.priv_row_start());
+    EXPECT_TRUE(all_equal(igen << 0 << 0 << 0, S.priv_row_start()));
     EXPECT_EQ(0, S.priv_column().size());
     EXPECT_EQ(0, S.priv_data().size());
-    EXPECT_EQ(full(S), Tensor<elt_t>::zeros(2,0));
+    EXPECT_TRUE(all_equal(full(S), Tensor<elt_t>::zeros(2,0)));
     }
   }
 
@@ -85,10 +85,10 @@ namespace tensor_test {
     Sparse<elt_t> S(T);
     EXPECT_EQ(1, S.rows());
     EXPECT_EQ(1, S.columns());
-    EXPECT_EQ(igen << 0 << 1, S.priv_row_start());
-    EXPECT_EQ(igen << 0, S.priv_column());
-    EXPECT_EQ(gen<elt_t>(1.0), S.priv_data());
-    EXPECT_EQ(full(S), T);
+    EXPECT_TRUE(all_equal(igen << 0 << 1, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(igen << 0, S.priv_column()));
+    EXPECT_TRUE(all_equal(gen<elt_t>(1.0), S.priv_data()));
+    EXPECT_TRUE(all_equal(full(S), T));
     }
     {
     // sparse([1, 0; 0, 2]);
@@ -98,10 +98,10 @@ namespace tensor_test {
     Sparse<elt_t> S(T);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(2, S.columns());
-    EXPECT_EQ(igen << 0 << 1 << 2, S.priv_row_start());
-    EXPECT_EQ(igen << 0 << 1, S.priv_column());
-    EXPECT_EQ(gen<elt_t>(1.0) << 2.0, S.priv_data());
-    EXPECT_EQ(full(S), T);
+    EXPECT_TRUE(all_equal(igen << 0 << 1 << 2, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(igen << 0 << 1, S.priv_column()));
+    EXPECT_TRUE(all_equal(gen<elt_t>(1.0) << 2.0, S.priv_data()));
+    EXPECT_TRUE(all_equal(full(S), T));
     }
     {
     // sparse([1, 2; 0, 3]);
@@ -111,10 +111,10 @@ namespace tensor_test {
     Sparse<elt_t> S(T);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(2, S.columns());
-    EXPECT_EQ(igen << 0 << 2 << 3, S.priv_row_start());
-    EXPECT_EQ(igen << 0 << 1 << 1, S.priv_column());
-    EXPECT_EQ(gen<elt_t>(1.0) << 2.0 << 3.0, S.priv_data());
-    EXPECT_EQ(full(S), T);
+    EXPECT_TRUE(all_equal(igen << 0 << 2 << 3, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(igen << 0 << 1 << 1, S.priv_column()));
+    EXPECT_TRUE(all_equal(gen<elt_t>(1.0) << 2.0 << 3.0, S.priv_data()));
+    EXPECT_TRUE(all_equal(full(S), T));
     }
     {
     // sparse([1, 0; 2, 3]);
@@ -124,10 +124,10 @@ namespace tensor_test {
     Sparse<elt_t> S(T);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(2, S.columns());
-    EXPECT_EQ(igen << 0 << 1 << 3, S.priv_row_start());
-    EXPECT_EQ(igen << 0 << 0 << 1, S.priv_column());
-    EXPECT_EQ(gen<elt_t>(1.0) << 2.0 << 3.0, S.priv_data());
-    EXPECT_EQ(full(S), T);
+    EXPECT_TRUE(all_equal(igen << 0 << 1 << 3, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(igen << 0 << 0 << 1, S.priv_column()));
+    EXPECT_TRUE(all_equal(gen<elt_t>(1.0) << 2.0 << 3.0, S.priv_data()));
+    EXPECT_TRUE(all_equal(full(S), T));
     }
     {
     // sparse([1, 0, 4; 2, 3, 0]);
@@ -137,10 +137,10 @@ namespace tensor_test {
     Sparse<elt_t> S(T);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(3, S.columns());
-    EXPECT_EQ(igen << 0 << 2 << 4, S.priv_row_start());
-    EXPECT_EQ(igen << 0 << 2 << 0 << 1, S.priv_column());
-    EXPECT_EQ(gen<elt_t>(1.0) << 4.0 << 2.0 << 3.0, S.priv_data());
-    EXPECT_EQ(full(S), T);
+    EXPECT_TRUE(all_equal(igen << 0 << 2 << 4, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(igen << 0 << 2 << 0 << 1, S.priv_column()));
+    EXPECT_TRUE(all_equal(gen<elt_t>(1.0) << 4.0 << 2.0 << 3.0, S.priv_data()));
+    EXPECT_TRUE(all_equal(full(S), T));
     }
   }
 
@@ -163,10 +163,10 @@ namespace tensor_test {
     Sparse<elt_t> S = Sparse<elt_t>::eye(1,1);
     EXPECT_EQ(1, S.rows());
     EXPECT_EQ(1, S.columns());
-    EXPECT_EQ(igen << 0 << 1, S.priv_row_start());
-    EXPECT_EQ(igen << 0, S.priv_column());
-    EXPECT_EQ(gen<elt_t>(1.0), S.priv_data());
-    EXPECT_EQ(full(S), Tensor<elt_t>::eye(1,1));
+    EXPECT_TRUE(all_equal(igen << 0 << 1, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(igen << 0, S.priv_column()));
+    EXPECT_TRUE(all_equal(gen<elt_t>(1.0), S.priv_data()));
+    EXPECT_TRUE(all_equal(full(S), Tensor<elt_t>::eye(1,1)));
     }
     {
     // speye(2,1)
@@ -174,10 +174,10 @@ namespace tensor_test {
     Sparse<elt_t> S = Sparse<elt_t>::eye(2,1);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(1, S.columns());
-    EXPECT_EQ(igen << 0 << 1 << 1, S.priv_row_start());
-    EXPECT_EQ(igen << 0, S.priv_column());
-    EXPECT_EQ(gen<elt_t>(1.0), S.priv_data());
-    EXPECT_EQ(full(S), Tensor<elt_t>::eye(2,1));
+    EXPECT_TRUE(all_equal(igen << 0 << 1 << 1, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(igen << 0, S.priv_column()));
+    EXPECT_TRUE(all_equal(gen<elt_t>(1.0), S.priv_data()));
+    EXPECT_TRUE(all_equal(full(S), Tensor<elt_t>::eye(2,1)));
     }
     {
     // speye(1,2)
@@ -185,10 +185,10 @@ namespace tensor_test {
     Sparse<elt_t> S = Sparse<elt_t>::eye(1,2);
     EXPECT_EQ(1, S.rows());
     EXPECT_EQ(2, S.columns());
-    EXPECT_EQ(igen << 0 << 1, S.priv_row_start());
-    EXPECT_EQ(igen << 0, S.priv_column());
-    EXPECT_EQ(gen<elt_t>(1.0), S.priv_data());
-    EXPECT_EQ(full(S), Tensor<elt_t>::eye(1,2));
+    EXPECT_TRUE(all_equal(igen << 0 << 1, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(igen << 0, S.priv_column()));
+    EXPECT_TRUE(all_equal(gen<elt_t>(1.0), S.priv_data()));
+    EXPECT_TRUE(all_equal(full(S), Tensor<elt_t>::eye(1,2)));
     }
   }
 
@@ -209,12 +209,12 @@ namespace tensor_test {
     Tensor<elt_t> taux = Tensor<elt_t>::eye(rows, cols);
     Sparse<elt_t> saux = Sparse<elt_t>::eye(rows, cols);
 
-    EXPECT_EQ(Indices::range(0,k-1), saux.priv_column());
+    EXPECT_TRUE(all_equal(Indices::range(0,k-1), saux.priv_column()));
     Vector<elt_t> v(k);
     std::fill(v.begin(), v.end(), number_one<elt_t>());
-    EXPECT_EQ(v, saux.priv_data());
-    EXPECT_EQ(taux, full(saux));
-    EXPECT_EQ(Sparse<elt_t>(taux), saux);
+    EXPECT_TRUE(all_equal(v, saux.priv_data()));
+    EXPECT_TRUE(all_equal(taux, full(saux)));
+    EXPECT_TRUE(all_equal(Sparse<elt_t>(taux), saux));
     EXPECT_EQ(rows, saux.rows());
     EXPECT_EQ(cols, saux.columns());
     EXPECT_EQ(rows+1, saux.priv_row_start().size());
@@ -242,10 +242,10 @@ namespace tensor_test {
     Sparse<elt_t> S = Sparse<elt_t>::random(0,0);
     EXPECT_EQ(0, S.rows());
     EXPECT_EQ(0, S.columns());
-    EXPECT_EQ(igen << 0, S.priv_row_start());
-    EXPECT_EQ(Indices(), S.priv_column());
-    EXPECT_EQ(Vector<elt_t>(), S.priv_data());
-    EXPECT_EQ(Tensor<elt_t>(0,0), full(S));
+    EXPECT_TRUE(all_equal(igen << 0, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
+    EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>(0,0), full(S)));
     }
     {
     // sprandom(0,1)
@@ -253,10 +253,10 @@ namespace tensor_test {
     Sparse<elt_t> S = Sparse<elt_t>::random(0,1);
     EXPECT_EQ(0, S.rows());
     EXPECT_EQ(1, S.columns());
-    EXPECT_EQ(igen << 0, S.priv_row_start());
-    EXPECT_EQ(Indices(), S.priv_column());
-    EXPECT_EQ(Vector<elt_t>(), S.priv_data());
-    EXPECT_EQ(Tensor<elt_t>(0,1), full(S));
+    EXPECT_TRUE(all_equal(igen << 0, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
+    EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>(0,1), full(S)));
     }
     {
     // sprandom(2,0)
@@ -264,10 +264,10 @@ namespace tensor_test {
     Sparse<elt_t> S = Sparse<elt_t>::random(2,0);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(0, S.columns());
-    EXPECT_EQ(igen << 0 << 0 << 0, S.priv_row_start());
-    EXPECT_EQ(Indices(), S.priv_column());
-    EXPECT_EQ(Vector<elt_t>(), S.priv_data());
-    EXPECT_EQ(Tensor<elt_t>(2,0), full(S));
+    EXPECT_TRUE(all_equal(igen << 0 << 0 << 0, S.priv_row_start()));
+    EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
+    EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>(2,0), full(S)));
     }
   }
 
@@ -290,7 +290,7 @@ namespace tensor_test {
     EXPECT_EQ(rows, s.rows());
     EXPECT_EQ(cols, s.columns());
     Tensor<elt_t> t = full(s);
-    EXPECT_EQ(Sparse<elt_t>(t), s);
+    EXPECT_TRUE(all_equal(Sparse<elt_t>(t), s));
     tensor::index zero = std::count(t.begin(), t.end(), number_zero<elt_t>());
     tensor::index nonzero = t.size() - zero;
     EXPECT_EQ(nonzero, s.length());
@@ -303,7 +303,7 @@ namespace tensor_test {
       EXPECT_EQ(rows, s.rows());
       EXPECT_EQ(cols, s.columns());
       Tensor<elt_t> t = full(s);
-      EXPECT_EQ(Sparse<elt_t>(t), s);
+      EXPECT_TRUE(all_equal(Sparse<elt_t>(t), s));
       tensor::index zero = std::count(t.begin(), t.end(), number_zero<elt_t>());
       tensor::index nonzero = t.size() - zero;
       EXPECT_EQ(nonzero, s.length());
@@ -334,7 +334,7 @@ namespace tensor_test {
 
       unchanged(tcopy, t);
       EXPECT_EQ(nonzeros, s.length());
-      EXPECT_EQ(t, full(s));
+      EXPECT_TRUE(all_equal(t, full(s)));
       EXPECT_EQ(nonzeros, s.priv_column().size());
       EXPECT_EQ(nonzeros, s.priv_data().size());
       EXPECT_EQ(t.rows()+1, s.priv_row_start().size());
@@ -366,9 +366,9 @@ namespace tensor_test {
     Sparse<cdouble> sc = to_complex(s);
     EXPECT_EQ(t.rows(), sc.rows());
     EXPECT_EQ(t.columns(), sc.columns());
-    EXPECT_EQ(to_complex(full(s)), full(sc));
-    EXPECT_EQ(s.priv_row_start(), sc.priv_row_start());
-    EXPECT_EQ(s.priv_column(), sc.priv_column());
+    EXPECT_TRUE(all_equal(to_complex(full(s)), full(sc)));
+    EXPECT_TRUE(all_equal(s.priv_row_start(), sc.priv_row_start()));
+    EXPECT_TRUE(all_equal(s.priv_column(), sc.priv_column()));
   }
 
   TEST(RSparseTest, RSparseToComplex) {

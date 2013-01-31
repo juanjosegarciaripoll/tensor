@@ -39,10 +39,10 @@ namespace tensor_test {
 	const Tensor<elt_t3> P2 = P - Paux;
 	const Tensor<elt_t3> P3 = P * Paux;
 	const Tensor<elt_t3> P4 = P / Paux;
-	EXPECT_EQ(P1.dimensions(), P.dimensions());
-	EXPECT_EQ(P2.dimensions(), P.dimensions());
-	EXPECT_EQ(P3.dimensions(), P.dimensions());
-	EXPECT_EQ(P4.dimensions(), P.dimensions());
+	EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P2.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P3.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P4.dimensions(), P.dimensions()));
 	for (size_t i = 0; i < P.size(); i++) {
 	  ASSERT_EQ(P1[i], P[i] + Paux[i]) << "P[i]=" << P[i] << ", Paux[i]=" << Paux[i];
 	  ASSERT_EQ(P2[i], P[i] - Paux[i]) << "P[i]=" << P[i] << ", Paux[i]=" << Paux[i];
@@ -68,10 +68,10 @@ namespace tensor_test {
 	const Tensor<elt_t3> P2 = P - aux;
 	const Tensor<elt_t3> P3 = P * aux;
 	const Tensor<elt_t3> P4 = P / aux;
-	EXPECT_EQ(P1.dimensions(), P.dimensions());
-	EXPECT_EQ(P2.dimensions(), P.dimensions());
-	EXPECT_EQ(P3.dimensions(), P.dimensions());
-	EXPECT_EQ(P4.dimensions(), P.dimensions());
+	EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P2.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P3.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P4.dimensions(), P.dimensions()));
 	for (size_t i = 0; i < P.size(); i++) {
 	  ASSERT_EQ(P1[i], P[i] + aux) << "P[i]=" << P[i] << ", aux=" << aux;
 	  ASSERT_EQ(P2[i], P[i] - aux) << "P[i]=" << P[i] << ", aux=" << aux;
@@ -97,10 +97,10 @@ namespace tensor_test {
 	const Tensor<elt_t3> P2 = aux - P;
 	const Tensor<elt_t3> P3 = aux * P;
 	const Tensor<elt_t3> P4 = aux / P;
-	EXPECT_EQ(P1.dimensions(), P.dimensions());
-	EXPECT_EQ(P2.dimensions(), P.dimensions());
-	EXPECT_EQ(P3.dimensions(), P.dimensions());
-	EXPECT_EQ(P4.dimensions(), P.dimensions());
+	EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P2.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P3.dimensions(), P.dimensions()));
+	EXPECT_TRUE(all_equal(P4.dimensions(), P.dimensions()));
 	for (size_t i = 0; i < P.size(); i++) {
 	  ASSERT_EQ(P1[i], aux + P[i]) << "P[i]=" << P[i] << ", aux=" << aux;
 	  ASSERT_EQ(P2[i], aux - P[i]) << "P[i]=" << P[i] << ", aux=" << aux;

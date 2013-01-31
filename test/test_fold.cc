@@ -50,13 +50,13 @@ namespace tensor_test {
                     AB = fold(A,i,B,j),
                     sAB = slow_fold(A,i,B,j);
                   // Compare optimized routine with safer, slow ones
-                  EXPECT_EQ(AB.dimensions(), sAB.dimensions());
+                  EXPECT_TRUE(all_equal(AB.dimensions(), sAB.dimensions()));
                   EXPECT_EQ(expected_size, AB.size());
                   EXPECT_TRUE(approx_eq(AB, sAB));
                   // Negative indices conditions
-                  EXPECT_EQ(AB, fold(A, i - rankA, B, j));
-                  EXPECT_EQ(AB, fold(A, i, B, j - rankB));
-                  EXPECT_EQ(AB, fold(A, i - rankA, B, j - rankB));
+                  EXPECT_TRUE(all_equal(AB, fold(A, i - rankA, B, j)));
+                  EXPECT_TRUE(all_equal(AB, fold(A, i, B, j - rankB)));
+                  EXPECT_TRUE(all_equal(AB, fold(A, i - rankA, B, j - rankB)));
                   // Original tensors are not changed
                   unique(A);
                   unique(B);

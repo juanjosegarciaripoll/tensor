@@ -39,10 +39,10 @@ namespace tensor_test {
       t B = psi.matrix(1);
       t lA = psi.right_vector(0);
       t lB = psi.right_vector(1);
-      EXPECT_EQ(A.dimensions(), igen << 1 << d << 1);
-      EXPECT_EQ(B.dimensions(), igen << 1 << d << 1);
-      EXPECT_EQ(lA, t(igen << 1, gen<typename t::elt_t>(1)));
-      EXPECT_EQ(lB, lA);
+      EXPECT_TRUE(all_equal(A.dimensions(), igen << 1 << d << 1));
+      EXPECT_TRUE(all_equal(B.dimensions(), igen << 1 << d << 1));
+      EXPECT_TRUE(all_equal(lA, t(igen << 1, gen<typename t::elt_t>(1))));
+      EXPECT_TRUE(all_equal(lB, lA));
       EXPECT_TRUE(norm2(A - B) == 0);
     }
   }
@@ -64,9 +64,9 @@ namespace tensor_test {
       t lB = psi.right_vector(1);
       EXPECT_TRUE(approx_eq(psi.matrix(0), reshape(A, 1, d, 1)));
       EXPECT_TRUE(approx_eq(psi.matrix(1), reshape(A, 1, d, 1)));
-      EXPECT_EQ(lA, t(igen << 1, gen<typename t::elt_t>(1)));
-      EXPECT_EQ(lB, lA);
-      EXPECT_EQ(psi.matrix(0), psi.matrix(1));
+      EXPECT_TRUE(all_equal(lA, t(igen << 1, gen<typename t::elt_t>(1))));
+      EXPECT_TRUE(all_equal(lB, lA));
+      EXPECT_TRUE(all_equal(psi.matrix(0), psi.matrix(1)));
     }
   }
 
@@ -90,12 +90,12 @@ namespace tensor_test {
       t lB = psi.right_vector(1);
       EXPECT_TRUE(approx_eq(psi.matrix(0), reshape(A, 1, d, 1)));
       EXPECT_TRUE(approx_eq(psi.matrix(1), reshape(B, 1, d, 1)));
-      EXPECT_EQ(lA, t(igen << 1, gen<typename t::elt_t>(1)));
-      EXPECT_EQ(lB, lA);
-      EXPECT_EQ(psi.matrix(0), psi.matrix(2));
-      EXPECT_EQ(psi.matrix(0), psi.matrix(-2));
-      EXPECT_EQ(psi.matrix(1), psi.matrix(3));
-      EXPECT_EQ(psi.matrix(1), psi.matrix(-1));
+      EXPECT_TRUE(all_equal(lA, t(igen << 1, gen<typename t::elt_t>(1))));
+      EXPECT_TRUE(all_equal(lB, lA));
+      EXPECT_TRUE(all_equal(psi.matrix(0), psi.matrix(2)));
+      EXPECT_TRUE(all_equal(psi.matrix(0), psi.matrix(-2)));
+      EXPECT_TRUE(all_equal(psi.matrix(1), psi.matrix(3)));
+      EXPECT_TRUE(all_equal(psi.matrix(1), psi.matrix(-1)));
     }
   }
 

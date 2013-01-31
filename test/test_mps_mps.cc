@@ -125,7 +125,7 @@ namespace tensor_test {
     EXPECT_EQ(state.size(), size);
     psi = reshape(psi, 1, psi.size(), 1);
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(state[i], psi);
+      EXPECT_TRUE(all_equal(state[i], psi));
     }
   }
 

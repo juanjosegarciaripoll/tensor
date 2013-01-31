@@ -62,19 +62,18 @@ namespace tensor_test {
       Tensor<elt_t> Imn = Tensor<elt_t>::eye(m,n);
       Tensor<elt_t> Imm = Tensor<elt_t>::eye(m,m);
       Tensor<elt_t> Inn = Tensor<elt_t>::eye(n,n);
-      Tensor<elt_t> V1(std::min(m,n));
-      V1.fill_with(number_one<elt_t>());
+      RTensor s1 = RTensor::ones(igen << std::min(m,n));
       Tensor<elt_t> U, V;
       RTensor s;
       
       s = linalg::svd(Imn, &U, &V, false);
-      EXPECT_EQ(Imm, U);
-      EXPECT_EQ(Inn, V);
-      EXPECT_EQ(s, V1);
+      EXPECT_TRUE(all_equal(Imm, U));
+      EXPECT_TRUE(all_equal(Inn, V));
+      EXPECT_TRUE(all_equal(s, s1));
       s = linalg::svd(Imn, &U, &V, true);
-      EXPECT_EQ(U, m<n? Imm : Imn);
-      EXPECT_EQ(V, m<n? Imn : Inn);
-      EXPECT_EQ(s, V1);
+      EXPECT_TRUE(all_equal(U, m<n? Imm : Imn));
+      EXPECT_TRUE(all_equal(V, m<n? Imn : Inn));
+      EXPECT_TRUE(all_equal(s, s1));
     }
   }
 
@@ -101,13 +100,13 @@ namespace tensor_test {
         RTensor s = linalg::svd(A, &U, &Vt, false);
         EXPECT_TRUE(unitaryp(U,1e-10));
         EXPECT_TRUE(unitaryp(Vt,1e-10));
-        EXPECT_EQ(abs(s), s);
+        EXPECT_TRUE(all_equal(abs(s), s));
         EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s, 0,m,n), Vt))));
 
         EXPECT_TRUE(approx_eq(true_s, s));
 
         RTensor s2 = linalg::svd(A, &U, &Vt, true);
-        EXPECT_EQ(s, s2);
+        EXPECT_TRUE(all_equal(s, s2));
         EXPECT_TRUE(unitaryp(U));
         EXPECT_TRUE(unitaryp(Vt));
         EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s), Vt))));

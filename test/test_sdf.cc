@@ -39,16 +39,16 @@ TEST(SDF, RTensor) {
     InDataFile f("foo.dat");
     RTensor aux;
     f.load(&aux, "a");
-    EXPECT_EQ(a, aux);
+    EXPECT_TRUE(all_equal(a, aux));
     double x;
     f.load(&x, "a0");
     EXPECT_EQ(x, a[0]);
     f.load(&aux, "b");
-    EXPECT_EQ(b, aux);
+    EXPECT_TRUE(all_equal(b, aux));
     f.load(&aux, "c");
-    EXPECT_EQ(c, aux);
+    EXPECT_TRUE(all_equal(c, aux));
     f.load(&aux, "d");
-    EXPECT_EQ(d, aux);
+    EXPECT_TRUE(all_equal(d, aux));
   }
   unlink("foo.dat");
 }
@@ -71,16 +71,16 @@ TEST(SDF, CTensor) {
     InDataFile f("foo.dat");
     CTensor aux;
     f.load(&aux, "a");
-    EXPECT_EQ(a, aux);
+    EXPECT_TRUE(all_equal(a, aux));
     cdouble x;
     f.load(&x, "a0");
     EXPECT_EQ(x, a[0]);
     f.load(&aux, "b");
-    EXPECT_EQ(b, aux);
+    EXPECT_TRUE(all_equal(b, aux));
     f.load(&aux, "c");
-    EXPECT_EQ(c, aux);
+    EXPECT_TRUE(all_equal(c, aux));
     f.load(&aux, "d");
-    EXPECT_EQ(d, aux);
+    EXPECT_TRUE(all_equal(d, aux));
   }
   unlink("foo.dat");
 }

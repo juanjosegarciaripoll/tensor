@@ -44,7 +44,7 @@ namespace tensor_test {
 	}
 	Sparse<elt_t> sparse(igen << i << i, row, col, d);
 	Tensor<elt_t> exact = diag(d, j, i, i);
-	EXPECT_EQ(sparse, exact);
+	EXPECT_TRUE(all_equal(sparse, exact));
       }
     }
   }

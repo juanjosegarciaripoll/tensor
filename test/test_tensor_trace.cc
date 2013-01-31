@@ -45,18 +45,18 @@ namespace tensor_test {
 	elt_t t = slow_trace(A);
 	Tensor<elt_t> T = Tensor<elt_t>(igen << 1, gen(t));
 	EXPECT_EQ(trace(A), t);
-	EXPECT_EQ(trace(A, 0, -1), T);
-	EXPECT_EQ(trace(reshape(A, 1, rows, cols), 1, 2), T);
-	EXPECT_EQ(trace(reshape(A, 1, rows, 1, cols), 1, 3),
-		  reshape(T, 1, 1));
-	EXPECT_EQ(trace(reshape(A, 1, rows, 1, cols, 1), 1, 3),
-		  reshape(T, 1, 1, 1));
-	EXPECT_EQ(trace(reshape(A, 1, rows, cols, 1), 1, 2),
-		  reshape(T, 1, 1));
-	EXPECT_EQ(trace(reshape(A, rows, 1, cols, 1), 0, 2),
-		  reshape(T, 1, 1));
-	EXPECT_EQ(trace(reshape(A, rows, 1, cols), 0, 2),
-		  T);
+	EXPECT_TRUE(all_equal(trace(A, 0, -1), T));
+	EXPECT_TRUE(all_equal(trace(reshape(A, 1, rows, cols), 1, 2), T));
+	EXPECT_TRUE(all_equal(trace(reshape(A, 1, rows, 1, cols), 1, 3),
+                              reshape(T, 1, 1)));
+	EXPECT_TRUE(all_equal(trace(reshape(A, 1, rows, 1, cols, 1), 1, 3),
+                              reshape(T, 1, 1, 1)));
+	EXPECT_TRUE(all_equal(trace(reshape(A, 1, rows, cols, 1), 1, 2),
+                              reshape(T, 1, 1)));
+	EXPECT_TRUE(all_equal(trace(reshape(A, rows, 1, cols, 1), 0, 2),
+                              reshape(T, 1, 1)));
+	EXPECT_TRUE(all_equal(trace(reshape(A, rows, 1, cols), 0, 2),
+                              T));
       }
     }
   }

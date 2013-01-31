@@ -195,7 +195,7 @@ namespace tensor_test {
         EXPECT_EQ(dP.size(), dA.size());
         EXPECT_TRUE(std::equal(dP.begin(), dP.end(), dA.begin()));
         if (i == j) {
-          EXPECT_EQ(A, P);
+          EXPECT_TRUE(all_equal(A, P));
         } else {
           int code = (i < j)?
                      (i+1)*100 + (j+1)*10 + A.rank() :

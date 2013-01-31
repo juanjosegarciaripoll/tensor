@@ -68,8 +68,8 @@ namespace tensor_test {
         Tensor<elt_t> b(*(it++));
         Tensor<elt_t> k(*(it++));
 
-        ASSERT_EQ(k, kron(a, b));
-        ASSERT_EQ(kron(b, a), kron2(a, b));
+        ASSERT_TRUE(all_equal(k, kron(a, b)));
+        ASSERT_TRUE(all_equal(kron(b, a), kron2(a, b)));
       }
   }
 
@@ -109,7 +109,7 @@ namespace tensor_test {
   {
     a.randomize();
     b.randomize();
-    ASSERT_EQ(slow_kron(a,b), kron(a,b));
+    ASSERT_TRUE(all_equal(slow_kron(a,b), kron(a,b)));
   }
 
   TEST(RTensorKronTest, CompareWithSlowKron) {
