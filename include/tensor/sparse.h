@@ -132,7 +132,7 @@ namespace tensor {
   // Comparison
   //
   template<typename t1, typename t2>
-  inline bool operator==(const Sparse<t1> &s1, const Sparse<t2> &s2) {
+  inline bool all_equal(const Sparse<t1> &s1, const Sparse<t2> &s2) {
     return (s1.dimensions() == s2.dimensions()) &&
       (s1.priv_row_start() == s2.priv_row_start()) &&
       (s1.priv_column() == s2.priv_column()) &&
@@ -140,12 +140,12 @@ namespace tensor {
   }
 
   template<typename t1, typename t2>
-  inline bool operator==(const Sparse<t1> &s1, const Tensor<t2> &s2) {
+  inline bool all_equal(const Sparse<t1> &s1, const Tensor<t2> &s2) {
     return full(s1) == s2;
   }
 
   template<typename t1, typename t2>
-  inline bool operator==(const Tensor<t1> &s1, const Sparse<t2> &s2) {
+  inline bool all_equal(const Tensor<t1> &s1, const Sparse<t2> &s2) {
     return full(s2) == s1;
   }
 
