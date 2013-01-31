@@ -81,19 +81,6 @@ Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a,
   return output;
 }
 
-template<typename t1, typename t2>
-bool equal(const Tensor<t1> &a, const Tensor<t2> &b) {
-  if (verify_tensor_dimensions_match(a.dimensions(), b.dimensions()))
-    if (std::equal(a.begin(), a.end(), b.begin()))
-      return true;
-  return false;
-}
-
-template<typename t1, typename t2>
-bool unequal(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return !equal(a, b);
-}
-
 //
 // TENSOR <OP> NUMBER
 //

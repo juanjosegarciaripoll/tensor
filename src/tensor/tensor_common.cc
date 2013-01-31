@@ -62,7 +62,7 @@ bool verify_tensor_dimensions(const Indices &d, index total_size) {
 }
 
 bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2) {
-  if ((d1.size() != d2.size()) || !(d1 == d2)) {
+  if ((d1.size() != d2.size()) || some_unequal(d1, d2)) {
     std::cerr << "A binary operation was attempted among two tensors" << std::endl
               << "with different dimensions:" << std::endl
               << "d1 = " << d1 << std::endl

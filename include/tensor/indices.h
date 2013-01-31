@@ -41,7 +41,6 @@ namespace tensor {
 
     static const Indices range(index min, index max, index step = 1);
 
-    bool operator==(const Indices &other) const;
     index total_size() const;
   };
 
@@ -58,6 +57,29 @@ namespace tensor {
   };
   const Booleans operator!(const Booleans &b);
   const Indices which(const Booleans &b);
+
+  bool all_equal(const Indices &a, const Indices &b);
+  inline bool some_unequal(const Indices &a, const Indices &b) { return !all_equal(a,b); }
+  const Booleans operator==(const Indices &a, const Indices &b);
+  const Booleans operator<(const Indices &a, const Indices &b);
+  const Booleans operator>(const Indices &a, const Indices &b);
+  const Booleans operator<=(const Indices &a, const Indices &b);
+  const Booleans operator>=(const Indices &a, const Indices &b);
+  const Booleans operator!=(const Indices &a, const Indices &b);
+
+  const Booleans operator==(const Indices &a, index b);
+  const Booleans operator<(const Indices &a, index b);
+  const Booleans operator>(const Indices &a, index b);
+  const Booleans operator<=(const Indices &a, index b);
+  const Booleans operator>=(const Indices &a, index b);
+  const Booleans operator!=(const Indices &a, index b);
+
+  inline const Booleans operator==(index a, const Indices &b) { return b == a; }
+  inline const Booleans operator<(index a, const Indices &b) { return b >= a; }
+  inline const Booleans operator>(index a, const Indices &b) { return b <= a; }
+  inline const Booleans operator<=(index a, const Indices &b) { return b > a; }
+  inline const Booleans operator>=(index a, const Indices &b) {  return b < a; }
+  inline const Booleans operator!=(index a, const Indices &b) { return b != a; }
 
   //////////////////////////////////////////////////////////////////////
   // RANGE OF INTEGERS

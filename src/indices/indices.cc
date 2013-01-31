@@ -29,9 +29,9 @@ namespace tensor {
 
   template class Vector<index>;
 
-  bool Indices::operator==(const Indices &other) const {
-    return (this->size() == other.size()) &&
-      std::equal(other.begin_const(), other.end_const(), this->begin_const());
+  bool all_equal(const Indices &a, const Indices &b) {
+    return (a.size() == b.size()) &&
+      std::equal(a.begin_const(), a.end_const(), b.begin_const());
   }
 
   index Indices::total_size() const {

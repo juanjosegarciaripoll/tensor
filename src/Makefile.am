@@ -74,6 +74,7 @@ libtensor_la_SOURCES = \
 	tensor/tensor_squeeze_z.cc \
 	tensor/tensor_take_diag_d.cc \
 	tensor/tensor_take_diag_z.cc \
+	compare/rtensor_rtensor_all_equal.cc \
 	compare/rtensor_rtensor_e.cc \
 	compare/rtensor_rtensor_l.cc \
 	compare/rtensor_rtensor_g.cc \
@@ -86,6 +87,23 @@ libtensor_la_SOURCES = \
 	compare/rtensor_double_le.cc \
 	compare/rtensor_double_ge.cc \
 	compare/rtensor_double_ne.cc \
+	compare/ctensor_ctensor_all_equal.cc \
+	compare/ctensor_ctensor_e.cc \
+	compare/ctensor_ctensor_ne.cc \
+	compare/ctensor_cdouble_e.cc \
+	compare/ctensor_cdouble_ne.cc \
+	compare/indices_indices_e.cc \
+	compare/indices_indices_l.cc \
+	compare/indices_indices_g.cc \
+	compare/indices_indices_le.cc \
+	compare/indices_indices_ge.cc \
+	compare/indices_indices_ne.cc \
+	compare/indices_index_e.cc \
+	compare/indices_index_l.cc \
+	compare/indices_index_g.cc \
+	compare/indices_index_le.cc \
+	compare/indices_index_ge.cc \
+	compare/indices_index_ne.cc \
 	generated/tensor_unop_abs_d.cc \
 	generated/tensor_unop_sqrt_d.cc \
 	generated/tensor_unop_exp_d.cc \

@@ -318,10 +318,6 @@ template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a, const Tensor<t2> &b);
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a, const Tensor<t2> &b);
-template<typename t1, typename t2>
-bool equal(const Tensor<t1> &a, const Tensor<t2> &b);
-template<typename t1, typename t2>
-bool unequal(const Tensor<t1> &a, const Tensor<t2> &b);
 
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a, const t2 &b);
@@ -412,6 +408,10 @@ namespace tensor {
   void fold_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b, int ndx2);
   void foldin_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b, int ndx2);
   void mmult_into(RTensor &output, const RTensor &a, const RTensor &b);
+
+  const bool all_equal(const RTensor &a, const RTensor &b);
+  template<typename t1, typename t2>
+  inline bool some_unequal(const t1 &a, const t2 &b) { return !all_equal(a,b); }
 
   const Booleans operator==(const RTensor &a, const RTensor &b);
   const Booleans operator<(const RTensor &a, const RTensor &b);
@@ -514,6 +514,14 @@ namespace tensor {
 
   const CTensor sort(const CTensor &v, bool reverse = false);
   const Indices sort_indices(const CTensor &v, bool reverse = false);
+
+  const bool all_equal(const CTensor &a, const CTensor &b);
+  const Booleans operator==(const CTensor &a, const CTensor &b);
+  const Booleans operator!=(const CTensor &a, const CTensor &b);
+  const Booleans operator==(const CTensor &a, cdouble b);
+  const Booleans operator!=(const CTensor &a, cdouble b);
+  inline const Booleans operator==(cdouble a, const CTensor &b) { return b == a; }
+  inline const Booleans operator!=(cdouble a, const CTensor &b) { return b != a; }
 
 } // namespace tensor
 
