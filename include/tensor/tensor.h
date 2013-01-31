@@ -319,9 +319,9 @@ Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a, const Tensor<
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a, const Tensor<t2> &b);
 template<typename t1, typename t2>
-bool operator==(const Tensor<t1> &a, const Tensor<t2> &b);
+bool equal(const Tensor<t1> &a, const Tensor<t2> &b);
 template<typename t1, typename t2>
-bool operator!=(const Tensor<t1> &a, const Tensor<t2> &b);
+bool unequal(const Tensor<t1> &a, const Tensor<t2> &b);
 
 template<typename t1, typename t2>
 Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a, const t2 &b);

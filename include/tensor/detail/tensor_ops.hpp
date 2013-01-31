@@ -82,7 +82,7 @@ Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a,
 }
 
 template<typename t1, typename t2>
-bool operator==(const Tensor<t1> &a, const Tensor<t2> &b) {
+bool equal(const Tensor<t1> &a, const Tensor<t2> &b) {
   if (verify_tensor_dimensions_match(a.dimensions(), b.dimensions()))
     if (std::equal(a.begin(), a.end(), b.begin()))
       return true;
@@ -90,8 +90,8 @@ bool operator==(const Tensor<t1> &a, const Tensor<t2> &b) {
 }
 
 template<typename t1, typename t2>
-bool operator!=(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return !operator==(a, b);
+bool unequal(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return !equal(a, b);
 }
 
 //
