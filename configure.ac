@@ -61,7 +61,6 @@ AC_PROG_F77([f77])
 AC_F77_LIBRARY_LDFLAGS
 AC_F77_WRAPPERS
 AM_CONDITIONAL(TENSOR_ARPACK, [test $with_arpack = yes])
-echo FOOLISH $F77
 if test "$F77" = "f77"; then
    f2c_version=`$F77 -v`
    case $f2c_version in
