@@ -15,7 +15,7 @@ AC_CONFIG_AUX_DIR([config_aux])		dnl Where to put autoconf files
 AC_CONFIG_HEADERS([config_aux/config.h])	dnl Automatically generated
 AC_CONFIG_FILES([Makefile src/Makefile include/Makefile
                  scripts/Makefile test/Makefile www/Makefile
-                 essl_lapack/Makefile arpack-ng/Makefile])
+                 essl_lapack/Makefile])
 AC_CONFIG_FILES([scripts/tensor-config], [chmod +x scripts/tensor-config])
 AC_CONFIG_HEADERS([include/tensor/config.h:include/tensor/config.h.in])
 
@@ -61,6 +61,18 @@ AC_PROG_F77([f77])
 AC_F77_LIBRARY_LDFLAGS
 AC_F77_WRAPPERS
 AM_CONDITIONAL(TENSOR_ARPACK, [test $with_arpack = yes])
+echo FOOLISH $F77
+if test "$F77" = "f77"; then
+   f2c_version=`$F77 -v`
+   case $f2c_version in
+     F2C*C99*) lt_prog_compiler_pic_F77="$lt_prog_compiler_pic_CXX"
+               lt_prog_compiler_wl_F77="$lt_prog_compiler_wl_CXX"
+               lt_prog_compiler_static_F77="$lt_prog_compiler_static_CXX"
+	       lt_prog_compiler_pic_works_F77="$lt_prog_compiler_pic_works_CXX"
+	       lt_prog_compiler_static_works_F77="$lt_prog_compiler_static_works_CXX"
+               ;;
+   esac
+fi
 
 # Initialization code for the fortran library
 TENSOR_F77_INIT_CODE

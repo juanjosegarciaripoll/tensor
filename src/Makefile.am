@@ -134,16 +134,102 @@ libtensor_la_SOURCES = \
 	linalg/eig_power_z.cc \
 	linalg/eig_sym_d.cc \
 	linalg/eig_sym_z.cc \
-	arpack/arpack_d.cc \
-	arpack/arpack_z.cc \
-	arpack/eigs_d.cc \
-	arpack/eigs_z.cc \
 	views/range.cc \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \
 	sdf/odata_file.cc
-libtensor_la_LIBADD = ../arpack-ng/libarpack.la
+
+arpack_ng_src =					\
+	../arpack-ng/sgetv0.f			\
+	../arpack-ng/slaqrb.f			\
+	../arpack-ng/sstqrb.f			\
+	../arpack-ng/ssortc.f			\
+	../arpack-ng/ssortr.f			\
+	../arpack-ng/sstatn.f			\
+	../arpack-ng/sstats.f			\
+	../arpack-ng/snaitr.f			\
+	../arpack-ng/snapps.f			\
+	../arpack-ng/snaup2.f			\
+	../arpack-ng/snaupd.f			\
+	../arpack-ng/snconv.f			\
+	../arpack-ng/sneigh.f			\
+	../arpack-ng/sngets.f			\
+	../arpack-ng/ssaitr.f			\
+	../arpack-ng/ssapps.f			\
+	../arpack-ng/ssaup2.f			\
+	../arpack-ng/ssaupd.f			\
+	../arpack-ng/ssconv.f			\
+	../arpack-ng/sseigt.f			\
+	../arpack-ng/ssgets.f			\
+	../arpack-ng/sneupd.f			\
+	../arpack-ng/sseupd.f			\
+	../arpack-ng/ssesrt.f			\
+	../arpack-ng/dgetv0.f			\
+	../arpack-ng/dlaqrb.f			\
+	../arpack-ng/dstqrb.f			\
+	../arpack-ng/dsortc.f			\
+	../arpack-ng/dsortr.f			\
+	../arpack-ng/dstatn.f			\
+	../arpack-ng/dstats.f			\
+	../arpack-ng/dnaitr.f			\
+	../arpack-ng/dnapps.f			\
+	../arpack-ng/dnaup2.f			\
+	../arpack-ng/dnaupd.f			\
+	../arpack-ng/dnconv.f			\
+	../arpack-ng/dneigh.f			\
+	../arpack-ng/dngets.f			\
+	../arpack-ng/dsaitr.f			\
+	../arpack-ng/dsapps.f			\
+	../arpack-ng/dsaup2.f			\
+	../arpack-ng/dsaupd.f			\
+	../arpack-ng/dsconv.f			\
+	../arpack-ng/dseigt.f			\
+	../arpack-ng/dsgets.f			\
+	../arpack-ng/dneupd.f			\
+	../arpack-ng/dseupd.f			\
+	../arpack-ng/dsesrt.f			\
+	../arpack-ng/cnaitr.f			\
+	../arpack-ng/cnapps.f			\
+	../arpack-ng/cnaup2.f			\
+	../arpack-ng/cnaupd.f			\
+	../arpack-ng/cneigh.f			\
+	../arpack-ng/cneupd.f			\
+	../arpack-ng/cngets.f			\
+	../arpack-ng/cgetv0.f			\
+	../arpack-ng/csortc.f			\
+	../arpack-ng/cstatn.f			\
+	../arpack-ng/znaitr.f			\
+	../arpack-ng/znapps.f			\
+	../arpack-ng/znaup2.f			\
+	../arpack-ng/znaupd.f			\
+	../arpack-ng/zneigh.f			\
+	../arpack-ng/zneupd.f			\
+	../arpack-ng/zngets.f			\
+	../arpack-ng/zgetv0.f			\
+	../arpack-ng/zsortc.f			\
+	../arpack-ng/zstatn.f
+arpack_ng_util =				\
+	../arpack-ng/icnteq.f			\
+	../arpack-ng/icopy.f			\
+	../arpack-ng/iset.f			\
+	../arpack-ng/iswap.f			\
+	../arpack-ng/ivout.f			\
+	../arpack-ng/second_NONE.f		\
+	../arpack-ng/svout.f			\
+	../arpack-ng/smout.f			\
+	../arpack-ng/dvout.f			\
+	../arpack-ng/dmout.f			\
+	../arpack-ng/cvout.f			\
+	../arpack-ng/cmout.f			\
+	../arpack-ng/zvout.f			\
+	../arpack-ng/zmout.f
 if TENSOR_ARPACK
+libtensor_la_SOURCES +=				\
+	arpack/arpack_d.cc			\
+	arpack/arpack_z.cc			\
+	arpack/eigs_d.cc			\
+	arpack/eigs_z.cc			\
+	$(arpack_ng_src) $(arpack_ng_util)
 libtensor_la_LDFLAGS = $(FLIBS)
 endif
 
@@ -221,8 +307,6 @@ generated/tensor_unop_abs_d.cc: tensor/tensor_unop.cc Makefile
 	sed -e "s,TYPE1,Tensor<double>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" $< > $@
 generated/tensor_unop_abs_z.cc: tensor/tensor_unop.cc Makefile
 	sed -e "s,TYPE1,Tensor<cdouble>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" $< > $@
-../arpack-ng/libarpack.la: ../arpack-ng/Makefile
-	cd $(top_builddir)/arpack-ng && make
 
 if HAVE_64BITS
 libtensor_la_SOURCES += rand/rand64.cc
