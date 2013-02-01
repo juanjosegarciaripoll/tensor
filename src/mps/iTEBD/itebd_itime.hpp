@@ -50,7 +50,8 @@ namespace mps {
 	       double tolerance, tensor::index max_dim,
 	       tensor::index deltan)
   {
-    static const double FR_param[5] = {0.67560359597983, 1.35120719195966, -0.17560359597983, -1.70241438391932};
+    static const double FR_param[5] =
+      {0.67560359597983, 1.35120719195966, -0.17560359597983, -1.70241438391932};
 
     Tensor eH12[4];
     int method = 2;
@@ -107,7 +108,7 @@ namespace mps {
       S = newS;
       E = newE;
       time += dt;
-      if (i > E_growth.size() && ((abs(dSdt) < 1e-9) && (dEdt <= 1e-9))) {
+      if (i > E_growth.size() && ((abs(dSdt) < 1e-6) && (dEdt <= 1e-6))) {
 	std::cout << "Entropy and energy converged" << std::endl;
 	stop = true;
       }
