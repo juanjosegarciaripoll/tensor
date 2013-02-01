@@ -65,14 +65,22 @@ echo FOOLISH $F77
 if test "$F77" = "f77"; then
    f2c_version=`$F77 -v`
    case $f2c_version in
-     F2C*C99*) lt_prog_compiler_pic_F77="$lt_prog_compiler_pic_CXX"
-               lt_prog_compiler_wl_F77="$lt_prog_compiler_wl_CXX"
-               lt_prog_compiler_static_F77="$lt_prog_compiler_static_CXX"
-	       lt_prog_compiler_pic_works_F77="$lt_prog_compiler_pic_works_CXX"
-	       lt_prog_compiler_static_works_F77="$lt_prog_compiler_static_works_CXX"
-               ;;
+     F2C*C99*)	lt_prog_compiler_pic_F77="$lt_prog_compiler_pic_CXX"
+		lt_prog_compiler_wl_F77="$lt_prog_compiler_wl_CXX"
+		lt_prog_compiler_static_F77="$lt_prog_compiler_static_CXX"
+		lt_prog_compiler_pic_works_F77="$lt_prog_compiler_pic_works_CXX"
+		lt_prog_compiler_static_works_F77="$lt_prog_compiler_static_works_CXX"
+		
+		have_f2c99=yes
+		F2C_CPPFLAGS=`f77 --print-cppflags`
+		;;
+     *)		have_f2c99=no
+		F2C_CPPFLAGS=""
+		;;
    esac
 fi
+AM_CONDITIONAL(USE_F2C, [test $have_f2c99=yes])
+AC_SUBST(F2C_CPPFLAGS)
 
 # Initialization code for the fortran library
 TENSOR_F77_INIT_CODE

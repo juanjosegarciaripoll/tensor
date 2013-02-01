@@ -1,6 +1,8 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)/include
+AM_CPPFLAGS = \
+	-I$(top_srcdir) -I$(top_srcdir)/include \
+	-I$(top_builddir)/include $(F2C_CPPFLAGS)
 
 #
 # Main library
@@ -231,6 +233,10 @@ libtensor_la_SOURCES +=				\
 	arpack/eigs_z.cc			\
 	$(arpack_ng_src) $(arpack_ng_util)
 libtensor_la_LDFLAGS = $(FLIBS)
+endif
+if USE_F2C
+libtensor_la_SOURCES += ../arpack-ng/common.cc
+AM_FFLAGS = $(FFLAGS) -E
 endif
 
 if BUILD_MPS
