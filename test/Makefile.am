@@ -66,6 +66,11 @@ check_PROGRAMS += test_tensor_kron
 test_tensor_kron_SOURCES = test_tensor_kron.cc
 test_tensor_kron_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_tensor_scale
+check_PROGRAMS += test_tensor_scale
+test_tensor_scale_SOURCES = test_tensor_scale.cc
+test_tensor_scale_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_tensor_permute
 check_PROGRAMS += test_tensor_permute
 test_tensor_permute_SOURCES = test_tensor_permute.cc
