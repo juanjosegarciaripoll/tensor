@@ -12,6 +12,7 @@
 #include <tensor/rand.h>
 #include <tensor/tensor.h>
 #include <tensor/io.h>
+#include <tensor/tools.h>
 
 #define EPSILON 1e-14
 
@@ -355,6 +356,8 @@ namespace tensor_test {
   template<> Tensor<double> random_unitary(int n, int iterations);
   template<> Tensor<cdouble> random_unitary(int n, int iterations);
   Tensor<double> random_permutation(int n, int iterations);
+
+  struct Foo { Foo() { tensor::tensor_abort_handler(); }} foo;
 
 } // namespace tensor_test
 
