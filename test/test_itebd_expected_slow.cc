@@ -18,9 +18,11 @@
 */
 
 #include "loops.h"
+#include <mps/itebd/itebd_expected_slow.hpp>
 #include <gtest/gtest.h>
 #include <gtest/gtest-death-test.h>
 #include <mps/itebd.h>
+#include <mps/tools.h>
 
 namespace tensor_test {
 
@@ -64,6 +66,7 @@ namespace tensor_test {
     iTEBD<t> psi = test_state(&H12);
     iTEBD<t> psic = psi.canonical_form();
     EXPECT_TRUE(simeq(expected12(psi, H12), expected12(psic, H12), 2e-6));
+    EXPECT_TRUE(simeq(expected12(psi, H12), slow_expected12(psi, H12), 2e-6));
   }
 
   ////////////////////////////////////////////////////////////
