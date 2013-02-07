@@ -224,6 +224,11 @@ check_PROGRAMS += test_itebd_expected
 test_itebd_expected_SOURCES = test_itebd_expected.cc
 test_itebd_expected_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_itebd_expected_slow
+check_PROGRAMS += test_itebd_expected_slow
+test_itebd_expected_slow_SOURCES = test_itebd_expected_slow.cc
+test_itebd_expected_slow_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_itebd_itime
 check_PROGRAMS += test_itebd_itime
 test_itebd_itime_SOURCES = test_itebd_itime.cc

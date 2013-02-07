@@ -98,19 +98,48 @@ namespace tensor_test {
     }
   }
 
+  template<class t>
+  void test_small_canonical_iTEBD()
+  {
+    t A = RTensor(igen << 2 << 3 << 2,
+                  rgen << -0.95912 << -0.29373 << -0.32075 << 0.82915
+                  << -0.053633 << 0.29376 << -0.29375 << -0.070285
+                  << 0.82919 << 0.42038 << 0.29377 << -1.2573);
+    t lA = RTensor(igen << 2, rgen << 0.91919 << 0.39382);
+    t B = RTensor(igen << 2 << 3 << 2,
+                  rgen << -0.05363 << 0.29376 << 0.32074 << -0.82919
+                  << -0.95913 << -0.29374 << 0.29375 << -1.2573
+                  << -0.82915 << -0.42036 << -0.29373 << -0.070279);
+    t lB = RTensor(igen << 2, rgen << 0.91923 << 0.39373);
+    t H12 = RTensor(igen << 9 << 9,
+                    rgen << 1 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0
+                    << 0 << 0 << 0 << 1 << 0 << 0 << 0 << 0 << 0
+                    << 0 << 0 << -1 << 0 << 1 << 0 << 0 << 0 << 0
+                    << 0 << 1 << 0 << 0 << 0 << 0 << 0 << 0 << 0
+                    << 0 << 0 << 1 << 0 << 0 << 0 << 1 << 0 << 0
+                    << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 1 << 0
+                    << 0 << 0 << 0 << 0 << 1 << 0 << -1 << 0 << 0
+                    << 0 << 0 << 0 << 0 << 0 << 1 << 0 << 0 << 0
+                    << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 1);
+
+    iTEBD<t> psi(A, lA, B, lB);
+    iTEBD<t> psic = psi.canonical_form();
+    EXPECT_TRUE(simeq(expected12(psi, H12), expected12(psic, H12), 2e-6));
+  }
+
   ////////////////////////////////////////////////////////////
   /// ITEBD WITH REAL TENSORS
   ///
 
-  TEST(RiTEBDTest, RiTEBDRandomProductState) {
+  TEST(RiTEBDTest, RandomProductState) {
     test_random_iTEBD<RTensor>();
   }
 
-  TEST(RiTEBDTest, RiTEBDProductState) {
+  TEST(RiTEBDTest, ProductState) {
     test_product_iTEBD<RTensor>();
   }
 
-  TEST(RiTEBDTest, RiTEBDAlternatedProductState) {
+  TEST(RiTEBDTest, AlternatedProductState) {
     test_product_alternated_iTEBD<RTensor>();
   }
 
@@ -118,15 +147,15 @@ namespace tensor_test {
   /// ITEBD WITH COMPLEX TENSORS
   ///
 
-  TEST(CiTEBDTest, CiTEBDRandomProductState) {
+  TEST(CiTEBDTest, RandomProductState) {
     test_random_iTEBD<CTensor>();
   }
 
-  TEST(CiTEBDTest, CiTEBDProductState) {
+  TEST(CiTEBDTest, ProductState) {
     test_product_iTEBD<CTensor>();
   }
 
-  TEST(CiTEBDTest, CiTEBDAlternatedProductState) {
+  TEST(CiTEBDTest, AlternatedProductState) {
     test_product_alternated_iTEBD<CTensor>();
   }
 
