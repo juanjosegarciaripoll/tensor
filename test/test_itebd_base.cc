@@ -43,7 +43,6 @@ namespace tensor_test {
       EXPECT_TRUE(all_equal(B.dimensions(), igen << 1 << d << 1));
       EXPECT_TRUE(all_equal(lA, t(igen << 1, gen<typename t::elt_t>(1))));
       EXPECT_TRUE(all_equal(lB, lA));
-      EXPECT_TRUE(norm2(A - B) == 0);
     }
   }
 

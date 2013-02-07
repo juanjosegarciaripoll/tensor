@@ -40,6 +40,7 @@ template<class Tensor>
 class iTEBD {
 public:
   typedef typename Tensor::elt_t elt_t;
+  typedef Tensor t;
 
   /** Create an random iTEBD state with given physical dimensions. */
   explicit iTEBD(tensor::index dimension);
@@ -57,25 +58,6 @@ public:
 
   /** Is this iTEBD state in canonical form? */
   bool is_canonical() const { return canonical_; }
-
-  /** Expected value of an operator acting on 'site'. */
-  elt_t expected_value(const Tensor &Op, int site = 0) const;
-
-  /** Expected value of two operators, acting on sites '0' and '1'. */
-  elt_t expected_value(const Tensor &Op1, const Tensor &Op2) const;
-
-  /** Expected value of two operators, acting on sites 'i' and 'j'. */
-  elt_t expected_value(const Tensor &Opi, int i, const Tensor &Opj, int j) const;
-
-  /** String order parameter between sites 'i' and 'j', both included. */
-  elt_t string_order(const Tensor &Opi, int i, const Tensor &Opmiddle,
-                     const Tensor &Opj, int j) const;
-
-  /** Expected value of the two-site operator Op12 acting on 'site' and 'site+1'. */
-  elt_t expected_value12(const Tensor &Op12, int site = 0) const;
-
-  /** Energy of a Hamiltonian with local operator H12. */
-  double energy(const Tensor &H12) const;
 
   /** Construct a new state after acting on 'odd' or 'even' pair of sites with the two-site operator U. */
   const iTEBD<Tensor> apply_operator(const Tensor &U, int odd = 0, double tolerance = -1, tensor::index max_dim = 0) const;
@@ -127,6 +109,14 @@ public:
     return matrix(site).dimension(2);
   }
 
+  const Tensor left_boundary(int site) const {
+    return diag(left_vector(site) * left_vector(site));
+  }
+
+  const Tensor right_boundary(int site) const {
+    return diag(right_vector(site) * right_vector(site));
+  }
+
 private:
   /* Avoid initializing empty iTEBD states. */
   iTEBD();
@@ -138,15 +128,54 @@ private:
   Tensor lA_, lB_;
   Tensor AlA_, BlB_;
   bool canonical_;
-
-  const Tensor left_boundary(int site) const {
-    return diag(left_vector(site) * left_vector(site));
-  }
-
-  const Tensor right_boundary(int site) const {
-    return diag(right_vector(site) * right_vector(site));
-  }
 };
+
+  typedef iTEBD<RTensor> RiTEBD;
+  typedef iTEBD<CTensor> CiTEBD;
+
+  /** Expected value of an operator acting on 'site'. */
+  double expected(const RiTEBD &psi, const RTensor &Op, int site = 0);
+
+  /** Expected value of two operators, acting on sites '0' and '1'. */
+  double expected(const RiTEBD &psi, const RTensor &Op1, const RTensor &Op2);
+
+  //** Expected value of two operators, acting on sites 'i' and 'j'. */
+  double expected(const RiTEBD &psi, const RTensor &Op1, int i,
+                  const RTensor &Op2, int j);
+
+  /** String order parameter between sites 'i' and 'j', both included. */
+  double string_order(const RiTEBD &psi, const RTensor &Opi, int i,
+                      const RTensor &Opmiddle,
+                      const RTensor &Opj, int j);
+
+  /** Expected value of the two-site operator Op12 acting on 'site' and 'site+1'. */
+  double expected12(const RiTEBD &psi, const RTensor &Op12, int site = 0);
+
+  /** Expected value of the two-site operator Op12 acting on 'site' and 'site+1'. */
+  double energy(const RiTEBD &psi, const RTensor &Op12);
+
+
+  /** Expected value of an operator acting on 'site'. */
+  cdouble expected(const CiTEBD &psi, const CTensor &Op, int site = 0);
+
+  /** Expected value of two operators, acting on sites '0' and '1'. */
+  cdouble expected(const CiTEBD &psi, const CTensor &Op1, const CTensor &Op2);
+
+  //** Expected value of two operators, acting on sites 'i' and 'j'. */
+  cdouble expected(const CiTEBD &psi, const CTensor &Op1, int i,
+                  const CTensor &Op2, int j);
+
+  /** String order parameter between sites 'i' and 'j', both included. */
+  cdouble string_order(const CiTEBD &psi, const CTensor &Opi, int i,
+                      const CTensor &Opmiddle,
+                      const CTensor &Opj, int j);
+
+  /** Expected value of the two-site operator Op12 acting on 'site' and 'site+1'. */
+  cdouble expected12(const CiTEBD &psi, const CTensor &Op12, int site = 0);
+
+  /** Expected value of the two-site operator Op12 acting on 'site' and 'site+1'. */
+  double energy(const CiTEBD &psi, const CTensor &Op12);
+
 
 /** Evolve an iTEBD in imaginary time, using the local Hamiltonian \a H12 on
  state \a psi. Given a Hamiltonian which is a composition of local Hamiltonians

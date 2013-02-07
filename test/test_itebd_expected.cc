@@ -49,16 +49,16 @@ namespace tensor_test {
       iTEBD<Tensor> psiAA = random_product<Tensor>(d, true);
       iTEBD<Tensor> psiAB = random_product<Tensor>(d, false);
       /* The expected value of the identity is the norm */
-      EXPECT_TRUE(simeq(one, psiAA.expected_value(id)));
-      EXPECT_TRUE(simeq(one, psiAB.expected_value(id)));
+      EXPECT_TRUE(simeq(one, expected(psiAA, id)));
+      EXPECT_TRUE(simeq(one, expected(psiAB, id)));
       /* Test translational invariance */
-      EXPECT_CEQ(psiAA.expected_value(id, 0), psiAA.expected_value(id, 1));
-      EXPECT_CEQ(psiAA.expected_value(id, 0), psiAA.expected_value(id, 2));
-      EXPECT_CEQ(psiAA.expected_value(id, 1), psiAA.expected_value(id, -1));
+      EXPECT_CEQ(expected(psiAA, id, 0), expected(psiAA, id, 1));
+      EXPECT_CEQ(expected(psiAA, id, 0), expected(psiAA, id, 2));
+      EXPECT_CEQ(expected(psiAA, id, 1), expected(psiAA, id, -1));
       /* Test translational invariance */
-      EXPECT_CEQ(psiAB.expected_value(id, 0), psiAA.expected_value(id, 2));
-      EXPECT_CEQ(psiAB.expected_value(id, 1), psiAA.expected_value(id, 3));
-      EXPECT_CEQ(psiAB.expected_value(id, 1), psiAA.expected_value(id, -1));
+      EXPECT_CEQ(expected(psiAB, id, 0), expected(psiAA, id, 2));
+      EXPECT_CEQ(expected(psiAB, id, 1), expected(psiAA, id, 3));
+      EXPECT_CEQ(expected(psiAB, id, 1), expected(psiAA, id, -1));
     }
   }
 
@@ -88,25 +88,25 @@ namespace tensor_test {
       typename Tensor::elt_t one = number_one<typename Tensor::elt_t>();
       typename Tensor::elt_t zero = number_zero<typename Tensor::elt_t>();
 
-      EXPECT_CEQ(one, psi.expected_value(PA, 0));
-      EXPECT_CEQ(zero, psi.expected_value(PnA, 0));
-      EXPECT_CEQ(one, psi.expected_value(PB, 1));
-      EXPECT_CEQ(zero, psi.expected_value(PnB, 1));
+      EXPECT_CEQ(one, expected(psi, PA, 0));
+      EXPECT_CEQ(zero, expected(psi, PnA, 0));
+      EXPECT_CEQ(one, expected(psi, PB, 1));
+      EXPECT_CEQ(zero, expected(psi, PnB, 1));
 
-      EXPECT_CEQ(one, psi.expected_value(PA, PB));
-      EXPECT_CEQ(zero, psi.expected_value(PA, PnB));
-      EXPECT_CEQ(zero, psi.expected_value(PnA, PB));
-      EXPECT_CEQ(zero, psi.expected_value(PnA, PnB));
+      EXPECT_CEQ(one, expected(psi, PA, PB));
+      EXPECT_CEQ(zero, expected(psi, PA, PnB));
+      EXPECT_CEQ(zero, expected(psi, PnA, PB));
+      EXPECT_CEQ(zero, expected(psi, PnA, PnB));
 
-      EXPECT_CEQ(one, psi.expected_value(PA, id));
-      EXPECT_CEQ(one, psi.expected_value(id, PB));
-      EXPECT_CEQ(zero, psi.expected_value(id, PnB));
-      EXPECT_CEQ(zero, psi.expected_value(PnA, id));
+      EXPECT_CEQ(one, expected(psi, PA, id));
+      EXPECT_CEQ(one, expected(psi, id, PB));
+      EXPECT_CEQ(zero, expected(psi, id, PnB));
+      EXPECT_CEQ(zero, expected(psi, PnA, id));
 
-      EXPECT_CEQ(one, psi.expected_value(PA, 0));
-      EXPECT_CEQ(zero, psi.expected_value(PnA, 0));
-      EXPECT_CEQ(one, psi.expected_value(PB, 1));
-      EXPECT_CEQ(zero, psi.expected_value(PnB, 1));
+      EXPECT_CEQ(one, expected(psi, PA, 0));
+      EXPECT_CEQ(zero, expected(psi, PnA, 0));
+      EXPECT_CEQ(one, expected(psi, PB, 1));
+      EXPECT_CEQ(zero, expected(psi, PnB, 1));
     }
   }
 
@@ -128,25 +128,25 @@ namespace tensor_test {
       typename Tensor::elt_t one = number_one<typename Tensor::elt_t>();
       typename Tensor::elt_t zero = number_zero<typename Tensor::elt_t>();
 
-      EXPECT_CEQ(one, psi.expected_value12(kron2(PA, PB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(PA, PnB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnA, PB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnA, PnB)));
+      EXPECT_CEQ(one, expected12(psi, kron2(PA, PB)));
+      EXPECT_CEQ(zero, expected12(psi, kron2(PA, PnB)));
+      EXPECT_CEQ(zero, expected12(psi, kron2(PnA, PB)));
+      EXPECT_CEQ(zero, expected12(psi, kron2(PnA, PnB)));
 
-      EXPECT_CEQ(one, psi.expected_value12(kron2(PA, id)));
-      EXPECT_CEQ(one, psi.expected_value12(kron2(id, PB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(id, PnB)));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnA, id)));
+      EXPECT_CEQ(one, expected12(psi, kron2(PA, id)));
+      EXPECT_CEQ(one, expected12(psi, kron2(id, PB)));
+      EXPECT_CEQ(zero, expected12(psi, kron2(id, PnB)));
+      EXPECT_CEQ(zero, expected12(psi, kron2(PnA, id)));
 
-      EXPECT_CEQ(one, psi.expected_value12(kron2(PB, PA), 1));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnB, PA), 1));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(PB, PnA), 1));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnB, PnA), 1));
+      EXPECT_CEQ(one, expected12(psi, kron2(PB, PA), 1));
+      EXPECT_CEQ(zero, expected12(psi, kron2(PnB, PA), 1));
+      EXPECT_CEQ(zero, expected12(psi, kron2(PB, PnA), 1));
+      EXPECT_CEQ(zero, expected12(psi, kron2(PnB, PnA), 1));
 
-      EXPECT_CEQ(one, psi.expected_value12(kron2(id, PA), 1));
-      EXPECT_CEQ(one, psi.expected_value12(kron2(PB, id), 1));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(PnB, id), 1));
-      EXPECT_CEQ(zero, psi.expected_value12(kron2(id, PnA), 1));
+      EXPECT_CEQ(one, expected12(psi, kron2(id, PA), 1));
+      EXPECT_CEQ(one, expected12(psi, kron2(PB, id), 1));
+      EXPECT_CEQ(zero, expected12(psi, kron2(PnB, id), 1));
+      EXPECT_CEQ(zero, expected12(psi, kron2(id, PnA), 1));
     }
   }
 
@@ -166,15 +166,15 @@ namespace tensor_test {
       typename Tensor::elt_t one = number_one<typename Tensor::elt_t>();
       typename Tensor::elt_t zero = number_zero<typename Tensor::elt_t>();
 
-      EXPECT_CEQ(2.0, psi.energy(kron(PA, PA)));
-      EXPECT_CEQ(0.0, psi.energy(kron(PA, PnA)));
-      EXPECT_CEQ(0.0, psi.energy(kron(PnA, PA)));
-      EXPECT_CEQ(0.0, psi.energy(kron(PnA, PnA)));
+      EXPECT_CEQ(2.0, energy(psi, kron(PA, PA)));
+      EXPECT_CEQ(0.0, energy(psi, kron(PA, PnA)));
+      EXPECT_CEQ(0.0, energy(psi, kron(PnA, PA)));
+      EXPECT_CEQ(0.0, energy(psi, kron(PnA, PnA)));
 
-      EXPECT_CEQ(2.0, psi.energy(kron(PA, id)));
-      EXPECT_CEQ(2.0, psi.energy(kron(id, PA)));
-      EXPECT_CEQ(0.0, psi.energy(kron(id, PnA)));
-      EXPECT_CEQ(0.0, psi.energy(kron(PnA, id)));
+      EXPECT_CEQ(2.0, energy(psi, kron(PA, id)));
+      EXPECT_CEQ(2.0, energy(psi, kron(id, PA)));
+      EXPECT_CEQ(0.0, energy(psi, kron(id, PnA)));
+      EXPECT_CEQ(0.0, energy(psi, kron(PnA, id)));
     }
   }
 

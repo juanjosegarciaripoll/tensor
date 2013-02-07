@@ -271,6 +271,14 @@ libmps_la_SOURCES = \
 	mps/iTEBD/itebd_z.cc \
 	mps/iTEBD/itebd_itime_d.cc \
 	mps/iTEBD/itebd_itime_z.cc \
+	mps/iTEBD/itebd_expected1_d.cc \
+	mps/iTEBD/itebd_expected1_z.cc \
+	mps/iTEBD/itebd_expected2_d.cc \
+	mps/iTEBD/itebd_expected2_z.cc \
+	mps/iTEBD/itebd_string_order_d.cc \
+	mps/iTEBD/itebd_string_order_z.cc \
+	mps/iTEBD/itebd_expected12_d.cc \
+	mps/iTEBD/itebd_expected12_z.cc \
 	mps/mps/rmps.cc \
 	mps/mps/rmps_random.cc \
 	mps/mps/rmps_product_state.cc \

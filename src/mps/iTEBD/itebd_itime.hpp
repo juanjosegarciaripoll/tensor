@@ -71,7 +71,7 @@ namespace mps {
     }
     Tensor Id = Tensor::eye(H12.rows());
     double time = 0;
-    double E = psi.energy(H12), S = psi.entropy();
+    double E = energy(psi, H12), S = psi.entropy();
     std::cout.precision(5);
     std::cout << nsteps << ", " << dt << " x " << deltan << " = " << dt * deltan << std::endl;
     RTensor S_growth((deltan < 10)? 10 : deltan);
@@ -99,7 +99,7 @@ namespace mps {
 	psi = psi.apply_operator(eH12[1], 1, tolerance, max_dim);
 	psi = psi.apply_operator(eH12[0], 0, tolerance, max_dim);
       }
-      double newE = psi.energy(H12);
+      double newE = energy(psi, H12);
       double newS = psi.entropy();
       double dS = S - newS;
       double dE = E - newE;
