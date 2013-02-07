@@ -31,19 +31,21 @@ where_to_truncate(const RTensor &s, double tol, tensor::index max_a2)
    * is smaller than MAX_A2.
    */
   size_t L = s.size();
-  double *cumulated = new double[L];
-  double total = 0;
+  if (max_a2 == 0 || max_a2 > L) {
+    max_a2 = L;
+  }
+  if (tol == 0)
+    return max_a2;
   /*
    * cumulated[i] contains the norm of the elements _beyond_ the i-th
    * site. This means that if we keep (i+1) leading elements, the error will
    * be exactly cumulated[i].
    */
+  double *cumulated = new double[L];
+  double total = 0;
   for (size_t i = L; i--; ) {
     cumulated[i] = total;
     total += square(s[i]);
-  }
-  if (max_a2 == 0 || max_a2 > L) {
-    max_a2 = L;
   }
   /* Due to the precision limits in current processors, we automatically
    * relax the tolerance to DOUBLE_EPSILON, which is a floating point number
