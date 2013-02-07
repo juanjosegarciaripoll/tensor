@@ -61,7 +61,7 @@ namespace mps {
     AlA_(A_), BlB_(B_), canonical_(true)
   {
     assert(A.rank() == 1);
-    assert(A.rank() == 1);
+    assert(B.rank() == 1);
   }
 
   template<class Tensor>
@@ -77,79 +77,6 @@ namespace mps {
     assert(A_.dimension(2) == lA.dimension(0));
     assert(B_.dimension(0) == lA.dimension(0));
     assert(B_.dimension(2) == lB.dimension(0));
-  }
-
-  template<class Tensor>
-  typename Tensor::elt_t
-  iTEBD<Tensor>::expected_value(const Tensor &Op, int site) const
-  {
-    assert(is_canonical());
-    Tensor v = left_boundary(site);
-    elt_t value = trace(propagate_right(v, combined_matrix(site), Op));
-    elt_t norm = trace(propagate_right(v, combined_matrix(site)));
-    return value / real(norm);
-  }
-
-  template<class Tensor>
-  typename Tensor::elt_t
-  iTEBD<Tensor>::expected_value(const Tensor &Op1, const Tensor &Op2) const
-  {
-    return string_order(Op1, 0, Tensor(), Op2, 1);
-  }
-
-  template<class Tensor>
-  typename Tensor::elt_t
-  iTEBD<Tensor>::expected_value(const Tensor &Op1, int i, const Tensor &Op2, int j) const
-  {
-    return string_order(Op1, i, Tensor(), Op2, j);
-  }
-
-  template<class Tensor>
-  typename Tensor::elt_t
-  iTEBD<Tensor>::string_order(const Tensor &Opi, int i, const Tensor &Opmiddle,
-                              const Tensor &Opj, int j) const
-  {
-    if (i > j)
-      return string_order(Opj, j, Opmiddle, Opi, i);
-    assert(is_canonical());
-    int site = i;
-    Tensor v1 = left_boundary(site);
-    Tensor v2 = v1;
-    v1 = propagate_right(v1, combined_matrix(site), Opi);
-    v2 = propagate_right(v2, combined_matrix(site));
-    ++site;
-    while (site < j) {
-      v1 = propagate_right(v1, combined_matrix(site), Opmiddle);
-      v2 = propagate_right(v2, combined_matrix(site));
-      ++site;
-    }
-    elt_t value = trace(propagate_right(v1, combined_matrix(site), Opj));
-    elt_t norm = trace(propagate_right(v2, combined_matrix(site))); 
-    return value / real(norm);
-  }
-
-  template<class Tensor>
-  typename Tensor::elt_t
-  iTEBD<Tensor>::expected_value12(const Tensor &Op12, int site) const
-  {
-    tensor::index a, i, b, j, c;
-    const Tensor &AlA = (site & 1) ? BlB_ : AlA_;
-    const Tensor &B = (site & 1) ? A_ : B_;
-    const Tensor &lB = (site & 1) ? lA_ : lB_;
-    AlA.get_dimensions(&a, &i, &b);
-    B.get_dimensions(&b, &j, &c);
-    Tensor AlAB = reshape(fold(AlA, -1, B, 0), a, i*j, c);
-    Tensor v = left_boundary(site);
-    elt_t value = trace(propagate_right(v, AlAB, Op12));
-    elt_t norm = trace(propagate_right(v, AlAB));
-    return value / real(norm);
-  }
-
-  template<class Tensor>
-  double
-  iTEBD<Tensor>::energy(const Tensor &Op12) const
-  {
-    return real(expected_value12(Op12, 0) + expected_value12(Op12, 1));
   }
 
   template<class Tensor>
