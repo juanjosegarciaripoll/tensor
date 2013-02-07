@@ -239,6 +239,25 @@ libtensor_la_SOURCES += ../arpack-ng/common.cc
 AM_FFLAGS = $(FFLAGS) -E
 endif
 
+itebd_expected_slow = \
+	mps/iTEBD/itebd_slow_expected_d.cc \
+	mps/iTEBD/itebd_slow_expected_z.cc \
+	mps/iTEBD/itebd_slow_expected2_d.cc \
+	mps/iTEBD/itebd_slow_expected2_z.cc \
+	mps/iTEBD/itebd_slow_string_order_d.cc \
+	mps/iTEBD/itebd_slow_string_order_z.cc \
+	mps/iTEBD/itebd_slow_expected12_d.cc \
+	mps/iTEBD/itebd_slow_expected12_z.cc
+itebd_expected_wrong = \
+	mps/iTEBD/itebd_expected1_d.cc \
+	mps/iTEBD/itebd_expected1_z.cc \
+	mps/iTEBD/itebd_expected2_d.cc \
+	mps/iTEBD/itebd_expected2_z.cc \
+	mps/iTEBD/itebd_string_order_d.cc \
+	mps/iTEBD/itebd_string_order_z.cc \
+	mps/iTEBD/itebd_expected12_d.cc \
+	mps/iTEBD/itebd_expected12_z.cc
+
 if BUILD_MPS
 
 lib_LTLIBRARIES += libmps.la
@@ -271,14 +290,9 @@ libmps_la_SOURCES = \
 	mps/iTEBD/itebd_z.cc \
 	mps/iTEBD/itebd_itime_d.cc \
 	mps/iTEBD/itebd_itime_z.cc \
-	mps/iTEBD/itebd_expected1_d.cc \
-	mps/iTEBD/itebd_expected1_z.cc \
-	mps/iTEBD/itebd_expected2_d.cc \
-	mps/iTEBD/itebd_expected2_z.cc \
-	mps/iTEBD/itebd_string_order_d.cc \
-	mps/iTEBD/itebd_string_order_z.cc \
-	mps/iTEBD/itebd_expected12_d.cc \
-	mps/iTEBD/itebd_expected12_z.cc \
+	$(itebd_expected_slow) \
+	mps/iTEBD/itebd_energy_d.cc \
+	mps/iTEBD/itebd_energy_z.cc \
 	mps/mps/rmps.cc \
 	mps/mps/rmps_random.cc \
 	mps/mps/rmps_product_state.cc \
@@ -308,7 +322,6 @@ libmps_la_SOURCES = \
 	mps/mps/apply_local_operator_z.cc
 #	mps/dmrg/rdmrg.cc
 #	mps/dmrg/cdmrg.cc
-
 endif
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile

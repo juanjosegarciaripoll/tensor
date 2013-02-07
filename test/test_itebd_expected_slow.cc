@@ -65,8 +65,21 @@ namespace tensor_test {
     t H12;
     iTEBD<t> psi = test_state(&H12);
     iTEBD<t> psic = psi.canonical_form();
+
     EXPECT_TRUE(simeq(expected12(psi, H12), expected12(psic, H12), 2e-6));
     EXPECT_TRUE(simeq(expected12(psi, H12), slow_expected12(psi, H12), 2e-6));
+    EXPECT_TRUE(simeq(expected12(psic, H12), slow_expected12(psi, H12), 2e-6));
+
+    /*
+    std::cout << expected12(psi, H12) << std::endl
+	      << expected12(psic, H12) << std::endl
+	      << slow_expected12(psic, H12) << std::endl
+	      << slow_expected12(psi, H12) << std::endl;
+    */
+
+    EXPECT_TRUE(simeq(energy(psi, H12), energy(psic, H12), 2e-6));
+    EXPECT_TRUE(simeq(energy(psi, H12), slow_energy(psi, H12), 2e-6));
+    EXPECT_TRUE(simeq(energy(psic, H12), slow_energy(psi, H12), 2e-6));
   }
 
   ////////////////////////////////////////////////////////////

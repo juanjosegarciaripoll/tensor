@@ -1,6 +1,6 @@
 // -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 /*
-    Copyright (c) 2012 Juan Jose Garcia Ripoll
+    Copyright (c) 2010 Juan Jose Garcia Ripoll
 
     Tensor is free software; you can redistribute it and/or modify it
     under the terms of the GNU Library General Public License as published
@@ -17,13 +17,25 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "itebd_expected12.cc"
+#include <mps/itebd.h>
+#include <mps/tools.h>
+
+#include "itebd_expected_slow.hpp"
 
 namespace mps {
 
-  cdouble expected12(const CiTEBD &psi, const CTensor &Op12, int site)
+  double expected(const RiTEBD &psi, const RTensor &Op, int site)
   {
-    return do_expected12(psi, Op12, site);
+    if (site == 0)
+      return expected(psi, Op, RTensor::eye(psi.matrix(1).dimension(1)));
+    else
+      return expected(psi, RTensor::eye(psi.matrix(0).dimension(1)), Op);
   }
 
-}
+  double expected(const RiTEBD &psi, const RTensor &Op1, const RTensor &Op2)
+  {
+    return slow_expected12(Op1, Op2, psi.matrix(0), psi.right_vector(0),
+			   psi.matrix(1), psi.right_vector(1));
+  }
+
+} // namespace mps

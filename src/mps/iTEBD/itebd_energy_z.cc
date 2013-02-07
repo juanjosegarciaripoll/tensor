@@ -1,6 +1,6 @@
 // -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 /*
-    Copyright (c) 2012 Juan Jose Garcia Ripoll
+    Copyright (c) 2010 Juan Jose Garcia Ripoll
 
     Tensor is free software; you can redistribute it and/or modify it
     under the terms of the GNU Library General Public License as published
@@ -17,13 +17,15 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "itebd_expected12.cc"
+#include <mps/itebd.h>
 
 namespace mps {
 
-  cdouble expected12(const CiTEBD &psi, const CTensor &Op12, int site)
+  double energy(const CiTEBD &psi, const CTensor &Op12)
   {
-    return do_expected12(psi, Op12, site);
+    cdouble E = expected12(psi, Op12, 0) + expected12(psi, Op12, 1);
+    assert(abs(imag(E)) < 1e-10);
+    return real(E);
   }
 
 }

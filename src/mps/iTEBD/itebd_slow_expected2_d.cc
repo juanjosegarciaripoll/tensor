@@ -17,13 +17,15 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "itebd_expected12.cc"
+#include <mps/itebd.h>
 
 namespace mps {
 
-  cdouble expected12(const CiTEBD &psi, const CTensor &Op12, int site)
+  double
+  expected(const RiTEBD &psi, const RTensor &Op1, int i,
+	   const RTensor &Op2, int j)
   {
-    return do_expected12(psi, Op12, site);
+    return string_order(psi, Op1, i, RTensor(), Op2, j);
   }
 
 }
