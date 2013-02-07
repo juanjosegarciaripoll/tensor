@@ -67,6 +67,7 @@ namespace tensor {
                 << b.dimensions() << std::endl
                 << "\tbecause indices " << ndx1 << " and " << ndx2
                 << " have different sizes" << std::endl;
+      abort();
     }
     for (j_len = 1; i < ranka; i++) {
       index di = a.dimension(i);
