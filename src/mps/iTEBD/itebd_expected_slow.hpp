@@ -25,9 +25,7 @@ namespace mps {
   template<class t>
   typename t::elt_t slow_expected(const t &Op1, t A, const t &lA)
   {
-    std::cout << "A=" << A << std::endl;
     A = scale(A, -1, lA);
-    std::cout << "A=" << A << std::endl;
     t R0 = build_E_matrix(A);
     t R = R0;
     for (size_t i = 1; i <= 10; i++) {
