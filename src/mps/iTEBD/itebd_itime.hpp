@@ -81,8 +81,6 @@ namespace mps {
     E_growth.fill_with_zeros();
     bool stop = false;
     for (size_t i = 0; (i < nsteps) && (!stop); i++) {
-      std::cout << "E=" << energy(psi, H12) << " =? " << std::endl
-                << slow_expected12(psi, H12) << std::endl;
       switch (method) {
       case 0:
 	psi = psi.apply_operator(eH12[0], 0, tolerance, max_dim);
@@ -102,9 +100,6 @@ namespace mps {
 	psi = psi.apply_operator(eH12[1], 1, tolerance, max_dim);
 	psi = psi.apply_operator(eH12[0], 0, tolerance, max_dim);
       }
-      std::cout << "E=" << energy(psi, H12) << " =? " << std::endl
-                << slow_expected12(psi, H12) << std::endl;
-      abort();
       double newE = energy(psi, H12);
       double newS = psi.entropy();
       double dS = S - newS;
