@@ -179,7 +179,8 @@ namespace mps {
   const iTEBD<Tensor>
   iTEBD<Tensor>::canonical_form() const
   {
-    return iTEBD<Tensor>(fold(AlA_, -1, B_, 0), lB_);
+    return iTEBD<Tensor>(fold(AlA_, -1, B_, 0), lB_, -1,
+                         std::max(lA_.size(), lB_.size()));
   }
 
   template<class Tensor>
