@@ -67,7 +67,8 @@ namespace mps {
     if (i > j)
       return slow_string_order(Op1, j, Opmid, Op2, i, A, lA, B, lB);
     if (i == j) {
-      std::cerr << "In string_order(), the starting and ending indices cannot be the same.\n";
+      std::cerr << "In string_order(), the starting and ending indices "
+        "cannot be the same.\n";
       abort();
     }
     if (i & 1) {
@@ -90,20 +91,24 @@ namespace mps {
     for (; i <= j; i++) {
       const t &AorB = (i & 1)? BlB : AlA;
       const t &E = (i & 1)? EB : EA;
-      if (i == 0)
+      R0 = mmult(R0, E);
+      if (i == 0) {
 	Op = Op1;
-      else if (i == j)
+      } else if (i == j) {
 	Op = Op2;
-      else if (Opmid.is_empty())
-	Op = t::eye(AorB.dimension(1));
-      else 
+      } else if (Opmid.is_empty()) {
+        R1 = mmult(R1, E);
+        continue;
+      } else {
 	Op = Opmid;
-      R0 = mmult(E, R0);
-      R1 = mmult(build_E_matrix(foldin(Op, -1, AorB, 1), AorB), R1);
+      }
+      R1 = mmult(R1, build_E_matrix(foldin(Op, -1, AorB, 1), AorB));
     }
     if (i & 1) {
-      R0 = mmult(EB, R0);
-      R1 = mmult(EB, R0);
+      // The string order finishes on an 'A' site, but our transfer matrix
+      // R0 was initially computed for A * B. We thus add another empty site.
+      R0 = mmult(R0, EB);
+      R1 = mmult(R1, EB);
     }
     typename t::elt_t norm = trace(R0);
     typename t::elt_t value = trace(R1);

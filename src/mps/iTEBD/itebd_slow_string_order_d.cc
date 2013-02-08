@@ -17,7 +17,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <mps/tools.h>
 #include <mps/itebd.h>
 
 #include "itebd_expected_slow.hpp"
