@@ -178,44 +178,83 @@ namespace tensor_test {
     }
   }
 
+  /*
+   * Verify the string order parameter computation using the AKLT
+   * state, for which it is an exact order.
+   */
+  template<class Tensor>
+  void test_aklt_string_order()
+  {
+    iTEBD<Tensor> psi = infinite_aklt_state();
+    Tensor Sz = RTensor(igen << 3 << 3,
+                        rgen << 1 << 0 << 0
+                        << 0 << 0 << 0 << 0 << 0 << -1);
+    Tensor ExpSz = RTensor(igen << 3 << 3,
+                           rgen << -1 << 0 << 0
+                           << 0 << 1 << 0 << 0 << 0 << -1);
+    double v = 1/sqrt(2.0);
+    Tensor Sx = RTensor(igen << 3 << 3,
+                        rgen << 0 << v << 0
+                        << v << 0 << v << 0 << v << 0);
+    Tensor ExpSx = RTensor(igen << 3 << 3,
+                           rgen << 0 << 0 << -1
+                           << 0 << -1 << 0 << -1 << 0 << 0);
+    for (int i = 1; i < 20; i++) {
+      typename Tensor::elt_t vz =
+        string_order(psi, Sz, 0, ExpSz, Sz, i);
+      EXPECT_CEQ(vz, -4.0/9.0);
+      typename Tensor::elt_t vx =
+        string_order(psi, Sx, 0, ExpSx, Sx, i);
+      EXPECT_CEQ(vz, vx);
+    }
+  }
+
   ////////////////////////////////////////////////////////////
   /// ITEBD WITH REAL TENSORS
   ///
 
-  TEST(RiTEBDTest, RiTEBDNormProduct) {
+  TEST(RiTEBDTest, NormProduct) {
     test_over_integers(1, 6, test_expected_product_norm<RTensor>);
   }
 
-  TEST(RiTEBDTest, RiTEBDExpectedProjectors) {
+  TEST(RiTEBDTest, ExpectedProjectors) {
     test_over_integers(1, 6, test_expected_projectors<RTensor>);
   }
 
-  TEST(RiTEBDTest, RiTEBDExpected12Projectors) {
+  TEST(RiTEBDTest, Expected12Projectors) {
     test_over_integers(1, 6, test_expected12_projectors<RTensor>);
   }
 
-  TEST(RiTEBDTest, RiTEBDEnergyProjectors) {
+  TEST(RiTEBDTest, EnergyProjectors) {
     test_over_integers(1, 6, test_energy_projectors<RTensor>);
+  }
+
+  TEST(RiTEBDTest, AKLTStringOrder) {
+    test_aklt_string_order<RTensor>();
   }
 
   ////////////////////////////////////////////////////////////
   /// ITEBD WITH COMPLEX TENSORS
   ///
 
-  TEST(CiTEBDTest, CiTEBDNormProduct) {
+  TEST(CiTEBDTest, NormProduct) {
     test_over_integers(1, 6, test_expected_product_norm<CTensor>);
   }
 
-  TEST(CiTEBDTest, CiTEBDExpectedProjectors) {
+  TEST(CiTEBDTest, ExpectedProjectors) {
     test_over_integers(1, 6, test_expected_projectors<CTensor>);
   }
 
-  TEST(CiTEBDTest, CiTEBDExpected12Projectors) {
+  TEST(CiTEBDTest, Expected12Projectors) {
     test_over_integers(1, 6, test_expected12_projectors<CTensor>);
   }
 
-  TEST(CiTEBDTest, CiTEBDEnergyProjectors) {
+  TEST(CiTEBDTest, EnergyProjectors) {
     test_over_integers(1, 6, test_energy_projectors<CTensor>);
+  }
+
+  TEST(CiTEBDTest, AKLTStringOrder) {
+    test_aklt_string_order<CTensor>();
   }
 
 }

@@ -23,14 +23,18 @@ namespace mps {
 
   const RiTEBD infinite_aklt_state()
   {
+    // From "The density-matrix renormalization group in
+    // the age of matrix product states",
+    // Ulrich Schollwoeck, Annals of Physics 326, 96 (2011)
     RTensor A = RTensor::zeros(igen << 2 << 3 << 2);
-    // A(,0,) = 1i * Pauli_y
-    A.at(0,0,1) = 1.0; A.at(1,0,0) = -1.0;
+    // A(,0,) = sqrt(2/3) \sigma^+
+    A.at(0,0,1) = sqrt(2.0/3.0);
     // A(,1,) = Pauli_z
-    A.at(0,1,0) = 1.0; A.at(1,1,1) = -1.0;
-    // A(,2,) = Pauli_x
-    A.at(0,2,1) = 1.0; A.at(1,2,0) = 1.0;
-    RTensor lA = RTensor::ones(igen << 3);
+    A.at(0,1,0) = -sqrt(1.0/3.0);
+    A.at(1,1,1) = sqrt(1.0/3.0);
+    // A(,2,) = sqrt(2/3) \sigma^-
+    A.at(1,2,0) = -sqrt(2.0/3.0);
+    RTensor lA = RTensor::ones(igen << 2);
     return RiTEBD(A, lA, A, lA);
   }
 
