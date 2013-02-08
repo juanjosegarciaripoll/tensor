@@ -290,6 +290,9 @@ libmps_la_SOURCES = \
 	mps/iTEBD/itebd_z.cc \
 	mps/iTEBD/itebd_itime_d.cc \
 	mps/iTEBD/itebd_itime_z.cc \
+	mps/iTEBD/itebd_ghz_state.cc \
+	mps/iTEBD/itebd_cluster_state.cc \
+	mps/iTEBD/itebd_aklt_state.cc \
 	$(itebd_expected_slow) \
 	mps/iTEBD/itebd_energy_d.cc \
 	mps/iTEBD/itebd_energy_z.cc \

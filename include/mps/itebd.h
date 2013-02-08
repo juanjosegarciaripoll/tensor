@@ -74,6 +74,12 @@ public:
   /** Average entropy for even and odd sites. */
   double entropy() const { return entropy(0) + entropy(1); }
 
+  /* Implicit coercion to other types */
+  template<class tensor>
+  operator const iTEBD<tensor>() const {
+    return iTEBD<tensor>(A_, lA_, B_, lB_, canonical_);
+  }
+
   /** Return the \f$\Gamma\f$ matrix for the lattice 'site'. */
   const Tensor &matrix(int site) const {
     return (site & 1)? B_ : A_;
@@ -132,6 +138,15 @@ private:
 
   typedef iTEBD<RTensor> RiTEBD;
   typedef iTEBD<CTensor> CiTEBD;
+
+  /** Infinite long, one-dimensional GHZ state */
+  const RiTEBD infinite_ghz_state();
+
+  /** Infinitely long, one-dimensional cluster state */
+  const RiTEBD infinite_cluster_state();
+
+  /** Infinitely long, one-dimensional AKLT state */
+  const RiTEBD infinite_AKLT_state();
 
   /** Expected value of an operator acting on 'site'. */
   double expected(const RiTEBD &psi, const RTensor &Op, int site = 0);
