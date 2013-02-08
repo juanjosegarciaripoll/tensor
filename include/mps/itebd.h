@@ -139,14 +139,14 @@ private:
   typedef iTEBD<RTensor> RiTEBD;
   typedef iTEBD<CTensor> CiTEBD;
 
-  /** Infinite long, one-dimensional GHZ state */
+  /** Infinite long, one-dimensional GHZ state. */
   const RiTEBD infinite_ghz_state();
 
-  /** Infinitely long, one-dimensional cluster state */
+  /** Infinitely long, one-dimensional cluster state. */
   const RiTEBD infinite_cluster_state();
 
-  /** Infinitely long, one-dimensional AKLT state */
-  const RiTEBD infinite_AKLT_state();
+  /** Infinitely long, one-dimensional AKLT state. */
+  const RiTEBD infinite_aklt_state();
 
   /** Expected value of an operator acting on 'site'. */
   double expected(const RiTEBD &psi, const RTensor &Op, int site = 0);
