@@ -357,7 +357,7 @@ namespace tensor_test {
   template<> Tensor<cdouble> random_unitary(int n, int iterations);
   Tensor<double> random_permutation(int n, int iterations);
 
-  struct Foo { Foo() { tensor::tensor_abort_handler(); }} foo;
+  static struct Foo { Foo() { tensor::tensor_abort_handler(); }} foo;
 
 } // namespace tensor_test
 
