@@ -184,7 +184,7 @@ namespace tensor_test {
 	std::cout << "...\n";
 	nsteps *= 2;
       }
-      S.at(i) = real(psi.expected_value(Pauli_z, Pauli_z));
+      S.at(i) = real(expected(psi, Pauli_z, Pauli_z));
       std::cout << "Sz=" << S.at(i) << std::endl;
     }
     std::cout << "h=" << h;
