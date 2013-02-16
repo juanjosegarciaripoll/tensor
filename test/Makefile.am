@@ -35,11 +35,15 @@ check_PROGRAMS += test_rand
 test_rand_SOURCES = test_rand.cc
 test_rand_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
-TESTS += test_tensor
-check_PROGRAMS += test_tensor
-test_tensor_SOURCES = test_tensor_base.cc \
-	test_tensor_getset.cc
-test_tensor_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+TESTS += test_tensor_base
+check_PROGRAMS += test_tensor_base
+test_tensor_base_SOURCES = test_tensor_base.cc
+test_tensor_base_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
+TESTS += test_tensor_getset
+check_PROGRAMS += test_tensor_getset
+test_tensor_getset_SOURCES = test_tensor_getset.cc
+test_tensor_getset_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_tensor_unop
 check_PROGRAMS += test_tensor_unop
