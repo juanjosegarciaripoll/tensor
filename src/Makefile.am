@@ -234,9 +234,10 @@ libtensor_la_SOURCES +=				\
 	$(arpack_ng_src) $(arpack_ng_util)
 libtensor_la_LDFLAGS = $(FLIBS)
 endif
+AM_FFLAGS = $(FFLAGS)
 if USE_F2C
 libtensor_la_SOURCES += ../arpack-ng/common.cc
-AM_FFLAGS = $(FFLAGS) -E
+AM_FFLAGS += -E
 endif
 
 itebd_expected_slow = \

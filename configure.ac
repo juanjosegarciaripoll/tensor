@@ -61,6 +61,7 @@ AC_PROG_F77([f77])
 AC_F77_LIBRARY_LDFLAGS
 AC_F77_WRAPPERS
 AM_CONDITIONAL(TENSOR_ARPACK, [test $with_arpack = yes])
+have_f2c99=no
 if test "$F77" = "f77"; then
    f2c_version=`$F77 -v`
    case $f2c_version in
@@ -78,7 +79,7 @@ if test "$F77" = "f77"; then
 		;;
    esac
 fi
-AM_CONDITIONAL(USE_F2C, [test $have_f2c99=yes])
+AM_CONDITIONAL(USE_F2C, [test $have_f2c99 = yes])
 AC_SUBST(F2C_CPPFLAGS)
 
 # Initialization code for the fortran library
