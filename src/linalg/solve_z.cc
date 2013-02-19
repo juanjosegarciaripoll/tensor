@@ -35,7 +35,7 @@ namespace linalg {
     integer lda = n;
     integer ldb = B.dimension(0);
     integer nrhs;
-    integer *ipiv = new int[n];
+    integer *ipiv = new integer[n];
     integer info;
 
     // Currently, we only solve square systems
