@@ -35,5 +35,6 @@ nobase_include_HEADERS = \
 	mps/itebd.h \
 	mps/mp_base.h \
 	mps/mps.h \
+	mps/tools.h \
 	mps/mps_algorithms.h
 
