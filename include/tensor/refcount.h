@@ -25,57 +25,6 @@
 
 namespace tensor {
 
-/**A reference counting object. This object keeps a pointer and the number
-   of references to it which are read/only or read/write. A pointer can
-   be shared by multiple read/only or by multiple read/write references,
-   but if there are read/write references, only one object can be tagged
-   as read/only reference.
-*/
-template<typename elt_t>
-class SharedPtr {
-public:
-  /** Reference counter for null pointer */
-  SharedPtr();
-  /** Reference count a given data */
-  SharedPtr(elt_t *data, size_t size);
-
-  /** Create a new reference object with the same data and only 1 ro reference. */
-  SharedPtr *clone();
-  /** Add a read/only reference. */
-  SharedPtr<elt_t> *ro_reference();
-  /** Add a read/write reference. */
-  SharedPtr<elt_t> *rw_reference();
-  /** Eliminate a read/only reference. */
-  void ro_dereference();
-  /** Eliminate a read/write reference. */
-  void rw_dereference();
-  /** An object is read/only if other references expect it not to change. */
-  bool read_only() { return ro_references() > 1; }
-  /** An object can mutate if there are references that can change it. */
-  bool can_mutate() { return rw_references() > 0; }
-  /** Return number of read/only references. */
-  int ro_references() { return ro_references_; }
-  /** Return number of read/write references. */
-  int rw_references() { return rw_references_; }
-
-  /** Amount of data allocated. */
-  size_t size() { return size_; }
-  /** Return pointer. */
-  elt_t *begin() { return data_; }
-  /** Return end pointer. */
-  elt_t *end() { return begin() + size(); }
-
-private:
-
-  SharedPtr(const SharedPtr<elt_t> &p); // Prevents copy constructor
-
-  void check_delete();
-
-  elt_t *data_;
-  size_t size_;
-  int ro_references_, rw_references_;
-};
-
 /**A reference counting pointer. This is a pointer that keeps track of whether
    the same pointer is shared by other structures, and when the total number of
    references drops to zero, it destroys the pointed object.
@@ -140,9 +89,11 @@ public:
   void reset(elt_t *p, size_t new_size = 1);
 
 private:
-  SharedPtr<elt_t> *rw_reference() const;
+  class pointer;
 
-  mutable SharedPtr<elt_t> *ref_; // Pointer to data we reference or NULL
+  pointer *rw_reference() const;
+
+  mutable pointer *ref_; // Pointer to data we reference or NULL
 };
 
 }; // namespace
