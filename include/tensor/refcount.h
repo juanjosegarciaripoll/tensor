@@ -73,9 +73,9 @@ public:
   size_t size() const { return ref_->size(); }
 
   /** Reference counter */
-  size_t ref_count() const { return ref_->ro_references() + ref_->rw_references(); }
+  size_t ref_count() const { return ref_->references(); }
   /** Reference counter */
-  bool other_references() const { return ref_->read_only() > 1; }
+  bool other_references() const { return ref_->references() > 1; }
   /** Ensure that we have a unique copy of the data. If the pointer has more
       than one reference, a fresh new copy of the data is created.
   */
@@ -90,8 +90,6 @@ public:
 
 private:
   class pointer;
-
-  pointer *rw_reference() const;
 
   mutable pointer *ref_; // Pointer to data we reference or NULL
 };

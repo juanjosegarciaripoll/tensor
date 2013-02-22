@@ -33,24 +33,24 @@ namespace tensor {
 template<typename elt_t>
 class RefPointer<elt_t>::pointer {
 public:
-  /** Reference counter for null pointer */
+  /* Reference counter for null pointer */
   pointer():
    data_(0), size_(0), ro_references_(1), rw_references_(0)
   {}
 
-  /** Reference count a given data */
+  /* Reference count a given data */
   pointer(elt_t *data, size_t size) :
      data_(data), size_(size), ro_references_(1), rw_references_(0)
   {}
 
-  /** Create a new reference object with the same data and only 1 ro reference. */
+  /* Create a new reference object with the same data and only 1 ro reference. */
   pointer *clone() {
     elt_t *output = new elt_t[size()];
     std::copy(begin(), end(), output);
     return new pointer(output, size());
   }
 
-  /** Add a read/only reference. */
+  /* Add a read/only reference. */
   pointer *ro_reference() {
     if (can_mutate()) {
       return clone();
@@ -60,50 +60,39 @@ public:
     }
   }
 
-  /** Add a read/write reference. */
-  pointer *rw_reference() {
-    pointer *output;
-    if (read_only()) {
-      --ro_references_;
-      output = clone();
-    } else {
-      output = this;
-    }
-    ++(output->rw_references_);
-    return output;
-  }
-
-  /** Eliminate a read/only reference. */
+  /* Eliminate a read/only reference. */
   void ro_dereference() {
     ro_references_--;
     check_delete();
   }
 
-  /** Eliminate a read/write reference. */
+  /* Eliminate a read/write reference. */
   void rw_dereference() {
     rw_references_--;
     check_delete();
   }
 
-  /** An object is read/only if other references expect it not to change. */
+  /* An object is read/only if other references expect it not to change. */
   bool read_only() { return ro_references() > 1; }
 
-  /** An object can mutate if there are references that can change it. */
+  /* An object can mutate if there are references that can change it. */
   bool can_mutate() { return rw_references() > 0; }
 
-  /** Return number of read/only references. */
+  /* Return number of read/only references. */
   int ro_references() { return ro_references_; }
 
-  /** Return number of read/write references. */
+  /* Return number of read/write references. */
   int rw_references() { return rw_references_; }
 
-  /** Amount of data allocated. */
+  int references() const { return ro_references_ + rw_references_; }
+
+  /* Amount of data allocated. */
   size_t size() { return size_; }
 
-  /** Return pointer. */
+  /* Return pointer. */
   elt_t *begin() { return data_; }
 
-  /** Return end pointer. */
+  /* Return end pointer. */
   elt_t *end() { return begin() + size(); }
 
 private:
