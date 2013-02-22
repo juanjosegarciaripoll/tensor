@@ -30,8 +30,6 @@ namespace tensor {
 
 typedef long index;
 
-template<typename elt> class VectorView;
-
 template<typename elt>
 class Vector {
  public:
@@ -73,8 +71,6 @@ class Vector {
   int ref_count() const { return data_.ref_count(); }
 
  private:
-  friend class VectorView<elt_t>;
-
   RefPointer<elt_t> data_;
 };
 
@@ -82,43 +78,6 @@ template<typename t1, typename t2>
 bool operator==(const Vector<t1> &v1, const Vector<t2> &v2) {
   return (v1.size() == v2.size()) && std::equal(v1.begin(), v1.end(), v2.begin());
 }
-
-template<typename elt>
-class VectorView {
- public:
-  typedef tensor::index index;
-  typedef elt elt_t;
-  typedef elt_t *iterator;
-  typedef const elt_t *const_iterator;
-
-  explicit VectorView(const Vector<elt_t> &other) : data_(other.data_) {}
-
-  index size() const {
-    return data_.size();
-  }
-
-  const elt_t &operator[](index pos) const {
-    return *(data_.begin_const() + pos);
-  }
-  elt_t &at(index pos) {
-    return *(data_.begin() + pos);
-  }
-
-  iterator begin() { return data_.begin(); }
-  const_iterator begin() const { return data_.begin_const(); }
-  const_iterator end() const { return data_.end_const(); }
-  iterator end() { return data_.end(); }
-
-  // Only for testing purposes
-  int ref_count() const { return data_.ref_count(); }
-
- private:
-  VectorView<elt_t>(); /* Deactivated */
-  VectorView<elt_t>(const VectorView<elt_t> &); /* Deactivated */
-  VectorView<elt_t> &operator=(const Vector<elt_t> &v);
-
-  RefPointerView<elt_t> data_;
-};
 
 }; // namespace
 

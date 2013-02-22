@@ -147,32 +147,6 @@ SharedPtr<elt_t> *RefPointer<elt_t>::rw_reference() const {
   return (ref_ = ref_->rw_reference());
 }
 
-//////////////////////////////////////////////////////////////////////
-// VIEW ONTO A SHARED POINTER WITH COPY ON WRITE
-//
-
-template<typename elt_t>
-RefPointerView<elt_t>::RefPointerView(const RefPointer<elt_t> &p) :
-  ref_(p.rw_reference())
-{}
-
-template<typename elt_t>
-RefPointerView<elt_t>::RefPointerView(const RefPointerView<elt_t> &v) :
-  ref_(v.rw_reference())
-{}
-
-template<typename elt_t>
-RefPointerView<elt_t>::~RefPointerView()
-{
-  ref_->rw_dereference();
-}
-
-template<typename elt_t>
-SharedPtr<elt_t> *RefPointerView<elt_t>::rw_reference() const {
-  ref_->rw_reference();
-  return ref_;
-}
-
 } // namespace tensor
 
 #endif // !TENSOR_DETAIL_REFCOUNT

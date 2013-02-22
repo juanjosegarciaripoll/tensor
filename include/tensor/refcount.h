@@ -76,8 +76,6 @@ private:
   int ro_references_, rw_references_;
 };
 
-template<typename elt_t> class RefPointerView;
-
 /**A reference counting pointer. This is a pointer that keeps track of whether
    the same pointer is shared by other structures, and when the total number of
    references drops to zero, it destroys the pointed object.
@@ -141,60 +139,7 @@ public:
   /** Set to some pointer */
   void reset(elt_t *p, size_t new_size = 1);
 
-  friend class RefPointerView<elt_t>;
-
 private:
-  SharedPtr<elt_t> *rw_reference() const;
-
-  mutable SharedPtr<elt_t> *ref_; // Pointer to data we reference or NULL
-};
-
-/**A view on a reference counting pointer. This object shares the data with a
-   RefPointer<elt_t> object, allowing external modification of the data
-   owned by the latter.
-
-   This object is used to implement VectorView, TensorDiag, etc.
-
-   \ingroup Internals
-*/
-
-template<typename value_type>
-class RefPointerView {
-public:
-  typedef value_type elt_t; ///< Type of data pointed to
-
-  /** Copy constructor that increases the reference count. */
-  RefPointerView(const RefPointer<elt_t> &p);
-
-  /** Propagate view. */
-  RefPointerView(const RefPointerView<elt_t> &v);
-
-  /** Destructor that deletes no longer reference data. */
-  ~RefPointerView();
-
-  /** Retreive the pointer without caring for references (unsafe). */
-  elt_t *begin() { return ref_->begin(); }
-  /** Retreive the pointer without caring for references (unsafe). */
-  const elt_t *begin() const { return ref_->begin(); }
-  /** Retreive the pointer without caring for references (unsafe). */
-  const elt_t *begin_const() const { return ref_->begin(); }
-  /** Retreive the pointer without caring for references (unsafe). */
-  const elt_t *end_const() const { return ref_->end(); }
-  /** Retreive the pointer without caring for references (unsafe). */
-  const elt_t *end() const { return ref_->end(); }
-  /** Retreive the pointer without caring for references (unsafe). */
-  elt_t *end() { return ref_->end(); }
-
-  /** Size of pointed-to data. */
-  size_t size() const { return ref_->size(); }
-
-  /** Reference counter. */
-  size_t ref_count() const { return ref_->ro_references() + ref_->rw_references(); }
-
-private:
-  RefPointerView(); // Deactivated
-  RefPointer<elt_t> &operator=(const RefPointer<elt_t> &p); // Deactivat
-
   SharedPtr<elt_t> *rw_reference() const;
 
   mutable SharedPtr<elt_t> *ref_; // Pointer to data we reference or NULL

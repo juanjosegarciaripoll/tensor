@@ -70,12 +70,12 @@ namespace tensor {
     operator Tensor<elt_t>() const;
 
   private:
-    VectorView<elt_t> data_;
+    Vector<elt_t> &data_;
     Indices dims_;
     Range *ranges_;
 
     // Start from another tensor and a set of ranges
-    mutable_view(const Tensor<elt_t> &parent, Indices &dims, Range *ranges) :
+    mutable_view(Tensor<elt_t> &parent, Indices &dims, Range *ranges) :
       data_(parent.data_), dims_(dims), ranges_(ranges)
     {}
 
