@@ -50,6 +50,7 @@ namespace tensor {
     view(Tensor<elt_t> *a_tensor, ...);
 
     friend class Tensor<elt_t>;
+    friend class Tensor<elt_t>::mutable_view;
   };
 
   template<typename elt_t>
@@ -63,11 +64,9 @@ namespace tensor {
     void set(elt_t v);
     elt_t ref() const;
 
-    mutable_view &operator=(const mutable_view &a_stripe);
-    mutable_view &operator=(const Tensor<elt_t> &a_tensor);
-    mutable_view &operator=(elt_t v);
-
-    operator Tensor<elt_t>() const;
+    void operator=(const view &a_stripe);
+    void operator=(const Tensor<elt_t> &a_tensor);
+    void operator=(elt_t v);
 
   private:
     Vector<elt_t> &data_;

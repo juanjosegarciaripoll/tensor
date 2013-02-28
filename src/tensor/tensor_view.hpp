@@ -243,9 +243,9 @@ namespace tensor {
   // ASSIGN TO MUTABLE MUTABLE_VIEWS
   //
 
-  template<typename elt_t> typename Tensor<elt_t>::mutable_view &
+  template<typename elt_t> void
   Tensor<elt_t>::mutable_view::operator=
-  (const typename Tensor<elt_t>::mutable_view &t)
+  (const typename Tensor<elt_t>::view &t)
   {
     //assert(verify_tensor_dimensions_match(dims_, t.dims_));
     assert(dims_.total_size() == t.dims_.total_size());
@@ -257,10 +257,9 @@ namespace tensor {
          (i = r1->pop(), j = r2->pop(), i != r1->nomore() && j != r2->nomore()); ) {
       data_.at(i) = t.data_[j];
     }
-    return *this;
   }
 
-  template<typename elt_t> typename Tensor<elt_t>::mutable_view &
+  template<typename elt_t> void
   Tensor<elt_t>::mutable_view::operator=(const Tensor<elt_t> &t)
   {
     //assert(verify_tensor_dimensions_match(dims_, t.dimensions()));
@@ -269,17 +268,15 @@ namespace tensor {
     for (index i = 0, j; (j = ranges_->pop()) != ranges_->nomore(); i++) {
       data_.at(j) = t[i];
     }
-    return *this;
   }
 
-  template<typename elt_t> typename Tensor<elt_t>::mutable_view &
+  template<typename elt_t> void
   Tensor<elt_t>::mutable_view::operator=(elt_t v)
   {
     ranges_->reset();
     for (index i; (i = ranges_->pop()) != ranges_->nomore(); ) {
       data_.at(i) = v;
     }
-    return *this;
   }
 
 } // namespace tensor
