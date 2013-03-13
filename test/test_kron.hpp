@@ -26,7 +26,7 @@ namespace tensor_test {
   class kron_2d_fixture: public std::vector<Tensor<elt_t> > {
   public:
     kron_2d_fixture() {
-#define add(a,b) push_back(Tensor<elt_t>(a,b))
+#define add(a,b) this->push_back(Tensor<elt_t>(a,b))
       add(0,0);
       add(1,0);
       add(0,0);
