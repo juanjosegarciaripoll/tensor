@@ -25,14 +25,23 @@
 
 namespace tensor {
 
-/**A reference counting pointer. This is a pointer that keeps track of whether
-   the same pointer is shared by other structures, and when the total number of
-   references drops to zero, it destroys the pointed object.
+/**A reference counting pointer with copy-on-write. This is a pointer that keeps
+   track of whether the same data is shared by other RefPointer structures. It
+   internally keeps a reference counter to store how many pointers look at the
+   data. When the total number of references drops to zero, it destroys the
+   pointed object.
 
-   We use this pointer to implement vectors of numbers. Two vectors can share
-   the same data. Whenever one of the vectors pointing to this data is
-   destroyed, the number of references drops by one. When all vectors pointing
-   to the same data are destroyed, the data is, as well.
+   This allows us to have different parts of the code use the same physical
+   (tensor) data, thus avoiding expensive copy operations. The RefPointer
+   behaves thus similar to pointers, but with internal bookkeeping and easier use.
+
+   As soon as you manipulate the data (access it through a non-const pointer),
+   it will be silently and transparently copied to another location if the data
+   is shared with other RefPointers. That is, the data encapsulated by a
+   RefPointer is guaranteed not to be modified through side effects.
+
+   Note that pointers returned by the various begin() and end() functions are
+   not reference-counted, so you should not store the returned pointers.
 
    \ingroup Internals
 */
@@ -41,13 +50,13 @@ class RefPointer {
 public:
   typedef value_type elt_t; ///< Type of data pointed to
 
-  /** Empty reference */
+  /** Create an empty reference */
   RefPointer();
   /** Allocate a pointer of s bytes. */
   RefPointer(size_t new_size);
   /** Copy constructor that increases the reference count. */
   RefPointer(const RefPointer<elt_t> &p);
-  /** Reference count a given data */
+  /** Wrap around the given data */
   RefPointer(elt_t *data, size_t size);
 
   /** Destructor that deletes no longer reference data. */
@@ -72,7 +81,7 @@ public:
   /** Size of pointed-to data. */
   size_t size() const { return ref_->size(); }
 
-  /** Reference counter */
+  /** Number of references to the internal data */
   size_t ref_count() const { return ref_->references(); }
   /** Reference counter */
   bool other_references() const { return ref_->references() > 1; }

@@ -23,7 +23,7 @@ A Tensor can be declared constant, as in
 \code
 const Tensor<double> A = Tensor<double>::eye(2,3);
 \endcode
-Such a Tensor can not be changed nor assigned values.
+Such a Tensor can not be changed nor be assigned values.
 
 In order to change the content of a Tensor there are a few functions that can be used. If one wishes to change a single element, the member function at() should be used. For instance the following code is correct
 \code
@@ -37,7 +37,7 @@ Tensor<double> A;
 ...
 A(0,2) = 1.0;
 \endcode
-because the operator() returns an inmutable reference to the elements of the array.
+because the operator() returns an immutable reference to the elements of the array.
 
 
 \section sec_tensor_copy Tensor copying

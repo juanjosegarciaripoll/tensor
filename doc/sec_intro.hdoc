@@ -21,15 +21,16 @@ allows quick prototyping of code. Some of them are listed here
 \li Safety
 
 The memory management, for instance, is done using a clever copy-on-write
-pointer mechanism, which allows two arrays to share the same data until one
+pointer mechanism, which allows two tensors to share the same data until one
 of them modifies the shared memory.
 \code
   Tensor<double> a = Tensor<double>::eye(2,2);
   Tensor<double> b = a; // a and b share data
   a.at(0,1) = 1.0; // a now has a different data than b
 \endcode
-Since copying is cheap, it becomes feasible to have multiple references to the
-same array in structures such as vectors, lists, etc.
+Since copying a reference is cheap, it becomes feasible to have multiple
+references to the same array in structures such as vectors, lists, etc. without
+using pointers (that need to be freed explicitly, for example).
 
 Another implementation detail is that we avoid using generic programming or the
 so called templates. It is true that the headers are full of template<>
