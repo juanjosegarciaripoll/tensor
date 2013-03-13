@@ -61,9 +61,6 @@ namespace tensor {
       delete ranges_;
     };
 
-    void set(elt_t v);
-    elt_t ref() const;
-
     void operator=(const view &a_stripe);
     void operator=(const Tensor<elt_t> &a_tensor);
     void operator=(elt_t v);
