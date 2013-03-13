@@ -89,11 +89,11 @@ computation.
 
 Note also the difference between the following two statements
 \code
-b = a(range(1,4),range());
-b.at(range(1,4),range()) = 1.0;
+b = a(range(1,4),range()); // [1]
+a.at(range(1,4),range()) = 1.0; // [2]
 \endcode
 
-In the first case we are requesting an inmutable reference to the values in "a", which can not be altered, while in the second case we ask for a mutable reference, whose value can be manually changed - in this case to set all elements equal to 1.
+In the first case we are requesting an inmutable reference to the values in "a", which can not be altered. For this reason, the data is implicitly copied and coerced to a Tensor class which no longer overlaps with "a" in any way. In the second case, [2], we a mutable reference, whose value can be manually changed - in this case to set all elements equal to 1. The mutable reference overlaps with the tensor it points to, "a", and thus the statement [2] is actually changing the content of "a".
 
 */
 
