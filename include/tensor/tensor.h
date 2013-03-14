@@ -413,7 +413,9 @@ namespace tensor {
   void foldin_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b, int ndx2);
   void mmult_into(RTensor &output, const RTensor &a, const RTensor &b);
 
-  const bool all_equal(const RTensor &a, const RTensor &b);
+  bool all_equal(const RTensor &a, const RTensor &b);
+  bool all_equal(const RTensor &a, double b);
+  inline bool all_equal(double b, const RTensor &a) { return all_equal(a, b); }
   template<typename t1, typename t2>
   inline bool some_unequal(const t1 &a, const t2 &b) { return !all_equal(a,b); }
 
@@ -521,7 +523,10 @@ namespace tensor {
   const CTensor sort(const CTensor &v, bool reverse = false);
   const Indices sort_indices(const CTensor &v, bool reverse = false);
 
-  const bool all_equal(const CTensor &a, const CTensor &b);
+  bool all_equal(const CTensor &a, const CTensor &b);
+  bool all_equal(const CTensor &a, const cdouble &b);
+  inline bool all_equal(cdouble b, const CTensor &a) { return all_equal(a, b); }
+
   const Booleans operator==(const CTensor &a, const CTensor &b);
   const Booleans operator!=(const CTensor &a, const CTensor &b);
   const Booleans operator==(const CTensor &a, cdouble b);

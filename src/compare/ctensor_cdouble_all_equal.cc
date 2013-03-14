@@ -22,12 +22,12 @@
 
 namespace tensor {
 
-  bool all_equal(const CTensor &a, const CTensor &b)
+  bool all_equal(const CTensor &a, const cdouble &b)
   {
-    if (verify_tensor_dimensions_match(a.dimensions(), b.dimensions()))
-      if (std::equal(a.begin(), a.end(), b.begin()))
-        return true;
-    return false;
+    for (CTensor::const_iterator it = a.begin(); it != a.end(); it++)
+      if (!(*it == b))
+        return false;
+    return true;
   }
 
 } // namespace tensor

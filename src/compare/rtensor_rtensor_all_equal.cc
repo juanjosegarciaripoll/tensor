@@ -22,7 +22,7 @@
 
 namespace tensor {
 
-  const bool all_equal(const RTensor &a, const RTensor &b)
+  bool all_equal(const RTensor &a, const RTensor &b)
   {
     if (verify_tensor_dimensions_match(a.dimensions(), b.dimensions()))
       if (std::equal(a.begin(), a.end(), b.begin()))

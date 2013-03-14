@@ -81,6 +81,7 @@ libtensor_la_SOURCES = \
 	tensor/tensor_change_dimension_d.cc \
 	tensor/tensor_change_dimension_z.cc \
 	compare/rtensor_rtensor_all_equal.cc \
+	compare/rtensor_double_all_equal.cc \
 	compare/rtensor_rtensor_e.cc \
 	compare/rtensor_rtensor_l.cc \
 	compare/rtensor_rtensor_g.cc \
@@ -94,6 +95,7 @@ libtensor_la_SOURCES = \
 	compare/rtensor_double_ge.cc \
 	compare/rtensor_double_ne.cc \
 	compare/ctensor_ctensor_all_equal.cc \
+	compare/ctensor_cdouble_all_equal.cc \
 	compare/ctensor_ctensor_e.cc \
 	compare/ctensor_ctensor_ne.cc \
 	compare/ctensor_cdouble_e.cc \
@@ -329,8 +331,8 @@ libmps_la_SOURCES = \
 	mps/mps/mps_canonical_d.cc \
 	mps/mps/mps_canonical_z.cc \
 	mps/mps/apply_local_operator_d.cc \
-	mps/mps/apply_local_operator_z.cc
-#	mps/dmrg/rdmrg.cc
+	mps/mps/apply_local_operator_z.cc \
+	mps/dmrg/rdmrg.cc
 #	mps/dmrg/cdmrg.cc
 endif
 
