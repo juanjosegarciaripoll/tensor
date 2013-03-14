@@ -34,7 +34,7 @@ namespace tensor {
     index d1, d2, d3;
     Tensor<cdouble> output(t.dimensions());
     ndx = normalize_index(ndx, t.rank());
-    get_surrounding_dims(t.dimensions(), ndx, &d1, &d2, &d3);
+    surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
     if (d2 != v.size()) {
       std::cerr << "In scale() the dimension " << ndx <<
 	" of the tensor does not match the length " <<
@@ -48,8 +48,8 @@ namespace tensor {
   void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<cdouble> &v)
   {
     index d1, d2, d3;
-    get_surrounding_dims(t.dimensions(), normalize_index(ndx, t.rank()),
-			 &d1, &d2, &d3);
+    surrounding_dimensions(t.dimensions(), normalize_index(ndx, t.rank()),
+                           &d1, &d2, &d3);
     if (d2 != v.size()) {
       std::cerr << "In scale() the dimension " << ndx <<
 	" of the tensor does not match the length " <<

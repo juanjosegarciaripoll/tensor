@@ -372,6 +372,8 @@ namespace tensor {
   typedef Tensor<double> RTensor;
 #endif
 
+  const RTensor change_dimension(const RTensor &U, int dimension, index new_size);
+
   double sum(const RTensor &r);
 
   double norm0(const RTensor &r);
@@ -388,6 +390,8 @@ namespace tensor {
   RTensor tanh(const RTensor &t);
   RTensor exp(const RTensor &t);
   RTensor sqrt(const RTensor &t);
+
+  RTensor round(const RTensor &t);
 
   const RTensor diag(const RTensor &d, int which, int rows, int cols);
   const RTensor diag(const RTensor &d, int which = 0);
@@ -441,6 +445,8 @@ namespace tensor {
 #else
   typedef Tensor<cdouble> CTensor;
 #endif
+
+  const CTensor change_dimension(const CTensor &U, int dimension, index new_size);
 
   cdouble sum(const CTensor &r);
 

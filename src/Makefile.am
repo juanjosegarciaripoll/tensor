@@ -21,6 +21,7 @@ libtensor_la_SOURCES = \
 	indices/linspace_z.cc \
 	indices/booleans.cc \
 	indices/which.cc \
+	indices/surrounding_dimensions.cc \
 	sparse/full_d.cc \
 	sparse/full_z.cc \
 	sparse/sparse_d.cc \
@@ -62,6 +63,7 @@ libtensor_la_SOURCES = \
 	tensor/tensor_foldin_z.cc \
 	tensor/tensor_kron_d.cc \
 	tensor/tensor_kron_z.cc \
+	tensor/tensor_round_d.cc \
 	tensor/tensor_sum_d.cc \
 	tensor/tensor_sum_z.cc \
 	tensor/tensor_norm0_d.cc \
@@ -76,6 +78,8 @@ libtensor_la_SOURCES = \
 	tensor/tensor_squeeze_z.cc \
 	tensor/tensor_take_diag_d.cc \
 	tensor/tensor_take_diag_z.cc \
+	tensor/tensor_change_dimension_d.cc \
+	tensor/tensor_change_dimension_z.cc \
 	compare/rtensor_rtensor_all_equal.cc \
 	compare/rtensor_rtensor_e.cc \
 	compare/rtensor_rtensor_l.cc \
@@ -322,6 +326,8 @@ libmps_la_SOURCES = \
 	mps/mps/mps_expected2_z.cc \
 	mps/mps/mps_simplify_d.cc \
 	mps/mps/mps_simplify_z.cc \
+	mps/mps/mps_canonical_d.cc \
+	mps/mps/mps_canonical_z.cc \
 	mps/mps/apply_local_operator_d.cc \
 	mps/mps/apply_local_operator_z.cc
 #	mps/dmrg/rdmrg.cc

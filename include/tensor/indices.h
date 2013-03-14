@@ -44,6 +44,8 @@ namespace tensor {
     index total_size() const;
   };
 
+  void surrounding_dimensions(const Indices &d, index ndx, index *d1, index *d2, index *d3);
+
   const Indices operator<<(const Indices &a, const Indices &b);
 
   extern template class Vector<bool>;

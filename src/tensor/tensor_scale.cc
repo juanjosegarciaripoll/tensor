@@ -27,20 +27,6 @@ namespace tensor {
 // 1) IN PLACE
 //
 
-static void
-get_surrounding_dims(const Indices &d, index ndx,
-		     index *d1, index *d2, index *d3)
-{
-    index i, l = d.size();
-    for (i = 0, *d1 = 1; i < ndx; i++) {
-        *d1 *= d[i];
-    }
-    *d2 = d[i++];
-    for (*d3 = 1; i < l; i++) {
-        *d3 *= d[i];
-    }
-}
-
 template<typename t1, typename t2>
 void doscale(t1 *p1, const t2 *p20, index d1, index d2, index d3) {
     index i, j;
@@ -67,7 +53,7 @@ template<typename elt_t>
 void scale_inplace(Tensor<elt_t> &t, int ndx, const Vector<double> &v)
 {
     index d1, d2, d3;
-    get_surrounding_dims(t.get_dims(), t.normal_index(ndx), &d1, &d2, &d3);
+    surrounding_dimensions(t.get_dims(), t.normal_index(ndx), &d1, &d2, &d3);
     if (d2 != v.size()) {
       std::cerr << "In scale() the dimension " << ndx <<
 	" of the tensor does not match the length " <<
