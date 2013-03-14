@@ -20,6 +20,8 @@ libtensor_la_SOURCES = \
 	indices/linspace_d.cc \
 	indices/linspace_z.cc \
 	indices/booleans.cc \
+	indices/booleans_and.cc \
+	indices/booleans_not.cc \
 	indices/which.cc \
 	indices/surrounding_dimensions.cc \
 	sparse/full_d.cc \

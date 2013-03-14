@@ -58,6 +58,7 @@ namespace tensor {
     explicit Booleans(index size) : Vector<bool>(size) {}
   };
   const Booleans operator!(const Booleans &b);
+  const Booleans operator&&(const Booleans &a, const Booleans &b);
   const Indices which(const Booleans &b);
 
   bool all_equal(const Indices &a, const Indices &b);
