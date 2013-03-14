@@ -152,7 +152,7 @@ namespace tensor {
   const RTensor mmult(const RTensor &m1, const RSparse &m2);
   const CTensor mmult(const CTensor &m1, const CSparse &m2);
   const RTensor mmult(const RSparse &m1, const RTensor &m2);
-  const CTensor mmult(const CTensor &m1, const CSparse &m2);
+  const CTensor mmult(const CSparse &m1, const CTensor &m2);
 
 } // namespace tensor
 
