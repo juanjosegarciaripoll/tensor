@@ -17,12 +17,11 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <math>
+#include <cmath>
 #include <algorithm>
 #include <tensor/tools.h>
 #include <tensor/linalg.h>
-#include <tensor/arpack_d.h>
-#include <tensor/arpack_z.h>
+#include <tensor/arpack.h>
 #include <mps/tools.h>
 #include <mps/mps_algorithms.h>
 #include <mps/dmrg.h>
@@ -147,7 +146,7 @@ namespace mps {
       elt_t Heff = kron2(Opli, elt_t::eye(b1)) + kron2(elt_t::eye(a1), Opir);
       aux = eigs(Heff, linalg::SmallestAlgebraic, neig, &Pk, Pk.begin());
     } else {
-      linalg::RArpack eigs(Pk.size(), linalg::SmallestAlgebraic, neig);
+      linalg::Arpack<elt_t> eigs(Pk.size(), linalg::SmallestAlgebraic, neig);
       eigs.set_maxiter(Pk.size());
       eigs.set_start_vector(Pk.begin());
       while (eigs.update() < eigs.Finished) {
@@ -167,13 +166,13 @@ namespace mps {
      * And finally we update the matrices.
      */
     if (neig > 1) Pk = Pk(range(), range(0));
-    P.set_normalized(k, reshape(Pk, a1,i1,b1), dk);
+    set_canonical(P, k, reshape(Pk, a1,i1,b1), dk);
     if (dk > 0) {
       update_matrices_left(P, k);
     } else {
       update_matrices_right(P, k);
     }
-    eigenvalues = re_part(aux);
+    eigenvalues = real(aux);
     return eigenvalues[0];
   }
 
@@ -208,14 +207,14 @@ namespace mps {
   {
     index n_Q = Q_values.size();
     if (n_Q) {
-      elt_t Z = elt_t::zeros(1,1);
+      RTensor Z = RTensor::zeros(1,1);
       Booleans flag;
       for (index n = 0; n < n_Q; n++) {
 	RTensor Nl = (k > 0)? real(Ql_[n][k-1]) : Z;
 	RTensor Nr = ((k+2)<Qr_[n].size())? real(Qr_[n][k+2]) : Z;
-	RTensor Ni = take_diag(Q_operators[n]);
+	RTensor Ni = real(take_diag(Q_operators[n]));
 	double desired_N = Q_values[n];
-	elt_t N = direct_sum(direct_sum(Nl, Ni), direct_sum(Ni, Nr));
+	RTensor N = direct_sum(direct_sum(Nl, Ni), direct_sum(Ni, Nr));
 	if (n == 0) {
 	  flag = (N == desired_N);
 	} else {
@@ -245,8 +244,7 @@ namespace mps {
     if (Q_values.is_empty()) {
       return H;
     } else {
-      const Range r(valid_cells_);
-      return elt_t(H(r, r));
+      return elt_t(H(range(valid_cells_), range(valid_cells_)));
     }
   }
 
@@ -280,8 +278,8 @@ namespace mps {
     index a1,i1,b1,j1,c1;
     elt_t Pi = P[k];
     elt_t Pj = P[k+1];
-    Pi.get_dims(&a1, &i1, &b1);
-    Pj.get_dims(&b1, &j1, &c1);
+    Pi.get_dimensions(&a1, &i1, &b1);
+    Pj.get_dimensions(&b1, &j1, &c1);
 
     index L1 = a1*i1, L2 = j1*c1;
     Pi = reshape(fold(Pi, -1, Pj, 0), L1*L2);
@@ -306,7 +304,7 @@ namespace mps {
     bool project = !V.is_empty();
     if (project) {
       Pi = Pi - fold(foldc(V,0, Pi,0),0, V,-1);
-      Pi = Pi / norm(Pi);
+      Pi = Pi / norm2(Pi);
     }
     /*
      * Now we find the minimal energy and optimal projector.  We use an
@@ -327,23 +325,23 @@ namespace mps {
 	  V = elt_t::eye(V.rows()) - mmult(V, adjoint(V));
 	  Heff_full = mmult(adjoint(V), mmult(Heff_full, V));
 	}
-	RSparse Heff(Heff_full);
-	aux = eigs(Heff, linalg::SmallestAlgebraic, neig, &Pi, Pi.pointer());
+	sparse_t Heff(Heff_full);
+	aux = eigs(Heff, linalg::SmallestAlgebraic, neig, &Pi, Pi.begin());
       } else {
-	RSparse Sli(Opli);
-	RSparse Sjr(Opjr);
-	linalg::RArpack eigs(smallL, linalg::SmallestAlgebraic, neig);
+	sparse_t Sli(Opli);
+	sparse_t Sjr(Opjr);
+	linalg::Arpack<elt_t> eigs(smallL, linalg::SmallestAlgebraic, neig);
 	eigs.set_start_vector(Pi.begin());
 	eigs.set_maxiter(smallL*2);
 	Opij = reshape(Opij, i1,j1,i1*j1);
 	while (eigs.update() < eigs.Finished) {
 	  Pj = reshape(reconstruct_state(eigs.get_x()), L1,L2);
 	  Pi = mmult(Sli, Pj);
-	  Pi += mmult(Pj, Sjr);
-	  Pi += foldin(Opij, -1, reshape(Pj, a1,i1*j1,c1), 1);
+	  Pi = Pi + mmult(Pj, Sjr);
+	  Pi = Pi + foldin(Opij, -1, reshape(Pj, a1,i1*j1,c1), 1);
 	  Pi = simplify_state(Pi);
 	  if (project) {
-	    Pi -= fold(foldc(V,0, Pi,0),0, V,-1);
+	    Pi = Pi - fold(foldc(V,0, Pi,0),0, V,-1);
 	  }
 	  eigs.set_y(Pi);
 	  Pi = elt_t();
@@ -369,15 +367,15 @@ namespace mps {
 	}
 	aux = eigs(Heff, linalg::SmallestAlgebraic, neig, &Pi, Pi.begin());
       } else {
-	linalg::RArpack eigs(smallL, linalg::SmallestAlgebraic, neig);
+	linalg::Arpack<elt_t> eigs(smallL, linalg::SmallestAlgebraic, neig);
 	eigs.set_start_vector(Pi.begin());
 	eigs.set_maxiter(smallL*2);
 	Opij = reshape(Opij, i1,j1,i1*j1);
 	while (eigs.update() < eigs.Finished) {
 	  Pj = reshape(reconstruct_state(eigs.get_x()), L1,L2);
 	  Pi = mmult(Opli, Pj);
-	  Pi += mmult(Pj, Opjr);
-	  Pi += foldin(Opij, -1, reshape(Pj, a1,i1*j1,c1), 1);
+	  Pi = Pi + mmult(Pj, Opjr);
+	  Pi = Pi + foldin(Opij, -1, reshape(Pj, a1,i1*j1,c1), 1);
 	  Pi = simplify_state(Pi);
 	  if (project) {
 	    Pi = Pi - fold(foldc(V,0, Pi,0),0, V,-1);
@@ -400,8 +398,8 @@ namespace mps {
      * it, ensuring that we remain below the desired dimension Dmax.
      */
     double factor;
-    elt_t s = svd(reshape(Pi, L1,L2), &Pi, &Pj, SVD_ECONOMIC);
-    b1 = where_to_truncate(s, Dmax, factor, svd_tolerance);
+    RTensor s = linalg::svd(reshape(Pi, L1,L2), &Pi, &Pj, SVD_ECONOMIC);
+    b1 = where_to_truncate(s, svd_tolerance, Dmax);
     if (b1 != s.size()) {
       Pi = change_dimension(Pi, -1, b1);
       Pj = change_dimension(Pj, 0, b1);
@@ -428,7 +426,7 @@ namespace mps {
     } else {
       update_matrices_right(P, k+1);
     }
-    eigenvalues = re_part(aux);
+    eigenvalues = real(aux);
     return eigenvalues[0];
   }
 
@@ -455,7 +453,7 @@ namespace mps {
     //SpecialVar<bool> old_accurate_svd(accurate_svd, true);
 
     tic();
-    orthonormalize(P);
+    P = canonical_form(P);
 
     init_matrices(P, 0, Dmax > 0);
 
@@ -492,7 +490,7 @@ namespace mps {
 	  newE = DMRG::minimize_single_site(P, k, dk);
 	}
 	if (error) {
-	  P = orthonormalize(P);
+	  P = canonical_form(P);
 	  return E;
 	}
 	if (debug > 2) {
@@ -755,7 +753,7 @@ namespace mps {
       }
       if (V.is_empty())
 	V = elt_t(Qk.size(), n_orth_states());
-      V.at(range(), state) = Qk;
+      V.at(range(), range(state)) = Qk;
     }
     return conj(V);
   }
@@ -790,7 +788,7 @@ namespace mps {
       elt_t prev_Q = (k+1 < size())? Qr_[n][k+1] : elt_t::zeros(1);
       prev_Q = direct_sum(elt_t(take_diag(Q_operators[n])), prev_Q);
       prev_Q = foldc(Pk, -1, scale(Pk, -1, prev_Q), -1);
-      Qr_.at(n).at(k) = round(take_diag(prev_Q));
+      Qr_.at(n).at(k) = round(real(take_diag(prev_Q)));
       //std::cout << "Qr_(" << n << ',' << k  << ")=\n";
       //show_matrix(std::cout, Qr_[n][k]);
     }
@@ -825,7 +823,7 @@ namespace mps {
       elt_t prev_Q = (k > 0)? Ql_[n][k-1] : elt_t::zeros(1);
       prev_Q = direct_sum(prev_Q, elt_t(take_diag(Q_operators[n])));
       prev_Q = foldc(Pk, 0, scale(Pk, 0, prev_Q), 0);
-      Ql_[n].at(k) = round(take_diag(prev_Q));
+      Ql_[n].at(k) = round(real(take_diag(prev_Q)));
       //std::cout << "Ql_(" << n << ',' << k << ")=\n";
       //show_matrix(std::cout, Ql_[n][k]);
     }

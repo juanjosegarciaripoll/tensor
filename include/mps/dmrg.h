@@ -30,6 +30,7 @@ namespace mps {
     typedef typename MPS::elt_t elt_t;
     typedef typename std::vector<elt_t> elt_vector_t;
     typedef typename std::vector<MPS> mps_vector_t;
+    typedef typename tensor::Sparse<typename elt_t::elt_t> sparse_t;
 
   public:
     bool error;

@@ -334,8 +334,8 @@ libmps_la_SOURCES = \
 	mps/mps/mps_canonical_z.cc \
 	mps/mps/apply_local_operator_d.cc \
 	mps/mps/apply_local_operator_z.cc \
-	mps/dmrg/rdmrg.cc
-#	mps/dmrg/cdmrg.cc
+	mps/dmrg/rdmrg.cc \
+	mps/dmrg/cdmrg.cc
 endif
 
 generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
