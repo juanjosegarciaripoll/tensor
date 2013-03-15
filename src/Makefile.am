@@ -332,8 +332,12 @@ libmps_la_SOURCES = \
 	mps/mps/mps_simplify_z.cc \
 	mps/mps/mps_canonical_d.cc \
 	mps/mps/mps_canonical_z.cc \
+	mps/mps/mps_normal_d.cc \
+	mps/mps/mps_normal_z.cc \
 	mps/mps/apply_local_operator_d.cc \
 	mps/mps/apply_local_operator_z.cc \
+	mps/evolve/solver_base.cc \
+	mps/evolve/trotter_unitary.cc \
 	mps/dmrg/rdmrg.cc \
 	mps/dmrg/cdmrg.cc
 endif

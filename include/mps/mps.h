@@ -136,6 +136,12 @@ namespace mps {
   /**Rewrite a CMPS in canonical form.*/
   const CMPS canonical_form(const CMPS &psi, int sense = -1);
 
+  /**Rewrite a RMPS in canonical form, normalizing.*/
+  const RMPS normal_form(const RMPS &psi, int sense = -1);
+
+  /**Rewrite a CMPS in canonical form, normalizing.*/
+  const CMPS normal_form(const CMPS &psi, int sense = -1);
+
 }
 
 #endif /* !TENSOR_MPS_H */
