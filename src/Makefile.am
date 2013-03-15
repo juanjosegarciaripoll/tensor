@@ -295,6 +295,8 @@ libmps_la_SOURCES = \
 	mps/tools/build_E_matrix_z.cc \
 	mps/tools/propagate_mps_d.cc \
 	mps/tools/propagate_mps_z.cc \
+	mps/tools/truncate_rmps.cc \
+	mps/tools/truncate_cmps.cc \
 	mps/iTEBD/itebd_d.cc \
 	mps/iTEBD/itebd_z.cc \
 	mps/iTEBD/itebd_itime_d.cc \
@@ -338,6 +340,9 @@ libmps_la_SOURCES = \
 	mps/mps/apply_local_operator_z.cc \
 	mps/evolve/solver_base.cc \
 	mps/evolve/trotter_unitary.cc \
+	mps/evolve/solver_trotter2.cc \
+	mps/evolve/solver_trotter3.cc \
+	mps/evolve/solver_trotter4.cc \
 	mps/dmrg/rdmrg.cc \
 	mps/dmrg/cdmrg.cc
 endif

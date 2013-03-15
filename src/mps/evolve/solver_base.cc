@@ -17,33 +17,16 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MPS_MPS_ALGORITHM_H
-#define MPS_MPS_ALGORITHM_H
-
-#include <mps/mps.h>
+#include <mps/time_evolve.h>
 
 namespace mps {
 
-  const RTensor prop_matrix_close(const RTensor &N);
+  TimeSolver::~TimeSolver()
+  {
+  }
 
-  const RTensor prop_matrix(const RTensor &M0, int sense, const RTensor &Q,
-			    const RTensor &P, const RTensor *op = NULL);
-
-  const CTensor prop_matrix_close(const CTensor &N);
-
-  const CTensor prop_matrix(const CTensor &M0, int sense, const CTensor &Q,
-			    const CTensor &P, const CTensor *op = NULL);
-
-  bool truncate(RMPS *P, const RMPS &Q, index Dmax, bool periodicbc);
-
-  bool truncate(CMPS *P, const CMPS &Q, index Dmax, bool periodicbc);
-
-  double simplify(RMPS *P, const RMPS &Q, int *sense, bool periodicbc,
-		  index sweeps, bool normalize);
-
-  double simplify(CMPS *P, const CMPS &Q, int *sense, bool periodicbc,
-		  index sweeps, bool normalize);
+  TrotterSolver::~TrotterSolver()
+  {
+  }
 
 } // namespace mps
-
-#endif // !MPS_MPS_ALGORITHM_H
