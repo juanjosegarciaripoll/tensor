@@ -261,44 +261,6 @@ class Tensor {
 };
 
 //////////////////////////////////////////////////////////////////////
-// TENSOR GENERIC OPERATIONS
-//
-//
-// RESHAPING
-//
-
-/**Return a Tensor with same data and given dimensions.*/
-template<typename elt_t>
-Tensor<elt_t> reshape(const Tensor<elt_t> &t, const Indices &new_dims);
-
-/**Return a Tensor with same data and given dimensions.*/
-template<typename elt_t>
-Tensor<elt_t> reshape(const Tensor<elt_t> &t, index length);
-
-/**Return a Tensor with same data and given dimensions.*/
-template<typename elt_t>
-Tensor<elt_t> reshape(const Tensor<elt_t> &t, index rows, index columns);
-
-/**Return a Tensor with same data and given dimensions.*/
-template<typename elt_t>
-Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3);
-
-/**Return a Tensor with same data and given dimensions.*/
-template<typename elt_t>
-Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
-		      index d4);
-
-/**Return a Tensor with same data and given dimensions.*/
-template<typename elt_t>
-Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
-		      index d4, index d5);
-
-/**Return a Tensor with same data and given dimensions.*/
-template<typename elt_t>
-Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1, index d2, index d3,
-		      index d4, index d5, index d6);
-
-//////////////////////////////////////////////////////////////////////
 // ALGEBRA
 //
 //
@@ -355,7 +317,6 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 #include <tensor/detail/tensor_kron.hpp>
 #endif
 #include <tensor/detail/tensor_slice.hpp>
-#include <tensor/detail/tensor_reshape.hpp>
 #include <tensor/detail/tensor_ops.hpp>
 
 //////////////////////////////////////////////////////////////////////
@@ -398,6 +359,14 @@ namespace tensor {
   const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
   double trace(const RTensor &d);
   const RTensor trace(const RTensor &A, index i1, index i2);
+
+  const RTensor reshape(const RTensor &t, const Indices &new_dims);
+  const RTensor reshape(const RTensor &t, index length);
+  const RTensor reshape(const RTensor &t, index rows, index columns);
+  const RTensor reshape(const RTensor &t, index d1, index d2, index d3);
+  const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4);
+  const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4, index d5);
+  const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4, index d5, index d6);
 
   const RTensor squeeze(const RTensor &t);
   const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
@@ -485,6 +454,14 @@ namespace tensor {
   const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
   cdouble trace(const CTensor &d);
   const CTensor trace(const CTensor &A, index i1, index i2);
+
+  const CTensor reshape(const CTensor &t, const Indices &new_dims);
+  const CTensor reshape(const CTensor &t, index length);
+  const CTensor reshape(const CTensor &t, index rows, index columns);
+  const CTensor reshape(const CTensor &t, index d1, index d2, index d3);
+  const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4);
+  const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4, index d5);
+  const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4, index d5, index d6);
 
   const CTensor squeeze(const CTensor &t);
   const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
