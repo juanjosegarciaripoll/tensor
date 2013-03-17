@@ -93,11 +93,18 @@ TEST(RefPointerTest, Destructor) {
 }
 
 // Operator= makes two references point to the same data
-TEST(RefPointerTest, assigning) {
+TEST(RefPointerTest, Assigning) {
   RefPointer<int> ref(5);
   RefPointer<int> r2 = ref;
 
   EXPECT_EQ(ref.begin_const(), r2.begin_const());
+}
+
+// Operator= works when a refpointer is copied onto itself
+TEST(RefPointerTest, AssigningSelf) {
+  RefPointer<int> ref(1);
+  ref = ref;
+  EXPECT_EQ(ref.ref_count(), 1);
 }
 
 // For constant pointer access, no data is copied; multiple references

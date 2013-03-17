@@ -89,13 +89,15 @@ public:
   void reallocate(size_t new_size);
 
 private:
+  class pointer;
+  mutable pointer *ref_; // Pointer to data we reference or NULL
+
   /** Ensure that we have a unique copy of the data. If the pointer has more
       than one reference, a fresh new copy of the data is created.
   */
   void appropriate();
-    
-  class pointer;
-  mutable pointer *ref_; // Pointer to data we reference or NULL
+  pointer *reference() const;
+  void dereference();
 };
 
 }; // namespace

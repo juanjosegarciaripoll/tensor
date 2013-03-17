@@ -37,6 +37,11 @@ public:
      data_(data), size_(size), references_(1)
   {}
 
+  /* Delete the object and its data */
+  ~pointer() {
+    delete[] data_;
+  }
+
   /* Create a new reference object with the same data and only 1 ro reference. */
   pointer *clone() {
     elt_t *output = new elt_t[size()];
@@ -44,16 +49,8 @@ public:
     return new pointer(output, size());
   }
 
-  pointer *reference() {
-    ++references_;
-    return this;
-  }
-
-  void dereference() {
-    references_--;
-    check_delete();
-  }
-
+  int reference() { return ++references_; }
+  int dereference() { return --references_; }
   int references() const { return references_; }
   size_t size() { return size_; }
   elt_t *begin() { return data_; }
@@ -62,13 +59,6 @@ public:
 private:
 
   pointer(const pointer &p); // Prevents copy constructor
-
-  void check_delete()  {
-    if (!(references_)) {
-      delete[] data_;
-      delete this;
-    }
-  }
 
   elt_t *data_;
   size_t size_;
@@ -96,33 +86,47 @@ RefPointer<elt_t>::RefPointer(elt_t *data, size_t new_size) {
 
 template<class elt_t>
 RefPointer<elt_t>::RefPointer(const RefPointer<elt_t> &p) {
-  ref_ = p.ref_->reference();
+  ref_ = p.reference();
 }
 
 template<class elt_t>
 RefPointer<elt_t>::~RefPointer() {
-  ref_->dereference();
+  dereference();
+}
+
+template<class elt_t>
+typename RefPointer<elt_t>::pointer *RefPointer<elt_t>::reference() const {
+  ref_->reference();
+  return ref_;
+}
+
+template<class elt_t>
+void RefPointer<elt_t>::dereference() {
+  if (ref_->dereference() <= 0)
+    delete ref_;
 }
 
 template<class elt_t>
 void RefPointer<elt_t>::appropriate() {
   if (ref_count() > 1) {
     pointer *new_ref = ref_->clone();
-    ref_->dereference();
+    dereference();
     ref_ = new_ref;
   }
 }
 
 template<class elt_t>
 void RefPointer<elt_t>::reallocate(size_t new_size) {
-  ref_->dereference();
+  dereference();
   ref_ = new pointer(new elt_t[new_size], new_size);
 }
 
 template<class elt_t>
 RefPointer<elt_t> &RefPointer<elt_t>::operator=(const RefPointer<elt_t> &other) {
-  ref_->dereference();
-  ref_ = other.ref_->reference();
+  if (other.ref_ != ref_) {
+    dereference();
+    ref_ = other.reference();
+  }
   return *this;
 }
 
