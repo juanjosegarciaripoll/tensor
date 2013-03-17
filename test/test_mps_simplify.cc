@@ -29,33 +29,6 @@ namespace tensor_test {
   using namespace mps;
   using tensor::index;
 
-  template<class Tensor>
-  const Tensor double_index(const Tensor &t, index i)
-  {
-    index d = t.dimension(i);
-    Tensor matrix = Tensor::zeros(2*d, d);
-    double v = 1/sqrt(2.0);
-    for (index j = 0; j < d; d++) {
-      matrix.at(j, j) = v;
-      matrix.at(j+d, j) = v;
-    }
-    return foldin(matrix, -1, t, i);
-  }
-
-  template<class MPS>
-  const MPS double_bond(const MPS &psi) {
-    MPS output = psi;
-    for (index i = 0; i < output.size(); i++) {
-      typename MPS::elt_t x = output[i];
-      if (i > 0)
-	x = double_index(x, 0);
-      if (i < output.size()-1)
-	x = double_index(x, 2);
-      output.at(i) = x;
-    }
-    return output;
-  }
-
   template<class MPS>
   const MPS add_errors(const MPS &psi) {
     MPS output = psi;
