@@ -50,7 +50,7 @@ class Tensor {
   typedef const elt_t *const_iterator;
 
   /**Constructs an empty Tensor.*/
-  Tensor() : data_(), dims_() {}
+  Tensor();
 
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
   explicit Tensor(const Indices &new_dims);
@@ -59,12 +59,10 @@ class Tensor {
   Tensor(const Indices &new_dims, const Tensor<elt_t> &data);
 
   /**Constructs a 1-D Tensor from a vector.*/
-  Tensor(const Vector<elt_t> &data) : dims_(1), data_(data) {
-    dims_.at(0) = data.size();
-  }
+  Tensor(const Vector<elt_t> &data);
 
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
-  Tensor(const Tensor &other) : data_(other.data_), dims_(other.dims_) {}
+  Tensor(const Tensor &other);
 
   /**Implicit coercion. */
   template<typename e2> Tensor(const Tensor<e2> &other) :
@@ -99,6 +97,9 @@ class Tensor {
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
 
   operator Vector<elt_t>() const { return data_; }
+
+  /**Assignment operator.*/
+  const Tensor &operator=(const Tensor<elt_t> &other);
 
   /**Returns total number of elements in Tensor.*/
   index size() const { return data_.size(); }
