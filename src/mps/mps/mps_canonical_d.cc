@@ -31,7 +31,7 @@ namespace mps {
 
   const RMPS canonical_form(const RMPS &psi, int sense)
   {
-    canonical_form_inner(psi, sense);
+    return canonical_form_inner(psi, sense);
   }
 
 }

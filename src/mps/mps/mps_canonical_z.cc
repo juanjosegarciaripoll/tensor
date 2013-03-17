@@ -23,15 +23,15 @@
 
 namespace mps {
 
-  void set_canonical(const CMPS &psi, index site, const CTensor &t,
-			   int sense, bool truncate)
+  void set_canonical(CMPS &psi, index site, const CTensor &t,
+                     int sense, bool truncate)
   {
     set_canonical_inner(psi, site, t, sense, truncate);
   }
 
   const CMPS canonical_form(const CMPS &psi, int sense)
   {
-    canonical_form_inner(psi, sense);
+    return canonical_form_inner(psi, sense);
   }
 
 }

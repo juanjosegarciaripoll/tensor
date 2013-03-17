@@ -125,10 +125,10 @@ namespace mps {
   cdouble expected(const CMPS &a, const CTensor &op1, index k1, const CTensor &op2, index k2);
 
   /**Store a tensor in a matrix product state in the canonical form.*/
-  void set_canonical(RMPS psi, index site, const RTensor &A, int sense, bool truncate = true);
+  void set_canonical(RMPS &psi, index site, const RTensor &A, int sense, bool truncate = true);
 
   /**Store a tensor in a matrix product state in the canonical form.*/
-  void set_canonical(CMPS psi, index site, const CTensor &A, int sense, bool truncate = true);
+  void set_canonical(CMPS &psi, index site, const CTensor &A, int sense, bool truncate = true);
 
   /**Rewrite a RMPS in canonical form.*/
   const RMPS canonical_form(const RMPS &psi, int sense = -1);
