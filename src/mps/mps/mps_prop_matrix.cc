@@ -24,9 +24,11 @@ namespace mps {
   template<typename t>
   static inline const t do_prop_init(const t &Q, const t &P, const t *op)
   {
+    // M(a1,a2,b1,b2) = Q'(a1,i,a2) P(b1,i,b2)
     t M = op?
       foldc(Q, 1, fold(*op, 1, P, 1), 0) :
       foldc(Q, 1, P, 1);
+    // M(a1,a2,b1,b2) -> M(a1,b1,a2,b2)
     return permute(M, 1, 2);
   }
 
