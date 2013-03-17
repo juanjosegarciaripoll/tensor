@@ -66,7 +66,7 @@ namespace mps {
     for (index k = 0; k < a.size(); k++) {
       M = prop_matrix(M, +1, a[k], b[k], NULL);
     }
-    return real(prop_matrix_close(M)[0]);
+    return prop_matrix_close(M)[0];
   }
 
 } // namespace mps
