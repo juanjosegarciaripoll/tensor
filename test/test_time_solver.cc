@@ -27,30 +27,65 @@ namespace tensor_test {
 
   using namespace mps;
 
-  //
-  // Simplifying a state that does not require simplification.
-  //
   template<class MPS>
   void evolve_identity(int size)
   {
     MPS psi = ghz_state(size);
-    TIHamiltonian Id(size, RTensor::zeros(4,4), RTensor::eye(2));
+    // Id is a zero operator that causes the evolution operator to
+    // be the identity
+    TIHamiltonian H(size, RTensor::zeros(4,4), RTensor::zeros(2,2));
     {
-      Trotter2Solver solver(Id, 0.1);
+      Trotter2Solver solver(H, 0.1);
       MPS aux = psi;
       solver.one_step(&aux, 2);
+      EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
+      EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
+      EXPECT_CEQ(mps_to_vector(psi), mps_to_vector(aux));
+    }
+    {
+      Trotter3Solver solver(H, 0.1);
+      MPS aux = psi;
+      solver.one_step(&aux, 2);
+      EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
+      EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
+      EXPECT_CEQ(mps_to_vector(psi), mps_to_vector(aux));
+    }
+    {
+      ForestRuthSolver solver(H, 0.1);
+      MPS aux = psi;
+      solver.one_step(&aux, 2);
+      EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
+      EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
+      EXPECT_CEQ(mps_to_vector(psi), mps_to_vector(aux));
+    }
+  }
+
+  template<class MPS>
+  void evolve_global_phase(int size)
+  {
+    MPS psi = ghz_state(size);
+    // H is a multiple of the identity, causing the evolution
+    // operator to be just a global phase
+    TIHamiltonian H(size, RTensor::zeros(4,4), RTensor::eye(2,2));
+    {
+      Trotter2Solver solver(H, 0.1);
+      MPS aux = psi;
+      solver.one_step(&aux, 2);
+      EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
     }
     {
-      Trotter3Solver solver(Id, 0.1);
+      Trotter3Solver solver(H, 0.1);
       MPS aux = psi;
       solver.one_step(&aux, 2);
+      EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
     }
     {
-      ForestRuthSolver solver(Id, 0.1);
+      ForestRuthSolver solver(H, 0.1);
       MPS aux = psi;
       solver.one_step(&aux, 2);
+      EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
     }
   }
@@ -61,6 +96,10 @@ namespace tensor_test {
 
   TEST(TimeSolver, Identity) {
     test_over_integers(2, 10, evolve_identity<CMPS>);
+  }
+
+  TEST(TimeSolver, GlobalPhase) {
+    test_over_integers(2, 10, evolve_global_phase<CMPS>);
   }
 
 } // namespace tensor_test
