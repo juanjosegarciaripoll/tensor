@@ -61,9 +61,9 @@ namespace mps {
 	truncated = 1;
 	Qk = change_dimension(Qk, 0, d[k]);
       }
-      if (Qk.dimension(-1) > d[k+1]) {
+      if (Qk.dimension(2) > d[k+1]) {
 	truncated = 1;
-	Qk = change_dimension(Qk, -1, d[k+1]);
+	Qk = change_dimension(Qk, 2, d[k+1]);
       }
       Q->at(k) = Qk;
     }

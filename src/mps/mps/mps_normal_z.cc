@@ -23,7 +23,7 @@ namespace mps {
 
   const CMPS normal_form(const CMPS &P, int sense)
   {
-    CMPS output = canonical_form(P);
+    CMPS output = canonical_form(P, sense);
     index i = (sense < 0) ? 0 : P.size()-1;
     const CTensor &t = output[i];
     double fac = P.is_periodic()? norm2(output) : norm2(t);

@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <tensor/linalg.h>
 #include <mps/mps.h>
+#include <tensor/io.h>
 
 namespace mps {
 
@@ -39,15 +40,15 @@ namespace mps {
 	Tensor U, V;
 	t.get_dimensions(&b1, &i1, &b2);
 	RTensor s = linalg::svd(reshape(t, b1*i1, b2), &U, &V, SVD_ECONOMIC);
-	double factor = 1.0;
 	index l = s.size();
 	index new_l = truncate?
-	  where_to_truncate(s, l, factor) :
+	  where_to_truncate(s, -1.0, l) :
 	  std::min<index>(b1*i1,b2);
 	if (new_l != l) {
-	  U = change_dimension(U, -1, new_l);
+	  U = change_dimension(U, 1, new_l);
 	  V = change_dimension(V, 0, new_l);
-	  s = factor * change_dimension(s, 0, new_l);
+	  s = change_dimension(s, 0, new_l);
+	  s = s / norm2(s);
 	  l = new_l;
 	}
 	psi.at(ndx) = reshape(U, b1,i1,l);
@@ -61,15 +62,15 @@ namespace mps {
 	Tensor U, V;
 	t.get_dimensions(&b1, &i1, &b2);
 	RTensor s = linalg::svd(reshape(t, b1, i1*b2), &V, &U, SVD_ECONOMIC);
-	double factor = 1.0;
 	index l = s.size();
 	index new_l = truncate?
-	  where_to_truncate(s, l, factor) :
+	  where_to_truncate(s, -1.0, l) :
 	  std::min<index>(b1,i1*b2);
 	if (new_l != l) {
 	  U = change_dimension(U, 0, new_l);
-	  V = change_dimension(V, -1, new_l);
-	  s = factor * change_dimension(s, 0, new_l);
+	  V = change_dimension(V, 1, new_l);
+	  s = change_dimension(s, 0, new_l);
+	  s = s / norm2(s);
 	  l = new_l;
 	}
 	psi.at(ndx) = reshape(U, l,i1,b2);
