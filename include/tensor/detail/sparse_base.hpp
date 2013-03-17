@@ -76,9 +76,15 @@ namespace tensor {
   };
 
   template<typename elt_t>
-  Sparse<elt_t>::Sparse(const Indices &dims, const Indices &rows,
-                        const Indices &cols, const Vector<elt_t> &data) :
-    dims_(dims), row_start_(dims[0]+1), column_(cols.size()), data_(data.size())
+  Sparse<elt_t>::Sparse(const Indices &dims, const Indices &row_start,
+                        const Indices &column, const Vector<elt_t> &data) :
+    dims_(dims), row_start_(row_start), column_(column), data_(data)
+  {}
+
+  template<typename elt_t>
+  Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols, const Vector<elt_t> &data,
+                        index nrows, index ncols) :
+    dims_(2), row_start_(), column_(cols.size()), data_(data.size())
   {
     index i, j, last_row, last_col, l = rows.size();
     assert(cols.size() == l);
@@ -89,9 +95,16 @@ namespace tensor {
      */
     std::vector<sparse_triplet<elt_t> > sorted_data(l);
     for (i = 0; i < l; i++) {
-      sorted_data.at(i) = sparse_triplet<elt_t>(rows[i], cols[i], data[i]);
+      index r = rows[i];
+      index c = cols[i];
+      sorted_data.at(i) = sparse_triplet<elt_t>(r, c, data[i]);
+      nrows = std::max(nrows, r);
+      ncols = std::max(ncols, c);
     }
     std::sort(sorted_data.begin(), sorted_data.end());
+    dims_.at(0) = nrows;
+    dims_.at(1) = ncols;
+    row_start_ = Indices(nrows+1);
 
     /* Fill in the Sparse structure.
      */
@@ -110,7 +123,7 @@ namespace tensor {
       data_.at(j) = d.value;
       j++;
     }
-    while (last_row < dims[0]) {
+    while (last_row < nrows) {
       row_start_.at(++last_row) = j;
     }
   }

@@ -43,8 +43,12 @@ namespace tensor {
     Sparse();
     /**Create a matrix with all elements set to zero.*/
     Sparse(index rows, index cols, index nonzero = 0);
-    Sparse(const Indices &dims, const Indices &rows,
-           const Indices &cols, const Vector<elt_t> &data);
+    /**Create a sparse matrix from the coordinates and values. */
+    Sparse(const Indices &row_indices, const Indices &column_indices, const Vector<elt_t> &data,
+           index rows = 0, index columns = 0);
+    /* Create a sparse matrix from its internal representation. */
+    Sparse(const Indices &dims, const Indices &row_start,
+           const Indices &column, const Vector<elt_t> &data);
     /**Convert a tensor to sparse form.*/
     explicit Sparse(const Tensor<elt_t> &tensor);
     /**Copy constructor.*/
