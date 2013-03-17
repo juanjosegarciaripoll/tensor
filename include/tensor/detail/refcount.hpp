@@ -105,8 +105,8 @@ RefPointer<elt_t>::~RefPointer() {
 }
 
 template<class elt_t>
-void RefPointer<elt_t>::appropiate() {
-  if (other_references()) {
+void RefPointer<elt_t>::appropriate() {
+  if (ref_count() > 1) {
     pointer *new_ref = ref_->clone();
     ref_->dereference();
     ref_ = new_ref;
@@ -115,7 +115,8 @@ void RefPointer<elt_t>::appropiate() {
 
 template<class elt_t>
 void RefPointer<elt_t>::reallocate(size_t new_size) {
-  reset(new elt_t[new_size], new_size);
+  ref_->dereference();
+  ref_ = new pointer(new elt_t[new_size], new_size);
 }
 
 template<class elt_t>
@@ -123,12 +124,6 @@ RefPointer<elt_t> &RefPointer<elt_t>::operator=(const RefPointer<elt_t> &other) 
   ref_->dereference();
   ref_ = other.ref_->reference();
   return *this;
-}
-
-template<class elt_t>
-void RefPointer<elt_t>::reset(elt_t *p, size_t new_size) {
-  ref_->dereference();
-  ref_ = new pointer(p, new_size);
 }
 
 } // namespace tensor

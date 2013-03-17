@@ -54,10 +54,11 @@ public:
   RefPointer();
   /** Allocate a pointer of s bytes. */
   RefPointer(size_t new_size);
-  /** Copy constructor that increases the reference count. */
-  RefPointer(const RefPointer<elt_t> &p);
   /** Wrap around the given data */
   RefPointer(elt_t *data, size_t size);
+  /** Copy constructor that increases the reference count. */
+  RefPointer(const RefPointer<elt_t> &p);
+
 
   /** Destructor that deletes no longer reference data. */
   ~RefPointer();
@@ -66,7 +67,7 @@ public:
   RefPointer<elt_t> &operator=(const RefPointer<elt_t> &p);
 
   /** Retreive the pointer without caring for references (unsafe). */
-  elt_t *begin() { appropiate(); return ref_->begin(); }
+  elt_t *begin() { appropriate(); return ref_->begin(); }
   /** Retreive the pointer without caring for references (unsafe). */
   const elt_t *begin() const { return ref_->begin(); }
   /** Retreive the pointer without caring for references (unsafe). */
@@ -76,30 +77,24 @@ public:
   /** Retreive the pointer without caring for references (unsafe). */
   const elt_t *end() const { return ref_->end(); }
   /** Retreive the pointer without caring for references (unsafe). */
-  elt_t *end() { appropiate(); return ref_->end(); }
+  elt_t *end() { appropriate(); return ref_->end(); }
 
   /** Size of pointed-to data. */
   size_t size() const { return ref_->size(); }
 
   /** Number of references to the internal data */
   size_t ref_count() const { return ref_->references(); }
-  /** Reference counter */
-  bool other_references() const { return ref_->references() > 1; }
-  /** Ensure that we have a unique copy of the data. If the pointer has more
-      than one reference, a fresh new copy of the data is created.
-  */
-  void appropiate();
 
   /** Replace the pointer with newly allocated data. */
   void reallocate(size_t new_size);
-  /** Set to NULL */
-  void reset() { reset(0, 0); }
-  /** Set to some pointer */
-  void reset(elt_t *p, size_t new_size = 1);
 
 private:
+  /** Ensure that we have a unique copy of the data. If the pointer has more
+      than one reference, a fresh new copy of the data is created.
+  */
+  void appropriate();
+    
   class pointer;
-
   mutable pointer *ref_; // Pointer to data we reference or NULL
 };
 
