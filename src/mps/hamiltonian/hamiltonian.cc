@@ -29,7 +29,7 @@ namespace mps {
   index
   Hamiltonian::dimension(index k) const
   {
-    return local_term(k,0).dimension(-1);
+    return local_term(k,0).dimension(1);
   }
 
   const Indices
@@ -64,7 +64,7 @@ namespace mps {
   {
     CTensor O1, O2;
     decompose_operator(interaction(k, t), &O1, &O2);
-    return O1.dimension(-1);
+    return O1.dimension(3);
   }
 
 } // namespace mps

@@ -29,7 +29,7 @@ namespace mps {
     index l = size();
     if (l) {
       index d0 = (*this)[0].dimension(0);
-      index dl = (*this)[l-1].dimension(-1);
+      index dl = (*this)[l-1].dimension(2);
       if (d0 == dl && d0 > 1)
 	return true;
     }
