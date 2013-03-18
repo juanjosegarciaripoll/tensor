@@ -22,21 +22,81 @@
 #include <gtest/gtest-death-test.h>
 #include <mps/mps.h>
 #include <mps/time_evolve.h>
+#include <mps/hamiltonian.h>
+#include <mps/quantum.h>
+#include <tensor/linalg.h>
 
 namespace tensor_test {
 
   using namespace mps;
+  using namespace linalg;
+  using tensor::index;
 
-  template<class MPS>
+  //////////////////////////////////////////////////////////////////////
+  // EXACT SOLVERS
+  //
+
+  void
+  split_Hamiltonian(Hamiltonian **ppHeven, Hamiltonian **ppHodd,
+                    const Hamiltonian &H)
+  {
+    ConstantHamiltonian *pHeven = new ConstantHamiltonian(H.size());
+    ConstantHamiltonian *pHodd = new ConstantHamiltonian(H.size());
+    for (int i = 0; i < H.size(); i++) {
+      ConstantHamiltonian &pHok = (i & 1)? (*pHodd) : (*pHeven);
+      ConstantHamiltonian &pHno = (i & 1)? (*pHeven) : (*pHodd);
+      if (i+1 < H.size()) {
+        pHok.set_interaction(i, H.interaction(i, 0.0));
+        pHno.set_interaction(i, H.interaction(i, 0.0) * 0.0);
+      }
+      pHok.set_local_term(i, H.local_term(i, 0.0));
+      pHno.set_local_term(i, H.local_term(i, 0.0) * 0.0);
+    }
+    *ppHeven = pHeven;
+    *ppHodd = pHodd;
+  }
+
+  CTensor
+  apply_trotter2(const Hamiltonian &H, cdouble idt, const CTensor &psi)
+  {
+    Hamiltonian *pHeven, *pHodd;
+    split_Hamiltonian(&pHeven, &pHodd, H);
+
+    CTensor U1 = expm(full(sparse_hamiltonian(*pHeven)) * idt);
+    CTensor U2 = expm(full(sparse_hamiltonian(*pHodd)) * idt);
+    CTensor new_psi = mmult(U1, mmult(U2, psi));
+
+    delete pHeven;
+    delete pHodd;
+    return new_psi;
+  }
+
+  CTensor
+  apply_trotter3(const Hamiltonian &H, cdouble idt, const CTensor &psi)
+  {
+    Hamiltonian *pHeven, *pHodd;
+    split_Hamiltonian(&pHeven, &pHodd, H);
+
+    CTensor U1 = expm(full(sparse_hamiltonian(*pHeven)) * (idt/2.0));
+    CTensor U2 = expm(full(sparse_hamiltonian(*pHodd)) * idt);
+    CTensor new_psi = mmult(U1, mmult(U2, mmult(U1, psi)));
+
+    delete pHeven;
+    delete pHodd;
+    return new_psi;
+  }
+
+  //////////////////////////////////////////////////////////////////////
+
   void evolve_identity(int size)
   {
-    MPS psi = ghz_state(size);
+    CMPS psi = ghz_state(size);
     // Id is a zero operator that causes the evolution operator to
     // be the identity
     TIHamiltonian H(size, RTensor::zeros(4,4), RTensor::zeros(2,2));
     {
       Trotter2Solver solver(H, 0.1);
-      MPS aux = psi;
+      CMPS aux = psi;
       solver.one_step(&aux, 2);
       EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
@@ -44,7 +104,7 @@ namespace tensor_test {
     }
     {
       Trotter3Solver solver(H, 0.1);
-      MPS aux = psi;
+      CMPS aux = psi;
       solver.one_step(&aux, 2);
       EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
@@ -52,7 +112,7 @@ namespace tensor_test {
     }
     {
       ForestRuthSolver solver(H, 0.1);
-      MPS aux = psi;
+      CMPS aux = psi;
       solver.one_step(&aux, 2);
       EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
@@ -60,34 +120,85 @@ namespace tensor_test {
     }
   }
 
-  template<class MPS>
   void evolve_global_phase(int size)
   {
-    MPS psi = ghz_state(size);
+    CMPS psi = ghz_state(size);
     // H is a multiple of the identity, causing the evolution
     // operator to be just a global phase
     TIHamiltonian H(size, RTensor::zeros(4,4), RTensor::eye(2,2));
     {
       Trotter2Solver solver(H, 0.1);
-      MPS aux = psi;
+      CMPS aux = psi;
       solver.one_step(&aux, 2);
       EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
     }
     {
       Trotter3Solver solver(H, 0.1);
-      MPS aux = psi;
+      CMPS aux = psi;
       solver.one_step(&aux, 2);
       EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
     }
     {
       ForestRuthSolver solver(H, 0.1);
-      MPS aux = psi;
+      CMPS aux = psi;
       solver.one_step(&aux, 2);
       EXPECT_CEQ3(norm2(aux), 1.0, 10 * EPSILON);
       EXPECT_CEQ3(abs(scprod(aux, psi)), 1.0, 10 * EPSILON);
     }
+  }
+
+  void test_Hamiltonian_no_truncation(const Hamiltonian &H, double dt, const CMPS &psi, index Dmax = 0)
+  {
+    {
+      CMPS aux = psi;
+      Trotter2Solver solver(H, dt, false);
+      double err = solver.one_step(&aux, Dmax);
+      EXPECT_CEQ(norm2(aux), 1.0);
+      CTensor aux2 = apply_trotter2(H, to_complex(0.0,-dt), mps_to_vector(psi));
+      EXPECT_CEQ(mps_to_vector(aux), aux2);
+    }
+  }
+
+  void test_Hamiltonian_truncated(const Hamiltonian &H, double dt, const CMPS &psi, index Dmax = 0)
+  {
+    {
+      CMPS aux = psi;
+      Trotter2Solver solver(H, dt, true);
+      double err = solver.one_step(&aux, Dmax);
+      EXPECT_CEQ(norm2(aux), 1.0);
+      CTensor aux2 = apply_trotter2(H, to_complex(0.0,-dt), mps_to_vector(psi));
+      EXPECT_CEQ(mps_to_vector(aux), aux2);
+    }
+  }
+
+  void evolve_local_operator_sz(int size)
+  {
+    double dphi = 1.3 / size;
+    ConstantHamiltonian H(size);
+    for (int i = 0; i < size; i++) {
+      H.set_local_term(i, mps::Pauli_z * (dphi * i));
+      H.set_interaction(i, CTensor::zeros(4,4));
+    }
+    test_Hamiltonian_no_truncation(H, 0.1, ghz_state(size));
+    test_Hamiltonian_no_truncation(H, 0.1, cluster_state(size));
+    test_Hamiltonian_truncated(H, 0.1, ghz_state(size), 2);
+    test_Hamiltonian_truncated(H, 0.1, cluster_state(size), 2);
+  }
+
+  void evolve_local_operator_sx(int size)
+  {
+    double dphi = 1.3 / size;
+    ConstantHamiltonian H(size);
+    for (int i = 0; i < size; i++) {
+      H.set_local_term(i, mps::Pauli_x * (dphi * i));
+      H.set_interaction(i, CTensor::zeros(4,4));
+    }
+    test_Hamiltonian_no_truncation(H, 0.1, ghz_state(size));
+    test_Hamiltonian_no_truncation(H, 0.1, cluster_state(size));
+    test_Hamiltonian_truncated(H, 0.1, ghz_state(size), 2);
+    test_Hamiltonian_truncated(H, 0.1, cluster_state(size), 2);
   }
 
   ////////////////////////////////////////////////////////////
@@ -95,11 +206,19 @@ namespace tensor_test {
   //
 
   TEST(TimeSolver, Identity) {
-    test_over_integers(2, 10, evolve_identity<CMPS>);
+    test_over_integers(2, 10, evolve_identity);
   }
 
   TEST(TimeSolver, GlobalPhase) {
-    test_over_integers(2, 10, evolve_global_phase<CMPS>);
+    test_over_integers(2, 10, evolve_global_phase);
+  }
+
+  TEST(TimeSolver, LocalOperatorSz) {
+    test_over_integers(2, 5, evolve_local_operator_sz);
+  }
+
+  TEST(TimeSolver, LocalOperatorSx) {
+    test_over_integers(2, 5, evolve_local_operator_sx);
   }
 
 } // namespace tensor_test
