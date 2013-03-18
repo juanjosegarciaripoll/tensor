@@ -64,7 +64,7 @@ namespace mps {
     }
 
     for (index k = 1; k < N; k++) {
-      if (H12[k-1].length()) {
+      if (!H12[k-1].is_empty()) {
 	output = output + kron(sparse::eye(Dright[k]),
 			       kron(H12[k-1], sparse::eye(Dleft[k-1])));
       }
@@ -80,7 +80,7 @@ namespace mps {
       }
     }
     for (index k = 0; k < N; k++) {
-      if (H1[k].length()) {
+      if (!H1[k].is_empty()) {
 	output = output + kron(sparse::eye(Dright[k]),
 			       kron(H1[k], sparse::eye(Dleft[k])));
       }
