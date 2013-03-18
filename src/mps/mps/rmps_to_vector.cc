@@ -35,9 +35,7 @@ namespace mps {
       output = fold(output, -1, mps[i], 0);
       output = reshape(output, d0, output.dimension(1)*output.dimension(2), output.dimension(3));
     }
-    if (d0 > 1)
-      output = trace(output, 0, -1);
-    return output;
+    return trace(output, 0, -1);
   }
 
 } // namespace mps
