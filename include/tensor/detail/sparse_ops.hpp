@@ -26,6 +26,7 @@
 #include <functional>
 #include <algorithm>
 #include <tensor/detail/functional.h>
+#include <tensor/io.h>
 
 namespace tensor {
 
@@ -82,13 +83,13 @@ namespace tensor {
 
     assert(rows == m2.rows() && cols == m2.columns());
 
-    if (rows == 0)
+    if (rows == 0 || cols == 0)
       return m1;
 
     index max_size = m1.priv_data().size() + m2.priv_data().size();
     Vector<T> data(max_size);
     Indices column(max_size);
-    Indices row_start(rows);
+    Indices row_start(rows + 1);
 
     typename Vector<T>::iterator out_data = data.begin();
     typename Indices::iterator out_column = column.begin();
@@ -103,9 +104,11 @@ namespace tensor {
     typename Indices::const_iterator m2_row_start = m2.priv_row_start().begin();
     typename Indices::const_iterator m2_column = m2.priv_column().begin();
 
-    size_t j1 = *(m1_row_start++), j2 = *(m2_row_start++);
-    size_t l1 = (*m1_row_start) - j1;
-    size_t l2 = (*m2_row_start) - j2;
+    index j1 = *(m1_row_start++);    // data start for this row in M1
+    index l1 = (*m1_row_start) - j1; // # elements in this row in M1
+    index j2 = *(m2_row_start++);    // data start for this row in M2
+    index l2 = (*m2_row_start) - j2; // # elements in this row in M2
+    *out_row_start = 0;
     while (1) {
       // We look for the next unprocessed matrix element on this row,
       // for both matrices. c1 and c2 are the columns associated to
@@ -146,14 +149,14 @@ namespace tensor {
       }
       if (!(value == number_zero<T>())) {
         *(out_data++) = value;
-        *(out_column++) = c2;
+        *(out_column++) = c;
       }
     }
-    size_t j = out_data - out_begin;
+    index j = out_data - out_begin;
     Indices the_column(j);
-    std::copy(the_column.begin(), the_column.end(), column.begin());
+    std::copy(column.begin(), column.begin() + j, the_column.begin());
     Vector<T> the_data(j);
-    std::copy(the_data.begin(), the_data.end(), data.begin());
+    std::copy(data.begin(), data.begin() + j, the_data.begin());
     return Sparse<T>(m1.dimensions(), row_start, the_column, the_data);
   }
 

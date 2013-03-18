@@ -165,7 +165,7 @@ namespace tensor {
 
   template<typename elt_t>
   Sparse<elt_t>::Sparse(const Tensor<elt_t> &t) :
-    dims_(t.dimensions()), row_start_(Indices(t.rows()+1)),
+    dims_(t.dimensions()), row_start_(t.rows()+1),
     column_(), data_()
   {
     index nonzero = number_of_nonzero<elt_t>(t);
@@ -199,20 +199,19 @@ namespace tensor {
     index nrows = s.rows();
     index ncols = s.columns();
     Tensor<elt_t> output(nrows, ncols);
+    if (nrows && ncols) {
+      output.fill_with_zeros();
 
-    output.fill_with_zeros();
+      Indices::const_iterator row_start = s.priv_row_start().begin();
+      Indices::const_iterator column = s.priv_column().begin();
+      typename Vector<elt_t>::const_iterator data = s.priv_data().begin();
 
-    Indices::const_iterator row_start = s.priv_row_start().begin();
-    Indices::const_iterator column = s.priv_column().begin();
-    typename Vector<elt_t>::const_iterator data = s.data_.begin();
-    typename Tensor<elt_t>::iterator out_data = output.begin();
-
-    for (index i = 0; i < nrows; i++, out_data++) {
+      for (index i = 0; i < nrows; i++) {
 	for (index l = row_start[i+1] - row_start[i]; l; l--) {
-	    out_data[nrows * *(column++)] = *(data++);
+          output.at(i, *(column++)) = *(data++);
 	}
+      }
     }
-
     return output;
   }
 
