@@ -110,6 +110,11 @@ check_PROGRAMS += test_sparse_base
 test_sparse_base_SOURCES = test_sparse_base.cc
 test_sparse_base_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_sparse_ops
+check_PROGRAMS += test_sparse_ops
+test_sparse_ops_SOURCES = test_sparse_ops.cc
+test_sparse_ops_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_sparse_kron
 check_PROGRAMS += test_sparse_kron
 test_sparse_kron_SOURCES = test_sparse_kron.cc
@@ -242,11 +247,6 @@ TESTS += test_itebd_itime
 check_PROGRAMS += test_itebd_itime
 test_itebd_itime_SOURCES = test_itebd_itime.cc
 test_itebd_itime_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_time_solver
-check_PROGRAMS += test_time_solver
-test_time_solver_SOURCES = test_time_solver.cc
-test_time_solver_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 noinst_LIBRARIES += libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
