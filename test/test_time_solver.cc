@@ -159,6 +159,14 @@ namespace tensor_test {
       CTensor aux2 = apply_trotter2(H, to_complex(0.0,-dt), mps_to_vector(psi));
       EXPECT_CEQ(mps_to_vector(aux), aux2);
     }
+    {
+      CMPS aux = psi;
+      Trotter3Solver solver(H, dt, false);
+      double err = solver.one_step(&aux, Dmax);
+      EXPECT_CEQ(norm2(aux), 1.0);
+      CTensor aux2 = apply_trotter3(H, to_complex(0.0,-dt), mps_to_vector(psi));
+      EXPECT_CEQ(mps_to_vector(aux), aux2);
+    }
   }
 
   void test_Hamiltonian_truncated(const Hamiltonian &H, double dt, const CMPS &psi, index Dmax = 0)
@@ -169,6 +177,14 @@ namespace tensor_test {
       double err = solver.one_step(&aux, Dmax);
       EXPECT_CEQ(norm2(aux), 1.0);
       CTensor aux2 = apply_trotter2(H, to_complex(0.0,-dt), mps_to_vector(psi));
+      EXPECT_CEQ(mps_to_vector(aux), aux2);
+    }
+    {
+      CMPS aux = psi;
+      Trotter3Solver solver(H, dt, true);
+      double err = solver.one_step(&aux, Dmax);
+      EXPECT_CEQ(norm2(aux), 1.0);
+      CTensor aux2 = apply_trotter3(H, to_complex(0.0,-dt), mps_to_vector(psi));
       EXPECT_CEQ(mps_to_vector(aux), aux2);
     }
   }
