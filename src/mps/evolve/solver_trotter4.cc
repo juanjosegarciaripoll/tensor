@@ -27,12 +27,19 @@ namespace mps {
    */
 
   static const double inv_theta = 0.74007895010513;
-  static const double FR_param[5] = {0.67560359597983, 1.35120719195966, -0.17560359597983, -1.70241438391932};
+  static const double FR_param[5] = {0.67560359597983, 1.35120719195966,
+                                     -0.17560359597983, -1.70241438391932};
 
-  ForestRuthSolver::ForestRuthSolver(const Hamiltonian &H, double dt, bool do_optimize) :
-    TrotterSolver(dt), U1(H, 0, dt*FR_param[0]), U2(H, 1, dt*FR_param[1]),
-    U3(H, 0, dt*FR_param[2]), U4(H, 1, dt*FR_param[3]), optimize(do_optimize),
-    sense(0), sweeps(32), normalize(true), debug(0)
+  ForestRuthSolver::ForestRuthSolver(const Hamiltonian &H, double dt, bool do_optimize,
+                                     double tol) :
+    TrotterSolver(dt),
+    U1(H, 0, dt*FR_param[0], true, false, tol),
+    U2(H, 1, dt*FR_param[1], true, false, tol),
+    U3(H, 0, dt*FR_param[2], true, false, tol),
+    U4(H, 1, dt*FR_param[3], true, false, tol),
+    optimize(do_optimize),
+    sense(0), sweeps(32), normalize(true), debug(0),
+    tolerance(tol)
   {
   }
 

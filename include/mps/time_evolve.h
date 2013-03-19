@@ -26,7 +26,7 @@
 
 namespace mps {
 
-  #define TOLERANCE 0
+  #define MPS_TIME_EVOLVE_TOLERANCE -1.0
 
   /**General class for time evolution. A Solver is a class that
      approximates time evolution with MPS only for a short time.
@@ -65,12 +65,13 @@ namespace mps {
       use.
     */
     struct Unitary {
-      /**Construct the unitary operator.*/
+      /*Construct the unitary operator.*/
       Unitary(const Hamiltonian &H, index k, double dt, bool apply_pairwise = true,
-	      bool do_debug = false, double tolerance = TOLERANCE);
+	      bool do_debug = false, double tolerance = MPS_TIME_EVOLVE_TOLERANCE);
 
-      /**Apply the unitary on a MPS.*/
-      double apply(CMPS *psi, int dk, index Dmax, bool guifre = false, bool normalize = false) const;
+      /*Apply the unitary on a MPS.*/
+      double apply(CMPS *psi, int dk, index Dmax, bool guifre = false,
+                   bool normalize = false) const;
 
     private:
       bool debug;
@@ -78,7 +79,8 @@ namespace mps {
       double tolerance;
       int k0, kN;
       std::vector<CTensor> U;
-      void apply_onto_one_site(CMPS &P, const CTensor &Uloc, index k, int dk, bool guifre) const;
+      void apply_onto_one_site(CMPS &P, const CTensor &Uloc, index k,
+                               int dk, bool guifre) const;
       double apply_onto_two_sites(CMPS &P, const CTensor &U12,
 				  index k1, index k2, int dk, index max_a2,
 				  bool guifre) const;
@@ -94,12 +96,13 @@ namespace mps {
     const Unitary U;
     bool optimize;
     int sense;
-    double tolerance;
+    const double tolerance;
   public:
     int sweeps;
     bool normalize;
     /**Create a solver for the given nearest neighbor Hamiltonian and time step.*/
-    Trotter2Solver(const Hamiltonian &H, double dt, bool do_optimize = true, double tol = 0);
+    Trotter2Solver(const Hamiltonian &H, double dt, bool do_optimize = true,
+                   double tol = MPS_TIME_EVOLVE_TOLERANCE);
     
     virtual double one_step(CMPS *P, index Dmax);
   };
@@ -116,12 +119,13 @@ namespace mps {
     const Unitary U1, U2;
     bool optimize;
     int sense;
-    double tolerance;
+    const double tolerance;
   public:
     int sweeps;
     bool normalize;
     /**Create a solver for the given nearest neighbor Hamiltonian and time step.*/
-    Trotter3Solver(const Hamiltonian &H, double dt, bool do_optimize = true, double tol = 0);
+    Trotter3Solver(const Hamiltonian &H, double dt, bool do_optimize = true,
+                   double tol = MPS_TIME_EVOLVE_TOLERANCE);
 
     virtual double one_step(CMPS *P, index Dmax);
   };
@@ -132,12 +136,14 @@ namespace mps {
     const Unitary U1, U2, U3, U4;
     bool optimize;
     int sense;
+    const double tolerance;
   public:
     int sweeps;
     bool normalize;
     int debug;
     /**Create a solver for the given nearest neighbor Hamiltonian and time step.*/
-    ForestRuthSolver(const Hamiltonian &H, double dt, bool do_optimize = true);
+    ForestRuthSolver(const Hamiltonian &H, double dt, bool do_optimize = true,
+                     double tol = MPS_TIME_EVOLVE_TOLERANCE);
     
     virtual double one_step(CMPS *P, index Dmax);
   };
