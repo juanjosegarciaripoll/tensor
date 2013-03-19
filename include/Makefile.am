@@ -32,10 +32,15 @@ nobase_include_HEADERS = \
 	tensor/tools.h \
 	tensor/vector.h \
 	$(top_builddir)/include/tensor/config.h \
-	mps/quantum.h \
+	mps/cmps.h \
+	mps/dmrg.h \
+	mps/hamiltonian.h \
 	mps/itebd.h \
 	mps/mp_base.h \
 	mps/mps.h \
-	mps/tools.h \
-	mps/mps_algorithms.h
+	mps/mps_algorithms.h \
+	mps/quantum.h \
+	mps/rmps.h \
+	mps/time_evolve.h \
+	mps/tools.h
 
