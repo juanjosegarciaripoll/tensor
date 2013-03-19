@@ -155,6 +155,7 @@ namespace tensor_test {
       CMPS aux = psi;
       Trotter2Solver solver(H, dt, false);
       double err = solver.one_step(&aux, Dmax);
+      EXPECT_CEQ(err, 0.0);
       EXPECT_CEQ(norm2(aux), 1.0);
       CTensor aux2 = apply_trotter2(H, to_complex(0.0,-dt), mps_to_vector(psi));
       EXPECT_CEQ(mps_to_vector(aux), aux2);
@@ -163,6 +164,7 @@ namespace tensor_test {
       CMPS aux = psi;
       Trotter3Solver solver(H, dt, false);
       double err = solver.one_step(&aux, Dmax);
+      EXPECT_CEQ(err, 0.0);
       EXPECT_CEQ(norm2(aux), 1.0);
       CTensor aux2 = apply_trotter3(H, to_complex(0.0,-dt), mps_to_vector(psi));
       EXPECT_CEQ(mps_to_vector(aux), aux2);
@@ -172,20 +174,20 @@ namespace tensor_test {
   void test_Hamiltonian_truncated(const Hamiltonian &H, double dt, const CMPS &psi, index Dmax = 0)
   {
     {
-      CMPS aux = psi;
+      CMPS truncated_psi_t = psi;
       Trotter2Solver solver(H, dt, true);
-      double err = solver.one_step(&aux, Dmax);
-      EXPECT_CEQ(norm2(aux), 1.0);
-      CTensor aux2 = apply_trotter2(H, to_complex(0.0,-dt), mps_to_vector(psi));
-      EXPECT_CEQ(mps_to_vector(aux), aux2);
+      double err = solver.one_step(&truncated_psi_t, Dmax);
+      EXPECT_CEQ(norm2(truncated_psi_t), 1.0);
+      CTensor psi_t = apply_trotter2(H, to_complex(0.0,-dt), mps_to_vector(psi));
+      EXPECT_CEQ(mps_to_vector(truncated_psi_t), psi_t);
     }
     {
-      CMPS aux = psi;
+      CMPS truncated_psi_t = psi;
       Trotter3Solver solver(H, dt, true);
-      double err = solver.one_step(&aux, Dmax);
-      EXPECT_CEQ(norm2(aux), 1.0);
-      CTensor aux2 = apply_trotter3(H, to_complex(0.0,-dt), mps_to_vector(psi));
-      EXPECT_CEQ(mps_to_vector(aux), aux2);
+      double err = solver.one_step(&truncated_psi_t, Dmax);
+      EXPECT_CEQ(norm2(truncated_psi_t), 1.0);
+      CTensor psi_t = apply_trotter3(H, to_complex(0.0,-dt), mps_to_vector(psi));
+      EXPECT_CEQ(mps_to_vector(truncated_psi_t), psi_t);
     }
   }
 
@@ -217,6 +219,34 @@ namespace tensor_test {
     test_Hamiltonian_truncated(H, 0.1, cluster_state(size), 2);
   }
 
+  void evolve_interaction_zz(int size)
+  {
+    double dphi = 1.3 / size;
+    ConstantHamiltonian H(size);
+    for (int i = 0; i < size; i++) {
+      H.set_local_term(i, mps::Pauli_id * 0.0);
+      H.set_interaction(i, kron(mps::Pauli_z, mps::Pauli_z));
+    }
+    test_Hamiltonian_no_truncation(H, 0.1, ghz_state(size));
+    test_Hamiltonian_no_truncation(H, 0.1, cluster_state(size));
+    test_Hamiltonian_truncated(H, 0.1, ghz_state(size), 2);
+    test_Hamiltonian_truncated(H, 0.1, cluster_state(size), 3);
+  }
+
+  void evolve_interaction_xx(int size)
+  {
+    double dphi = 1.3 / size;
+    ConstantHamiltonian H(size);
+    for (int i = 0; i < size; i++) {
+      H.set_local_term(i, mps::Pauli_id * 0.0);
+      H.set_interaction(i, kron(mps::Pauli_x, mps::Pauli_x));
+    }
+    test_Hamiltonian_no_truncation(H, 0.1, ghz_state(size));
+    test_Hamiltonian_no_truncation(H, 0.1, cluster_state(size));
+    test_Hamiltonian_truncated(H, 0.1, ghz_state(size), 4);
+    test_Hamiltonian_truncated(H, 0.1, cluster_state(size), 4);
+  }
+
   ////////////////////////////////////////////////////////////
   // EVOLVE WITH TROTTER METHODS
   //
@@ -235,6 +265,14 @@ namespace tensor_test {
 
   TEST(TimeSolver, LocalOperatorSx) {
     test_over_integers(2, 5, evolve_local_operator_sx);
+  }
+
+  TEST(TimeSolver, NearestNeighborSzSz) {
+    test_over_integers(2, 5, evolve_interaction_zz);
+  }
+
+  TEST(TimeSolver, NearestNeighborSxSx) {
+    test_over_integers(2, 5, evolve_interaction_xx);
   }
 
 } // namespace tensor_test
