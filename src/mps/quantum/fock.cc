@@ -33,7 +33,7 @@ namespace mps {
     index d = nmax+1; // Matrix size
     Indices ndx = iota(0, nmax);
     RTensor n = linspace(0, nmax, nmax+1);
-    return RSparse(igen << d << d, ndx, ndx, n);
+    return RSparse(ndx, ndx, n, d, d);
   }
 
   /**Return the Fock destruction operator truncated for a space of up to 'nmax' bosons.
@@ -45,7 +45,7 @@ namespace mps {
     Indices row = iota(0, nmax-1);
     Indices col = iota(1, nmax);
     RTensor n = sqrt(linspace(1.0, nmax, nmax));
-    return RSparse(igen << d << d, row, col, n);
+    return RSparse(row, col, n, d, d);
   }
 
   /**Return the Fock creation operator truncated for a space of up to 'nmax' bosons.
@@ -57,7 +57,7 @@ namespace mps {
     Indices row = iota(1, nmax);
     Indices col = iota(0, nmax-1);
     RTensor n = sqrt(linspace(1.0, nmax, nmax));
-    return RSparse(igen << d << d, row, col, n);
+    return RSparse(row, col, n, d, d);
   }
 
   /**Return the wavefunction of a coherent state.
