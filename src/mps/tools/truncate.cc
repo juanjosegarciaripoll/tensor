@@ -34,8 +34,16 @@ where_to_truncate(const RTensor &s, double tol, tensor::index max_a2)
   if (max_a2 == 0 || max_a2 > L) {
     max_a2 = L;
   }
-  if (tol == 0)
-    return max_a2;
+  if (tol == 0) {
+    /* If the tolerance is zero, we only drop the trailing zero elements. There
+     * is no need to accumulate values. */
+    for (size_t i = L; i--; ) {
+      if (s[i]) {
+        return (i < max_a2)? (i+1) : max_a2;
+      }
+    }
+    return 0;
+  }
   /*
    * cumulated[i] contains the norm of the elements _beyond_ the i-th
    * site. This means that if we keep (i+1) leading elements, the error will
@@ -48,11 +56,11 @@ where_to_truncate(const RTensor &s, double tol, tensor::index max_a2)
     total += square(s[i]);
   }
   /* Due to the precision limits in current processors, we automatically
-   * relax the tolerance to DOUBLE_EPSILON, which is a floating point number
+   * relax the tolerance to DBL_EPSILON, which is a floating point number
    * such that added to 1.0 gives 1.0. In other words, a tolerance <=
-   * DOUBLE_EPSILON is irrelevant for all purposes.
+   * DBL_EPSILON is irrelevant for all purposes.
    */
-  if (tol <= 0) {
+  if (tol < 0) {
     tol = DBL_EPSILON;
   }
   double limit = tol * total;
