@@ -84,7 +84,7 @@ namespace tensor {
   template<typename elt_t>
   Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols, const Vector<elt_t> &data,
                         index nrows, index ncols) :
-    dims_(2), row_start_(), column_(cols.size()), data_(data.size())
+    dims_(2), row_start_(), column_(), data_()
   {
     index i, j, last_row, last_col, l = rows.size();
     assert(cols.size() == l);
@@ -93,18 +93,23 @@ namespace tensor {
     /* Organize data in sparse_triplets (row,column,value), sorted in the
      * same order in which we store data in Sparse
      */
-    std::vector<sparse_triplet<elt_t> > sorted_data(l);
+    std::vector<sparse_triplet<elt_t> > sorted_data;
+    sorted_data.reserve(l);
     for (i = 0; i < l; i++) {
       index r = rows[i];
       index c = cols[i];
-      sorted_data.at(i) = sparse_triplet<elt_t>(r, c, data[i]);
       nrows = std::max(nrows, r);
       ncols = std::max(ncols, c);
+      if (data[i] != number_zero<elt_t>()) {
+        sorted_data.push_back(sparse_triplet<elt_t>(r, c, data[i]));
+      }
     }
     std::sort(sorted_data.begin(), sorted_data.end());
     dims_.at(0) = nrows;
     dims_.at(1) = ncols;
     row_start_ = Indices(nrows+1);
+    column_ = Indices(l = sorted_data.size());
+    data_ = Vector<elt_t>(l);
 
     /* Fill in the Sparse structure.
      */
