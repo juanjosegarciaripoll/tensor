@@ -19,16 +19,21 @@
 
 #include <tensor/linalg.h>
 #include <mps/time_evolve.h>
+#include <tensor/io.h>
 
 namespace mps {
 
-  TrotterSolver::Unitary::Unitary(const Hamiltonian &H, index k, double dt, bool apply_pairwise, bool do_debug,
-		   double the_tolerance) :
+  TrotterSolver::Unitary::Unitary(const Hamiltonian &H, index k, double dt,
+                                  bool apply_pairwise, bool do_debug,
+                                  double the_tolerance) :
     debug(do_debug), pairwise(apply_pairwise), tolerance(the_tolerance),
     k0(k), kN(H.size()), U(H.size())
   {
+    if (the_tolerance >= 0.0)
+      abort();
     if (k > 1) {
-      std::cerr << "In TrotterSolver::Unitary::Unitary(H, k, ...), the initial site k was neither 0 nor 1";
+      std::cerr << "In TrotterSolver::Unitary::Unitary(H, k, ...), "
+        "the initial site k was neither 0 nor 1";
       abort();
     }
     if (pairwise) {
@@ -108,7 +113,7 @@ namespace mps {
     CTensor P2 = P[k2];
     P2.get_dimensions(&a2, &i2, &a3);
 
-    double err = 0.0, factor = 1.0;
+    double err = 0.0;
     if (U12.is_empty()) {
       if (debug) {
 	std::cout << "<" << k1 << "," << k2 << ">";
@@ -138,25 +143,27 @@ namespace mps {
        *   singular value decomposition above.
        * Notice that at the end, P is orthonormalized in both cases.
        */
-      index new_a2 = where_to_truncate(s, guifre? tolerance : 0.0,
-				       max_a2? max_a2 : a2);
+      index new_a2 = where_to_truncate(s, tolerance, max_a2? max_a2 : a2);
+      if (debug) {
+        std::cout << "a2=" << a2 << ", new_a2=" << new_a2
+                  << ", tol=" << tolerance
+                  << ", max=" << (max_a2? max_a2 : a2)
+                  << ", s=" << s << std::endl;
+      }
       if (new_a2 != a2) {
 	P1 = change_dimension(P1, -1, new_a2);
 	P2 = change_dimension(P2, 0, new_a2);
 	a2 = new_a2;
-      }
-      if (guifre) {
-	err = 1.0 - 1/factor;
-      } else {
-	err = (a2 > max_a2)? -1 : 0.0;
+        for (index i = a2; i < s.size(); i++)
+          err += square(s[i]);
       }
     }
     if (dk > 0) {
       P.at(k1) = reshape(P1, a1,i1,a2);
-      set_canonical(P, k2, reshape(P2, a2,i2,a3)*factor, dk);
+      set_canonical(P, k2, reshape(P2, a2,i2,a3), dk);
     } else {
       P.at(k2) = reshape(P2, a2,i2,a3);
-      set_canonical(P, k1, reshape(P1, a1,i1,a2)*factor, dk);
+      set_canonical(P, k1, reshape(P1, a1,i1,a2), dk);
     }
     return err;
   }
