@@ -46,8 +46,12 @@ namespace tensor_test {
       ConstantHamiltonian &pHok = (i & 1)? (*pHodd) : (*pHeven);
       ConstantHamiltonian &pHno = (i & 1)? (*pHeven) : (*pHodd);
       if (i+1 < H.size()) {
-        pHok.set_interaction(i, H.interaction(i, 0.0));
-        pHno.set_interaction(i, H.interaction(i, 0.0) * 0.0);
+        for (int j = 0; j < H.interaction_depth(i); j++) {
+          pHok.add_interaction(i, H.interaction_left(i, j, 0.0),
+                               H.interaction_right(i, j, 0.0));
+          pHno.add_interaction(i, H.interaction_left(i, j, 0.0) * 0.0,
+                               H.interaction_right(i, j, 0.0) * 0.0);
+        }
       }
       pHok.set_local_term(i, H.local_term(i, 0.0));
       pHno.set_local_term(i, H.local_term(i, 0.0) * 0.0);
@@ -197,7 +201,7 @@ namespace tensor_test {
     ConstantHamiltonian H(size);
     for (int i = 0; i < size; i++) {
       H.set_local_term(i, mps::Pauli_z * (dphi * i));
-      H.set_interaction(i, CTensor::zeros(4,4));
+      if (i > 0) H.add_interaction(i-1, CTensor::zeros(2,2), CTensor::zeros(2,2));
     }
     test_Hamiltonian_no_truncation(H, 0.1, ghz_state(size));
     test_Hamiltonian_no_truncation(H, 0.1, cluster_state(size));
@@ -211,7 +215,7 @@ namespace tensor_test {
     ConstantHamiltonian H(size);
     for (int i = 0; i < size; i++) {
       H.set_local_term(i, mps::Pauli_x * (dphi * i));
-      H.set_interaction(i, CTensor::zeros(4,4));
+      if (i > 0) H.add_interaction(i-1, CTensor::zeros(2,2), CTensor::zeros(2,2));
     }
     test_Hamiltonian_no_truncation(H, 0.1, ghz_state(size));
     test_Hamiltonian_no_truncation(H, 0.1, cluster_state(size));
@@ -225,7 +229,7 @@ namespace tensor_test {
     ConstantHamiltonian H(size);
     for (int i = 0; i < size; i++) {
       H.set_local_term(i, mps::Pauli_id * 0.0);
-      H.set_interaction(i, kron(mps::Pauli_z, mps::Pauli_z));
+      if (i > 0) H.add_interaction(i-1, mps::Pauli_z, mps::Pauli_z);
     }
     test_Hamiltonian_no_truncation(H, 0.1, ghz_state(size));
     test_Hamiltonian_no_truncation(H, 0.1, cluster_state(size));
@@ -239,7 +243,7 @@ namespace tensor_test {
     ConstantHamiltonian H(size);
     for (int i = 0; i < size; i++) {
       H.set_local_term(i, mps::Pauli_id * 0.0);
-      H.set_interaction(i, kron(mps::Pauli_x, mps::Pauli_x));
+      if (i > 0) H.add_interaction(i - 1, mps::Pauli_x, mps::Pauli_x);
     }
     test_Hamiltonian_no_truncation(H, 0.1, ghz_state(size));
     test_Hamiltonian_no_truncation(H, 0.1, cluster_state(size));

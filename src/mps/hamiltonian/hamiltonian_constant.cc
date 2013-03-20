@@ -96,11 +96,42 @@ namespace mps {
 
   /** Add a nearest-neighbor interaction between sites 'k' and 'k+1'.*/
   void
-  ConstantHamiltonian::set_interaction(index k, const CTensor &H12)
+  ConstantHamiltonian::set_interaction(index k, const CTensor &H1, const CTensor &H2)
   {
     assert((k >= 0) && (k <= H12_.size()));
-    H12_.at(k) = H12;
-    split_interaction(H12, &H12_left_.at(k), &H12_right_.at(k));
+    H12_left_[k].clear();
+    H12_right_[k].clear();
+    add_interaction(k, H1, H2);
+  }
+
+  /** Add a nearest-neighbor interaction between sites 'k' and 'k+1'.*/
+  void
+  ConstantHamiltonian::add_interaction(index k, const CTensor &H1, const CTensor &H2)
+  {
+    assert((k >= 0) && (k+1 < H12_.size()));
+    H12_left_[k].push_back(H1);
+    H12_right_[k].push_back(H2);
+    H12_.at(k) = compute_interaction(k);
+  }
+
+  const CTensor
+  ConstantHamiltonian::compute_interaction(index k) const
+  {
+    assert((k >= 0) && (k+1 < H12_.size()));
+    CTensor H;
+    for (index i = 0; i < H12_left_[k].size(); i++) {
+      CTensor op = kron2(H12_left_[k][i], H12_right_[k][i]);
+      if (i == 0)
+        H = op;
+      else
+        H = H + op;
+    }
+    if (H.is_empty()) {
+      index d = dimension(k) * dimension(k+1);
+      return CTensor::zeros(d, d);
+    } else {
+      return H;
+    }
   }
 
 } // namespace mps

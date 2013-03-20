@@ -95,8 +95,9 @@ namespace mps {
   public:
     ConstantHamiltonian(index N, bool periodic = false);
 
-    void set_interaction(index k, const CTensor &H1);
-    void set_local_term(index k, const CTensor &H12);
+    void set_interaction(index k, const CTensor &H1, const CTensor &H2);
+    void add_interaction(index k, const CTensor &H1, const CTensor &H2);
+    void set_local_term(index k, const CTensor &H1);
 
     virtual const Hamiltonian *duplicate() const;
     virtual index size() const;
@@ -109,6 +110,8 @@ namespace mps {
     virtual const CTensor local_term(index k, double t) const;
 
   private:
+
+    const CTensor compute_interaction(index k) const;
 
     std::vector<CTensor> H12_, H1_;
     std::vector<std::vector<CTensor> > H12_left_, H12_right_;
