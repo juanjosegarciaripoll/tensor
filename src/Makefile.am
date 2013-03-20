@@ -147,6 +147,8 @@ libtensor_la_SOURCES = \
 	linalg/eig_sym_d.cc \
 	linalg/eig_sym_z.cc \
 	views/range.cc \
+	views/matrix_form_d.cc \
+	views/matrix_form_z.cc \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \
 	sdf/odata_file.cc

@@ -51,6 +51,31 @@ inline std::ostream &operator<<(std::ostream &s, const Sparse<elt_t> &t)
   return s << full(t);
 }
 
+/* The following is a template used for creating an object that displays
+ * a tensor with a slightly more attractive representation. We need to
+ * create a template and then specializations because templates do not do
+ * implicit type coercion. */
+template<typename elt_t>
+class MatrixForm {
+  const Tensor<elt_t> data;
+  MatrixForm();
+public:
+  /**Creates an object that displays a tensor as a matrix.*/
+  MatrixForm(const Tensor<elt_t> &t) : data(t) {}
+  std::ostream &display(std::ostream &s) const;
+};
+
+template<typename elt_t>
+inline std::ostream &operator<<(std::ostream &s, const MatrixForm<elt_t> &m) {
+  return m.display(s);
+}
+
+/**Matrix form representation of a tensor.*/
+const MatrixForm<double> matrix_form(const Tensor<double> &t);
+
+/**Matrix form representation of a tensor.*/
+const MatrixForm<cdouble> matrix_form(const Tensor<cdouble> &t);
+
 } // namespace tensor
 
 #include <tensor/detail/io.hpp>
