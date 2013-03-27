@@ -546,17 +546,12 @@ namespace mps {
    * The Hamiltonian class always returns complex operators. We can
    * fix this by having a specialization depending on the DMRG class.
    */
-  template<class Tensor>
-  static const Tensor to_tensor(const CTensor &op);
-
-  template<>
-  static const RTensor to_tensor(const CTensor &op)
+  static inline const RTensor to_tensor(const DMRG<RMPS> &dmrg, const CTensor &op)
   {
     return real(op);
   }
 
-  template<>
-  static const CTensor to_tensor(const CTensor &op)
+  static inline const CTensor to_tensor(const DMRG<CMPS> &dmrg, const CTensor &op)
   {
     return op;
   }
@@ -564,25 +559,25 @@ namespace mps {
   template<class MPS>
   const typename DMRG<MPS>::elt_t DMRG<MPS>::interaction(index k) const
   {
-    return to_tensor<elt_t>(H_->interaction(k));
+    return to_tensor(*this, H_->interaction(k));
   }
 
   template<class MPS>
   const typename DMRG<MPS>::elt_t DMRG<MPS>::interaction_left(index k, index m) const
   {
-    return to_tensor<elt_t>(H_->interaction_left(k, m));
+    return to_tensor(*this, H_->interaction_left(k, m));
   }
 
   template<class MPS>
   const typename DMRG<MPS>::elt_t DMRG<MPS>::interaction_right(index k, index m) const
   {
-    return to_tensor<elt_t>(H_->interaction_right(k, m));
+    return to_tensor(*this, H_->interaction_right(k, m));
   }
 
   template<class MPS>
   const typename DMRG<MPS>::elt_t DMRG<MPS>::local_term(index k) const
   {
-    return to_tensor<elt_t>(H_->local_term(k));
+    return to_tensor(*this, H_->local_term(k));
   }
 
   template<class MPS>
