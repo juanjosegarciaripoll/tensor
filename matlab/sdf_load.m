@@ -18,7 +18,7 @@ if f{1} >= 0
           old = getfield(data, name);
           l = length(dims);
           if l > 1 || size(obj,1) > 1
-              l = l+1
+              l = l+1;
           end
           obj = cat(l, old, obj);
         end;
