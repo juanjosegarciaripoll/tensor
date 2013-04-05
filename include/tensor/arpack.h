@@ -40,4 +40,4 @@ namespace linalg {
 
 } // namespace linalg
 
-#endif TENSOR_ARPACK_H
+#endif // TENSOR_ARPACK_H
