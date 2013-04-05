@@ -28,9 +28,9 @@ namespace mps {
    *	exp(-iHdt) = exp(-iH_even dt/2) exp(-iH_odd dt) exp(-iH_even dt/2)
    */
 
-  Trotter3Solver::Trotter3Solver(const Hamiltonian &H, double dt,
+  Trotter3Solver::Trotter3Solver(const Hamiltonian &H, cdouble dt,
                                  bool do_optimize, double tol) :
-  TrotterSolver(dt), U1(H, 1, dt, true), U2(H, 0, dt/2, true),
+  TrotterSolver(dt), U1(H, 1, dt, true), U2(H, 0, dt/2.0, true),
     optimize(do_optimize),
     sweeps(32), normalize(true), sense(0), tolerance(tol)
   {

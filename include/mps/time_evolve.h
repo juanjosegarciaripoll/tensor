@@ -34,7 +34,7 @@ namespace mps {
   class TimeSolver {
   public:
     /**Create Solver with fixed time step.*/
-    TimeSolver(double new_dt) : dt_(new_dt) {};
+    TimeSolver(cdouble new_dt) : dt_(new_dt) {};
     virtual ~TimeSolver();
 
     /**Compute next time step. Given the state \f$\psi(0)\f$ represented
@@ -43,16 +43,16 @@ namespace mps {
     virtual double one_step(CMPS *P, index Dmax) = 0;
 
     /**How long in time this solver advances.*/
-    double time_step() const { return dt_; }
+    cdouble time_step() const { return dt_; }
 
   private:
-    const double dt_;
+    const cdouble dt_;
   };
 
 
   class TrotterSolver : public TimeSolver {
   public:
-    TrotterSolver(double new_dt) : TimeSolver(new_dt) {};
+    TrotterSolver(cdouble new_dt) : TimeSolver(new_dt) {};
     virtual ~TrotterSolver();
 
   protected:
@@ -66,7 +66,7 @@ namespace mps {
     */
     struct Unitary {
       /*Construct the unitary operator.*/
-      Unitary(const Hamiltonian &H, index k, double dt, bool apply_pairwise = true,
+      Unitary(const Hamiltonian &H, index k, cdouble dt, bool apply_pairwise = true,
 	      bool do_debug = false, double tolerance = MPS_TIME_EVOLVE_TOLERANCE);
 
       /*Apply the unitary on a MPS.*/
@@ -101,7 +101,7 @@ namespace mps {
     int sweeps;
     bool normalize;
     /**Create a solver for the given nearest neighbor Hamiltonian and time step.*/
-    Trotter2Solver(const Hamiltonian &H, double dt, bool do_optimize = true,
+    Trotter2Solver(const Hamiltonian &H, cdouble dt, bool do_optimize = true,
                    double tol = MPS_TIME_EVOLVE_TOLERANCE);
     
     virtual double one_step(CMPS *P, index Dmax);
@@ -124,7 +124,7 @@ namespace mps {
     int sweeps;
     bool normalize;
     /**Create a solver for the given nearest neighbor Hamiltonian and time step.*/
-    Trotter3Solver(const Hamiltonian &H, double dt, bool do_optimize = true,
+    Trotter3Solver(const Hamiltonian &H, cdouble dt, bool do_optimize = true,
                    double tol = MPS_TIME_EVOLVE_TOLERANCE);
 
     virtual double one_step(CMPS *P, index Dmax);
@@ -142,7 +142,7 @@ namespace mps {
     bool normalize;
     int debug;
     /**Create a solver for the given nearest neighbor Hamiltonian and time step.*/
-    ForestRuthSolver(const Hamiltonian &H, double dt, bool do_optimize = true,
+    ForestRuthSolver(const Hamiltonian &H, cdouble dt, bool do_optimize = true,
                      double tol = MPS_TIME_EVOLVE_TOLERANCE);
     
     virtual double one_step(CMPS *P, index Dmax);

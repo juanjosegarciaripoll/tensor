@@ -30,7 +30,7 @@ namespace mps {
   static const double FR_param[5] = {0.67560359597983, 1.35120719195966,
                                      -0.17560359597983, -1.70241438391932};
 
-  ForestRuthSolver::ForestRuthSolver(const Hamiltonian &H, double dt, bool do_optimize,
+  ForestRuthSolver::ForestRuthSolver(const Hamiltonian &H, cdouble dt, bool do_optimize,
                                      double tol) :
     TrotterSolver(dt),
     U1(H, 0, dt*FR_param[0], true, false, tol),

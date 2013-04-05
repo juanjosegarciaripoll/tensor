@@ -28,9 +28,9 @@ namespace mps {
    *	exp(-iHdt) = \prod_k={N-1}^1 exp(-iH_{kk+1} dt/2) \prod_k=1^{N-1} exp(-iH_{kk+1} dt/2)
    */
 
-  Trotter2Solver::Trotter2Solver(const Hamiltonian &H, double dt, bool do_optimize,
+  Trotter2Solver::Trotter2Solver(const Hamiltonian &H, cdouble dt, bool do_optimize,
 				 double tol) :
-  TrotterSolver(dt), U(H, 0, dt/2, false, false, tol),
+  TrotterSolver(dt), U(H, 0, dt/2.0, false, false, tol),
     optimize(do_optimize), sense(0),
     sweeps(32), normalize(true), tolerance(tol)
   {

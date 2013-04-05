@@ -23,7 +23,7 @@
 
 namespace mps {
 
-  TrotterSolver::Unitary::Unitary(const Hamiltonian &H, index k, double dt,
+  TrotterSolver::Unitary::Unitary(const Hamiltonian &H, index k, cdouble dt,
                                   bool apply_pairwise, bool do_debug,
                                   double the_tolerance) :
     debug(do_debug), pairwise(apply_pairwise), tolerance(the_tolerance),
@@ -74,7 +74,8 @@ namespace mps {
 	  + kron2(i1, H.local_term(i+1,0.0) * f2);
 	if (debug) std::cout << "[" << i << "," << i+1 << "]";
       }
-      U.at(i) = linalg::expm(Hi * to_complex(0, -dt));
+      dt = to_complex(-abs(imag(dt)), -real(dt));
+      U.at(i) = linalg::expm(Hi * dt);
     }
     if (debug) {
       std::cout << std::endl;
