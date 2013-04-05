@@ -30,7 +30,7 @@ RTensor
 eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
      const RTensor::elt_t *initial_guess)
 {
-    RArpack::EigType t = (RArpack::EigType)eig_type;
+    EigType t = (EigType)eig_type;
     size_t n = A.columns();
 
     if (n <= 10) {
@@ -54,7 +54,7 @@ eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
 	return data.get_data(eigenvectors);
     } else {
         std::cerr << data.error_message() << '\n';
-	myabort();
+	abort();
     }
     return RTensor();
 }

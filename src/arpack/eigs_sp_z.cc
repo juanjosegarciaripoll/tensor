@@ -32,7 +32,7 @@ CTensor
 eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
      const CTensor::elt_t *initial_guess)
 {
-    CArpack::EigType t = (CArpack::EigType)eig_type;
+    EigType t = (EigType)eig_type;
     size_t n = A.columns();
 
     if (n <= 10) {
@@ -56,7 +56,7 @@ eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
 	return data.get_data(eigenvectors);
     } else {
         std::cerr << data.error_message() << '\n';
-	myabort();
+	abort();
     }
     return CTensor();
 }
