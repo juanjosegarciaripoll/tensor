@@ -136,8 +136,6 @@ libtensor_la_SOURCES = \
 	generated/tensor_unop_sqrt_z.cc \
 	linalg/eig_d.cc \
 	linalg/eig_z.cc \
-	linalg/eig_sp_d.cc \
-	linalg/eig_sp_z.cc \
 	linalg/svd_d.cc \
 	linalg/svd_z.cc \
 	linalg/solve_d.cc \
@@ -245,6 +243,8 @@ libtensor_la_SOURCES +=				\
 	arpack/arpack_z.cc			\
 	arpack/eigs_d.cc			\
 	arpack/eigs_z.cc			\
+	arpack/eig_sp_d.cc			\
+	arpack/eig_sp_z.cc			\
 	$(arpack_ng_src) $(arpack_ng_util)
 libtensor_la_LDFLAGS = $(FLIBS)
 endif
