@@ -28,37 +28,39 @@
 
 namespace linalg {
 
-CTensor
-eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
-     const CTensor::elt_t *initial_guess)
-{
+  CTensor
+  eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
+       const CTensor::elt_t *initial_guess)
+  {
     EigType t = (EigType)eig_type;
     size_t n = A.columns();
 
     if (n <= 10) {
-	return eigs(full(A), t, neig, eigenvectors, initial_guess);
+      return eigs(full(A), t, neig, eigenvectors, initial_guess);
     }
 
     if (A.rows() != n) {
-	std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-	abort();
+      std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
+      abort();
     }
 
-    CArpack data(A.columns(), t, neig);
+    CTensor output;
+    {
+      CArpack data(n, t, neig);
 
-    if (initial_guess)
+      if (initial_guess)
 	data.set_start_vector(initial_guess);
 
-    while (data.update() < CArpack::Finished) {
+      while (data.update() < CArpack::Finished) {
 	data.set_y(mmult(A, data.get_x()));
-    }
-    if (data.get_status() == CArpack::Finished) {
-	return data.get_data(eigenvectors);
-    } else {
-        std::cerr << data.error_message() << '\n';
+      }
+      if (data.get_status() != CArpack::Finished) {
+	std::cerr << data.error_message() << '\n';
 	abort();
+      }
+      output = data.get_data(eigenvectors);
     }
-    return CTensor();
-}
+    return output;
+  }
 
 } // namespace linalg

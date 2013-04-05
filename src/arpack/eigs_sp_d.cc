@@ -42,21 +42,23 @@ eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
 	abort();
     }
 
-    RArpack data(A.columns(), t, neig);
+    RTensor output;
+    {
+      RArpack data(A.columns(), t, neig);
 
-    if (initial_guess)
+      if (initial_guess)
 	data.set_start_vector(initial_guess);
 
-    while (data.update() < RArpack::Finished) {
+      while (data.update() < RArpack::Finished) {
 	data.set_y(mmult(A, data.get_x()));
-    }
-    if (data.get_status() == RArpack::Finished) {
-	return data.get_data(eigenvectors);
-    } else {
+      }
+      if (data.get_status() != RArpack::Finished) {
         std::cerr << data.error_message() << '\n';
-	abort();
+        abort();
+      }
+      output = data.get_data(eigenvectors);
     }
-    return RTensor();
+    return output;
 }
 
 } // namespace linalg
