@@ -22,6 +22,7 @@
 #define TENSOR_TENSOR_H
 
 #include <cassert>
+#include <vector>
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
 #include <tensor/gen.h>
@@ -60,6 +61,14 @@ class Tensor {
 
   /**Constructs a 1-D Tensor from a vector.*/
   Tensor(const Vector<elt_t> &data);
+
+  /**Constructs a 1-D Tensor from a vector.*/
+  Tensor(const std::vector<elt_t> &data) :
+    data_(data.size()), dims_(1)
+  {
+    dims_.at(0) = data.size();
+    std::copy(data.begin(), data.end(), begin());
+  }
 
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
   Tensor(const Tensor &other);
