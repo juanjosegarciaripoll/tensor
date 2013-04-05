@@ -97,19 +97,19 @@ namespace tensor_test {
   //
 
   TEST(RArpackTest, EigsEye) {
-    test_over_integers(0, 32, test_eigs_eye<RTensor>);
+    test_over_integers(0, 22, test_eigs_eye<RTensor>);
   }
 
   TEST(RArpackTest, EigsPermutedDiagonal) {
-    test_over_integers(1, 32, test_eigs_permuted_diagonal<RTensor>);
+    test_over_integers(1, 22, test_eigs_permuted_diagonal<RTensor>);
   }
 
   TEST(RArpackTest, EigsRSparseEye) {
-    test_over_integers(0, 32, test_eigs_eye<RTensor>);
+    test_over_integers(0, 22, test_eigs_eye<RSparse>);
   }
 
   TEST(RArpackTest, EigsRSparsePermutedDiagonal) {
-    test_over_integers(1, 32, test_eigs_permuted_diagonal<RTensor>);
+    test_over_integers(1, 22, test_eigs_permuted_diagonal<RTensor>);
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -117,19 +117,19 @@ namespace tensor_test {
   //
 
   TEST(CArpackTest, EigsEye) {
-    test_over_integers(0, 32, test_eigs_eye<CTensor>);
+    test_over_integers(0, 22, test_eigs_eye<CTensor>);
   }
 
   TEST(CArpackTest, EigsPermutedDiagonal) {
-    test_over_integers(1, 32, test_eigs_permuted_diagonal<CTensor>);
+    test_over_integers(1, 22, test_eigs_permuted_diagonal<CTensor>);
   }
 
   TEST(CArpackTest, EigsCSparseEye) {
-    test_over_integers(0, 32, test_eigs_eye<CTensor>);
+    test_over_integers(0, 22, test_eigs_eye<CSparse>);
   }
 
   TEST(CArpackTest, EigsCSparsePermutedDiagonal) {
-    test_over_integers(1, 32, test_eigs_permuted_diagonal<CTensor>);
+    test_over_integers(1, 22, test_eigs_permuted_diagonal<CTensor>);
   }
 
 } // namespace linalg_test
