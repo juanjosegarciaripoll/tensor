@@ -26,6 +26,8 @@
 
 #define COMPLEX
 
+namespace linalg {
+
 CTensor
 eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
      const CTensor::elt_t *initial_guess)
@@ -39,7 +41,7 @@ eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
 
     if (A.rows() != n) {
 	std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-	myabort();
+	abort();
     }
 
     CArpack data(A.columns(), t, neig);
@@ -58,3 +60,5 @@ eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
     }
     return CTensor();
 }
+
+} // namespace linalg

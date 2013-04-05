@@ -136,6 +136,8 @@ libtensor_la_SOURCES = \
 	generated/tensor_unop_sqrt_z.cc \
 	linalg/eig_d.cc \
 	linalg/eig_z.cc \
+	linalg/eig_sp_d.cc \
+	linalg/eig_sp_z.cc \
 	linalg/svd_d.cc \
 	linalg/svd_z.cc \
 	linalg/solve_d.cc \

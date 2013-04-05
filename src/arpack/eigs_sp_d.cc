@@ -24,6 +24,8 @@
 #include <tensor/linalg.h>
 #include <tensor/arpack_d.h>
 
+namespace linalg {
+
 RTensor
 eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
      const RTensor::elt_t *initial_guess)
@@ -37,7 +39,7 @@ eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
 
     if (A.rows() != n) {
 	std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-	myabort();
+	abort();
     }
 
     RArpack data(A.columns(), t, neig);
@@ -56,3 +58,5 @@ eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
     }
     return RTensor();
 }
+
+} // namespace linalg
