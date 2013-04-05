@@ -243,8 +243,8 @@ libtensor_la_SOURCES +=				\
 	arpack/arpack_z.cc			\
 	arpack/eigs_d.cc			\
 	arpack/eigs_z.cc			\
-	arpack/eig_sp_d.cc			\
-	arpack/eig_sp_z.cc			\
+	arpack/eigs_sp_d.cc			\
+	arpack/eigs_sp_z.cc			\
 	$(arpack_ng_src) $(arpack_ng_util)
 libtensor_la_LDFLAGS = $(FLIBS)
 endif
