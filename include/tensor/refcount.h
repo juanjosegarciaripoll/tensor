@@ -55,7 +55,7 @@ public:
   /** Allocate a pointer of s bytes. */
   RefPointer(size_t new_size);
   /** Wrap around the given data */
-  RefPointer(elt_t *data, size_t size);
+  RefPointer(elt_t *data, size_t size, bool owned = true);
   /** Copy constructor that increases the reference count. */
   RefPointer(const RefPointer<elt_t> &p);
 

@@ -29,17 +29,18 @@ class RefPointer<elt_t>::pointer {
 public:
   /* Reference counter for null pointer */
   pointer():
-   data_(0), size_(0), references_(1)
+    data_(0), size_(0), references_(1), owned_(true)
   {}
 
   /* Reference count a given data */
-  pointer(elt_t *data, size_t size) :
-     data_(data), size_(size), references_(1)
+  pointer(elt_t *data, size_t size, bool owned = true) :
+    data_(data), size_(size), references_(1), owned_(owned)
   {}
 
   /* Delete the object and its data */
   ~pointer() {
-    delete[] data_;
+    if (owned_)
+      delete[] data_;
   }
 
   /* Create a new reference object with the same data and only 1 ro reference. */
@@ -63,6 +64,7 @@ private:
   elt_t *data_;
   size_t size_;
   int references_;
+  bool owned_;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -80,8 +82,8 @@ RefPointer<elt_t>::RefPointer(size_t new_size) {
 }
 
 template<class elt_t>
-RefPointer<elt_t>::RefPointer(elt_t *data, size_t new_size) {
-  ref_ = new pointer(data, new_size);
+RefPointer<elt_t>::RefPointer(elt_t *data, size_t new_size, bool owned) {
+    ref_ = new pointer(data, new_size, owned);
 }
 
 template<class elt_t>

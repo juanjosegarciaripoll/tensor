@@ -42,9 +42,13 @@ class Vector {
 
   explicit Vector(index size) : data_(size) {}
 
+  /* Copy constructor and copy operator */
   Vector(const Vector<elt_t> &v) : data_(v.data_) {}
-  Vector(index size, elt_t *data) : data_(data, size) {}
   Vector &operator=(const Vector<elt_t> &v) { data_ = v.data_; return *this; }
+
+  /* Create a vector that references data we do not own (own=false in the
+     RefPointer constructor. */
+  Vector(index size, elt_t *data) : data_(data, size, false) {}
 
   index size() const {
     return data_.size();
