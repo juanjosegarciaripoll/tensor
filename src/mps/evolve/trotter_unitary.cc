@@ -49,6 +49,7 @@ namespace mps {
       kN = kN - 1;
     }
     if (debug) std::cout << "computing: ";
+    dt = to_complex(-abs(imag(dt)), -real(dt));
     for (int di = 1, i = 0; i < (int)H.size(); i += di) {
       CTensor Hi;
       if (i < k0 || i >= kN) {
@@ -74,7 +75,6 @@ namespace mps {
 	  + kron2(i1, H.local_term(i+1,0.0) * f2);
 	if (debug) std::cout << "[" << i << "," << i+1 << "]";
       }
-      dt = to_complex(-abs(imag(dt)), -real(dt));
       U.at(i) = linalg::expm(Hi * dt);
     }
     if (debug) {
