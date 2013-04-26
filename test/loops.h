@@ -93,7 +93,7 @@ namespace tensor_test {
       if (all_equal(A.dimensions(), B.dimensions())) {
         double x = norm0(A - B);
         if (x > epsilon) {
-          std::cout << x << std::endl;
+          std::cout << "Deviation: " << x << std::endl;
           return false;
         }
         return true;
