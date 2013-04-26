@@ -85,7 +85,7 @@ namespace tensor_test {
 #endif
       return;
     }
-    for (int times = 1; times; --times) {
+    for (int times = 0; times < 1; ++times) {
       for (int m = 1; m < 2*n; ++m) {
 #if 0
         Tensor<elt_t> A(m,n);
@@ -100,13 +100,13 @@ namespace tensor_test {
         RTensor s = linalg::svd(A, &U, &Vt, false);
         EXPECT_TRUE(unitaryp(U,1e-10));
         EXPECT_TRUE(unitaryp(Vt,1e-10));
-        EXPECT_TRUE(all_equal(abs(s), s));
+        EXPECT_TRUE(approx_eq(abs(s), s));
         EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s, 0,m,n), Vt))));
 
         EXPECT_TRUE(approx_eq(true_s, s));
 
         RTensor s2 = linalg::svd(A, &U, &Vt, true);
-        EXPECT_TRUE(all_equal(s, s2));
+        EXPECT_TRUE(approx_eq(s, s2));
         EXPECT_TRUE(unitaryp(U));
         EXPECT_TRUE(unitaryp(Vt));
         EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s), Vt))));
