@@ -348,11 +348,11 @@ libmps_la_SOURCES = \
 	mps/mps/mps_normal_z.cc \
 	mps/mps/apply_local_operator_d.cc \
 	mps/mps/apply_local_operator_z.cc \
-	mps/mps/rmpdo.cc \
-	mps/mps/rmpdo_from_hamiltonian.cc \
-	mps/mps/cmpdo_from_hamiltonian.cc \
-	mps/mps/mpdo_apply_d.cc \
-	mps/mps/mpdo_apply_z.cc \
+	mps/mps/rmpo.cc \
+	mps/mps/rmpo_from_hamiltonian.cc \
+	mps/mps/cmpo_from_hamiltonian.cc \
+	mps/mps/mpo_apply_d.cc \
+	mps/mps/mpo_apply_z.cc \
 	mps/evolve/solver_base.cc \
 	mps/evolve/trotter_unitary.cc \
 	mps/evolve/solver_trotter2.cc \

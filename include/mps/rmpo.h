@@ -17,32 +17,30 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
-#include <mps/mpdo.h>
+#ifndef MPS_RMPO_H
+#define MPS_RMPO_H
+
+#include <mps/hamiltonian.h>
+
+/*!\addtogroup TheMPS*/
+/* @{ */
 
 namespace mps {
 
-  template class MP<tensor::RTensor>;
+  /**Real matrix product structure.*/
+  class RMPO : public MP<tensor::RTensor> {
+  public:
+    RMPO(index size, index physical_dimension);
+    RMPO(const tensor::Indices &physical_dimension);
+    RMPO(const Hamiltonian &H, double t = 0.0);
+    RMPO();
 
-  RMPDO::RMPDO() :
-    parent()
-  {
-  }
+  private:
+    typedef MP<elt_t> parent;
+  };
 
-  RMPDO::RMPDO(index length, index physical_dimension) :
-    parent(length)
-  {
-    index d = physical_dimension;
-    RTensor id = reshape(RTensor::eye(d,d), 1,d,d,1);
-    std::fill(begin(), end(), id);
-  }
+}
 
-  RMPDO::RMPDO(const tensor::Indices &physical_dimensions) :
-    parent(physical_dimensions.size())
-  {
-    for (index i = 0; i < size(); i++) {
-      at(i) = RTensor::eye(physical_dimensions[i]);
-    }
-  }
+/* @} */
 
-} // namespace mps
+#endif /* !MPS_RMPO_H */

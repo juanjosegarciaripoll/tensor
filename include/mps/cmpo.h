@@ -17,8 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MPS_CMPDO_H
-#define MPS_CMPDO_H
+#ifndef MPS_CMPO_H
+#define MPS_CMPO_H
 
 #include <mps/hamiltonian.h>
 
@@ -28,12 +28,12 @@
 namespace mps {
 
   /**Real matrix product structure.*/
-  class CMPDO : public MP<tensor::CTensor> {
+  class CMPO : public MP<tensor::CTensor> {
   public:
-    CMPDO(index size, index physical_dimension);
-    CMPDO(const tensor::Indices &physical_dimension);
-    CMPDO(const Hamiltonian &H, double t = 0.0);
-    CMPDO();
+    CMPO(index size, index physical_dimension);
+    CMPO(const tensor::Indices &physical_dimension);
+    CMPO(const Hamiltonian &H, double t = 0.0);
+    CMPO();
 
   private:
     typedef MP<elt_t> parent;
@@ -43,4 +43,4 @@ namespace mps {
 
 /* @} */
 
-#endif /* !MPS_CMPDO_H */
+#endif /* !MPS_CMPO_H */

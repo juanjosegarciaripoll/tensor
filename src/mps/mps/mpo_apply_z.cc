@@ -17,30 +17,13 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MPS_RMPDO_H
-#define MPS_RMPDO_H
-
-#include <mps/hamiltonian.h>
-
-/*!\addtogroup TheMPS*/
-/* @{ */
+#include "mpo_apply.cc"
 
 namespace mps {
 
-  /**Real matrix product structure.*/
-  class RMPDO : public MP<tensor::RTensor> {
-  public:
-    RMPDO(index size, index physical_dimension);
-    RMPDO(const tensor::Indices &physical_dimension);
-    RMPDO(const Hamiltonian &H, double t = 0.0);
-    RMPDO();
+  const CMPS do_apply(const CMPO &mpdo, const CMPS &psi)
+  {
+    return do_apply(mpdo, psi);
+  }
 
-  private:
-    typedef MP<elt_t> parent;
-  };
-
-}
-
-/* @} */
-
-#endif /* !MPS_RMPDO_H */
+} // namespace mps

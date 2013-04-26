@@ -17,12 +17,12 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <mps/mpdo.h>
+#include <mps/mpo.h>
 
 namespace mps {
 
-  template<class MPS, class MPDO>
-  static const MPS do_apply(const MPDO &mpdo, const MPS &psi)
+  template<class MPS, class MPO>
+  static const MPS do_apply(const MPO &mpdo, const MPS &psi)
   {
     typedef typename MPS::elt_t Tensor;
     assert(mpdo.size() == psi.size());

@@ -18,29 +18,19 @@
 */
 
 #include <cassert>
-#include <mps/mpdo.h>
+#include <mps/mpo.h>
 
 namespace mps {
 
-  static const RTensor safe_real(const CTensor &R)
-  {
-    if (!all_equal(imag(R), 0.0)) {
-      std::cerr << "In RMPDO, tried to initialize the tensor from a complex Hamiltonian.\n";
-      abort();
-    }
-    return real(R);
-  }
-
-  RMPDO::RMPDO(const Hamiltonian &H, double t) :
+  CMPO::CMPO(const Hamiltonian &H, double t) :
     parent(H.size())
   {
     for (index i = 0; i < size(); i++) {
-      at(i) = safe_real(H.local_term(i, t));
+      at(i) = H.local_term(i, t);
     }
     for (index i = 0; i < size(); i++) {
       for (index j = 0; j < H.interaction_depth(i, t); j++) {
-        add_interaction(*this, safe_real(H.interaction_left(i, t)),
-                        safe_real(H.interaction_right(i, t)));
+        add_interaction(*this, H.interaction_left(i, t), H.interaction_right(i, t));
       }
     }
   }

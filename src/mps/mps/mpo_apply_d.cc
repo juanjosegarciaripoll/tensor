@@ -17,22 +17,13 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
-#include <mps/mpdo.h>
+#include "mpo_apply.cc"
 
 namespace mps {
 
-  CMPDO::CMPDO(const Hamiltonian &H, double t) :
-    parent(H.size())
+  const RMPS do_apply(const RMPO &mpdo, const RMPS &psi)
   {
-    for (index i = 0; i < size(); i++) {
-      at(i) = H.local_term(i, t);
-    }
-    for (index i = 0; i < size(); i++) {
-      for (index j = 0; j < H.interaction_depth(i, t); j++) {
-        add_interaction(*this, H.interaction_left(i, t), H.interaction_right(i, t));
-      }
-    }
+    return do_apply(mpdo, psi);
   }
 
 } // namespace mps

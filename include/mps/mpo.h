@@ -17,32 +17,29 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
-#include <mps/mpdo.h>
+#ifndef MPDO_MPDO_H
+#define MPO_MPO_H
+
+#include <mps/mps.h>
+#include <mps/rmpo.h>
+#include <mps/cmpo.h>
 
 namespace mps {
 
-  template class MP<tensor::CTensor>;
+  using namespace tensor;
 
-  CMPDO::CMPDO() :
-    parent()
-  {
-  }
+  void add_local_term(RMPO &mpdo, const RTensor &Hloc);
 
-  CMPDO::CMPDO(index length, index physical_dimension) :
-    parent(length)
-  {
-    index d = physical_dimension;
-    CTensor id = reshape(CTensor::eye(d,d), 1,d,d,1);
-    std::fill(begin(), end(), id);
-  }
+  void add_interaction(RMPO &mpdo, const RTensor &Hi, const RTensor &Hj);
 
-  CMPDO::CMPDO(const tensor::Indices &physical_dimensions) :
-    parent(physical_dimensions.size())
-  {
-    for (index i = 0; i < size(); i++) {
-      at(i) = CTensor::eye(physical_dimensions[i]);
-    }
-  }
+  void add_local_term(CMPO &mpdo, const CTensor &Hloc);
 
-} // namespace mps
+  void add_interaction(CMPO &mpdo, const CTensor &Hi, const CTensor &Hj);
+
+  RMPS apply(const RMPO &mpdo, const RMPS &state);
+
+  CMPS apply(const CMPO &mpdo, const CMPS &state);
+
+}
+
+#endif /* !TENSOR_MPO_H */

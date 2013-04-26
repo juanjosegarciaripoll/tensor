@@ -17,14 +17,32 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <mps/mpdo.h>
-#include "mpdo_apply.cc"
+#include <cassert>
+#include <mps/mpo.h>
 
 namespace mps {
 
-  const CMPS do_apply(const CMPDO &mpdo, const CMPS &psi)
+  template class MP<tensor::CTensor>;
+
+  CMPO::CMPO() :
+    parent()
   {
-    return do_apply(mpdo, psi);
+  }
+
+  CMPO::CMPO(index length, index physical_dimension) :
+    parent(length)
+  {
+    index d = physical_dimension;
+    CTensor id = reshape(CTensor::eye(d,d), 1,d,d,1);
+    std::fill(begin(), end(), id);
+  }
+
+  CMPO::CMPO(const tensor::Indices &physical_dimensions) :
+    parent(physical_dimensions.size())
+  {
+    for (index i = 0; i < size(); i++) {
+      at(i) = CTensor::eye(physical_dimensions[i]);
+    }
   }
 
 } // namespace mps

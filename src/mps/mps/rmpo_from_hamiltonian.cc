@@ -17,29 +17,32 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MPDO_MPDO_H
-#define MPDO_MPDO_H
-
-#include <mps/mps.h>
-#include <mps/rmpdo.h>
-#include <mps/cmpdo.h>
+#include <cassert>
+#include <mps/mpo.h>
 
 namespace mps {
 
-  using namespace tensor;
+  static const RTensor safe_real(const CTensor &R)
+  {
+    if (!all_equal(imag(R), 0.0)) {
+      std::cerr << "In RMPO, tried to initialize the tensor from a complex Hamiltonian.\n";
+      abort();
+    }
+    return real(R);
+  }
 
-  void add_local_term(RMPDO &mpdo, const RTensor &Hloc);
+  RMPO::RMPO(const Hamiltonian &H, double t) :
+    parent(H.size())
+  {
+    for (index i = 0; i < size(); i++) {
+      at(i) = safe_real(H.local_term(i, t));
+    }
+    for (index i = 0; i < size(); i++) {
+      for (index j = 0; j < H.interaction_depth(i, t); j++) {
+        add_interaction(*this, safe_real(H.interaction_left(i, t)),
+                        safe_real(H.interaction_right(i, t)));
+      }
+    }
+  }
 
-  void add_interaction(RMPDO &mpdo, const RTensor &Hi, const RTensor &Hj);
-
-  void add_local_term(CMPDO &mpdo, const CTensor &Hloc);
-
-  void add_interaction(CMPDO &mpdo, const CTensor &Hi, const CTensor &Hj);
-
-  RMPS apply(const RMPDO &mpdo, const RMPS &state);
-
-  CMPS apply(const CMPDO &mpdo, const CMPS &state);
-
-}
-
-#endif /* !TENSOR_MPDO_H */
+} // namespace mps
