@@ -46,6 +46,12 @@ namespace mps {
   double simplify(CMPS *P, const CMPS &Q, int *sense, bool periodicbc,
 		  index sweeps, bool normalize);
 
+  double simplify(RMPS *P, const std::vector<RMPS> &Q, const RTensor &weights,
+                  int *sense, index sweeps, bool normalize);
+
+  double simplify(CMPS *P, const std::vector<CMPS> &Q, const CTensor &weights,
+                  int *sense, index sweeps, bool normalize);
+
 } // namespace mps
 
 #endif // !MPS_MPS_ALGORITHM_H

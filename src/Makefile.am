@@ -338,6 +338,8 @@ libmps_la_SOURCES = \
 	mps/mps/mps_expected2_z.cc \
 	mps/mps/mps_simplify_d.cc \
 	mps/mps/mps_simplify_z.cc \
+	mps/mps/mps_simplify_many_d.cc \
+	mps/mps/mps_simplify_many_z.cc \
 	mps/mps/mps_canonical_d.cc \
 	mps/mps/mps_canonical_z.cc \
 	mps/mps/mps_canonical2_d.cc \
