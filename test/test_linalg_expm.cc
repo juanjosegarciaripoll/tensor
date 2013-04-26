@@ -47,18 +47,19 @@ namespace tensor_test {
      * a diagonal of exponentials)
      */
     Tensor<elt_t> d = Tensor<elt_t>::random(n);
-    Tensor<elt_t> exponent = diag(d);
-    Tensor<elt_t> simple = diag(exp(d));
-    if (pexponent) *pexponent = exponent;
-    return linalg::expm(exponent);
+    if (pexponent) {
+      *pexponent = diag(d);
+    }
+    return diag(exp(d));
   }
 
   RTensor
   pauli_exponential(double theta, double phi, RTensor *pexponent)
   {
       RTensor A = cos(theta) * sx + sin(theta) * sz;
-      RTensor fA = phi * A;
-      if (pexponent) *pexponent = fA;
+      if (pexponent) {
+        *pexponent = phi * A;
+      }
       return cosh(phi) * id + sinh(phi) * A;
   }
 
@@ -66,8 +67,9 @@ namespace tensor_test {
   pauli_exponential(double theta, double phi, CTensor *pexponent)
   {
       CTensor A = cos(theta) * sx + sin(theta) * sz;
-      CTensor fA = to_complex(0.0,phi) * A;
-      if (pexponent) *pexponent = fA;
+      if (pexponent) {
+        *pexponent = to_complex(0.0,phi) * A;
+      }
       return cos(phi) * id + to_complex(0.0,sin(phi)) * A;
   }
 
