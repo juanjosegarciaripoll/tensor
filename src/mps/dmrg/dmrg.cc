@@ -22,6 +22,7 @@
 #include <tensor/tools.h>
 #include <tensor/linalg.h>
 #include <tensor/arpack.h>
+#include <tensor/io.h>
 #include <mps/tools.h>
 #include <mps/mps_algorithms.h>
 #include <mps/dmrg.h>
@@ -336,9 +337,8 @@ namespace mps {
 	Opij = reshape(Opij, i1,j1,i1*j1);
 	while (eigs.update() < eigs.Finished) {
 	  Pj = reshape(reconstruct_state(eigs.get_x()), L1,L2);
-	  Pi = mmult(Sli, Pj);
-	  Pi = Pi + mmult(Pj, Sjr);
-	  Pi = Pi + foldin(Opij, -1, reshape(Pj, a1,i1*j1,c1), 1);
+	  Pi = mmult(Sli, Pj) + mmult(Pj, Sjr) +
+            reshape(foldin(Opij, -1, reshape(Pj, a1,i1*j1,c1), 1), L1,L2);
 	  Pi = simplify_state(Pi);
 	  if (project) {
 	    Pi = Pi - fold(foldc(V,0, Pi,0),0, V,-1);
@@ -373,9 +373,8 @@ namespace mps {
 	Opij = reshape(Opij, i1,j1,i1*j1);
 	while (eigs.update() < eigs.Finished) {
 	  Pj = reshape(reconstruct_state(eigs.get_x()), L1,L2);
-	  Pi = mmult(Opli, Pj);
-	  Pi = Pi + mmult(Pj, Opjr);
-	  Pi = Pi + foldin(Opij, -1, reshape(Pj, a1,i1*j1,c1), 1);
+	  Pi = mmult(Opli, Pj) + mmult(Pj, Opjr) +
+            reshape(foldin(Opij, -1, reshape(Pj, a1,i1*j1,c1), 1), L1,L2);
 	  Pi = simplify_state(Pi);
 	  if (project) {
 	    Pi = Pi - fold(foldc(V,0, Pi,0),0, V,-1);
@@ -397,27 +396,9 @@ namespace mps {
      * Since the projector that we obtained spans two sites, we have to split
      * it, ensuring that we remain below the desired dimension Dmax.
      */
-    double factor;
-    RTensor s = linalg::svd(reshape(Pi, L1,L2), &Pi, &Pj, SVD_ECONOMIC);
-    b1 = where_to_truncate(s, svd_tolerance, Dmax);
-    if (b1 != s.size()) {
-      Pi = change_dimension(Pi, -1, b1);
-      Pj = change_dimension(Pj, 0, b1);
-      s = change_dimension(s, 0, b1) * factor;
-    }
-    Pi = reshape(Pi, a1,i1,b1);
-    Pj = reshape(Pj, b1,j1,c1);
-    if (dk > 0) {
-      P.at(k) = Pi;
-      scale_inplace(Pj, 0, s);
-      //P.set_normalized(k+1, Pj, dk);
-      P.at(k+1) = Pj;
-    } else {
-      P.at(k+1) = Pj;
-      scale_inplace(Pi,-1, s);
-      //P.set_normalized(k, Pi, dk);
-      P.at(k) = Pi;
-    }
+    set_canonical_2_sites(P, Pi, svd_tolerance, Dmax,
+                          false /* Do not canonicalize the tensor, since we
+                                 * are going to change it soon */);
     /*
      * And finally we update the matrices.
      */
@@ -612,10 +593,9 @@ namespace mps {
   const typename DMRG<MPS>::elt_vector_t
   DMRG<MPS>::compute_interactions_right(const MPS &P, index k) const
   {
-    k++;
-    assert(k < size());
+    assert(k+1 < size());
 
-    elt_t Pk = P[k];
+    elt_t Pk = P[k+1];
     index a1,j1,b1;
     Pk.get_dimensions(&a1, &j1, &b1);
 
@@ -627,6 +607,7 @@ namespace mps {
 			   reshape(foldin(interaction_right(k,m),-1, Pk,1),
 				   a1,j1*b1), -1);
     }
+    return output;
   }
 
   template<class MPS>
@@ -634,18 +615,17 @@ namespace mps {
   DMRG<MPS>::compute_interactions_left(const MPS &P, index k) const
   {
     assert(k >= 1);
-    k--;
 
-    elt_t Pk = P[k];
+    elt_t Pk = P[k-1];
     index a1,j1,b1;
     Pk.get_dimensions(&a1, &j1, &b1);
 
-    index l = interaction_depth(k);
+    index l = interaction_depth(k-1);
     elt_vector_t output(l);
     for (index m = 0; m < l; m++) {
       // Pk'(a1,j1,b1) O(j1,j2) Pk(a1,j2,b2) -> aux(b1,b2)
       output.at(m) = foldc(reshape(Pk, a1*j1,b1), 0,
-			   reshape(foldin(interaction_left(k,m),-1, Pk,1),
+			   reshape(foldin(interaction_left(k-1,m),-1, Pk,1),
 				   a1*j1,b1), 0);
     }
     return output;
@@ -662,7 +642,7 @@ namespace mps {
       elt_vector_t Heffir = compute_interactions_right(P, k);
       Heff = kron2(elt_t::eye(i1), Hr_[k+1]);
       for (index m = 0; m < Heffir.size(); m++) {
-	Heff = Heff + kron2(interaction_right(k,m), Heffir[m]);
+	Heff = Heff + kron2(interaction_left(k,m), Heffir[m]);
       }
     }
     return ensure_Hermitian(Heff);
@@ -679,7 +659,7 @@ namespace mps {
       elt_vector_t Heffli = compute_interactions_left(P, k);
       Heff = kron2(Hl_[k-1], elt_t::eye(i1));
       for (index m = 0; m < Heffli.size(); m++) {
-	Heff = Heff + kron2(Heffli[m], interaction_right(k,m));
+	Heff = Heff + kron2(Heffli[m], interaction_right(k - 1,m));
       }
     }
     return Heff;

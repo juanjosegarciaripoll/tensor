@@ -20,7 +20,6 @@
 #include <algorithm>
 #include <tensor/linalg.h>
 #include <mps/mps.h>
-#include <tensor/io.h>
 
 namespace mps {
 

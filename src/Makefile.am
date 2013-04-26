@@ -340,6 +340,8 @@ libmps_la_SOURCES = \
 	mps/mps/mps_simplify_z.cc \
 	mps/mps/mps_canonical_d.cc \
 	mps/mps/mps_canonical_z.cc \
+	mps/mps/mps_canonical2_d.cc \
+	mps/mps/mps_canonical2_z.cc \
 	mps/mps/mps_normal_d.cc \
 	mps/mps/mps_normal_z.cc \
 	mps/mps/apply_local_operator_d.cc \
