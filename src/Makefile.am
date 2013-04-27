@@ -140,6 +140,8 @@ libtensor_la_SOURCES = \
 	linalg/svd_z.cc \
 	linalg/solve_d.cc \
 	linalg/solve_z.cc \
+	linalg/solve_with_svd_d.cc \
+	linalg/solve_with_svd_z.cc \
 	linalg/expm_d.cc \
 	linalg/expm_z.cc \
 	linalg/eig_power_d.cc \
@@ -360,6 +362,7 @@ libmps_la_SOURCES = \
 	mps/evolve/solver_trotter2.cc \
 	mps/evolve/solver_trotter3.cc \
 	mps/evolve/solver_trotter4.cc \
+	mps/evolve/arnoldi.cc \
 	mps/dmrg/rdmrg.cc \
 	mps/dmrg/cdmrg.cc
 endif

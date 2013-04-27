@@ -23,6 +23,7 @@
 #include <vector>
 #include <mps/hamiltonian.h>
 #include <mps/mps.h>
+#include <mps/mpo.h>
 
 namespace mps {
 
@@ -147,6 +148,26 @@ namespace mps {
     
     virtual double one_step(CMPS *P, index Dmax);
   };
+
+  /**Time evolution with the Arnoldi method.
+  */
+  class ArnoldiSolver : public TimeSolver {
+  public:
+    /**Create Solver with fixed time step.*/
+    ArnoldiSolver(const Hamiltonian &H, cdouble dt, int nvectors);
+
+    /**Compute next time step. Given the state \f$\psi(0)\f$ represented
+       by P, estimate the state at \f$\psi(\Delta t)\f$ within the space
+       of MPS with dimension <= Dmax. P contains the output.*/
+    virtual double one_step(CMPS *P, index Dmax);
+
+  private:
+    const cdouble dt_;
+    const CMPO H_;
+    const int max_states_;
+  };
+
+
 
 } // namespace mps
 
