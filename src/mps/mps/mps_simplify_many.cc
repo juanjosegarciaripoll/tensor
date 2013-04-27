@@ -271,6 +271,10 @@ namespace mps {
     double
     simplify(MPS &P, int *sense, index sweeps, bool normalize)
     {
+      int aux_sense = 1;
+      if (!sense) {
+        sense = &aux_sense;
+      }
       if (sweeps < 1)
         sweeps = 1;
 
