@@ -17,37 +17,14 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MPDO_MPDO_H
-#define MPO_MPO_H
-
-#include <mps/mps.h>
-#include <mps/rmpo.h>
-#include <mps/cmpo.h>
+#include <mps/mpo.h>
 
 namespace mps {
 
-  using namespace tensor;
+  template<class MPS, class MPO>
+  static typename MPS::elt_t::elt_t do_expected(const MPS &bra, const MPO &op, const MPS &ket)
+  {
+    return scprod(bra, apply(op, ket));
+  }
 
-  void add_local_term(RMPO &mpdo, const RTensor &Hloc);
-
-  void add_interaction(RMPO &mpdo, const RTensor &Hi, const RTensor &Hj);
-
-  void add_local_term(CMPO &mpdo, const CTensor &Hloc);
-
-  void add_interaction(CMPO &mpdo, const CTensor &Hi, const CTensor &Hj);
-
-  RMPS apply(const RMPO &mpdo, const RMPS &state);
-
-  CMPS apply(const CMPO &mpdo, const CMPS &state);
-
-  double expected(const RMPS &bra, const RMPO &op, const RMPS &ket);
-
-  double expected(const RMPS &bra, const RMPO &op);
-
-  cdouble expected(const CMPS &bra, const CMPO &op, const CMPS &ket);
-
-  cdouble expected(const CMPS &bra, const CMPO &op);
-
-}
-
-#endif /* !TENSOR_MPO_H */
+} // namespace mps

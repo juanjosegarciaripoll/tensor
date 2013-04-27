@@ -353,6 +353,8 @@ libmps_la_SOURCES = \
 	mps/mps/cmpo_from_hamiltonian.cc \
 	mps/mps/mpo_apply_d.cc \
 	mps/mps/mpo_apply_z.cc \
+	mps/mps/mpo_expected_d.cc \
+	mps/mps/mpo_expected_z.cc \
 	mps/evolve/solver_base.cc \
 	mps/evolve/trotter_unitary.cc \
 	mps/evolve/solver_trotter2.cc \
