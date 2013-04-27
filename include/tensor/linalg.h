@@ -35,6 +35,9 @@ namespace linalg {
   const RTensor solve(const RTensor &A, const RTensor &B);
   const CTensor solve(const CTensor &A, const CTensor &B);
 
+  const RTensor solve_with_svd(const RTensor &A, const RTensor &B, double tol = 0.0);
+  const CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol = 0.0);
+
   extern bool accurate_svd;
 
   #define SVD_ECONOMIC true
