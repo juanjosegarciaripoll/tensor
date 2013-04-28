@@ -1,7 +1,28 @@
 DESCRIPTION
 ===========
 
-To be done.
+This is a C++ library for numerical arrays and tensor objects and operations
+with them, designed to allow Matlab-style programming. Some of the key features:
+
+* Fundamental data structures
+  - Arrays of indices
+  - Multidimensional arrays of double precision, real and complex numbers
+  - Sparse matrices of real and complex numbers
+
+* Operations
+  - Algebraic operations between tensors, matrices and numbers.
+  - Contraction among tensors (a generalization of matrix multiplication).
+  - Tensor reshaping, index permutation, enlarging and contracting.
+
+* Linear algebra
+  - Solving systems of linear equations
+  - Matrix exponentiation
+  - Eigenvalue problems
+  - Few eigenvalues of sparse problems using Arpack
+  - Singular value decompositions
+
+* Fast Fourier Transforms (to be done)
+  
 
 BUILD AND INSTALL
 =================
