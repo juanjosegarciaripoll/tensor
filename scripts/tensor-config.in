@@ -1,7 +1,22 @@
 #!/bin/sh
-prefix=@prefix@
-exec_prefix=@exec_prefix@
+PACKAGE_TARNAME="@PACKAGE_TARNAME@"
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+bindir="@bindir@"
+datarootdir="@datarootdir@"
+docdir="@docdir@"
+htmldir="@htmldir@"
+libdir="@libdir@"
 case $1 in
+    --prefix)   echo "$prefix";;
+    --exec_prefix)
+		echo "$exec_prefix";;
+    --bindir)	echo "$bindir";;
+    --datarootdir)
+		echo "$datarootdir";;
+    --docdir)   echo "$docdir";;
+    --htmldir)	echo "$htmldir";;
+    --libdir)   echo "$libdir";;
     --cppflags)	echo @CPPFLAGS@ -I@includedir@;;
     --cxxflags)	echo @CXXFLAGS@;;
     --ldflags)	echo -L@libdir@ -lmps -ltensor @LDFLAGS@ @LIBS@;;
