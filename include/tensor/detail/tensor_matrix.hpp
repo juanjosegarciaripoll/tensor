@@ -25,7 +25,7 @@
 namespace tensor {
 
 template<typename elt_t>
-Tensor<elt_t> Tensor<elt_t>::eye(index rows, index cols) {
+const Tensor<elt_t> Tensor<elt_t>::eye(index rows, index cols) {
   Tensor<elt_t> output(rows, cols);
   output.fill_with_zeros();
   for (index i = 0; i < rows && i < cols; ++i) {
@@ -35,21 +35,49 @@ Tensor<elt_t> Tensor<elt_t>::eye(index rows, index cols) {
 }
 
 template<typename elt_t>
-Tensor<elt_t> Tensor<elt_t>::zeros(index rows, index cols) {
+const Tensor<elt_t> Tensor<elt_t>::zeros(index rows, index cols) {
   Tensor<elt_t> output(rows, cols);
   output.fill_with_zeros();
   return output;
 }
 
 template<typename elt_t>
-Tensor<elt_t> Tensor<elt_t>::zeros(const Indices &dimensions) {
+const Tensor<elt_t> Tensor<elt_t>::zeros(const Indices &dimensions) {
   Tensor<elt_t> output(dimensions);
   output.fill_with_zeros();
   return output;
 }
 
 template<typename elt_t>
-Tensor<elt_t> Tensor<elt_t>::ones(index rows, index cols) {
+const Tensor<elt_t> Tensor<elt_t>::zeros(index d1, index d2, index d3) {
+  Tensor<elt_t> output(d1, d2, d3);
+  output.fill_with_zeros();
+  return output;
+}
+
+template<typename elt_t>
+const Tensor<elt_t> Tensor<elt_t>::zeros(index d1, index d2, index d3, index d4) {
+  Tensor<elt_t> output(d1, d2, d3, d4);
+  output.fill_with_zeros();
+  return output;
+}
+
+template<typename elt_t>
+const Tensor<elt_t> Tensor<elt_t>::zeros(index d1, index d2, index d3, index d4, index d5) {
+  Tensor<elt_t> output(d1, d2, d3, d4, d5);
+  output.fill_with_zeros();
+  return output;
+}
+
+template<typename elt_t>
+const Tensor<elt_t> Tensor<elt_t>::zeros(index d1, index d2, index d3, index d4, index d5, index d6) {
+  Tensor<elt_t> output(d1, d2, d3, d4, d5, d6);
+  output.fill_with_zeros();
+  return output;
+}
+
+template<typename elt_t>
+const Tensor<elt_t> Tensor<elt_t>::ones(index rows, index cols) {
   Tensor<elt_t> output(rows, cols);
   output.fill_with(number_one<elt_t>());
   return output;
@@ -57,7 +85,7 @@ Tensor<elt_t> Tensor<elt_t>::ones(index rows, index cols) {
 
 
 template<typename elt_t>
-Tensor<elt_t> Tensor<elt_t>::ones(const Indices &dimensions) {
+const Tensor<elt_t> Tensor<elt_t>::ones(const Indices &dimensions) {
   Tensor<elt_t> output(dimensions);
   output.fill_with(number_one<elt_t>());
   return output;

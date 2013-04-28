@@ -228,21 +228,29 @@ class Tensor {
   // Matrix operations
   //
   /**Identity matrix.*/
-  static Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
+  static const Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
   /**Rectangular identity matrix.*/
-  static Tensor<elt_t> eye(index rows, index cols);
+  static const Tensor<elt_t> eye(index rows, index cols);
   /**Matrix of zeros.*/
-  static Tensor<elt_t> zeros(index rows) { return zeros(rows, rows); }
+  static const Tensor<elt_t> zeros(index rows) { return zeros(rows, rows); }
   /**Matrix of zeros.*/
-  static Tensor<elt_t> zeros(index rows, index cols);
+  static const Tensor<elt_t> zeros(index rows, index cols);
+  /**4D Tensor of zeros.*/
+  static const Tensor<elt_t> zeros(index d1, index d2, index d3);
+  /**4D Tensor of zeros.*/
+  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4);
+  /**5D Tensor of zeros.*/
+  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4, index d5);
+  /**6D Tensor of zeros.*/
+  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4, index d5, index d6);
   /**Tensor of zeros.*/
-  static Tensor<elt_t> zeros(const Indices &dimensions);
+  static const Tensor<elt_t> zeros(const Indices &dimensions);
   /**Matrix of ones.*/
-  static Tensor<elt_t> ones(index rows) { return ones(rows, rows); }
+  static const Tensor<elt_t> ones(index rows) { return ones(rows, rows); }
   /**Matrix of ones.*/
-  static Tensor<elt_t> ones(index rows, index cols);
+  static const Tensor<elt_t> ones(index rows, index cols);
   /**Tensor of ones.*/
-  static Tensor<elt_t> ones(const Indices &dimensions);
+  static const Tensor<elt_t> ones(const Indices &dimensions);
 
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
