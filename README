@@ -22,6 +22,12 @@ with them, designed to allow Matlab-style programming. Some of the key features:
   - Singular value decompositions
 
 * Fast Fourier Transforms (to be done)
+
+The Tensor library is discussed in the libtensor Google Group, currently found
+here https://groups.google.com/forum/#!forum/libtensor Go to this forum for
+help in configuring and installing the library.
+
+Bug reports should be submitted using the GitHub Issues interface.
   
 
 BUILD AND INSTALL
