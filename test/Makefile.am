@@ -158,7 +158,7 @@ test_linalg_eig_power_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS)
 TESTS += test_linalg_expm
 check_PROGRAMS += test_linalg_expm
 test_linalg_expm_SOURCES = test_linalg_expm.cc
-test_linalg_expm_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+test_linalg_expm_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
 TESTS += test_jobs
 check_PROGRAMS += test_jobs
@@ -182,87 +182,9 @@ test_linalg_eigs_SOURCES = test_linalg_eigs.cc
 test_linalg_eigs_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 endif
 
-#####################################################################
-# MPS LIBRARY TESTS
-#
-
-if BUILD_MPS
-
-TESTS += test_quantum_spin
-check_PROGRAMS += test_quantum_spin
-test_quantum_spin_SOURCES = test_quantum_spin.cc
-test_quantum_spin_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_quantum_fock
-check_PROGRAMS += test_quantum_fock
-test_quantum_fock_SOURCES = test_quantum_fock.cc
-test_quantum_fock_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_mps_mps
-check_PROGRAMS += test_mps_mps
-test_mps_mps_SOURCES = test_mps_mps.cc
-test_mps_mps_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_mps_norm
-check_PROGRAMS += test_mps_norm
-test_mps_norm_SOURCES = test_mps_norm.cc
-test_mps_norm_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_mps_expected
-check_PROGRAMS += test_mps_expected
-test_mps_expected_SOURCES = test_mps_expected.cc
-test_mps_expected_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_mps_correlation
-check_PROGRAMS += test_mps_correlation
-test_mps_correlation_SOURCES = test_mps_correlation.cc
-test_mps_correlation_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_mps_canonical
-check_PROGRAMS += test_mps_canonical
-test_mps_canonical_SOURCES = test_mps_canonical.cc
-test_mps_canonical_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_mps_simplify
-check_PROGRAMS += test_mps_simplify
-test_mps_simplify_SOURCES = test_mps_simplify.cc
-test_mps_simplify_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_mps_simplify_many
-check_PROGRAMS += test_mps_simplify_many
-test_mps_simplify_many_SOURCES = test_mps_simplify_many.cc
-test_mps_simplify_many_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_itebd_base
-check_PROGRAMS += test_itebd_base
-test_itebd_base_SOURCES = test_itebd_base.cc
-test_itebd_base_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_itebd_expected
-check_PROGRAMS += test_itebd_expected
-test_itebd_expected_SOURCES = test_itebd_expected.cc
-test_itebd_expected_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_itebd_expected_slow
-check_PROGRAMS += test_itebd_expected_slow
-test_itebd_expected_slow_SOURCES = test_itebd_expected_slow.cc
-test_itebd_expected_slow_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_itebd_itime
-check_PROGRAMS += test_itebd_itime
-test_itebd_itime_SOURCES = test_itebd_itime.cc
-test_itebd_itime_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
-TESTS += test_time_solver
-check_PROGRAMS += test_time_solver
-test_time_solver_SOURCES = test_time_solver.cc
-test_time_solver_LDADD = libtestmain.a ../src/libmps.la ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
 noinst_LIBRARIES += libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 	 random_unitary_d.cc random_unitary_z.cc random_permutation.cc
-
-endif
 
 #
 # Build the Google Test library. The way this library has changed: we now have to

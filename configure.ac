@@ -36,14 +36,6 @@ AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 dist-zip subdir-objects])
 # [enable_rpath=no],
 # [enable_rpath=yes])
 
-AC_ARG_ENABLE([mps],
- [AS_HELP_STRING([--enable-mps],
-     [Build the MPS library])],
- [enable_mps=yes],
- [enable_mps=no],
- [enable_mps=yes])
-AM_CONDITIONAL([BUILD_MPS], [test "x${enable_mps}" != no])
-
 AC_ARG_WITH([arpack],
  [AS_HELP_STRING([--with-arpack],
      [link in with the arpack-ng library])],
