@@ -380,4 +380,67 @@ namespace tensor_test {
   }
 
 
+  //
+  // REAL PART OF SPARSE MATRICES
+  //
+
+  template<typename elt_t>
+  void test_real(Tensor<elt_t> &t) {
+    Sparse<elt_t> s = Sparse<elt_t>::random(t.rows(), t.columns());
+    Sparse<double> r = real(s);
+    EXPECT_EQ(t.rows(), r.rows());
+    EXPECT_EQ(t.columns(), r.columns());
+    EXPECT_TRUE(all_equal(real(full(s)), full(r)));
+  }
+
+  TEST(RSparseTest, RSparseReal) {
+    test_over_fixed_rank_tensors<double>(test_real<double>, 2, 7);
+  }
+
+  TEST(CSparseTest, CSparseReal) {
+    test_over_fixed_rank_tensors<cdouble>(test_real<cdouble>, 2, 7);
+  }
+
+  //
+  // IMAGINARY PART OF SPARSE MATRICES
+  //
+
+  template<typename elt_t>
+  void test_imag(Tensor<elt_t> &t) {
+    Sparse<elt_t> s = Sparse<elt_t>::random(t.rows(), t.columns());
+    Sparse<double> i = imag(s);
+    EXPECT_EQ(t.rows(), i.rows());
+    EXPECT_EQ(t.columns(), i.columns());
+    EXPECT_TRUE(all_equal(imag(full(s)), full(i)));
+  }
+
+  TEST(RSparseTest, RSparseImag) {
+    test_over_fixed_rank_tensors<double>(test_imag<double>, 2, 7);
+  }
+
+  TEST(CSparseTest, CSparseImag) {
+    test_over_fixed_rank_tensors<cdouble>(test_imag<cdouble>, 2, 7);
+  }
+
+  //
+  // IMAGINARY PART OF SPARSE MATRICES
+  //
+
+  template<typename elt_t>
+  void test_conj(Tensor<elt_t> &t) {
+    Sparse<elt_t> s = Sparse<elt_t>::random(t.rows(), t.columns());
+    Sparse<elt_t> c = conj(s);
+    EXPECT_EQ(t.rows(), c.rows());
+    EXPECT_EQ(t.columns(), c.columns());
+    EXPECT_TRUE(all_equal(conj(full(s)), full(c)));
+  }
+
+  TEST(RSparseTest, RSparseConj) {
+    test_over_fixed_rank_tensors<double>(test_conj<double>, 2, 7);
+  }
+
+  TEST(CSparseTest, CSparseConj) {
+    test_over_fixed_rank_tensors<cdouble>(test_conj<cdouble>, 2, 7);
+  }
+
 } // namespace tensor_test
