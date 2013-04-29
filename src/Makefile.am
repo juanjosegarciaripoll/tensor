@@ -33,6 +33,9 @@ libtensor_la_SOURCES = \
 	sparse/sparse_kron_z.cc \
 	sparse/sparse_ops_d.cc \
 	sparse/sparse_ops_z.cc \
+	sparse/sparse_real.cc \
+	sparse/sparse_imag.cc \
+	sparse/sparse_conj.cc \
 	sparse/mmult_sparse_tensor_d.cc \
 	sparse/mmult_sparse_tensor_z.cc \
 	sparse/mmult_tensor_sparse_d.cc \

@@ -158,6 +158,13 @@ namespace tensor {
   const RTensor mmult(const RSparse &m1, const RTensor &m2);
   const CTensor mmult(const CSparse &m1, const CTensor &m2);
 
+  const RSparse &real(const RSparse &A) { return A; }
+  const RSparse real(const CSparse &A);
+  const RSparse &conj(const RSparse &A) { return A; }
+  const CSparse conj(const CSparse &A);
+  const RSparse imag(const RSparse &A) { return RSparse(A.rows(), A.columns()); }
+  const RSparse imag(const CSparse &A);
+
 } // namespace tensor
 
 #ifdef TENSOR_LOAD_IMPL
