@@ -65,10 +65,10 @@ AC_DEFUN([TENSOR_ESSL],[
     # Linux version of the libraries
     xlsmp_version=`ls /opt/ibmcmp/xlsmp/|tail -1`
     xlf_version=`ls /opt/ibmcmp/xlf/|tail -1`
-    ESSL_XTRA64="-lxlf90_r -lxlomp_ser -lxlfmath -L/opt/ibmcmp/xlsmp/${xlsmp_version}/lib64 -L/opt/ibmcmp/xlf/${xlf_version}/lib64 -R/opt/ibmcmp/lib64"
-    ESSL_XTRA="-lxlf90_r -lxlomp_ser -lxlfmath -L/opt/ibmcmp/xlsmp/${xlsmp_version}/lib -L/opt/ibmcmp/xlf/${xlf_version}/lib -R/opt/ibmcmp/lib"
-    ESSL_XTRASMP64="-lxlf90_r -lxlsmp -lxlfmath -L/opt/ibmcmp/xlsmp/${xlsmp_version}/lib64 -L/opt/ibmcmp/xlf/${xlf_version}/lib64 -R/opt/ibmcmp/lib64"
-    ESSL_XTRASMP="-lxlf90_r -lxlsmp -lxlfmath -L/opt/ibmcmp/xlsmp/${xlsmp_version}/lib -L/opt/ibmcmp/xlf/${xlf_version}/lib -R/opt/ibmcmp/lib"
+    ESSL_XTRA64="-lm -L/opt/ibmcmp/lib64 -lxlf90_r -lxl -lxlomp_ser -lxlfmath -L/opt/ibmcmp/xlsmp/${xlsmp_version}/lib64 -L/opt/ibmcmp/xlf/${xlf_version}/lib64 -R/opt/ibmcmp/lib64"
+    ESSL_XTRA="-lm -L/opt/ibmcmp/lib -lxlf90_r -lxl -lxlomp_ser -lxlfmath -L/opt/ibmcmp/xlsmp/${xlsmp_version}/lib -L/opt/ibmcmp/xlf/${xlf_version}/lib -R/opt/ibmcmp/lib"
+    ESSL_XTRASMP64="-lm -L/opt/ibmcmp/lib64 -lxlf90_r -lxl -lxlsmp -lxlfmath -L/opt/ibmcmp/xlsmp/${xlsmp_version}/lib64 -L/opt/ibmcmp/xlf/${xlf_version}/lib64 -R/opt/ibmcmp/lib64"
+    ESSL_XTRASMP="-lm -L/opt/ibmcmp/lib -lxlf90_r -lxl -lxlsmp -lxlfmath -L/opt/ibmcmp/xlsmp/${xlsmp_version}/lib -L/opt/ibmcmp/xlf/${xlf_version}/lib -R/opt/ibmcmp/lib"
   else
     # AIX version of the libraries
     ESSL_CXXFLAGS="-qnocinc=/usr/include/essl"
