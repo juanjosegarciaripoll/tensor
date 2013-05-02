@@ -37,10 +37,10 @@
 
 #include "arpackf.h"
 
-inline void saupp(int& ido, char bmat, int n, const char* which, int nev,
-                  double& tol, double resid[], int ncv, double V[],
-                  int ldv, int iparam[], int ipntr[], double workd[],
-                  double workl[], int lworkl, int& info)
+inline void saupp(integer& ido, char bmat, integer n, const char* which, integer nev,
+                  double& tol, double resid[], integer ncv, double V[],
+                  integer ldv, integer iparam[], integer ipntr[], double workd[],
+                  double workl[], integer lworkl, integer& info)
 
 /*
   c++ version of ARPACK routine dsaupd that implements a variant of

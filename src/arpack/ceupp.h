@@ -43,7 +43,7 @@ inline void ceupp(integer rvec, char HowMny, tensor::cdouble d[],
                   integer nev, double tol, tensor::cdouble resid[], integer ncv,
                   tensor::cdouble V[], integer ldv, integer iparam[], integer ipntr[],
                   tensor::cdouble workd[], tensor::cdouble workl[],
-                  integer lworkl, double rwork[], int& info)
+                  integer lworkl, double rwork[], integer& info)
 
 /*
   c++ version of ARPACK routine zneupd.
