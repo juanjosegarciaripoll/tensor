@@ -121,7 +121,7 @@ dump_backtrace(int size)
         free(names);
         }
 #else
-#error
+#warning "No backtrace available"
 #endif
 }
 
