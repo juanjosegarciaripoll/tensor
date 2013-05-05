@@ -48,6 +48,16 @@ AC_PROG_CXX
 AC_LANG([C++])
 AC_PROG_LIBTOOL
 
+# Size of computer words
+TENSOR_BITS
+
+# Numerical libraries
+# It also changes the fortran compiler to match those libraries (ESSL)
+TENSOR_VECLIB
+TENSOR_ATLAS
+TENSOR_MKL
+TENSOR_ESSL
+
 # Fortran stuff
 AC_PROG_F77([f77])
 AC_F77_LIBRARY_LDFLAGS
@@ -77,17 +87,16 @@ AC_SUBST(F2C_CPPFLAGS)
 # Initialization code for the fortran library
 TENSOR_F77_INIT_CODE
 
-# Size of computer words
-TENSOR_BITS
-
-# Numerical libraries
-TENSOR_CHOOSE_LIB
-
 # Backtraces
 TENSOR_BACKTRACE
 
 # Unit testing with google
 TENSOR_GTEST
+
+# Choose the numerical library. This is at the end because it
+# changes LIBS in a way that it cannot build programs until liblapack_essl
+# is finished.
+TENSOR_CHOOSE_LIB
 
 # Doxygen support
 
