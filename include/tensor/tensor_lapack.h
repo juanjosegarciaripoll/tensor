@@ -33,10 +33,14 @@ namespace lapack {
 #include <vecLib/clapack.h>
 #endif
 #ifdef TENSOR_USE_ESSL
+#undef dgesv
+#undef zgesv
 #undef dgeev
 #undef zgeev
 #undef zgesvd
 #undef dgesvd
+#undef dsyev
+#undef zheev
 #endif
 #if defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_ESSL)
 extern "C" {
