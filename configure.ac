@@ -53,10 +53,7 @@ TENSOR_BITS
 
 # Numerical libraries
 # It also changes the fortran compiler to match those libraries (ESSL)
-TENSOR_VECLIB
-TENSOR_ATLAS
-TENSOR_MKL
-TENSOR_ESSL
+TENSOR_CHOOSE_LIB
 
 # Fortran stuff
 AC_PROG_F77([f77])
@@ -93,10 +90,7 @@ TENSOR_BACKTRACE
 # Unit testing with google
 TENSOR_GTEST
 
-# Choose the numerical library. This is at the end because it
-# changes LIBS in a way that it cannot build programs until liblapack_essl
-# is finished.
-TENSOR_CHOOSE_LIB
+LIBS="$NUM_LIBS $LIBS"
 
 # Doxygen support
 

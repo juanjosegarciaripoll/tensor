@@ -77,7 +77,7 @@ AC_DEFUN([TENSOR_ESSL],[
   if test $ac_cv_sizeof_long = 8 ; then    
     AC_CHECK_LIB([esslsmp6464], [esvsgemm],
                  [have_essl=yes;
-		  F77="xlf_r -q64 -qnosave -qintsize=8";
+		  ESSL_F77="xlf_r -q64 -qnosave -qintsize=8";
                   ESSL_LIBS="-llapack_essl6464 -lesslsmp6464 $ESSL_XTRASMP64";
                   ESSL_CXXFLAGS="-D_ESV6464 $ESSL_CXXFLAGS"],
                  [have_essl=no],
@@ -85,7 +85,7 @@ AC_DEFUN([TENSOR_ESSL],[
     if test $have_essl = no ; then
       AC_CHECK_LIB([essl6464], [esvsgemm],
                    [have_essl=yes;
-		    F77="xlf_r -q64 -qnosave -qintsize=8";
+		    ESSL_F77="xlf_r -q64 -qnosave -qintsize=8";
                     ESSL_LIBS="-llapack_essl6464 -lessl6464 $ESSL_XTRA64";
                     ESSL_CXXFLAGS="-D_ESV6464 $ESSL_CXXFLAGS"],
                    [have_essl=no],
@@ -100,14 +100,14 @@ AC_DEFUN([TENSOR_ESSL],[
   else
     AC_CHECK_LIB([esslsmp], [esvsgemm],
                  [have_essl=yes;
-		  F77="xlf_r -qnosave";
+		  ESSL_F77="xlf_r -qnosave";
                   ESSL_LIBS="-llapack_essl -lesslsmp $ESSL_XTRASMP"],
                  [have_essl=no],
                  [$ESSL_XTRASMP])
     if test $have_essl = no ; then
       AC_CHECK_LIB([essl], [esvsgemm],
                    [have_essl=yes;
-		    F77="xlf_r -qnosave";
+		    ESSL_F77="xlf_r -qnosave";
                     ESSL_LIBS="-llapack_essl -lessl $ESSL_XTRA"],
                    [have_essl=no],
                    [$ESSL_XTRA])
@@ -143,9 +143,13 @@ dnl ----------------------------------------------------------------------
 dnl Choose library
 dnl
 AC_DEFUN([TENSOR_CHOOSE_LIB],[
+TENSOR_VECLIB
+TENSOR_ATLAS
+TENSOR_MKL
+TENSOR_ESSL
   if test $have_mkl = yes; then
     AC_DEFINE(TENSOR_USE_MKL, [1], [Use Intel MKL for matrix operations])
-    LIBS="$LIBS $MKL_LIBS"
+    NUM_LIBS="$LIBS $MKL_LIBS"
     CXXFLAGS="$CXXFLAGS $MKL_CXXFLAGS"
     have_atlas=no
     have_veclib=no
@@ -153,20 +157,21 @@ AC_DEFUN([TENSOR_CHOOSE_LIB],[
   fi
   if test $have_veclib = yes; then
     AC_DEFINE(TENSOR_USE_VECLIB, [1], [Use VecLib for matrix operations])
-    LIBS="$LIBS $VECLIB_LIBS"
+    NUM_LIBS="$LIBS $VECLIB_LIBS"
     CXXFLAGS="$CXXFLAGS $VECLIB_CXXFLAGS"
     have_atlas=no
     have_essl=no
   fi
   if test $have_atlas = yes; then
     AC_DEFINE(TENSOR_USE_ATLAS, [1], [Use Atlas for matrix operations])
-    LIBS="$LIBS $ATLAS_LIBS"
+    NUM_LIBS="$LIBS $ATLAS_LIBS"
     CXXFLAGS="$CXXFLAGS $ATLAS_CXXFLAGS"
     have_essl=no
   fi
   if test $have_essl = yes; then
     AC_DEFINE(TENSOR_USE_ESSL, [1], [Use ESSL for matrix operations])
-    LIBS="$LIBS $ESSL_LIBS"
+    F77="$ESSL_F77"
+    NUM_LIBS="$LIBS $ESSL_LIBS"
     CXXFLAGS="$CXXFLAGS $ESSL_CXXFLAGS"
   fi
   AM_CONDITIONAL([BUILD_ESSL_LAPACK],
