@@ -49,11 +49,7 @@ namespace sdf {
     std::string _lock_filename;
     int _lock;
     bool _open;
-#ifdef TENSOR_BIGENDIAN
-    static const enum endianness endian = BIG_ENDIAN_FILE;
-#else
-    static const enum endianness endian = LITTLE_ENDIAN_FILE;
-#endif
+    static const enum endianness endian;
 
     DataFile(const std::string &a_filename, bool lock);
     ~DataFile();

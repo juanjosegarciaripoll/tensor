@@ -26,6 +26,12 @@
 
 using namespace sdf;
 
+#ifdef TENSOR_BIGENDIAN
+const enum DataFile::endianness DataFile::endian = BIG_ENDIAN_FILE;
+#else
+const enum DataFile::endianness DataFile::endian = LITTLE_ENDIAN_FILE;
+#endif
+
 /* Try to get lock. Return its file descriptor or -1 if failed.
  */
 static int get_lock(char const *lockName, bool wait)
