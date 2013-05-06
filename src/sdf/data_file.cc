@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <fcntl.h>
+#include <tensor/config.h>
 #include <tensor/sdf.h>
 
 using namespace sdf;
