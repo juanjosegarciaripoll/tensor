@@ -233,9 +233,9 @@ if test "X$GTEST_DIR" = X ; then
     GTEST_DIR="${here}/$GTEST_NAME"
   fi
   if test "X$GTEST_DIR" = X ; then
-    AC_MSG_RESULT([yes])
-  else
     AC_MSG_RESULT([no])
+  else
+    AC_MSG_RESULT([yes])
   fi
 fi
 if test "X$GTEST_DIR" = X ; then
