@@ -28,11 +28,10 @@ namespace tensor {
     Indices output(size);
     Indices::iterator oit = output.begin();
     index i = 0;
-    for (Booleans::const_iterator it = b.begin(); it != b.end(); it++) {
+    for (Booleans::const_iterator it = b.begin(); it != b.end(); it++, i++) {
       if (*it) {
 	*oit = i;
 	++oit;
-	++i;
       }
     }
     return output;
