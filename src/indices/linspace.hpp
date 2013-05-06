@@ -45,4 +45,4 @@ namespace tensor {
 
 } // namespace tensor
 
-#endif TENSOR_LINSPACE_HPP
+#endif // TENSOR_LINSPACE_HPP
