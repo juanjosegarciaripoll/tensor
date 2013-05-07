@@ -39,9 +39,9 @@ if ~isempty(name) && all(name(1:3) == [115; 100; 102]) % sdf
     error(['Unsupported tag size ', name(5)]);
   end;
   if name(6) == '1'
-    SDF_ENDIAN = 'b';
-  else
     SDF_ENDIAN = 'l';
+  else
+    SDF_ENDIAN = 'b';
   end
   name = fread(f{1}, 64, 'char');
 end;
