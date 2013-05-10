@@ -5,7 +5,7 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src \
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
-GTEST_LDFLAGS = libgtest_main.a $(LDFLAGS) -lpthread
+GTEST_LDFLAGS = libgtest_main.a -L$(top_builddir)/essl_lapack $(LDFLAGS) -lpthread
 
 #
 # No rules here yet
