@@ -75,11 +75,11 @@ do_mmult(const Tensor<elt_t> &m1, const Sparse<elt_t> &m2)
 
     Tensor<elt_t> output = Tensor<elt_t>::zeros(dims);
 
-    mult_t_sp(output.begin(),
-	      m1.begin(),
-	      m2.priv_row_start().begin(),
-	      m2.priv_column().begin(), m2.priv_data().begin(),
-	      i_len, j_len, 1, l_len);
+    mult_t_sp<elt_t>(output.begin(),
+                     m1.begin(),
+                     m2.priv_row_start().begin(),
+                     m2.priv_column().begin(), m2.priv_data().begin(),
+                     i_len, j_len, 1, l_len);
 
     return output;
 }

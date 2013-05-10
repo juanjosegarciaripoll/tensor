@@ -80,7 +80,7 @@ namespace tensor {
       a5 *= (dimensions.at(rank++) = D.dimension(i++));
 
     Tensor<elt_t> output = RTensor::zeros(dimensions);
-    trace_loop(output.begin(), D.begin(), a1, a2, a3, a4, a5);
+    trace_loop<elt_t>(output.begin(), D.begin(), a1, a2, a3, a4, a5);
     return output;
   }
 

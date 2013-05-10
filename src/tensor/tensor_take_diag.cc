@@ -99,7 +99,7 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a, int whi
   tensor::Tensor<elt_t> output(new_dims);
   which = -which;
   if (a2b) {
-    do_diag(output.begin(), a.begin(), a1,a2,a2b,a3,a3,a5,which);
+    do_diag<elt_t>(output.begin(), a.begin(), a1,a2,a2b,a3,a3,a5,which);
   }
   return output;
 }
