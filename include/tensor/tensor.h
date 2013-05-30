@@ -354,6 +354,8 @@ namespace tensor {
   const RTensor change_dimension(const RTensor &U, int dimension, index new_size);
 
   double sum(const RTensor &r);
+  double mean(const RTensor &r);
+  const RTensor mean(const RTensor &r, int which);
 
   double norm0(const RTensor &r);
   double scprod(const RTensor &a, const RTensor &b);
@@ -438,6 +440,8 @@ namespace tensor {
   const CTensor change_dimension(const CTensor &U, int dimension, index new_size);
 
   cdouble sum(const CTensor &r);
+  cdouble mean(const CTensor &r);
+  const CTensor mean(const CTensor &r, int ndx);
 
   double norm0(const CTensor &r);
   cdouble scprod(const CTensor &a, const CTensor &b);

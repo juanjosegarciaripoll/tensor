@@ -71,6 +71,10 @@ libtensor_la_SOURCES = \
 	tensor/tensor_round_d.cc \
 	tensor/tensor_sum_d.cc \
 	tensor/tensor_sum_z.cc \
+	tensor/tensor_mean_d.cc \
+	tensor/tensor_mean_z.cc \
+	tensor/tensor_mean_ndx_d.cc \
+	tensor/tensor_mean_ndx_z.cc \
 	tensor/tensor_norm0_d.cc \
 	tensor/tensor_norm0_z.cc \
 	tensor/tensor_norm2_d.cc \
