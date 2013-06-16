@@ -42,6 +42,12 @@ AC_ARG_WITH([arpack],
  [],
  [with_arpack=yes])
 
+AC_ARG_ENABLE([threadsafe-deathtest],
+ [AS_HELP_STRING([--enable-threadsafe-deathtest],
+     [slower but safer mode for running GTest death tests])],
+ [],
+ [enable_threadsafe_deathtest=yes])
+
 # Programs used to build the library
 AC_PROG_CC
 AC_PROG_CXX

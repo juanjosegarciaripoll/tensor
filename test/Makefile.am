@@ -7,6 +7,11 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src \
 # definition.
 GTEST_LDFLAGS = libgtest_main.a -L$(top_builddir)/essl_lapack $(LDFLAGS) -lpthread
 
+# This selects the way in which we run death tests. The threadsafe alternative is slower
+if TENSOR_THREADSAFE_DEATHTEST
+AM_CPPFLAGS += -DTENSOR_USE_THREADSAFE_DEATH_TEST
+endif
+
 #
 # No rules here yet
 #
@@ -182,9 +187,11 @@ test_linalg_eigs_SOURCES = test_linalg_eigs.cc
 test_linalg_eigs_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 endif
 
+if HAVE_GTEST
 noinst_LIBRARIES += libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 	 random_unitary_d.cc random_unitary_z.cc random_permutation.cc
+endif
 
 #
 # Build the Google Test library. The way this library has changed: we now have to

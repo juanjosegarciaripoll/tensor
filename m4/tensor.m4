@@ -264,6 +264,6 @@ if test "X$GTEST_DIR" = X ; then
   fi
 fi
 AM_CONDITIONAL([HAVE_GTEST], [test "x${GTEST_DIR}" != x])
+AM_CONDITIONAL([TENSOR_THREADSAFE_DEATHTEST], [test "x${enable_threadsafe_deathtest}" == xyes])
 AC_SUBST(GTEST_DIR)
 ])
-

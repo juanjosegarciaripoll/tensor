@@ -8,7 +8,9 @@
 
 #include <algorithm>
 #include <iostream>
+#include <string>
 #include <gtest/gtest.h>
+#include <gtest/gtest-death-test.h>
 #include <tensor/rand.h>
 #include <tensor/tensor.h>
 #include <tensor/io.h>
@@ -357,7 +359,22 @@ namespace tensor_test {
   template<> Tensor<cdouble> random_unitary(int n, int iterations);
   Tensor<double> random_permutation(int n, int iterations);
 
-  static struct Foo { Foo() { tensor::tensor_abort_handler(); }} foo;
+  static struct Foo {
+    Foo() {
+      ::tensor::tensor_abort_handler();
+    }
+  } foo;
+
+#ifdef TENSOR_USE_THREADSAFE_DEATH_TEST
+# undef ASSERT_DEATH
+# define ASSERT_DEATH(statement, regex) \
+  ::testing::GTEST_FLAG(death_test_style) = "threadsafe"; \
+  ASSERT_EXIT(statement, ::testing::internal::ExitedUnsuccessfully, regex)
+# undef EXPECT_DEATH
+# define EXPECT_DEATH(statement, regex) \
+  ::testing::GTEST_FLAG(death_test_style) = "threadsafe"; \
+  EXPECT_EXIT(statement, ::testing::internal::ExitedUnsuccessfully, regex)
+#endif
 
 } // namespace tensor_test
 
