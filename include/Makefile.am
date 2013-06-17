@@ -31,4 +31,5 @@ nobase_include_HEADERS = \
 	tensor/tensor_lapack.h \
 	tensor/tools.h \
 	tensor/vector.h \
+	tensor/fftw.h \
 	$(top_builddir)/include/tensor/config.h

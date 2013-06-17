@@ -42,6 +42,12 @@ AC_ARG_WITH([arpack],
  [],
  [with_arpack=yes])
 
+AC_ARG_WITH([fftw],
+ [AS_HELP_STRING([--with-fftw],
+     [link in with the FFTW library])],
+ [],
+ [with_fftw=yes])
+
 AC_ARG_ENABLE([threadsafe-deathtest],
  [AS_HELP_STRING([--enable-threadsafe-deathtest],
      [slower but safer mode for running GTest death tests])],
@@ -96,7 +102,10 @@ TENSOR_BACKTRACE
 # Unit testing with google
 TENSOR_GTEST
 
-LIBS="$NUM_LIBS $LIBS"
+# Find FFTW library
+TENSOR_FFTW
+
+LIBS="$NUM_LIBS $FFTW_LIBS $LIBS"
 
 # Doxygen support
 

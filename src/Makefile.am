@@ -160,7 +160,9 @@ libtensor_la_SOURCES = \
 	views/matrix_form_z.cc \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \
-	sdf/odata_file.cc
+	sdf/odata_file.cc \
+	fftw/fftw.cc \
+	fftw/fftw_inplace.cc
 
 arpack_ng_src =					\
 	../arpack-ng/sgetv0.f			\
