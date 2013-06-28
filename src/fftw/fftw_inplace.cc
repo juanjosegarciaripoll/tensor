@@ -15,42 +15,47 @@
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ */
 
 #include <tensor/fftw.h>
 #include <fftw3.h>
 
 namespace tensor {
 
-  void
-  ifftw_inplace(CTensor *in)
+  // forward declaration
+  void do_fftw_inplace(CTensor& in, int sense);
+
+  void fftw_inplace(CTensor& in)
   {
-    fftw_inplace(in, -1);
+    fftw_inplace(in, FFTW_FORWARD);
   }
 
   void
-  fftw_inplace(CTensor *in, int sense)
+  ifftw_inplace(CTensor& in)
   {
-    int d = in->rank();
-    if (sense >= 0) {
-      sense = +1;
-    } else {
-      sense = -1;
-    }
+    fftw_inplace(in, FFTW_BACKWARD);
+  }
+
+  void
+  fftw_inplace(CTensor& in, int sense)
+  {
+    int d = in.rank();
+
     fftw_complex *pin =
-      const_cast<fftw_complex*>
-      (reinterpret_cast<const fftw_complex*>(in->begin()));
+            const_cast<fftw_complex*>
+            (reinterpret_cast<const fftw_complex*> (in.begin()));
     fftw_plan plan;
+
     if (d == 1) {
-      plan = fftw_plan_dft_1d(in->size(), pin, pin, sense, FFTW_ESTIMATE);
+      plan = fftw_plan_dft_1d(in.size(), pin, pin, sense, FFTW_ESTIMATE);
     } else {
-      int *dimensions = new int[d];
+      int dimensions[d];
       for (int i = 0; i < d; i++) {
-	dimensions[d-i-1] = in->dimension(i);
+        dimensions[d - i - 1] = in.dimension(i);
       }
       plan = fftw_plan_dft(d, dimensions, pin, pin, sense, FFTW_ESTIMATE);
-      delete[] dimensions;
     }
+
     fftw_execute(plan);
     fftw_destroy_plan(plan);
   }

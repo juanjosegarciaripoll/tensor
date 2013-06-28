@@ -25,6 +25,13 @@ AM_TESTS_FD_REDIRECT = --gtest_death_test_style=threadsafe
 # TENSOR LIBRARY TESTS
 #
 
+if WITH_FFTW3
+TESTS += test_fftw
+check_PROGRAMS += test_fftw
+test_fftw_SOURCES = test_fftw.cc
+test_fftw_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+endif
+
 TESTS += test_refcount
 check_PROGRAMS += test_refcount
 test_refcount_SOURCES = test_refcount.cc
