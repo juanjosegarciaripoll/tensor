@@ -29,11 +29,15 @@
 
 namespace tensor {
 
+  /** Calculates and returns the (unnormalized!) DFT of the input.*/
+  const CTensor fftw(const CTensor &in);
+  /** Calculates and returns the (unnormalized!) IDFT of the input.*/
   const CTensor ifftw(const CTensor &in);
-  const CTensor fftw(const CTensor &in, int direction = +1);
 
-  void fftw_inplace(CTensor *in, int direction = +1);
-  void ifftw_inplace(CTensor *in);
+  /** Like fftw, but overwrites the input. */
+  void fftw_inplace(CTensor& in);
+  /** Like ifftw, but overwrites the input. */
+  void ifftw_inplace(CTensor& in);
 
 } // namespace tensor
 
