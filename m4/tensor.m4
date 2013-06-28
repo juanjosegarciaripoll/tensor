@@ -272,14 +272,20 @@ dnl ----------------------------------------------------------------------
 dnl Find the FFTW library
 dnl
 AC_DEFUN([TENSOR_FFTW],[
-  AC_CHECK_LIB([fftw3], [fftw_plan_dft], [have_fftw=yes], [have_fftw=no])
-  AC_MSG_CHECKING([for FFTW library])
-  if test $have_fftw = yes -a $with_fftw = yes ; then
-    FFTW_LIBS="$LIBS -lfftw3"
-    AC_DEFINE([TENSOR_USE_FFTW3], [1], [Use FFTW3 library])
-    have_fftw=yes
+  if test "x$with_fftw" = xyes; then
+    AC_CHECK_LIB([fftw3], [fftw_plan_dft], [have_fftw=yes], [have_fftw=no])
+    AC_MSG_CHECKING([for FFTW library])
+    if test $have_fftw = yes -a $with_fftw = yes ; then
+      FFTW_LIBS="$LIBS -lfftw3"
+      AC_DEFINE([TENSOR_USE_FFTW3], [1], [Use FFTW3 library])
+      have_fftw=yes
+    else
+      have_fftw=no
+      with_fftw=no
+    fi
+    AC_MSG_RESULT([$have_fftw])
   else
-    have_fftw=no
+    with_fftw=no
   fi
-  AC_MSG_RESULT([$have_fftw])
+  AM_CONDITIONAL([WITH_FFTW3], [test "x$with_fftw" = xyes])
 ])
