@@ -91,17 +91,24 @@ namespace tensor_test {
   template<class Tensor>
   bool approx_eq(const Tensor &A, const Tensor &B, double epsilon = 2*EPSILON)
   {
-    if (A.rank() == B.rank()) {
-      if (all_equal(A.dimensions(), B.dimensions())) {
-        double x = norm0(A - B);
-        if (x > epsilon) {
-          std::cout << "Deviation: " << x << std::endl;
-          return false;
-        }
-        return true;
-      }
+    if (A.rank() != B.rank()) {
+      std::cout << "Ranks do not match." << std::endl;
+      return false;
     }
-    return false;
+
+    if (!all_equal(A.dimensions(), B.dimensions())) {
+      std::cout << "Dimensions do not match." << std::endl
+              << A.dimensions() << " vs. " << B.dimensions() <<std::endl;
+      return false;
+    }
+
+    double x = norm0(A - B);
+    if (x > epsilon) {
+      std::cout << "Deviation: " << x << std::endl;
+      return false;
+    }
+
+    return true;
   }
 
   template<typename elt_t>
