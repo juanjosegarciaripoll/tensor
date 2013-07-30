@@ -20,11 +20,19 @@ case $1 in
     --cppflags)	echo @CPPFLAGS@ -I@includedir@;;
     --cxxflags)	echo @CXXFLAGS@;;
     --ldflags)	echo -L@libdir@ -ltensor @LDFLAGS@ @LIBS@;;
+    --compile)	echo @CXX@ @CPPFLAGS@ @CXXFLAGS@ $*;;
+    --link)	echo @CXX@ @CPPFLAGS@ @CXXFLAGS@ @LDFLAGS@ $* @LIBS@;;
     *)		cat <<EOF
 tensor-config [--cppflags | --cxxflags | --ldflags]
 
 	Outputs appropriate flags for compiling and linking programs
 	that make use of the Tensor library.
+
+tensor-config [--compile | --link] arguments ...
+
+	Automate compilation or linking of programs and libraries with
+	the Tensor toolbox.
+
 EOF
 esac
 cd
