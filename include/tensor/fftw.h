@@ -34,15 +34,15 @@ namespace tensor {
     FFTW_BACKWARD = 1
   };
 
-  /** Calculates and returns the (unnormalized!) DFT or IDFT of the input. */
-  const CTensor fftw(const CTensor &in, int sense = FFTW_FORWARD);
+  /** Calculates and returns the (unnormalized!) DFT or IDFT of the input, depending on the direction */
+  const CTensor fftw(const CTensor &in, int direction);
   /** Calculates and returns the (unnormalized!) DFT of the input.*/
   const CTensor fftw(const CTensor &in);
   /** Calculates and returns the (unnormalized!) IDFT of the input.*/
   const CTensor ifftw(const CTensor &in);
 
   /** Like fftw, but overwrites the input. */
-  void fftw_inplace(CTensor& in, int sense = FFTW_FORWARD);
+  void fftw_inplace(CTensor& in, int direction);
   /** Like fftw, but overwrites the input. */
   void fftw_inplace(CTensor& in);
   /** Like ifftw, but overwrites the input. */

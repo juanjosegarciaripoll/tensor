@@ -34,7 +34,7 @@ namespace tensor {
   }
 
   void
-  fftw_inplace(CTensor& in, int sense)
+  fftw_inplace(CTensor& in, int direction)
   {
     int d = in.rank();
 
@@ -44,13 +44,13 @@ namespace tensor {
     fftw_plan plan;
 
     if (d == 1) {
-      plan = fftw_plan_dft_1d(in.size(), pin, pin, sense, FFTW_ESTIMATE);
+      plan = fftw_plan_dft_1d(in.size(), pin, pin, direction, FFTW_ESTIMATE);
     } else {
       int dimensions[d];
       for (int i = 0; i < d; i++) {
         dimensions[d - i - 1] = in.dimension(i);
       }
-      plan = fftw_plan_dft(d, dimensions, pin, pin, sense, FFTW_ESTIMATE);
+      plan = fftw_plan_dft(d, dimensions, pin, pin, direction, FFTW_ESTIMATE);
     }
 
     fftw_execute(plan);

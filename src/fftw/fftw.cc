@@ -37,7 +37,7 @@ namespace tensor {
   }
 
   const CTensor
-  fftw(const CTensor &in, int sense)
+  fftw(const CTensor &in, int direction)
   {
     int d = in.rank();
     CTensor out(in.dimensions());
@@ -48,14 +48,14 @@ namespace tensor {
     fftw_complex *pout = reinterpret_cast<fftw_complex*> (out.begin());
     fftw_plan plan;
     if (d == 1) {
-      plan = fftw_plan_dft_1d(in.size(), pin, pout, sense,
+      plan = fftw_plan_dft_1d(in.size(), pin, pout, direction,
               FFTW_ESTIMATE);
     } else {
       int dimensions[d];
       for (int i = 0; i < d; i++) {
         dimensions[d - i - 1] = in.dimension(i);
       }
-      plan = fftw_plan_dft(d, dimensions, pin, pout, sense, FFTW_ESTIMATE);
+      plan = fftw_plan_dft(d, dimensions, pin, pout, direction, FFTW_ESTIMATE);
     }
     fftw_execute(plan);
     fftw_destroy_plan(plan);
