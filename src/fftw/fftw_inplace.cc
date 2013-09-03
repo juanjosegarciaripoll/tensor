@@ -22,9 +22,6 @@
 
 namespace tensor {
 
-  // forward declaration
-  void do_fftw_inplace(CTensor& in, int sense);
-
   void fftw_inplace(CTensor& in)
   {
     fftw_inplace(in, FFTW_FORWARD);
