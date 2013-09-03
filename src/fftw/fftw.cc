@@ -24,9 +24,6 @@
 
 namespace tensor {
 
-  // forward declaration
-  const CTensor do_fftw(const CTensor& in, int sense);
-
   const CTensor
   fftw(const CTensor& in)
   {
