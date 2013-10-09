@@ -93,6 +93,9 @@ fi
 AM_CONDITIONAL(USE_F2C, [test $have_f2c99 = yes])
 AC_SUBST(F2C_CPPFLAGS)
 
+# Remove bogus libraries from FLIBS, such as C libraries incorrectly detected
+TENSOR_CLEANUP_FLIBS
+
 # Initialization code for the fortran library
 TENSOR_F77_INIT_CODE
 

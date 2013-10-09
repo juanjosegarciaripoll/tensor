@@ -289,3 +289,18 @@ AC_DEFUN([TENSOR_FFTW],[
   fi
   AM_CONDITIONAL([WITH_FFTW3], [test "x$with_fftw" = xyes])
 ])
+
+dnl ----------------------------------------------------------------------
+dnl Clean up FLIBS removing possible C runtimes
+dnl
+AC_DEFUN([TENSOR_CLEANUP_FLIBS],[
+NEW_FLIBS=""
+for i in $FLIBS; do
+    if echo $i | egrep 'crt|clang_rt|libm'; then
+        eval
+    else
+       	NEW_FLIBS="$NEW_FLIBS $i"
+    fi
+done
+FLIBS="$NEW_FLIBS"
+])
