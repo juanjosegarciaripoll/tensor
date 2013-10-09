@@ -21,44 +21,49 @@
 
 #include <tensor/fftw.h>
 #include <fftw3.h>
+#include "fftw_common.hpp"
 
 namespace tensor {
 
   const CTensor
-  fftw(const CTensor& in)
-  {
-    return fftw(in, FFTW_FORWARD);
-  }
-
-  const CTensor
-  ifftw(const CTensor &in)
-  {
-    return fftw(in, FFTW_BACKWARD);
-  }
-
-  const CTensor
   fftw(const CTensor &in, int direction)
   {
-    int d = in.rank();
     CTensor out(in.dimensions());
 
     fftw_complex *pin =
-            const_cast<fftw_complex*>
-            (reinterpret_cast<const fftw_complex*> (in.begin()));
+      const_cast<fftw_complex*>
+      (reinterpret_cast<const fftw_complex*> (in.begin()));
     fftw_complex *pout = reinterpret_cast<fftw_complex*> (out.begin());
-    fftw_plan plan;
-    if (d == 1) {
-      plan = fftw_plan_dft_1d(in.size(), pin, pout, direction,
-              FFTW_ESTIMATE);
-    } else {
-      int dimensions[d];
-      for (int i = 0; i < d; i++) {
-        dimensions[d - i - 1] = in.dimension(i);
-      }
-      plan = fftw_plan_dft(d, dimensions, pin, pout, direction, FFTW_ESTIMATE);
-    }
-    fftw_execute(plan);
-    fftw_destroy_plan(plan);
+    do_fftw(pin, pout, in.dimensions(), direction);
+
+    return out;
+  }
+
+  const CTensor
+  fftw(const CTensor& in, index dim, int direction) {
+    assert(dim >=0 && dim < in.rank());
+    CTensor out(in.dimensions());
+
+    fftw_complex *pin =
+      const_cast<fftw_complex*>
+      (reinterpret_cast<const fftw_complex*> (in.begin()));
+    fftw_complex *pout = reinterpret_cast<fftw_complex*> (out.begin());
+    do_fftw(pin, pout, dim, in.dimensions(), direction);
+
+    return out;
+  }
+ 
+  const CTensor
+  fftw(const CTensor& in, const Booleans& convert, int direction) {
+    assert(convert.size() == in.rank());
+    CTensor out(in.dimensions());
+ 
+    fftw_complex *pin =
+      const_cast<fftw_complex*>
+      (reinterpret_cast<const fftw_complex*> (in.begin()));
+    fftw_complex *pout = reinterpret_cast<fftw_complex*> (out.begin());
+    do_fftw(pin, pout, convert, in.dimensions(), direction);
+
     return out;
   }
 

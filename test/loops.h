@@ -372,6 +372,41 @@ namespace tensor_test {
     }
   } foo;
 
+
+  // Iterates through all true/false combinations of a Booleans of given rank.
+  class BooleansIterator {
+  public:
+    BooleansIterator(int rank) : base_booleans_(rank), more_(true) {
+      std::fill(base_booleans_.begin(), base_booleans_.end(), false);
+    }
+
+    bool operator++() {
+      for (int i = 0; i < base_booleans_.size(); i++) {
+        if (base_booleans_[i] == false) {
+          base_booleans_.at(i) = true;
+          return more_ = true;
+        }
+
+        base_booleans_.at(i) = false;
+      }
+
+      return more_ = false;
+    }
+
+    operator bool() const {
+      return more_;
+    }
+
+    const Booleans& operator*() const {
+      return base_booleans_;
+    }
+
+  private:
+    Booleans base_booleans_;
+    bool more_;
+  };
+
+
 #ifdef TENSOR_USE_THREADSAFE_DEATH_TEST
 # undef ASSERT_DEATH
 # define ASSERT_DEATH(statement, regex) \
