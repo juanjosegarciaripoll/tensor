@@ -32,7 +32,7 @@ namespace tensor {
 	for (index l = 0; l < a2b; l++) {
 	  for (index k = 0; k < a3; k++) {
 	    C[k + a3 * m] +=
-		D[l + a2 * (k + a3 * (l + a5 * m))];
+		D[l + a2 * (k + a3 * (l + a4 * m))];
 	  }
 	}
       }
@@ -42,7 +42,7 @@ namespace tensor {
 	  for (index k = 0; k < a3; k++) {
 	    for (index i = 0; i < a1; i++) {
 	      C[i + a1 * (k + a3 * m)] +=
-		D[i + a1 * (l + a2 * (k + a3 * (l + a5 * m)))];
+		D[i + a1 * (l + a2 * (k + a3 * (l + a4 * m)))];
 	    }
 	  }
 	}
