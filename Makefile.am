@@ -14,3 +14,13 @@ endif
 
 upload-doc: doxygen-doc
 	rsync -rauvz doc/html dreamhost:tream.dreamhosters.com/tensor/
+
+install-doxygen-doc: doxygen-doc
+	$(MKDIR_P) $(DESTDIR)$(docdir)/$(PACKAGE)/html
+	for i i doc/html/*; do \
+		$(INSTALL_DATA) doc/html/$$i; \
+	done
+
+uninstall-doxygen-doc:
+	rm $(DESTDIR)$(docdir)/$(PACKAGE)/html/*
+	-rmdir $(DESTDIR)$(docdir)/$(PACKAGE)/html
