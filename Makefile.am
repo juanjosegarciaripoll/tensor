@@ -16,8 +16,8 @@ upload-doc: doxygen-doc
 	rsync -rauvz doc/html dreamhost:tream.dreamhosters.com/tensor/
 
 install-doxygen-doc: doxygen-doc
-	$(MKDIR_P) $(DESTDIR)$(docdir)/$(PACKAGE)/html
-	for i in doc/html/*; do \
+	$(MKDIR_P) $(DESTDIR)$(docdir)/$(PACKAGE)/{html,html/search}
+	for i in doc/html/* doc/html/search/*; do \
 		$(INSTALL_DATA) $$i $(DESTDIR)$(docdir)/$(PACKAGE)/html; \
 	done
 
