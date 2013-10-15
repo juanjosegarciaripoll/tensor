@@ -17,7 +17,7 @@ upload-doc: doxygen-doc
 
 install-doxygen-doc: doxygen-doc
 	$(MKDIR_P) $(DESTDIR)$(docdir)/$(PACKAGE)/html
-	for i i doc/html/*; do \
+	for i in doc/html/*; do \
 		$(INSTALL_DATA) doc/html/$$i; \
 	done
 
