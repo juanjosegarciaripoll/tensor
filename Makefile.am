@@ -22,5 +22,7 @@ install-doxygen-doc: doxygen-doc
 	done
 
 uninstall-doxygen-doc:
-	rm $(DESTDIR)$(docdir)/$(PACKAGE)/html/*
-	-rmdir $(DESTDIR)$(docdir)/$(PACKAGE)/html
+	rm $(DESTDIR)$(docdir)/html/search/*
+	rm $(DESTDIR)$(docdir)/html/*
+	-rmdir $(DESTDIR)$(docdir)/html/search
+	-rmdir $(DESTDIR)$(docdir)/html
