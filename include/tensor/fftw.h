@@ -1,6 +1,6 @@
 // -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 /*
-    Copyright (c) 2010 Juan Jose Garcia Ripoll
+    Copyright (c) 2010-2013 Juan Jose Garcia Ripoll
 
     Tensor is free software; you can redistribute it and/or modify it
     under the terms of the GNU Library General Public License as published
@@ -47,6 +47,22 @@ namespace tensor {
   void fftw_inplace(CTensor& in, index dim, int direction);
    /** Like fftw, but overwrites the input. */
   void fftw_inplace(CTensor& in, const Booleans& flags, int direction);
+
+  /** Shifts the half-planes of the input tensor to reorder the frequencies.
+   * 
+   * A direction of FFTW_FORWARD applied to the output of fftw() shifts the
+   * half-planes such that the frequencies go from minimum to maximum. Setting
+   * direction to FFTW_BACKWARD reverses this operation.
+   *
+   * Note that by definition, fftshift is not a terribly efficient function, and
+   * the implementation is not the fastest, either, so if possible you should
+   * not use this inside time-critical sections of the code.
+   */
+  const CTensor fftshift(const CTensor& in, int direction);
+  /** fftshift along only one diemnsion. */
+  const CTensor fftshift(const CTensor& in, index dim, int direction);
+  /** fftshift along the given dimensions. */
+  const CTensor fftshift(const CTensor& in, const Booleans& convert, int direction);
 
 } // namespace tensor
 

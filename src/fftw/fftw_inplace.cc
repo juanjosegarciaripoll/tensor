@@ -1,6 +1,6 @@
 // -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 /*
-    Copyright (c) 2010 Juan Jose Garcia Ripoll
+    Copyright (c) 2010-2013 Juan Jose Garcia Ripoll
 
     Tensor is free software; you can redistribute it and/or modify it
     under the terms of the GNU Library General Public License as published
