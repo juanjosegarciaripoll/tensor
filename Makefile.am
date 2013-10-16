@@ -17,8 +17,11 @@ upload-doc: doxygen-doc
 
 install-doxygen-doc: doxygen-doc
 	$(MKDIR_P) $(DESTDIR)$(docdir)/{html,html/search}
-	for i in doc/html/*.{html,js,css,png} doc/html/search/*.{js,html}; do \
-		$(INSTALL_DATA) $$i $(DESTDIR)$(docdir)/html/$$i; \
+	for i in doc/html/*.{html,js,css,png}; do \
+		$(INSTALL_DATA) $$i $(DESTDIR)$(docdir)/html/; \
+	done
+	for i in doc/html/search/*.{js,html}; do \
+		$(INSTALL_DATA) $$i $(DESTDIR)$(docdir)/html/search/; \
 	done
 
 uninstall-doxygen-doc:
