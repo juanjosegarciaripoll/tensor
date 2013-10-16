@@ -20,7 +20,7 @@ install-doxygen-doc: doxygen-doc
 	for i in doc/html/*.{html,js,css,png}; do \
 		$(INSTALL_DATA) $$i $(DESTDIR)$(docdir)/html/; \
 	done
-	for i in doc/html/search/*.{js,html}; do \
+	for i in doc/html/search/*.{js,html,png,css}; do \
 		$(INSTALL_DATA) $$i $(DESTDIR)$(docdir)/html/search/; \
 	done
 
