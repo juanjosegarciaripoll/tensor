@@ -33,11 +33,27 @@ const enum DataFile::endianness DataFile::endian = BIG_ENDIAN_FILE;
 const enum DataFile::endianness DataFile::endian = LITTLE_ENDIAN_FILE;
 #endif
 
+enum {
+  USE_LOCKING = 1,
+  NO_LOCKING = 0,
+  UNKNOWN = 2
+} use_locking = 0;
+
 /* Try to get lock. Return its file descriptor or -1 if failed.
  */
 static int get_lock(char const *lockName, bool wait)
 {
     int fd;
+ AGAIN:
+    switch (use_locking) {
+    case USE_LOCKING:
+      break;
+    case NO_LOCKING:
+      return 1;
+    case UNKNOWN:
+      use_locking = (getenv("SDF_NOLOCK") == NULL);
+      goto AGAIN;
+    }
     do {
       mode_t m = umask(0);
       fd = open(lockName, O_RDWR|O_CREAT, 0666);
