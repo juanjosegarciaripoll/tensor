@@ -29,9 +29,6 @@ namespace lapack {
 #ifdef TENSOR_USE_MKL
 #include <mkl_lapack.h>
 #endif
-#ifdef TENSOR_USE_VECLIB
-#include <vecLib/clapack.h>
-#endif
 #ifdef TENSOR_USE_ESSL
 #undef dgesv
 #undef zgesv

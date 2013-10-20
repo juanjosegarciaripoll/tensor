@@ -140,6 +140,16 @@ AC_DEFUN([TENSOR_MKL],[
 ])
 
 dnl ----------------------------------------------------------------------
+dnl Find the MKL library
+dnl
+AC_DEFUN([TENSOR_CBLAPACK],[
+  AC_CHECK_HEADER([cblapack.h], [have_cblapack=yes], [have_cblapack=no])
+  AC_MSG_RESULT([$have_cblapack])
+  CBLAPACK_LIBS="$LIBS -lcblapack -lf2c"
+  CBLAPACK_CXXFLAGS=""
+])
+
+dnl ----------------------------------------------------------------------
 dnl Choose library
 dnl
 AC_DEFUN([TENSOR_CHOOSE_LIB],[
@@ -154,6 +164,7 @@ TENSOR_ESSL
     have_atlas=no
     have_veclib=no
     have_essl=no
+    have_cblapack=no
   fi
   if test $have_veclib = yes; then
     AC_DEFINE(TENSOR_USE_VECLIB, [1], [Use VecLib for matrix operations])
@@ -161,18 +172,26 @@ TENSOR_ESSL
     CXXFLAGS="$CXXFLAGS $VECLIB_CXXFLAGS"
     have_atlas=no
     have_essl=no
+    have_cblapack=no
   fi
   if test $have_atlas = yes; then
     AC_DEFINE(TENSOR_USE_ATLAS, [1], [Use Atlas for matrix operations])
     NUM_LIBS="$LIBS $ATLAS_LIBS"
     CXXFLAGS="$CXXFLAGS $ATLAS_CXXFLAGS"
     have_essl=no
+    have_cblapack=no
   fi
   if test $have_essl = yes; then
     AC_DEFINE(TENSOR_USE_ESSL, [1], [Use ESSL for matrix operations])
     F77="$ESSL_F77"
     NUM_LIBS="$LIBS $ESSL_LIBS"
     CXXFLAGS="$CXXFLAGS $ESSL_CXXFLAGS"
+    have_cblapack=no
+  fi
+  if test $have_cblapack = yes; then
+    AC_DEFINE(TENSOR_USE_CBLAPACK, [1], [Use CBLAPACK for matrix operations])
+    NUM_LIBS="$LIBS $CBLAPACK_LIBS"
+    CXXFLAGS="$CXXFLAGS $CBLAPACK_CXXFLAGS"
   fi
   AM_CONDITIONAL([BUILD_ESSL_LAPACK],
                  [test ${have_essl}${have_essl_lapack} = yesno])

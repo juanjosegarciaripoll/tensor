@@ -38,6 +38,7 @@
 # endif
 # define F77NAME(x) x##_
 #endif
+
 #ifdef TENSOR_USE_ATLAS
 extern "C" {
 # ifdef HAVE_ATLAS_CBLAS_H
@@ -52,12 +53,19 @@ extern "C" {
 }
 # define F77NAME(x) x##_
 #endif
+
+#ifdef TENSOR_USE_CBLAPACK
+# include <cblapack.h>
+# define F77NAME(x) x##_
+#endif
+
 #ifdef TENSOR_USE_ESSL
 # include <essl.h>
 # define F77NAME(x) x
 #endif
-#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL) && !defined(TENSOR_USE_ESSL)
-# error "We need to use one of these libraries: VecLib, Atlas, MKL, ESSL"
+
+#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL) && !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_CBLAPACK)
+# error "We need to use one of these libraries: VecLib, Atlas, MKL, ESSL, CBLAPACK"
 #endif
 
 namespace blas {
@@ -84,8 +92,14 @@ namespace blas {
   typedef double __CLPK_doublereal;
   typedef _ESVCOM __CLPK_doublecomplex;
 #endif
+#ifdef TENSOR_USE_CBLAPACK
+  typedef doublecomplex cdouble;
+  typedef integer __CLPK_integer;
+  typedef double __CLPK_doublereal;
+  typedef cdouble __CLPK_doublecomplex;
+#endif
 
-#if defined(TENSOR_USE_VECLIB) || defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_MKL)
+#if defined(TENSOR_USE_VECLIB) || defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_MKL) || defined(TENSOR_USE_CBLAPACK)
   inline CBLAS_TRANSPOSE char_to_op(char op)
   {
     if (op == 'T')
