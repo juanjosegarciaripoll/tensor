@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <tensor/config.h>
 #include <tensor/sdf.h>
+#include <errno.h>
 
 using namespace sdf;
 
