@@ -54,9 +54,9 @@ namespace linalg {
       Indices ndx_out(neig);
       std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
       if (eigenvectors) {
-        *eigenvectors = real(vectors(range(), range(ndx_out)));
+        *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
       }
-      return real(values(range(ndx_out)));
+      return tensor::real(values(range(ndx_out)));
     }
 
     RTensor output;

@@ -157,44 +157,72 @@ TENSOR_VECLIB
 TENSOR_ATLAS
 TENSOR_MKL
 TENSOR_ESSL
-  if test $have_mkl = yes; then
-    AC_DEFINE(TENSOR_USE_MKL, [1], [Use Intel MKL for matrix operations])
-    NUM_LIBS="$LIBS $MKL_LIBS"
-    CXXFLAGS="$CXXFLAGS $MKL_CXXFLAGS"
-    have_atlas=no
-    have_veclib=no
-    have_essl=no
-    have_cblapack=no
+TENSOR_CBLAPACK
+  if test "x$with_backend" = "x"; then
+    with_backend=auto
   fi
-  if test $have_veclib = yes; then
-    AC_DEFINE(TENSOR_USE_VECLIB, [1], [Use VecLib for matrix operations])
-    NUM_LIBS="$LIBS $VECLIB_LIBS"
-    CXXFLAGS="$CXXFLAGS $VECLIB_CXXFLAGS"
-    have_atlas=no
-    have_essl=no
-    have_cblapack=no
+  if test "$with_backend" = "auto" -a "$have_mkl" = "yes"; then
+    with_backend=mkl
   fi
-  if test $have_atlas = yes; then
-    AC_DEFINE(TENSOR_USE_ATLAS, [1], [Use Atlas for matrix operations])
-    NUM_LIBS="$LIBS $ATLAS_LIBS"
-    CXXFLAGS="$CXXFLAGS $ATLAS_CXXFLAGS"
-    have_essl=no
-    have_cblapack=no
+  if test "$with_backend" = "auto" -a "$have_atlas" = "yes"; then
+    with_backend=atlas
   fi
-  if test $have_essl = yes; then
-    AC_DEFINE(TENSOR_USE_ESSL, [1], [Use ESSL for matrix operations])
-    F77="$ESSL_F77"
-    NUM_LIBS="$LIBS $ESSL_LIBS"
-    CXXFLAGS="$CXXFLAGS $ESSL_CXXFLAGS"
-    have_cblapack=no
+  if test "$with_backend" = "auto" -a "$have_veclib" = "yes"; then
+    with_backend=veclib
   fi
-  if test $have_cblapack = yes; then
-    AC_DEFINE(TENSOR_USE_CBLAPACK, [1], [Use CBLAPACK for matrix operations])
-    NUM_LIBS="$LIBS $CBLAPACK_LIBS"
-    CXXFLAGS="$CXXFLAGS $CBLAPACK_CXXFLAGS"
+  if test "$with_backend" = "auto" -a "$have_cblapack" = "yes"; then
+    with_backend=cblapack
   fi
+  if test "$with_backend" = "auto" -a "$have_essl" = "yes"; then
+    with_backend=essl
+  fi
+  case "x${with_backend}" in
+   xmkl)
+    if test $have_mkl = yes; then
+      AC_DEFINE(TENSOR_USE_MKL, [1], [Use Intel MKL for matrix operations])
+      NUM_LIBS="$LIBS $MKL_LIBS"
+      CXXFLAGS="$CXXFLAGS $MKL_CXXFLAGS"
+    else
+      AC_MSG_ERROR([Intel MKL libraries are not available])
+    fi;;
+   xveclib)
+    if test $have_veclib = yes; then
+      AC_DEFINE(TENSOR_USE_VECLIB, [1], [Use VecLib for matrix operations])
+      NUM_LIBS="$LIBS $VECLIB_LIBS"
+      CXXFLAGS="$CXXFLAGS $VECLIB_CXXFLAGS"
+    else
+      AC_MSG_ERROR([Apple Veclib libraries are not available])
+    fi;;
+   xatlas)
+    if test $have_atlas = yes; then
+      AC_DEFINE(TENSOR_USE_ATLAS, [1], [Use Atlas for matrix operations])
+      NUM_LIBS="$LIBS $ATLAS_LIBS"
+      CXXFLAGS="$CXXFLAGS $ATLAS_CXXFLAGS"
+    else
+      AC_MSG_ERROR([Atlas libraries are not available])
+    fi;;
+   xessl)
+    if test $have_essl = yes; then
+      AC_DEFINE(TENSOR_USE_ESSL, [1], [Use ESSL for matrix operations])
+      F77="$ESSL_F77"
+      NUM_LIBS="$LIBS $ESSL_LIBS"
+      CXXFLAGS="$CXXFLAGS $ESSL_CXXFLAGS"
+    else
+      AC_MSG_ERROR([ESSL libraries are not available])
+    fi;;
+   xcblapack)
+    if test $have_cblapack = yes; then
+      AC_DEFINE(TENSOR_USE_CBLAPACK, [1], [Use CBLAPACK for matrix operations])
+      NUM_LIBS="$LIBS $CBLAPACK_LIBS"
+      CXXFLAGS="$CXXFLAGS $CBLAPACK_CXXFLAGS"
+    else
+      AC_MSG_ERROR([CBLAPACK libraries are not available])
+    fi;;
+   *)
+    AC_MSG_ERROR([No BLAS/LAPACK library available])
+  esac
   AM_CONDITIONAL([BUILD_ESSL_LAPACK],
-                 [test ${have_essl}${have_essl_lapack} = yesno])
+                 [test ${with_backend}${have_essl_lapack} = esslno])
 ])
 
 dnl ------------------------------------------------------------

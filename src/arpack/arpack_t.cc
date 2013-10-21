@@ -311,7 +311,7 @@ ARPACK::sort_values(const CTensor &values, EigType t)
   RTensor aux;
   switch (t) {
   case LargestReal:
-    aux = -real(values);
+    aux = -tensor::real(values);
     break;
   case LargestMagnitude:
     aux = -abs(values);
@@ -326,7 +326,7 @@ ARPACK::sort_values(const CTensor &values, EigType t)
     aux = imag(values);
     break;
   case SmallestReal:
-    aux = real(values);
+    aux = tensor::real(values);
     break;
   }
   return sort_indices(aux);

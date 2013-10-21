@@ -93,6 +93,7 @@ namespace blas {
   typedef _ESVCOM __CLPK_doublecomplex;
 #endif
 #ifdef TENSOR_USE_CBLAPACK
+  typedef integer integer;
   typedef doublecomplex cdouble;
   typedef integer __CLPK_integer;
   typedef double __CLPK_doublereal;

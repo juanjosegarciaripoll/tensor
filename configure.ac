@@ -42,6 +42,18 @@ AC_ARG_WITH([arpack],
  [],
  [with_arpack=yes])
 
+AC_ARG_WITH([backend],
+ [AS_HELP_STRING([--with-backend],
+     [BLAS/LAPACK backend (values=AUTO|atlas|cblapack|essl|mkl|veclib)])],
+ [with_backend=$withval],
+ [with_backend=auto])
+
+AC_ARG_WITH([cblapack],
+ [AS_HELP_STRING([--with-cblapack],
+     [Choose CBLAPACK backend])],
+ [with_backend=cblapack],
+ [])
+
 AC_ARG_WITH([fftw],
  [AS_HELP_STRING([--with-fftw],
      [link in with the FFTW library])],

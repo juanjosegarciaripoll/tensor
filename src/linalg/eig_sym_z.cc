@@ -63,17 +63,17 @@ namespace linalg {
     char uplo[2] = { 'U', 0 };
     RTensor output(n);
     double *w = tensor_pointer(output);
-    double *rwork = new double[3*n];
+    RTensor rwork(3*n);
 
     lwork = -1;
-    cdouble work0[1];
-    F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, rwork, info);
-    lwork = (int)real(work0[0]);
+    CTensor work(1);
+    F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, tensor_pointer(work),
+                   &lwork, tensor_pointer(rwork), info);
+    lwork = (int)tensor::real(work[0]);
 
-    cdouble *work = new cdouble[lwork];
-    F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, work, &lwork, rwork, info);
-    delete[] work;
-    delete[] rwork;
+    work = CTensor(lwork);
+    F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, tensor_pointer(work),
+                   &lwork, tensor_pointer(rwork), info);
 
     if (V) *V = aux;
     return output;
