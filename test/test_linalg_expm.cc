@@ -23,7 +23,6 @@
 #include <gtest/gtest-death-test.h>
 #include <tensor/tensor.h>
 #include <tensor/linalg.h>
-#include <mps/quantum.h>
 
 namespace tensor_test {
 
