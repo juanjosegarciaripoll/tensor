@@ -164,7 +164,9 @@ libtensor_la_SOURCES = \
 if WITH_FFTW3
 libtensor_la_SOURCES += \
 	fftw/fftw.cc \
-	fftw/fftw_inplace.cc
+	fftw/fftw_inplace.cc \
+	fftw/fftw_common.cc \
+	fftw/fftshift.cc
 endif
 
 arpack_ng_src =					\

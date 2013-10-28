@@ -20,27 +20,27 @@
 #include <tensor/fftw.h>
 #include <fftw3.h>
 #include "fftw_common.hpp"
- 
+
 namespace tensor {
 
   void
   fftw_inplace(CTensor& in, int direction) {
     fftw_complex *pin = reinterpret_cast<fftw_complex*> (in.begin());
     do_fftw(pin, pin, in.dimensions(), direction);
-   }
+  }
 
-   void
+  void
   fftw_inplace(CTensor& in, index dim, int direction) {
     assert(dim >= 0 && dim < in.rank());
     fftw_complex *pin = reinterpret_cast<fftw_complex*> (in.begin());
     do_fftw(pin, pin, dim, in.dimensions(), direction);
-   }
- 
-   void
+  }
+
+  void
   fftw_inplace(CTensor& in, const Booleans& convert, int direction) {
     assert(convert.size() == in.rank());
     fftw_complex *pin = reinterpret_cast<fftw_complex*> (in.begin());
     do_fftw(pin, pin, convert, in.dimensions(), direction);
-   }
- 
+  }
+
 } // namespace tensor

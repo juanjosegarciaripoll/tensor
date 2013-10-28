@@ -1,7 +1,7 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src \
-	-I$(top_builddir)/include -I"@GTEST_DIR@/include" -I"@GTEST_DIR@" 
+	-I$(top_builddir)/include -I$(top_builddir)/@GTEST_DIR@/include -I$(top_builddir)/@GTEST_DIR@
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -213,7 +213,7 @@ libgtest_main_a_SOURCES = gtest-all.cc gtest_main.cc
 endif
 
 gtest-all.cc gtest_main.cc :
-	cp @GTEST_DIR@/src/$@ .
+	cp ${top_builddir}/@GTEST_DIR@/src/$@ .
 
 OUTPUT_FLAGS = CXX CXXFLAGS LDFLAGS \
 	TENSOR_USE_VECLIB TENSOR_USE_MKL TENSOR_USE_ATLAS \

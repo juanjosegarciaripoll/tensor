@@ -35,18 +35,19 @@ namespace tensor {
   };
 
   /** Calculates and returns the (unnormalized!) DFT or IDFT of the input, depending on the direction */
-  const CTensor fftw(const CTensor &in, int direction);
+  const CTensor fftw(const CTensor& in, int direction);
   /** Calculates and returns the unnormalized DFT/IDFT only along a single dimension. */
   const CTensor fftw(const CTensor& in, index dim, int direction);
-  /** Calculates the (unnormalized) DFT/IDFT of the input for all dimension where flags is true. */
-  const CTensor fftw(const CTensor& in, const Booleans& flags, int direction);
- 
+  /** Calculates the (unnormalized) DFT/IDFT of the input for all dimension where convert is true. */
+  const CTensor fftw(const CTensor& in, const Booleans& convert, int direction);
+
+
   /** Like fftw, but overwrites the input. */
   void fftw_inplace(CTensor& in, int direction);
   /** Like fftw, but overwrites the input. */
   void fftw_inplace(CTensor& in, index dim, int direction);
-   /** Like fftw, but overwrites the input. */
-  void fftw_inplace(CTensor& in, const Booleans& flags, int direction);
+  /** Like fftw, but overwrites the input. */
+  void fftw_inplace(CTensor& in, const Booleans& convert, int direction);
 
   /** Shifts the half-planes of the input tensor to reorder the frequencies.
    * 
