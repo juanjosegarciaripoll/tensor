@@ -88,9 +88,13 @@ namespace tensor {
     const Vector<elt> &priv_data() const { return data_; }
 
   public:
+    /** The dimensions (rows and columns) of the sparse matrix. */
     Indices dims_;
+    /** Gives for each row of the matrix at which index the column_/data_ entries start. */
     Indices row_start_;
+    /** Gives for each data_ entry the column in the matrix. */
     Indices column_;
+    /** The single data entries. */
     Vector<elt_t> data_;
   };
 

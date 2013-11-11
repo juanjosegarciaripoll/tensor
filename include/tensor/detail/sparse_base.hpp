@@ -37,8 +37,9 @@ namespace tensor {
   safe_size(index nonzero, index rows, index cols)
   {
     /* The product rows*cols might overflow the word size of this machine */
-    if (rows == 0 || cols == 0)
+    if (rows == 0 || cols == 0) {
       return 0;
+    }
     assert((nonzero / rows) <= cols);
     return nonzero;
   }
@@ -79,7 +80,9 @@ namespace tensor {
   Sparse<elt_t>::Sparse(const Indices &dims, const Indices &row_start,
                         const Indices &column, const Vector<elt_t> &data) :
     dims_(dims), row_start_(row_start), column_(column), data_(data)
-  {}
+  {
+	  assert(row_start.size() == dims[0]+1);
+  }
 
   template<typename elt_t>
   Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols, const Vector<elt_t> &data,
@@ -212,9 +215,9 @@ namespace tensor {
       typename Vector<elt_t>::const_iterator data = s.priv_data().begin();
 
       for (index i = 0; i < nrows; i++) {
-	for (index l = row_start[i+1] - row_start[i]; l; l--) {
+        for (index l = row_start[i+1] - row_start[i]; l; l--) {
           output.at(i, *(column++)) = *(data++);
-	}
+        }
       }
     }
     return output;

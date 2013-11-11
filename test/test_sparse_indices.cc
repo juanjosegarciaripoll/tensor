@@ -31,20 +31,20 @@ namespace tensor_test {
   {
     int i;
     Indices row, col;
-    for (int i = 2; i < 3; i++) {
-      Tensor<elt_t> aux = Tensor<elt_t>::random(i,i);
-      for (int j = -i+1; j < i; j++) {
-	Tensor<elt_t> d = aux.diag(j);
-	if (j >= 0) {
-	  row = iota(0, i-j-1);
-	  col = iota(j, i-1);
-	} else {
-	  col = iota(0, i+j-1);
-	  row = iota(-j, i-1);
-	}
-	Sparse<elt_t> sparse(igen << i << i, row, col, d);
-	Tensor<elt_t> exact = diag(d, j, i, i);
-	EXPECT_TRUE(all_equal(sparse, exact));
+    for (int N = 2; N < 3; N++) {
+      Tensor<elt_t> aux = Tensor<elt_t>::random(N,N);
+      for (int j = -N+1; j < N; j++) {
+        Tensor<elt_t> diagonal = aux.diag(j);
+        if (j >= 0) {
+          row = iota(0, N-j-1);
+          col = iota(j, N-1);
+        } else {
+          col = iota(0, N+j-1);
+          row = iota(-j, N-1);
+        }
+        Sparse<elt_t> sparse(row, col, diagonal, N, N);
+        Tensor<elt_t> exact = diag(diagonal, j, N, N);
+        EXPECT_TRUE(all_equal(sparse, exact));
       }
     }
   }
