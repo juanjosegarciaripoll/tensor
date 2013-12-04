@@ -257,7 +257,7 @@ test -d "${here}/test" || mkdir "${here}/test"
 AC_MSG_CHECKING([for googletest-read-only in ${ac_confdir}/test])
 if test -d "${ac_confdir}/test/googletest-read-only"; then
   AC_MSG_RESULT([yes])
-  GTEST_DIR="${ac_confdir}/test/googletest-read-only"
+  GTEST_DIR="${ac_abs_confdir}/test/googletest-read-only"
 else
   AC_MSG_RESULT([no])
 fi
@@ -265,7 +265,7 @@ if test "X$GTEST_DIR" = X; then
   AC_MSG_CHECKING([for $GTEST_NAME in ${ac_confdir}/test])	
   if test -d "${ac_confdir}/test/$GTEST_NAME" ; then
     AC_MSG_RESULT([yes])
-    GTEST_DIR="${ac_confdir}/test/$GTEST_NAME"
+    GTEST_DIR="${ac_abs_confdir}/test/$GTEST_NAME"
   else
     AC_MSG_RESULT([no])
   fi
@@ -305,7 +305,7 @@ if test "X$GTEST_DIR" = X ; then
       GTEST_DIR=""
       AC_MSG_WARN([For testing, please download and unpack google test library]
 	          [ $GTEST_URL ]
-	          [in ${ac_confdir}/test/]
+	          [in ${ac_abs_confdir}/test/]
 		  [before configuring tensor])
     fi
   fi
