@@ -122,6 +122,9 @@ TENSOR_FFTW
 
 LIBS="$NUM_LIBS $FFTW_LIBS $LIBS"
 
+# Disable crap optimization in latest Ubuntu
+TENSOR_LD_NO_AS_NEEDED
+
 # Doxygen support
 
 DX_HTML_FEATURE(ON)

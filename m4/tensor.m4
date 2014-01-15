@@ -351,3 +351,19 @@ for i in $FLIBS; do
 done
 FLIBS="$NEW_FLIBS"
 ])
+
+dnl ----------------------------------------------------------------------
+dnl Add --no-as-needed on platforms that support it. This is needed to link
+dnl libraries that depend on others, as in the case of the Intel MKL
+dnl
+AC_DEFUN([TENSOR_LD_NO_AS_NEEDED],[
+OLDLDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -Wl,--no-as-needed"
+AC_TRY_LINK([],[int main() { exit(0); }],[],[LDFLAGS="$OLDLDFLAGS"])
+AC_MSG_CHECKING([for --no-as-needed])
+if test "x$LDFLAGS" = "x$OLDLDFLAGS"; then
+   AC_MSG_RESULT(no)
+else
+   AC_MSG_RESULT(yes)
+fi
+])
