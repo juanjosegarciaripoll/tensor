@@ -219,7 +219,7 @@ libgtest_main_a_SOURCES = gtest-all.cc gtest_main.cc
 endif
 
 gtest-all.cc gtest_main.cc :
-	cp ${top_builddir}/@GTEST_DIR@/src/$@ .
+	cp "@GTEST_DIR@/src/$@" .
 
 OUTPUT_FLAGS = CXX CXXFLAGS LDFLAGS \
 	TENSOR_USE_VECLIB TENSOR_USE_MKL TENSOR_USE_ATLAS \
