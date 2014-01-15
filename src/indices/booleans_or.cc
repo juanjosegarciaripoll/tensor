@@ -17,24 +17,20 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <cassert>
+#include <functional>
 #include <algorithm>
 #include <tensor/indices.h>
 
 namespace tensor {
 
-  const Indices which(const Booleans &b)
+  const Booleans operator||(const Booleans &a, const Booleans &b)
   {
-    index size = std::count(b.begin(), b.end(), true);
-    Indices output(size);
-    Indices::iterator oit = output.begin();
-    index i = 0;
-    for (Booleans::const_iterator it = b.begin(); it != b.end(); it++, i++) {
-      if (*it) {
-        *oit = i;
-        ++oit;
-      }
-    }
-    return output;
+    assert( a.size() == b.size() );
+    Booleans output(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), output.begin(), std::logical_or<bool>());
+
+	return output;
   }
 
 } // namespace tensor

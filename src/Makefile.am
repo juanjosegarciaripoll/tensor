@@ -21,6 +21,7 @@ libtensor_la_SOURCES = \
 	indices/linspace_z.cc \
 	indices/booleans.cc \
 	indices/booleans_and.cc \
+	indices/booleans_or.cc \
 	indices/booleans_not.cc \
 	indices/which.cc \
 	indices/surrounding_dimensions.cc \

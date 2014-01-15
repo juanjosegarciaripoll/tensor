@@ -27,4 +27,14 @@ namespace tensor {
 
   const ListGenerator<bool> bgen = {};
 
+  bool all_of(const Booleans& b)
+  {
+    return std::count(b.begin_const(), b.end_const(), true) == b.size();
+  }
+
+  bool any_of(const Booleans& b)
+  {
+    return std::find(b.begin_const(), b.end_const(), true) != b.end_const();
+  }
+
 } // namespace tensor

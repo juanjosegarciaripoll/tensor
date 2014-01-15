@@ -42,6 +42,11 @@ check_PROGRAMS += test_index
 test_index_SOURCES = test_index.cc
 test_index_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_booleans
+check_PROGRAMS += test_booleans
+test_booleans_SOURCES = test_booleans.cc
+test_booleans_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_rand
 check_PROGRAMS += test_rand
 test_rand_SOURCES = test_rand.cc

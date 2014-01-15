@@ -27,6 +27,8 @@ namespace tensor {
   {
     Booleans output(a.size());
     std::transform(a.begin(), a.end(), output.begin(), std::logical_not<bool>());
+
+    return output;
   }
 
 } // namespace tensor

@@ -50,6 +50,7 @@ namespace tensor {
 
   extern template class Vector<bool>;
 
+
   /** Vector of boolean values. */
   class Booleans : public Vector<bool> {
   public:
@@ -57,9 +58,15 @@ namespace tensor {
     Booleans(const Booleans &b) : Vector<bool>(b) {}
     explicit Booleans(index size) : Vector<bool>(size) {}
   };
+  
   const Booleans operator!(const Booleans &b);
   const Booleans operator&&(const Booleans &a, const Booleans &b);
+  const Booleans operator||(const Booleans &a, const Booleans &b);
   const Indices which(const Booleans &b);
+
+  bool all_of(const Booleans& b);
+  bool any_of(const Booleans& b);
+  inline bool none_of(const Booleans& b) {return !any_of(b);}
 
   bool all_equal(const Indices &a, const Indices &b);
   inline bool some_unequal(const Indices &a, const Indices &b) { return !all_equal(a,b); }
