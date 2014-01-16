@@ -70,15 +70,14 @@ namespace tensor_test {
   bool simeq(const Tensor<elt_t> &a, const Tensor<elt_t> &b, double epsilon = 2*EPSILON)
   {
     for (typename Tensor<elt_t>::const_iterator ia = a.begin(), ib = b.begin();
-         ia != a.end(); ia++, ib++)
-      {
+         ia != a.end(); ia++, ib++) {
       double x = abs(*ia - *ib);
       if (x > epsilon) {
         std::cout << x << std::endl;
         return false;
       }
-      return true;
-      }
+    }
+    return true;
   }
 
 #define EXPECT_CEQ(a, b) EXPECT_TRUE(simeq(a, b))
