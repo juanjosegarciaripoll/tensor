@@ -20,7 +20,7 @@ TESTS =
 check_PROGRAMS =
 noinst_LIBRARIES =
 
-AM_TESTS_FD_REDIRECT = --gtest_death_test_style=threadsafe
+AM_TESTS_FD_REDIRECT = --gtest_throw_on_failure --gtest_death_test_style=threadsafe
 
 #####################################################################
 # TENSOR LIBRARY TESTS
