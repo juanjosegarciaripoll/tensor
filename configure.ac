@@ -69,6 +69,7 @@ AC_ARG_ENABLE([threadsafe-deathtest],
 # Programs used to build the library
 AC_PROG_CC
 AC_PROG_CXX
+AM_PROG_CC_C_O # needed to build in subdirs
 AC_LANG([C++])
 AC_PROG_LIBTOOL
 
