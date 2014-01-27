@@ -156,7 +156,7 @@ namespace tensor {
     }
     if (do_conj) {
       for (index i = output.size(); i; i--, pC++)
-        *pC = conj(*pC);
+        *pC = tensor::conj(*pC);
     }
   }
 

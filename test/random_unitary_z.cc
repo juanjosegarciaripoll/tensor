@@ -46,7 +46,7 @@ namespace tensor_test {
       U.at(i,i) = c;
       U.at(j,j) = - c;
       U.at(i,j) = ph;
-      U.at(j,i) = conj(ph);
+      U.at(j,i) = tensor::conj(ph);
       output = mmult(U, output);
     }
     return output;

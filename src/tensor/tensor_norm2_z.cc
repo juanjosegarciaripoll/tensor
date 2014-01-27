@@ -31,7 +31,7 @@ namespace tensor {
     cdouble output = 0;
     for (CTensor::const_iterator ia = a.begin(), ib = b.begin();
 	 ia != a.end(); ia++, ib++)
-      output += (*ia) * conj(*ib);
+      output += (*ia) * tensor::conj(*ib);
     return output;  
   }
 

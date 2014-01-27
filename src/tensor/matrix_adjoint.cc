@@ -37,7 +37,7 @@ namespace tensor {
         for (index i = rows; i--; ij_a++, ji_b += cols) {
           //assert(ij_a >= a.begin() && ij_a < a.end());
           //assert(ji_b >= b.begin() && ji_b < b.end());
-          *ji_b = conj(*ij_a);
+          *ji_b = tensor::conj(*ij_a);
         }
       }
     }

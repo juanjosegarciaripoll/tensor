@@ -29,7 +29,7 @@ namespace tensor {
     Tensor<cdouble>::iterator a = output.begin();
     Tensor<cdouble>::const_iterator b = t.begin();
     for (; b != t.end(); a++, b++) {
-      *a = conj(*b);
+      *a = tensor::conj(*b);
     }
     return output;
   }
