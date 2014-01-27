@@ -53,7 +53,7 @@ namespace jobs {
 
       const std::string &name() const { return name_; }
       const tensor::RTensor &values() const { return values_; }
-      const tensor::index size() const { return values_.size(); }
+      tensor::index size() const { return values_.size(); }
       void select(tensor::index i) { which_ = i; }
       double value() const { return values_[which_]; }
 
