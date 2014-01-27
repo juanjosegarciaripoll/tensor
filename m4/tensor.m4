@@ -130,11 +130,33 @@ AC_DEFUN([TENSOR_MKL],[
   AC_CHECK_HEADER([mkl.h], [have_mkl=yes], [have_mkl=no])
   AC_MSG_CHECKING([for MKL library])
   if test $have_mkl = yes ; then
-    case ${host_cpu} in
-      ia64*)    MKL_LIBS="-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
-      x86_64*)  MKL_LIBS="-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
-      *)        MKL_LIBS="-lmkl_intel -lmkl_intel_thread -lmkl_core -liomp5 -lpthread";;
-    esac
+    if echo $CC | grep icc; then
+      have_mkl=icc
+      MKL_CXXFLAGS="-openmp -I$MKLROOT/include"
+      case ${host_cpu} in
+        ia64*)    MKL_LIBS="-openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread"
+		  MKL_LIBDIR="$MKLROOT/lib/ia64";;
+        x86_64*)  MKL_LIBS="-openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread"
+		  MKL_LIBDIR="$MKLROOT/lib/intel64";;
+        *)        MKL_LIBS="-openmp -lmkl_intel -lmkl_core -lmkl_intel_thread -lpthread"
+		  MKL_LIBDIR="$MKLROOT/lib/intel32";;
+      esac
+    else
+      MKL_CXXFLAGS="-fopenmp -I$(MKLROOT)/include"
+      have_mkl=gcc
+      case ${host_cpu} in
+        ia64*)    MKL_LIBS="-fopenmp -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
+		  MKL_LIBDIR="$MKLROOT/lib/ia64";;
+        x86_64*)  MKL_LIBS="-fopenmp -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
+		  MKL_LIBDIR="$MKLROOT/lib/intel64";;
+        *)        MKL_LIBS="-fopenmp -lmkl_intel -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
+		  MKL_LIBDIR="$MKLROOT/lib/intel32";;
+      esac
+    fi
+    if test "x$(MKLROOT)" != "x"; then
+      MKL_CXXFLAGS="$MKL_CXXFLAGS -I$(MKLROOT)/include"
+      MKL_LIBS="-L$MKL_LIBDIR"
+    fi
   fi
   AC_MSG_RESULT([$have_mkl])
 ])
@@ -161,7 +183,7 @@ TENSOR_CBLAPACK
   if test "x$with_backend" = "x"; then
     with_backend=auto
   fi
-  if test "$with_backend" = "auto" -a "$have_mkl" = "yes"; then
+  if test "$with_backend" = "auto" -a "$have_mkl" != "no"; then
     with_backend=mkl
   fi
   if test "$with_backend" = "auto" -a "$have_atlas" = "yes"; then
@@ -178,7 +200,7 @@ TENSOR_CBLAPACK
   fi
   case "x${with_backend}" in
    xmkl)
-    if test $have_mkl = yes; then
+    if test $have_mkl != no; then
       AC_DEFINE(TENSOR_USE_MKL, [1], [Use Intel MKL for matrix operations])
       NUM_LIBS="$LIBS $MKL_LIBS"
       CXXFLAGS="$CXXFLAGS $MKL_CXXFLAGS"
@@ -323,7 +345,7 @@ AC_DEFUN([TENSOR_FFTW],[
     AC_CHECK_LIB([fftw3], [fftw_plan_dft], [have_fftw=yes], [have_fftw=no])
     AC_MSG_CHECKING([for FFTW library])
     if test $have_fftw = yes -a $with_fftw = yes ; then
-      FFTW_LIBS="$LIBS -lfftw3"
+      FFTW_LIBS="-lfftw3 $LIBS"
       AC_DEFINE([TENSOR_USE_FFTW3], [1], [Use FFTW3 library])
       have_fftw=yes
     else
@@ -335,21 +357,6 @@ AC_DEFUN([TENSOR_FFTW],[
     with_fftw=no
   fi
   AM_CONDITIONAL([WITH_FFTW3], [test "x$with_fftw" = xyes])
-])
-
-dnl ----------------------------------------------------------------------
-dnl Clean up FLIBS removing possible C runtimes
-dnl
-AC_DEFUN([TENSOR_CLEANUP_FLIBS],[
-NEW_FLIBS=""
-for i in $FLIBS; do
-    if echo $i | egrep 'crt|clang_rt|libm'; then
-        eval
-    else
-       	NEW_FLIBS="$NEW_FLIBS $i"
-    fi
-done
-FLIBS="$NEW_FLIBS"
 ])
 
 dnl ----------------------------------------------------------------------

@@ -263,7 +263,7 @@ libtensor_la_SOURCES +=				\
 	arpack/eigs_sp_d.cc			\
 	arpack/eigs_sp_z.cc			\
 	$(arpack_ng_src) $(arpack_ng_util)
-libtensor_la_LDFLAGS = $(FLIBS)
+libtensor_la_LIBS = $(FLIBS)
 endif
 AM_FFLAGS = $(FFLAGS)
 if USE_F2C
