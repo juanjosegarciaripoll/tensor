@@ -18,11 +18,11 @@ if l ~= numel(datay)
     error(['The fields ' fieldx ' and ' fieldy ' have different ' ...
            'size']);
 end
-if nargin < 3
+if nargin <= 3
     x = datax(1);
     rows = length(find(datax == x));
 end
-if nargin < 4
+if nargin <= 4
     cols = l / rows
     if fix(cols) ~= cols
         error([fieldy ' cannot be reshaped to have ' num2str(rows) ...
