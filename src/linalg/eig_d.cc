@@ -81,20 +81,24 @@ namespace linalg {
     }
     ldvl = ldvr = n;
     lda = n;
-    lwork = -1;
-    double work0[1];
-    wr = wi = NULL;
-    F77NAME(dgeev)(jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work0, &lwork,
-		   &info);
-    lwork = (int)work0[0];
-
-    double *work = new double[lwork];
     RTensor real(n), imag(n);
     wr = tensor_pointer(real);
     wi = tensor_pointer(imag);
+
+#ifdef TENSOR_USE_ACML
+    dgeev(*jobvl, *jobvr, n, a, lda, wr, wi, vl, ldvl, vr,
+          ldvr, &info);
+#else
+    lwork = -1;
+    double work0[1];
+    F77NAME(dgeev)(jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work0, &lwork,
+		   &info);
+    lwork = (int)work0[0];
+    double *work = new double[lwork];
     F77NAME(dgeev)(jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work, &lwork,
 		   &info);
     delete[] work;
+#endif
 
     CTensor output(to_complex(real));
     if (L) *L = to_complex(*realL);

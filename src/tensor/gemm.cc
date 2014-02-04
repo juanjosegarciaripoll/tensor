@@ -33,7 +33,12 @@ namespace blas {
   {
 #ifdef TENSOR_USE_ESSL
     dgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
-#else
+#endif
+#ifdef TENSOR_USE_ACML
+    dgemm(op1, op2, m, n, k, alpha, const_cast<double *>(A),
+          lda, const_cast<double*>(B), ldb, beta, C, ldc);
+#endif
+#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
     cblas_dgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
                 m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
 #endif
@@ -46,7 +51,18 @@ namespace blas {
   {
 #ifdef TENSOR_USE_ESSL
     zgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
-#else
+#endif
+#ifdef TENSOR_USE_ACML
+    zgemm(op1, op2, m, n, k,
+          reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(&alpha)),
+          reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(A)),
+          lda,
+          reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(B)),
+          ldb,
+          reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(&beta)),
+          reinterpret_cast<doublecomplex *>(C), ldc);
+#endif
+#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
     cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
                 m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc);
 #endif

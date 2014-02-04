@@ -83,6 +83,9 @@ namespace linalg {
 	ldv = 1;
     }
     lda = m;
+#ifdef TENSOR_USE_ACML
+    zgesvd(*jobu, *jobv, m, n, a, m, s, u, ldu, v, ldv, &info);
+#else
     lwork = -1;
     work = &foo;
     rwork = (double *)&foo;
@@ -95,6 +98,7 @@ namespace linalg {
 		    work, &lwork, rwork, &info);
     delete[] work;
     delete[] rwork;
+#endif
     return output;
   }
 

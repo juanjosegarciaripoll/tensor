@@ -29,6 +29,10 @@
 # define F77NAME(x) x
 #endif
 
+#ifdef TENSOR_USE_ACML
+# include <acml.h>
+#endif
+
 #ifdef TENSOR_USE_VECLIB
 # if defined(HAVE_VECLIB_CBLAS_H)
 #  include <vecLib/cblas.h>
@@ -64,7 +68,7 @@ extern "C" {
 # define F77NAME(x) x
 #endif
 
-#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL) && !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_CBLAPACK)
+#if !defined(TENSOR_USE_VECLIB) && !defined(TENSOR_USE_ATLAS) && !defined(TENSOR_USE_MKL) && !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_CBLAPACK) && !defined(TENSOR_USE_ACML)
 # error "We need to use one of these libraries: VecLib, Atlas, MKL, ESSL, CBLAPACK"
 #endif
 
@@ -84,6 +88,13 @@ namespace blas {
 #ifdef TENSOR_USE_MKL
   typedef MKL_INT integer;
   typedef MKL_Complex16 cdouble;
+#endif
+#ifdef TENSOR_USE_ACML
+  typedef int integer;
+  typedef doublecomplex cdouble;
+  typedef int __CLPK_integer;
+  typedef double __CLPK_doublereal;
+  typedef cdouble __CLPK_doublecomplex;
 #endif
 #ifdef TENSOR_USE_ESSL
   typedef _ESVINT integer;

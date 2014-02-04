@@ -35,8 +35,6 @@ namespace linalg {
     integer lda = n;
     integer ldb = B.dimension(0);
     integer nrhs;
-    integer *ipiv = new integer[n];
-    integer info;
 
     // Currently, we only solve square systems
     if (n != (integer)A.columns()) {
@@ -65,7 +63,13 @@ namespace linalg {
     CTensor aux(A);
     cdouble *a = tensor_pointer(aux);
 
+    integer *ipiv = new integer[n];
+    integer info;
+#ifdef TENSOR_USE_ACML
+    zgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
+#else
     F77NAME(zgesv)(&n, &nrhs, a, &lda, ipiv, b, &ldb, &info);
+#endif
     delete[] ipiv;
 
     if (info) {

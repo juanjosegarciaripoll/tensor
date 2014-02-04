@@ -41,8 +41,6 @@ namespace linalg {
     integer lda = n;
     integer ldb = B.dimension(0);
     integer nrhs;
-    integer *ipiv = new integer[n];
-    integer info;
 
     // Currently, we only solve square systems
     if ((size_t)n != A.columns()) {
@@ -71,7 +69,13 @@ namespace linalg {
     RTensor aux(A);
     RTensor::elt_t *a = tensor_pointer(aux);
 
+    integer *ipiv = new integer[n];
+    integer info;
+#ifdef TENSOR_USE_ACML
+    dgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
+#else
     F77NAME(dgesv)(&n, &nrhs, a, &lda, ipiv, b, &ldb, &info);
+#endif
     delete[] ipiv;
 
     if (info) {

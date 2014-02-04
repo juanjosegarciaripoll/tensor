@@ -33,7 +33,11 @@ namespace blas {
   {
 #ifdef TENSOR_USE_ESSL
     dgemv(&trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
-#else
+#endif
+#ifdef TENSOR_USE_ACML
+    dgemv(trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
+#endif
+#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
     cblas_dgemv(CblasColMajor, char_to_op(trans), m, n,
 		alpha, a, lda, x, incx, beta, y, incy);
 #endif
@@ -46,7 +50,11 @@ namespace blas {
   {
 #ifdef TENSOR_USE_ESSL
     zgemv(&trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
-#else
+#endif
+#ifdef TENSOR_USE_ACML
+    zgemv(trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
+#endif
+#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
     cblas_zgemv(CblasColMajor, char_to_op(trans), m, n,
 		&alpha, a, lda, x, incx, &beta, y, incy);
 #endif

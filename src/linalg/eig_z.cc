@@ -82,21 +82,24 @@ namespace linalg {
 
     ldvl = ldvr = n;
     lda = n;
-    lwork = -1;
+    CTensor output(n);
+    w = tensor_pointer(output);
+#ifdef TENSOR_USE_ACML
+    zgeev(*jobvl, *jobvr, n, a, lda, w, vl, ldvl, vr, ldvr, &info);
+#else
     cdouble work0[1];
-    w = NULL;
+    lwork = -1;
     rwork = new double[2*n];
     F77NAME(zgeev)(jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work0, &lwork,
 		   rwork, &info);
     lwork = lapack::real(work0[0]);
 
     cdouble *work = new cdouble[lwork];
-    CTensor output(n);
-    w = tensor_pointer(output);
     F77NAME(zgeev)(jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work, &lwork,
 		   rwork, &info);
     delete[] rwork;
     delete[] work;
+#endif
     return output;
   }
 

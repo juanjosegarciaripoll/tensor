@@ -162,7 +162,25 @@ AC_DEFUN([TENSOR_MKL],[
 ])
 
 dnl ----------------------------------------------------------------------
-dnl Find the MKL library
+dnl Find the ACML library
+dnl
+AC_DEFUN([TENSOR_ACML],[
+  AC_CHECK_HEADER([acml.h], [have_acml=yes], [have_acml=no])
+  AC_MSG_CHECKING([for ACML library])
+  if test $have_mkl = yes ; then
+    if echo $CC | grep opencc; then
+      have_mkl=yes
+      AMCL_CXXFLAGS="-mp"
+      AMCL_LIBS="-mp -lacml_mp"
+    else
+      have_mkl=no;
+    fi
+  fi
+  AC_MSG_RESULT([$have_mkl])
+])
+
+dnl ----------------------------------------------------------------------
+dnl Find the CBLAPACK library
 dnl
 AC_DEFUN([TENSOR_CBLAPACK],[
   AC_CHECK_HEADER([cblapack.h], [have_cblapack=yes], [have_cblapack=no])
@@ -177,11 +195,15 @@ dnl
 AC_DEFUN([TENSOR_CHOOSE_LIB],[
 TENSOR_VECLIB
 TENSOR_ATLAS
+TENSOR_ACML
 TENSOR_MKL
 TENSOR_ESSL
 TENSOR_CBLAPACK
   if test "x$with_backend" = "x"; then
     with_backend=auto
+  fi
+  if test "$with_backend" = "auto" -a "$have_mkl" != "no"; then
+    with_backend=acml
   fi
   if test "$with_backend" = "auto" -a "$have_mkl" != "no"; then
     with_backend=mkl
@@ -199,6 +221,14 @@ TENSOR_CBLAPACK
     with_backend=essl
   fi
   case "x${with_backend}" in
+   xacml)
+    if test $have_acml != no; then
+      AC_DEFINE(TENSOR_USE_ACML, [1], [Use AMD AMCL for matrix operations])
+      NUM_LIBS="$LIBS $AMCL_LIBS"
+      CXXFLAGS="$CXXFLAGS $AMCL_CXXFLAGS"
+    else
+      AC_MSG_ERROR([AMD AMCL libraries are not available])
+    fi;;
    xmkl)
     if test $have_mkl != no; then
       AC_DEFINE(TENSOR_USE_MKL, [1], [Use Intel MKL for matrix operations])

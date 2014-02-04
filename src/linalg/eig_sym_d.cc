@@ -56,13 +56,16 @@ namespace linalg {
 
     RTensor aux(A);
     double *a = tensor_pointer(aux);
-    integer lda = n, lwork, info[1];
+    integer lda = n, info[1];
     char jobz[2] = { (V == 0)? 'N' : 'V', 0 };
     char uplo[2] = { 'U', 0 };
     RTensor output(n);
     double *w = tensor_pointer(output);
 
-    lwork = -1;
+#ifdef TENSOR_USE_ACML
+    dsyev(*jobz, *uplo, n, a, lda, w, info);
+#else
+    integer lwork = -1;
     double work0[1];
     F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, info);
     lwork = (int)work0[0];
@@ -70,6 +73,7 @@ namespace linalg {
     RTensor work(lwork);
     F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, tensor_pointer(work),
                    &lwork, info);
+#endif
 
     if (V) *V = aux;
     return output;

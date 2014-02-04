@@ -89,6 +89,9 @@ namespace linalg {
       ldv = 1;
     }
     lda = m;
+#ifdef TENSOR_USE_ACML
+    dgesvd(*jobu, *jobv, m, n, a, lda, s, u, ldu, v, ldv, &info);
+#else
     lwork = -1;
     work = &foo;
     F77NAME(dgesvd)(jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv,
@@ -98,6 +101,7 @@ namespace linalg {
     F77NAME(dgesvd)(jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv,
 		    work, &lwork, &info);
     delete[] work;
+#endif
     return output;
   }
 
