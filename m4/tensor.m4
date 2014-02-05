@@ -142,7 +142,7 @@ AC_DEFUN([TENSOR_MKL],[
 		  MKL_LIBDIR="$MKLROOT/lib/intel32";;
       esac
     else
-      MKL_CXXFLAGS="-fopenmp -I$(MKLROOT)/include"
+      MKL_CXXFLAGS="-fopenmp -I$MKLROOT/include"
       have_mkl=gcc
       case ${host_cpu} in
         ia64*)    MKL_LIBS="-fopenmp -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
@@ -153,8 +153,8 @@ AC_DEFUN([TENSOR_MKL],[
 		  MKL_LIBDIR="$MKLROOT/lib/intel32";;
       esac
     fi
-    if test "x$(MKLROOT)" != "x"; then
-      MKL_CXXFLAGS="$MKL_CXXFLAGS -I$(MKLROOT)/include"
+    if test "x$MKLROOT" != "x"; then
+      MKL_CXXFLAGS="$MKL_CXXFLAGS -I$MKLROOT/include"
       MKL_LIBS="-L$MKL_LIBDIR"
     fi
   fi
@@ -167,16 +167,16 @@ dnl
 AC_DEFUN([TENSOR_ACML],[
   AC_CHECK_HEADER([acml.h], [have_acml=yes], [have_acml=no])
   AC_MSG_CHECKING([for ACML library])
-  if test $have_mkl = yes ; then
+  if test "x$have_acml" = xyes ; then
     if echo $CC | grep opencc; then
-      have_mkl=yes
+      have_acml=yes
       AMCL_CXXFLAGS="-mp"
       AMCL_LIBS="-mp -lacml_mp"
     else
-      have_mkl=no;
+      have_acml=no;
     fi
   fi
-  AC_MSG_RESULT([$have_mkl])
+  AC_MSG_RESULT([$have_acml])
 ])
 
 dnl ----------------------------------------------------------------------
@@ -202,7 +202,7 @@ TENSOR_CBLAPACK
   if test "x$with_backend" = "x"; then
     with_backend=auto
   fi
-  if test "$with_backend" = "auto" -a "$have_mkl" != "no"; then
+  if test "$with_backend" = "auto" -a "$have_acml" != "no"; then
     with_backend=acml
   fi
   if test "$with_backend" = "auto" -a "$have_mkl" != "no"; then
