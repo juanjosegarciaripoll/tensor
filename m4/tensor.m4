@@ -155,7 +155,7 @@ AC_DEFUN([TENSOR_MKL],[
     fi
     if test "x$MKLROOT" != "x"; then
       MKL_CXXFLAGS="$MKL_CXXFLAGS -I$MKLROOT/include"
-      MKL_LIBS="-L$MKL_LIBDIR"
+      MKL_LIBS="-L$MKL_LIBDIR $MKL_LIBS"
     fi
   fi
   AC_MSG_RESULT([$have_mkl])
