@@ -132,7 +132,6 @@ AC_DEFUN([TENSOR_MKL],[
   if test $have_mkl = yes ; then
     if echo $CC | grep icc; then
       have_mkl=icc
-      MKL_CXXFLAGS="-openmp -I$MKLROOT/include"
       case ${host_cpu} in
         ia64*)    MKL_LIBS="-openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread"
 		  MKL_LIBDIR="$MKLROOT/lib/ia64";;
@@ -142,7 +141,6 @@ AC_DEFUN([TENSOR_MKL],[
 		  MKL_LIBDIR="$MKLROOT/lib/intel32";;
       esac
     else
-      MKL_CXXFLAGS="-fopenmp -I$MKLROOT/include"
       have_mkl=gcc
       case ${host_cpu} in
         ia64*)    MKL_LIBS="-fopenmp -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
