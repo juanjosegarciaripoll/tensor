@@ -227,7 +227,7 @@ Job::Job(int argc, const char **argv) :
       abort();
     }
     tensor::index delta = (number_of_jobs_ + blocks - 1) / blocks;
-    first_job_ = current_job = std::min(current_job * delta, number_of_jobs);
+    first_job_ = current_job = std::min(current_job * delta, number_of_jobs_);
     last_job_ = std::min(number_of_jobs_ - 1, first_job_ + delta - 1);
   } else if (first_job_found) {
     /*
