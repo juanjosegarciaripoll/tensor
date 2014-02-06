@@ -226,7 +226,8 @@ Job::Job(int argc, const char **argv) :
       std::cerr << "The number of job blocks cannot be zero or negative.";
       abort();
     }
-    tensor::index delta = std::max(number_of_jobs_ / blocks, (tensor::index)1);
+    tensor::index delta = std::max((number_of_jobs_ + blocks - 1) / blocks,
+                                   (tensor::index)1);
     tensor::index actual_blocks = number_of_jobs_ / delta;
     if (current_job >= actual_blocks) {
       std::cerr << "warning: the value of --this-job exceeds the value of --job-blocks."
