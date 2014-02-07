@@ -17,10 +17,45 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <tensor/config.h>
 #include <ctime>
+#ifdef HAVE_GETTIMEOFDAY
+#include <sys/time.h>
+#endif
 #include <tensor/tools.h>
 
 namespace tensor {
+
+#if defined(HAVE_GETTIMEOFDAY)
+
+  struct timeval tic_start;
+
+  /**Reset the time counter.*/
+  void tic()
+  {
+    gettimeofday(&tic_start, NULL);
+  }
+
+  /**Output the time in seconds since last invocation of tic(). This function
+     only counts the real time that the program has used since the last
+     call of tic(). This may not be related to the processing time if your
+     program is using more than one core and thus it may not be very accurate
+     for computing CPU consumption in clusters.
+
+     Opposite to Matlab, toc() by itself does not produce any informative message.
+  */
+  double toc()
+  {
+    struct timeval tic_now;
+    gettimeofday(&tic_now, NULL);
+    double seconds = tic_now.tv_sec - tic_start.tv_sec;
+    double museconds = tic_now.tv_usec - tic_start.tv_usec;
+    return seconds + 1e-6 * museconds;
+  }
+
+#endif
+
+#if !defined(HAVE_GETTIMEOFDAY)
 
   static clock_t tic_start;
 
@@ -42,5 +77,7 @@ namespace tensor {
   {
     return (clock()-tic_start)/((double)CLOCKS_PER_SEC);
   }
+
+#endif
 
 }

@@ -83,6 +83,9 @@ TENSOR_BITS
 # It also changes the fortran compiler to match those libraries (ESSL)
 TENSOR_CHOOSE_LIB
 
+# Functions needed
+AC_CHECK_FUNCS_ONCE([gettimeofday])
+
 # Fortran stuff
 AC_PROG_F77([f77 gfortran])
 AC_F77_LIBRARY_LDFLAGS
