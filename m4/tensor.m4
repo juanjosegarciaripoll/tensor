@@ -148,7 +148,7 @@ AC_DEFUN([TENSOR_MKL],[
 	esac
       else
          MKL_LIBS="-mkl=parallel"
-      end
+      fi 
     else
       #
       # If we do not use ICC but GCC, we only allow building with
