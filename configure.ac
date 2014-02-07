@@ -73,6 +73,9 @@ AM_PROG_CC_C_O # needed to build in subdirs
 AC_LANG([C++])
 AC_PROG_LIBTOOL
 
+# OpenMP support (needed for gcc + mkl)
+AC_OPENMP
+
 # Size of computer words
 TENSOR_BITS
 
