@@ -134,13 +134,13 @@ AC_DEFUN([TENSOR_MKL],[
   fi
   if test $have_mkl = yes ; then
     MKL_CPPFLAGS="$MKL_CPPFLAGS -I$MKLROOT/include"
-    if (echo $CC | grep icc) && (echo $CXX | grep icpc); then
+    if (echo $CC 2>&1 | grep icc > /dev/null) && (echo $CXX 2>&1 | grep icpc > /dev/null); then
       #
       # Options for using MKL with Intel's compiler. If we are unlucky and
       # the compiler is old, we have to add a lot of linker flags manually.
       #
       have_mkl=icc
-      if ($CC 2>&1 | grep mkl); then
+      if ($CC -mkl 2>&1 | grep mkl); then
         case ${host_cpu} in
           ia64*)    MKL_LIBS="-L$MKLROOT/lib/ia64 -openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread";;
 	  x86_64*)  MKL_LIBS="-L$MKLROOT/lib/intel64 -openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -ldl -lpthread";;
