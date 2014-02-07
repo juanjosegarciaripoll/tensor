@@ -135,8 +135,20 @@ AC_DEFUN([TENSOR_MKL],[
   if test $have_mkl = yes ; then
     MKL_CPPFLAGS="$MKL_CPPFLAGS -I$MKLROOT/include"
     if (echo $CC | grep icc) && (echo $CXX | grep icpc); then
+      #
+      # Options for using MKL with Intel's compiler. If we are unlucky and
+      # the compiler is old, we have to add a lot of linker flags manually.
+      #
       have_mkl=icc
-      MKL_LIBS="-mkl=parallel"
+      if ($CC 2>&1 | grep mkl); then
+        case ${host_cpu} in
+          ia64*)    MKL_LIBS="-L$MKLROOT/lib/ia64 -openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread";;
+	  x86_64*)  MKL_LIBS="-L$MKLROOT/lib/intel64 -openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -ldl -lpthread";;
+	  *)        MKL_LIBS="-L$MKLROOT/lib/intel32 -openmp -lmkl_intel -lmkl_core -lmkl_intel_thread -ldl -lpthread";;
+	esac
+      else
+         MKL_LIBS="-mkl=parallel"
+      end
     else
       #
       # If we do not use ICC but GCC, we only allow building with
@@ -149,14 +161,10 @@ AC_DEFUN([TENSOR_MKL],[
       else
         have_mkl=gcc
         case ${host_cpu} in
-          ia64*)    MKL_LIBS="-fopenmp -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
-		    MKL_LIBDIR="$MKLROOT/lib/ia64";;
-	  x86_64*)  MKL_LIBS="-fopenmp -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
-	  	    MKL_LIBDIR="$MKLROOT/lib/intel64";;
-	  *)        MKL_LIBS="-fopenmp -lmkl_intel -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
-		    MKL_LIBDIR="$MKLROOT/lib/intel32";;
+          ia64*)    MKL_LIBS="-fopenmp -L$MKLROOT/lib/ia64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread";;
+	  x86_64*)  MKL_LIBS="-fopenmp -L$MKLROOT/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread";;
+	  *)        MKL_LIBS="-fopenmp -L$MKLROOT/lib/intel32 -lmkl_intel -lmkl_core -lmkl_gnu_thread -ldl -lpthread";;
 	esac
-	MKL_LIBS="-L$MKL_LIBDIR $MKL_LIBS"
       fi
     fi
   fi
