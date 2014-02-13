@@ -97,7 +97,7 @@ do_mmult(const Sparse<elt_t> &m1, const Tensor<elt_t> &m2)
 	abort();
     }
 
-    Tensor<elt_t> output = Tensor<elt_t>::zeros(i_len, l_len);
+    Tensor<elt_t> output = Tensor<elt_t>::zeros(dims);
 
     mult_sp_t<elt_t>(output.begin(),
                      m1.priv_row_start().begin(), m1.priv_column().begin(),
