@@ -129,31 +129,43 @@ dnl
 AC_DEFUN([TENSOR_MKL],[
   AC_CHECK_HEADER([mkl.h], [have_mkl=yes], [have_mkl=no])
   AC_MSG_CHECKING([for MKL library])
+  if test "x$MKLROOT" = "x"; then
+    have_mkl=no
+  fi
   if test $have_mkl = yes ; then
-    if echo $CC | grep icc; then
+    MKL_CPPFLAGS="$MKL_CPPFLAGS -I$MKLROOT/include"
+    if (echo $CC 2>&1 | grep icc > /dev/null) && (echo $CXX 2>&1 | grep icpc > /dev/null); then
+      #
+      # Options for using MKL with Intel's compiler. If we are unlucky and
+      # the compiler is old, we have to add a lot of linker flags manually.
+      #
       have_mkl=icc
-      case ${host_cpu} in
-        ia64*)    MKL_LIBS="-openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread"
-		  MKL_LIBDIR="$MKLROOT/lib/ia64";;
-        x86_64*)  MKL_LIBS="-openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread"
-		  MKL_LIBDIR="$MKLROOT/lib/intel64";;
-        *)        MKL_LIBS="-openmp -lmkl_intel -lmkl_core -lmkl_intel_thread -lpthread"
-		  MKL_LIBDIR="$MKLROOT/lib/intel32";;
-      esac
+      if ($CC -mkl 2>&1 | grep mkl); then
+        case ${host_cpu} in
+          ia64*)    MKL_LIBS="-L$MKLROOT/lib/ia64 -openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread";;
+	  x86_64*)  MKL_LIBS="-L$MKLROOT/lib/intel64 -openmp -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -ldl -lpthread";;
+	  *)        MKL_LIBS="-L$MKLROOT/lib/intel32 -openmp -lmkl_intel -lmkl_core -lmkl_intel_thread -ldl -lpthread";;
+	esac
+      else
+         MKL_LIBS="-mkl=parallel"
+      fi 
     else
-      have_mkl=gcc
-      case ${host_cpu} in
-        ia64*)    MKL_LIBS="-fopenmp -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
-		  MKL_LIBDIR="$MKLROOT/lib/ia64";;
-        x86_64*)  MKL_LIBS="-fopenmp -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
-		  MKL_LIBDIR="$MKLROOT/lib/intel64";;
-        *)        MKL_LIBS="-fopenmp -lmkl_intel -lmkl_core -lmkl_gnu_thread -ldl -lpthread"
-		  MKL_LIBDIR="$MKLROOT/lib/intel32";;
-      esac
-    fi
-    if test "x$MKLROOT" != "x"; then
-      MKL_CXXFLAGS="$MKL_CXXFLAGS -I$MKLROOT/include"
-      MKL_LIBS="-L$MKL_LIBDIR $MKL_LIBS"
+      #
+      # If we do not use ICC but GCC, we only allow building with
+      # libgomp (i.e. -fopenmp) because otherwise MKL does not work
+      # properly.
+      #
+      if test "x$OPEN_MPFLAGS" = "x"; then
+        have_mkl=no
+	MKL_CPPFLAGS=""
+      else
+        have_mkl=gcc
+        case ${host_cpu} in
+          ia64*)    MKL_LIBS="-fopenmp -L$MKLROOT/lib/ia64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread";;
+	  x86_64*)  MKL_LIBS="-fopenmp -L$MKLROOT/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -ldl -lpthread";;
+	  *)        MKL_LIBS="-fopenmp -L$MKLROOT/lib/intel32 -lmkl_intel -lmkl_core -lmkl_gnu_thread -ldl -lpthread";;
+	esac
+      fi
     fi
   fi
   AC_MSG_RESULT([$have_mkl])
@@ -231,7 +243,7 @@ TENSOR_CBLAPACK
     if test $have_mkl != no; then
       AC_DEFINE(TENSOR_USE_MKL, [1], [Use Intel MKL for matrix operations])
       NUM_LIBS="$LIBS $MKL_LIBS"
-      CXXFLAGS="$CXXFLAGS $MKL_CXXFLAGS"
+      CPPFLAGS="$CPPFLAGS $MKL_CPPFLAGS"
     else
       AC_MSG_ERROR([Intel MKL libraries are not available])
     fi;;

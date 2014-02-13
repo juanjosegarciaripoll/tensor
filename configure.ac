@@ -73,12 +73,18 @@ AM_PROG_CC_C_O # needed to build in subdirs
 AC_LANG([C++])
 AC_PROG_LIBTOOL
 
+# OpenMP support (needed for gcc + mkl)
+AC_OPENMP
+
 # Size of computer words
 TENSOR_BITS
 
 # Numerical libraries
 # It also changes the fortran compiler to match those libraries (ESSL)
 TENSOR_CHOOSE_LIB
+
+# Functions needed
+AC_CHECK_FUNCS_ONCE([gettimeofday])
 
 # Fortran stuff
 AC_PROG_F77([f77 gfortran])
