@@ -37,7 +37,8 @@ namespace tensor {
   const Sparse<T> operator-(const Sparse<T> &s)
   {
     Vector<T> data(s.priv_data().size());
-    std::for_each(data.begin(), data.end(), std::negate<T>());
+    std::transform(s.priv_data().begin(), s.priv_data().end(),
+                   data.begin(), std::negate<T>());
     return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(),
                      data);
   }
@@ -50,7 +51,8 @@ namespace tensor {
   const Sparse<T> operator*(const Sparse<T> &s, T b)
   {
     Vector<T> data(s.priv_data().size());
-    std::for_each(data.begin(), data.end(), times_constant<T,T>(b));
+    std::transform(s.priv_data().begin(), s.priv_data().end(),
+                   data.begin(), times_constant<T,T>(b));
     return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(),
                      data);
   }
@@ -59,7 +61,8 @@ namespace tensor {
   const Sparse<T> operator/(const Sparse<T> &s, T b)
   {
     Vector<T> data(s.priv_data().size());
-    std::for_each(data.begin(), data.end(), divided_constant<T,T>(b));
+    std::transform(s.priv_data().begin(), s.priv_data().end(),
+                   data.begin(), divided_constant<T,T>(b));
     return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(),
                      data);
   }
