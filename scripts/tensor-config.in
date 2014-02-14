@@ -20,8 +20,8 @@ case $1 in
     --cppflags)	echo @CPPFLAGS@ -I@includedir@;;
     --cxxflags)	echo @CXXFLAGS@;;
     --ldflags)	echo -L@libdir@ -ltensor @LDFLAGS@ @LIBS@;;
-    --compile)	shift; @CXX@ @CPPFLAGS@ @CXXFLAGS@ $*;;
-    --link)	shift; @CXX@ @CPPFLAGS@ @CXXFLAGS@ $* -L@libdir@ -ltensor @LDFLAGS@ @LIBS@;;
+    --compile)	shift; exec @CXX@ @CPPFLAGS@ @CXXFLAGS@ $*;;
+    --link)	shift; exec @CXX@ @CPPFLAGS@ @CXXFLAGS@ $* -L@libdir@ -ltensor @LDFLAGS@ @LIBS@;;
     *)		cat <<EOF
 tensor-config [--cppflags | --cxxflags | --ldflags]
 
