@@ -345,7 +345,7 @@ template<typename elt_t>
 elt_t &Tensor<elt_t>::at(index i1, index i2, index i3, index i4, index i5,
                          index i6) {
   index d1, d2, d3, d4, d5, d6;
-  get_dimensions(&d1, &d2, &d3, &d4, &d5);
+  get_dimensions(&d1, &d2, &d3, &d4, &d5, &d6);
   i1 = normalize_index(i1, d1);
   i2 = normalize_index(i2, d2);
   i3 = normalize_index(i3, d3);
