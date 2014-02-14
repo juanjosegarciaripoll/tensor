@@ -39,7 +39,10 @@ namespace tensor {
         output.at(range(), range(i)) = delta * (double)i + min;
       }
     }
-    return reshape(output, min.dimensions() << (igen << n));
+    if (d == 1)
+      return reshape(output, n);
+    else
+      return reshape(output, min.dimensions() << (igen << n));
   }
 
 
