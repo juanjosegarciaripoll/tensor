@@ -76,6 +76,12 @@ const MatrixForm<double> matrix_form(const Tensor<double> &t);
 /**Matrix form representation of a tensor.*/
 const MatrixForm<cdouble> matrix_form(const Tensor<cdouble> &t);
 
+/**Matrix form representation of a tensor.*/
+const MatrixForm<double> matrix_form(const Sparse<double> &t);
+
+/**Matrix form representation of a tensor.*/
+const MatrixForm<cdouble> matrix_form(const Sparse<cdouble> &t);
+
 } // namespace tensor
 
 #include <tensor/detail/io.hpp>

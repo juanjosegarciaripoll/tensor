@@ -159,6 +159,8 @@ libtensor_la_SOURCES = \
 	views/range.cc \
 	views/matrix_form_d.cc \
 	views/matrix_form_z.cc \
+	views/matrix_form_sp_d.cc \
+	views/matrix_form_sp_z.cc \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \
 	sdf/odata_file.cc
