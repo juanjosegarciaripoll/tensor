@@ -68,14 +68,56 @@ static void giveup_lock(int fd, char const *lockName)
     close(fd);
 }
 
+bool file_exists(const std::string &filename)
+{
+  return access(filename.c_str(), R_OK | W_OK) == 0;
+}
+
+bool delete_file(const std::string &filename)
+{
+  return unlink(filename.c_str()) == 0;
+}
+
+bool rename_file(const std::string &orig, const std::string &dest)
+{
+  if (file_exists(dest))
+    if (!delete_file(dest)) {
+      std::cerr << "Unable to move file to destination " << dest
+                << " because destination cannot be deleted." << std::endl;
+      abort();
+    }
+  if (!file_exists(orig)) {
+    std::cerr << "In rename_file(), original file " << dest
+              << " does not exist" << std::endl;
+    abort();
+  }
+  return rename(orig.c_str(), dest.c_str()) == 0;
+}
 
 const size_t DataFile::var_name_size;
 
-DataFile::DataFile(const std::string &a_filename, bool lock) :
-  _filename(a_filename), _lock_filename(a_filename + ".lck"),
-  _lock(lock? get_lock(_lock_filename.c_str(), true) : 0),
+DataFile::DataFile(const std::string &a_filename, int flags) :
+  _flags(flags),
+  _actual_filename(a_filename),
+  _filename(_actual_filename),
+  _lock_filename(_actual_filename + ".lck"),
+  _lock((flags == SDF_SHARED) ? get_lock(_lock_filename.c_str(), true) : 0),
   _open(true)
 {
+  switch (flags) {
+  case SDF_OVERWRITE:
+    delete_previous(_actual_filename);
+    break;
+  case SDF_SHARED:
+    break;
+  case SDF_PARANOID:
+    _actual_filename = _actual_filename + ".tmp";
+    delete_previous(_actual_filename);
+    break;
+  default:
+    std::cerr << "Unrecognized DataFile mode " <<  flags << std::endl;
+    abort();
+  }
 }
 
 DataFile::~DataFile()
@@ -88,8 +130,15 @@ DataFile::close()
 {
   if (is_open()) {
     _open = false;
-    if (is_locked()) {
-      giveup_lock(_lock, _lock_filename.c_str());
+    switch (flags) {
+    case SDF_SHARED:
+      if (is_locked()) {
+        giveup_lock(_lock, _lock_filename.c_str());
+      }
+      break;
+    case SDF_PARANOID:
+      if (file_exists(_actual_filename))
+        rename_file(_actual_filename, _filename);
     }
   }
 }

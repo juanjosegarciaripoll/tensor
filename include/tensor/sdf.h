@@ -29,6 +29,9 @@ namespace sdf {
 
   using namespace tensor;
 
+  static bool file_exists(const std::string &filename);
+  static bool rename_file(const std::string &orig, const std::string &dest);
+
   class DataFile {
   public:
     enum file_tags {
@@ -43,20 +46,31 @@ namespace sdf {
       LITTLE_ENDIAN_FILE = 1
     };
 
+    enum flags {
+      SDF_SHARED = 1, /* Append with exclusive access */
+      SDF_OVERWRITE = 0, /* Overwrite original file */
+      SDF_PARANOID = 4 /* Overwrite only when all operations have finished */
+    };
+
   protected:
     static const size_t var_name_size = 64;
+    const char *_suffix;
+    std::string _actual_filename;
     std::string _filename;
     std::string _lock_filename;
+    int _flags;
     int _lock;
     bool _open;
     static const enum endianness endian;
 
-    DataFile(const std::string &a_filename, bool lock);
+    DataFile(const std::string &a_filename, int flags = SDF_SHARED);
     ~DataFile();
     const char *tag_to_name(size_t tag);
     void close();
     bool is_open() { return _open; }
     bool is_locked() { return _lock; }
+    const std::string &actual_filename() { return _actual_filename; }
+
   };
 
 

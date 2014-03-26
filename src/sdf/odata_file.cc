@@ -17,7 +17,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <unistd.h> // For access()
 #include <tensor/sdf.h>
 
 using namespace sdf;
@@ -93,11 +92,11 @@ void write_raw_with_endian(std::ofstream &s, const number *data, size_t n)
 // COMMON I/O ROUTINES
 //
 
-OutDataFile::OutDataFile(const std::string &a_filename, bool lock) :
-  DataFile(a_filename, lock)
+OutDataFile::OutDataFile(const std::string &a_filename, int flags) :
+  DataFile(a_filename, flags)
 {
-  bool existed = (access(a_filename.c_str(), R_OK | W_OK) == 0);
-  _stream.open(a_filename.c_str(), std::ofstream::app | std::ofstream::binary);
+  bool existed = file_exists(actual_filename());
+  _stream.open(actual_filename().c_str(), std::ofstream::app | std::ofstream::binary);
   if (!existed) {
     write_header();
   }

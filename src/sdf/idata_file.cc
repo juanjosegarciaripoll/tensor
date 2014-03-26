@@ -82,8 +82,8 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
 }
 #endif
 
-InDataFile::InDataFile(const std::string &a_filename, bool lock) :
-  DataFile(a_filename, lock), _stream(a_filename.c_str())
+InDataFile::InDataFile(const std::string &a_filename, int flags) :
+  DataFile(a_filename, flags), _stream(actual_filename().c_str())
 {
   read_header();
 }
