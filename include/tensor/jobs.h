@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include <tensor/refcount.h>
 #include <tensor/sdf.h>
 
 namespace jobs {
@@ -40,6 +41,10 @@ namespace jobs {
     double get_value_with_default(const std::string &variable, double def) const;
     double get_value(const std::string &variable) const;
     void dump_variables(sdf::OutDataFile &file) const;
+
+    typedef tensor::shared_ptr<sdf::OutDataFile> dataset;
+    dataset open_dataset(const std::string &filename) const;
+    bool dataset_record_exists(const std::string &filename) const;
 
   private:
     class Variable {

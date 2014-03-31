@@ -100,6 +100,18 @@ private:
   void dereference();
 };
 
+  template<typename T>
+  class shared_ptr {
+  public:
+    shared_ptr(T *t) : _value(t), _ref(new int(1)) {}
+    ~shared_ptr() { --(*_ref); if (!(*_ref)) { delete _value; delete _ref; }}
+    T* operator->() const { return _value; }
+    T& operator*() const { return *_value; }
+  private:
+    int *_ref;
+    T *_value;
+  };
+
 }; // namespace
 
 #include <tensor/detail/refcount.hpp>
