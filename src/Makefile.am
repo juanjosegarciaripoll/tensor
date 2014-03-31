@@ -163,7 +163,12 @@ libtensor_la_SOURCES = \
 	views/matrix_form_sp_z.cc \
 	sdf/data_file.cc \
 	sdf/idata_file.cc \
-	sdf/odata_file.cc
+	sdf/odata_file.cc \
+	sdf/isdir.cc \
+	sdf/mkdir.cc \
+	sdf/file_exists.cc \
+	sdf/delete_file.cc \
+	sdf/rename_file.cc
 if WITH_FFTW3
 libtensor_la_SOURCES += \
 	fftw/fftw.cc \

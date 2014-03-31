@@ -29,8 +29,12 @@ namespace sdf {
 
   using namespace tensor;
 
-  static bool file_exists(const std::string &filename);
-  static bool rename_file(const std::string &orig, const std::string &dest);
+  bool file_exists(const std::string &filename);
+  bool delete_file(const std::string &filename);
+  bool rename_file(const std::string &orig, const std::string &dest,
+                   bool overwrite = true);
+  bool isdir(const std::string &filename);
+  bool mkdir(const std::string &dirname, int mode = 0666);
 
   class DataFile {
   public:
@@ -78,7 +82,7 @@ namespace sdf {
 
   public:
 
-    OutDataFile(const std::string &a_filename, bool lock = true);
+    OutDataFile(const std::string &a_filename, int flags = SDF_SHARED);
     ~OutDataFile();
 
     void dump(const int r, const std::string &name = "");
@@ -118,7 +122,7 @@ namespace sdf {
 
   public:
 
-    InDataFile(const std::string &a_filename, bool lock = true);
+    InDataFile(const std::string &a_filename, int flags = SDF_SHARED);
 
     void load(int *r, const std::string &name = "");
     void load(size_t *r, const std::string &name = "");

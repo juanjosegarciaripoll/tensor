@@ -17,7 +17,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/file.h>
@@ -26,7 +25,7 @@
 #include <tensor/sdf.h>
 #include <errno.h>
 
-using namespace sdf;
+namespace sdf {
 
 #ifdef TENSOR_BIGENDIAN
 const enum DataFile::endianness DataFile::endian = BIG_ENDIAN_FILE;
@@ -68,32 +67,6 @@ static void giveup_lock(int fd, char const *lockName)
     close(fd);
 }
 
-bool file_exists(const std::string &filename)
-{
-  return access(filename.c_str(), R_OK | W_OK) == 0;
-}
-
-bool delete_file(const std::string &filename)
-{
-  return unlink(filename.c_str()) == 0;
-}
-
-bool rename_file(const std::string &orig, const std::string &dest)
-{
-  if (file_exists(dest))
-    if (!delete_file(dest)) {
-      std::cerr << "Unable to move file to destination " << dest
-                << " because destination cannot be deleted." << std::endl;
-      abort();
-    }
-  if (!file_exists(orig)) {
-    std::cerr << "In rename_file(), original file " << dest
-              << " does not exist" << std::endl;
-    abort();
-  }
-  return rename(orig.c_str(), dest.c_str()) == 0;
-}
-
 const size_t DataFile::var_name_size;
 
 DataFile::DataFile(const std::string &a_filename, int flags) :
@@ -106,13 +79,16 @@ DataFile::DataFile(const std::string &a_filename, int flags) :
 {
   switch (flags) {
   case SDF_OVERWRITE:
-    delete_previous(_actual_filename);
+    if (!delete_file(_actual_filename)) {
+      std::cerr << "Cannot overwrite file " << _actual_filename << std::endl;
+      abort();
+    }
     break;
   case SDF_SHARED:
     break;
   case SDF_PARANOID:
     _actual_filename = _actual_filename + ".tmp";
-    delete_previous(_actual_filename);
+    delete_file(_actual_filename);
     break;
   default:
     std::cerr << "Unrecognized DataFile mode " <<  flags << std::endl;
@@ -130,7 +106,7 @@ DataFile::close()
 {
   if (is_open()) {
     _open = false;
-    switch (flags) {
+    switch (_flags) {
     case SDF_SHARED:
       if (is_locked()) {
         giveup_lock(_lock, _lock_filename.c_str());
@@ -150,8 +126,11 @@ DataFile::tag_to_name(size_t tag)
 	"RTensor", "CTensor", "Real MPS", "Complex MPS"
     };
 
-    if (tag > 4 || tag < 0) {
+    if (tag > 4 /* || tag < 0 */) {
 	std::cerr << "Not a valid tag code, " << tag << " found in " << _filename;
     }
     return names[tag];
 }
+
+}
+
