@@ -14,6 +14,7 @@ libtensor_la_SOURCES = \
 	tools/backtrace.cc \
 	tools/jobs.cc \
 	tools/jobs_save.cc \
+	tools/jobs_dataset.cc \
 	rand/rand.cc \
 	indices/indices.cc \
 	indices/concat.cc \
@@ -165,7 +166,7 @@ libtensor_la_SOURCES = \
 	sdf/idata_file.cc \
 	sdf/odata_file.cc \
 	sdf/isdir.cc \
-	sdf/mkdir.cc \
+	sdf/make_directory.cc \
 	sdf/file_exists.cc \
 	sdf/delete_file.cc \
 	sdf/rename_file.cc

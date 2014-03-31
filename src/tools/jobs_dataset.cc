@@ -56,18 +56,20 @@ namespace jobs {
 	abort();
       }
     } else {
-      if (!sdf::mkdir(filename)) {
+      if (!sdf::make_directory(filename)) {
 	std::cerr << "Cannot create Job dataset\n";
 	abort();
       }
     }
     std::string dataset_record_name = dataset_name(filename, current_job());
     sdf::OutDataFile *output;
-    if (sdf::file_exists(dataset_record_name))
+    if (sdf::file_exists(dataset_record_name)) {
+      std::cout << "File " << dataset_record_name << " already exists" << std::endl;
       output = NULL;
-    else
+    } else {
       output = new sdf::OutDataFile(dataset_record_name,
 				    sdf::DataFile::SDF_PARANOID);
+    }
     return dataset(output);
   }
 

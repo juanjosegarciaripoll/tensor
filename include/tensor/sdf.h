@@ -34,7 +34,7 @@ namespace sdf {
   bool rename_file(const std::string &orig, const std::string &dest,
                    bool overwrite = true);
   bool isdir(const std::string &filename);
-  bool mkdir(const std::string &dirname, int mode = 0666);
+  bool make_directory(const std::string &dirname, int mode = 0777);
 
   class DataFile {
   public:
