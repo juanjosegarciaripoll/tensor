@@ -56,7 +56,11 @@ namespace jobs {
 	abort();
       }
     } else {
-      if (!sdf::make_directory(filename)) {
+      // In a shared environment with multiple jobs, we cannot
+      // be certain that another job creates the same directory
+      // between the previous check and here.
+      sdf::make_directory(filename);
+      if (!sdf::file_exists(filename)) {
 	std::cerr << "Cannot create Job dataset\n";
 	abort();
       }
