@@ -5,37 +5,40 @@ The basic datatype of the library is the class Tensor, which implements the
 above mentioned multi-dimensional array. This class allows accessing the
 array elements one by one, extracting pieces of an array, reshaping arrays, etc
 \code
-  Tensor<double> a = Tensor<double>::eye(2,2);
-  double one = a(0,0);
-  Tensor<double> b = a(range(1,-1), range());
-  Tensor<double> c = reshape(b, 1,4);
+  Tensor<double> a = Tensor<double>::eye(2,2);  // creates a 2x2 identity matrix
+  double one = a(0,0);                          // returns the upper left element
+  Tensor<double> b = a(range(0,-1), range());   // returns first to last row, all columns
+  Tensor<double> c = reshape(b, 1,4);           // converts b into a row vector
 \endcode
 
+
+\section sec_intro_features Features
+
 There are many philosophical constraints behind the library implementation
-itself, again motivated by the writer's need of a Matlab-like environment that
-allows quick prototyping of code. Some of them are listed here
+itself, motivated by the writer's need of a Matlab-like environment that
+allows quick prototyping of code. Some of them are
 \li Automatic memory management
 \li Avoiding generic programming
 \li Efficiency
 \li Simple syntax
 \li Safety
 
-The memory management, for instance, is done using a clever copy-on-write
-pointer mechanism, which allows two tensors to share the same data until one
-of them modifies the shared memory.
+The memory management is done using a copy-on-write pointer mechanism, which allows
+two arrays to share the same data until one of them modifies the shared memory.
 \code
   Tensor<double> a = Tensor<double>::eye(2,2);
-  Tensor<double> b = a; // a and b share data
-  a.at(0,1) = 1.0; // a now has a different data than b
+  Tensor<double> b = a;                        // a and b point to the same array
+  a.at(0,1) = 1.0;                             // a points now to a different memory
 \endcode
-Since copying a reference is cheap, it becomes feasible to have multiple
-references to the same array in structures such as vectors, lists, etc. without
-using pointers (that need to be freed explicitly, for example).
+Since copying is cheap, it becomes feasible to have multiple references to the
+same array in structures such as vectors, lists, etc. It also makes the actual
+coding straightforward, since no bookkeeping has to be done
 
-Another implementation detail is that we avoid using generic programming or the
-so called templates. It is true that the headers are full of template<>
-statements but the implementations are typically not exposed to the users, and
-rather the classes are explicitely instantiated inside the library code.
+We avoid using generic programming or the so called templates. It is true that
+the headers are full of template<> statements but the implementations are
+typically not exposed to the users, and the classes are explicitely instantiated
+inside the library code. For example, only real and complex double precision
+tensors are supported throughout the code.
 
 Finally some words about safety. The library is configured to have a high level
 of paranoia by default, including assertions for index bounds, tensor
@@ -43,4 +46,13 @@ dimensions, etc. Minor errors are usually ignored (such as operations between
 arrays which are conformant in size but not in the indices), but others will
 result in expensive checks. To disable these checks, simply add NDEBUG to
 the list of flags.
+
+
+\section sec_intro_limitations Limitations
+
+The automatic memory management imposes a few limitations on the code.
+First of all, the copy-on-write mechanism is not threadsafe, so you should
+exercise great caution when sharing a tensor over multiple threads. Also, due to
+implementation details, it does not always work well with the new "auto" keyword of the
+C++-11 standard, so you should always explicitly declare variable types for tensors.
 */
