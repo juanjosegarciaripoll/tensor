@@ -29,6 +29,10 @@
 
 namespace tensor {
 
+  /** The direction of the Fourier transform.
+   *
+   * FORWARD refers to the fft, BACKWARD to the inverse Fourier transform.
+   */
   enum {
     FFTW_FORWARD = -1,
     FFTW_BACKWARD = 1

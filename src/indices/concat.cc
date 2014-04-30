@@ -21,9 +21,15 @@
 
 namespace tensor {
 
-  /** Concatenate two sets of indices. For example, example: (igen <<
-   *  1 << 2) << (igen << 3 << 4) is equivalent to Indices(igen << 1
-   *  << 2 << 3 << 4)
+  /** Concatenate two sets of indices by appending those of the second argument
+   * to those of the first.
+   *
+   * Example:
+   * \code
+   * Indices i1 = igen << 1 << 2;   // vector with elements (1,2)
+   * Indices i2 = igen << 3 << 4;   // vector with elements (3,4)
+   * Indice itot = i1 << i2;        // vector with elements (1,2,3,4)
+   * \endcode
    */
   const Indices
   operator<<(const Indices &a, const Indices &b)
