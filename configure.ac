@@ -1,6 +1,6 @@
 dnl -*- Autoconf -*-
 AC_INIT([C++ Tensor Library],
-	[0.0.0],
+	[0.1.0],
 	[juanjose.garciaripoll@gmail.com],
 	[tensor])
 
