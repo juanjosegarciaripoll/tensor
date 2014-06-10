@@ -46,16 +46,32 @@
 
 <ul>
 <li>Free under a liberal license.</li>
-<li>Autoconfigurable library, using GNU tools</li>
-<li>Recognizes and uses different libraries such as Apple's VecLib, the ATLAS optimized libraries for matrix and vector operations, or Intel's MKL library.</li>
-<li>Arrays with any number of indices.</li>
-<li>Specialized versions for double precision real and complex arrays.</li>
-<li>Singular value decompositions, computation of eigenvalues.</li>
-<li>Efficient tensor contraction routines implemented on top of optimized BLAS kernels.</li>
-<li>Extremely portable.</li>
+<li>Efficient contraction, matrix multiplication and vector operations based on BLAS kernels.</li>
+<li>Linear algebra (svd, eigenvalues, lanczos, linear systems of equations) based on LAPACK.</li>
+<li>Extremely portable (Linux, OSX, Solaris), detects and builds with Apple's VecLib, ATLAS optimized library, IBM's ESSL and Intel's MKL library (so far the best performer) using GCC, Clang or Intel's compiler.</li>
 <li>Automatically tested on a variety of platforms using the GoogleTest framework.</li>
-<li>In addition to this, as time permits, the library will incorporate extra components for numerical computations with Matrix Product States and related algorithms.</li>
+<li>Does not require a Fortran compiler (uses our optimized <a href="https://github.com/juanjosegarciaripoll/f2c">f2c</a>)
 </ul>
+
+<p>Tensor is production ready and is being used routinely by our <a href="http://quinfog.iff.csic.es">research group</a> in large scale simulations of many-body quantum mechanical systems. The library delivers excellent performance while maintaining a great level of readability and maintainability, with an interface that is close to Matlab's functions and avoids <em>explicit</em> use of template metaprogramming. Performance is not compromised and can be greatly enhanced making use of the multithreading capabilities of the Intel MKL and Atlas libraries, the former delivering spectacular performance in our own experience.</p>
+
+<h2>
+<a name="downloads" class="anchor" href="#downloads"><span class="octicon octicon-link"></span></a>Downloads</h2>
+
+<p>Tensor is distributed in source form, in various formats that you can use to build the library. Some are more convenient than other:</p>
+
+<ul>
+<li>The latest release can be downloaded in <a href="https://github.com/juanjosegarciaripoll/tensor/archive/tensor_0_1.zip">Zip</a> and <a href="https://github.com/juanjosegarciaripoll/tensor/archive/tensor_0_1.tar.gz">Tarball</a> formats.</li>
+<li>The library can be <a href="https://github.com/juanjosegarciaripoll/tensor">cloned from github</a>.</li>
+<li>The whole library is packaged together with <a href="https://github.com/juanjosegarciaripoll/f2c">Fortran-2-C</a> and <a href="https://github.com/juanjosegarciaripoll/mps">Matrix Product States</a> libraries in a small package called <a href="https://github.com/juanjosegarciaripoll/mps-bundle">mps-bundle</a> that can download and build all software.</li>
+</ul>
+
+
+<h2>
+<a name="downloads" class="anchor" href="#downloads"><span class="octicon octicon-link"></span></a>Release</h2>
+
+<p><a href="https://github.com/juanjosegarciaripoll/tensor/releases/tag/tensor_0_1">Version 0.1</a> is the first stable release of the project, tested on a variety of Linux clusters and Mac OS X computers, that builds with GCC, Clang and Intel compilers.</p>
+
       </section>
       <footer>
         <p>Project maintained by <a href="https://github.com/juanjosegarciaripoll">juanjosegarciaripoll</a></p>
