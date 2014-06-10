@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['zeros',['zeros',['../group___tensors.html#ga50e01616fe419d42ad10cb0d9b93916e',1,'tensor::Tensor::zeros(index rows)'],['../group___tensors.html#ga0a8bdcae9efef69743890c539fa7bb98',1,'tensor::Tensor::zeros(index rows, index cols)'],['../group___tensors.html#gadadb2467fea9bb1d7595331b86423f66',1,'tensor::Tensor::zeros(index d1, index d2, index d3)'],['../group___tensors.html#ga75e37e3903d1500cb3d13bf279523e24',1,'tensor::Tensor::zeros(index d1, index d2, index d3, index d4)'],['../group___tensors.html#ga707a2ae6dedece5d0b1021a0ce7ed1cb',1,'tensor::Tensor::zeros(index d1, index d2, index d3, index d4, index d5)'],['../group___tensors.html#gad102a1297e92fb7ce4d3bef35ee7790f',1,'tensor::Tensor::zeros(index d1, index d2, index d3, index d4, index d5, index d6)'],['../group___tensors.html#ga0a737e530f09846edd16a853dc087790',1,'tensor::Tensor::zeros(const Indices &amp;dimensions)']]]
+];

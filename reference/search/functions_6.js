@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['get_5fdimensions',['get_dimensions',['../group___tensors.html#ga4361f64f4aaed0fd93a68c1be52421ec',1,'tensor::Tensor::get_dimensions(index *length) const '],['../group___tensors.html#ga369e6e2c8c73b34969303ccdf6e52be8',1,'tensor::Tensor::get_dimensions(index *rows, index *cols) const '],['../group___tensors.html#ga883691ef754630680f2885b5b7c175da',1,'tensor::Tensor::get_dimensions(index *d0, index *d1, index *d2) const '],['../group___tensors.html#ga61eab03d98c1697e57824087e162cb42',1,'tensor::Tensor::get_dimensions(index *d0, index *d1, index *d2, index *d3) const '],['../group___tensors.html#ga883c5d9e3c903b413597adfb94cc1a41',1,'tensor::Tensor::get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4) const '],['../group___tensors.html#ga66e84326a5646ea60444ec38b970beea',1,'tensor::Tensor::get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4, index *d5) const ']]]
+];
