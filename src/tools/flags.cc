@@ -49,7 +49,7 @@ namespace tensor {
 
   class Flags &Flags::set(unsigned int code, double value)
   {
-    if (_values.size() >= code)
+    if (code >= _values.size())
       _values.resize(code+1, DEFAULT);
     _values.at(code) = value;
     return *this;
