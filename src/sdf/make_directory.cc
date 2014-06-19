@@ -17,7 +17,12 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <sys/stat.h>
+#ifdef _MSC_VER
+# include <direct.h>
+# define mkdir(x,mode) _mkdir(x)
+#else
+# include <sys/stat.h>
+#endif
 #include <tensor/jobs.h>
 
 namespace sdf {

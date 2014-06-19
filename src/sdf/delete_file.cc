@@ -17,7 +17,12 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <unistd.h>
+#ifdef _MSC_VER
+# include <stdio.h>
+# define unlink _unlink
+#else
+# include <unistd.h>
+#endif
 #include <tensor/sdf.h>
 
 namespace sdf {
