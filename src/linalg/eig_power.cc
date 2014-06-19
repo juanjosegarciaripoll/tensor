@@ -49,8 +49,8 @@ namespace linalg {
       v = v_new / n;
       eig = scprod(v_new, v);
       if (i) {
-        double eig_change = abs(eig - old_eig);
-        if (eig_change < tol * abs(eig)) {
+        double eig_change = std::abs(eig - old_eig);
+        if (eig_change < tol * std::abs(eig)) {
           double vec_change = norm2(v - old_v);
           if (vec_change < tol) {
             break;
