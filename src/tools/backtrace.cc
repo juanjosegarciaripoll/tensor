@@ -120,8 +120,6 @@ dump_backtrace(int size)
         fflush(stderr);
         free(names);
         }
-#else
-#warning "No backtrace available"
 #endif
 }
 
