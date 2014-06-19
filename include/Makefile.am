@@ -16,6 +16,7 @@ nobase_include_HEADERS = \
 	tensor/detail/tensor_ops.hpp \
 	tensor/detail/tensor_reshape.hpp \
 	tensor/detail/tensor_slice.hpp \
+	tensor/flags.h \
 	tensor/gen.h \
 	tensor/indices.h \
 	tensor/io.h \
