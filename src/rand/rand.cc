@@ -17,8 +17,12 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cstdio>
 #include <cstdlib>
+#ifdef _MSC_VER
+#include <time.h>
+#else
+#include <cstdio>
+#endif
 #include <tensor/rand.h>
 #include "mt.h"
 
