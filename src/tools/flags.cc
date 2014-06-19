@@ -27,7 +27,7 @@ namespace tensor {
   int Flags::last_key = -1;
 
   Flags::Flags() :
-    _values(last_key+1, DEFAULT)
+    _values(0)
   {
   }
 
