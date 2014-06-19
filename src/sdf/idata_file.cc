@@ -27,7 +27,11 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
 {
   s.read((char *)data, n * sizeof(number));
   if (s.bad()) {
+#ifdef _MSC_VER
+    std::cerr << "I/O error when reading from SDF stream";
+#else
     std::cerr << "I/O error when reading from stream " << s;
+#endif
     abort();
   }
 }
@@ -39,7 +43,11 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
   if (size == 1) {
     s.read((char *)data, n * sizeof(number));
     if (s.bad()) {
+#ifdef _MSC_VER
+      std::cerr << "I/O error when reading from SDF stream";
+#else
       std::cerr << "I/O error when reading from stream " << s;
+#endif
       abort();
     }
     return;
