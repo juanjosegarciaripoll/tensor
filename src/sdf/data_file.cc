@@ -17,14 +17,16 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/file.h>
-#include <fcntl.h>
+#if !defined(_MSC_VER)
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <sys/file.h>
+# include <fcntl.h>
+# include <unistd.h>
+#endif
 #include <tensor/config.h>
 #include <tensor/sdf.h>
 #include <errno.h>
-#include <unistd.h>
 
 namespace sdf {
 
@@ -38,6 +40,9 @@ const enum DataFile::endianness DataFile::endian = LITTLE_ENDIAN_FILE;
  */
 static int get_lock(char const *lockName, bool wait)
 {
+#ifdef _MSC_VER
+  return 1;
+#else
     int fd;
     do {
       mode_t m = umask(0);
@@ -56,16 +61,19 @@ static int get_lock(char const *lockName, bool wait)
 	return fd;
       sleep(1);
     } while (1);
+#endif
 }
 
 /* Release the lock obtained with tryGetLock( lockName ).
  */
 static void giveup_lock(int fd, char const *lockName)
 {
+#if !defined(_MSC_VER)
     if( fd < 0 )
         return;
     unlink(lockName);
     close(fd);
+#endif
 }
 
 const size_t DataFile::var_name_size;
