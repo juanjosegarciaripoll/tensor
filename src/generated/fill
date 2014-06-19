@@ -1,5 +1,5 @@
 #!/bin/sh
-for k in sqrt cos sin tan cosh sinh tanh; do
+for k in sqrt cos sin tan cosh sinh tanh exp; do
     sed -e "s,TYPE[12],Tensor<double>,g;s,OPERATOR1,$k,;s,OPERATOR2,std::$k,g" ../tensor/tensor_unop.cc > tensor_unop_${k}_d.cc
     sed -e "s,TYPE[12],Tensor<cdouble>,g;s,OPERATOR1,$k,;s,OPERATOR2,std::$k,g" ../tensor/tensor_unop.cc > tensor_unop_${k}_z.cc
 done
