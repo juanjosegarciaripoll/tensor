@@ -17,8 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef TENSOR_TOOLS_H
-#define TENSOR_TOOLS_H
+#ifndef TENSOR_FLAGS_H
+#define TENSOR_FLAGS_H
 
 #include <vector>
 
