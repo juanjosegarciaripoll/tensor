@@ -42,7 +42,7 @@ namespace tensor {
   };
 
   extern const Flags DEFAULT_FLAGS;
-  extern Flags TENSOR_FLAGS;
+  extern Flags FLAGS;
 
 } // namespace tensor
 

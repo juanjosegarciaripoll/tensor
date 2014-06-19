@@ -24,6 +24,7 @@ namespace tensor {
 
   const double Flags::DEFAULT = NAN;
   const Flags DEFAULT_FLAGS;
+  Flags FLAGS;
   int Flags::last_key = -1;
 
   Flags::Flags() :
