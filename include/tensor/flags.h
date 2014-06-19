@@ -26,22 +26,17 @@ namespace tensor {
 
   class Flags {
   public:
-    static const double DEFAULT;
-
     Flags();
 
     double get(unsigned int code) const;
-    double get(unsigned int code, double def) const;
     Flags &set(unsigned int code, double value);
 
-    static unsigned int create_key();
+    unsigned int create_key(double value);
 
   private:
     std::vector<double> _values;
-    static int last_key;
   };
 
-  extern const Flags DEFAULT_FLAGS;
   extern Flags FLAGS;
 
 } // namespace tensor

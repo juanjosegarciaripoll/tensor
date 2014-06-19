@@ -19,13 +19,12 @@
 
 #include <cmath>
 #include <tensor/flags.h>
+#include <tensor/tensor.h>
+#include <tensor/io.h>
 
 namespace tensor {
 
-  const double Flags::DEFAULT = NAN;
-  const Flags DEFAULT_FLAGS;
   Flags FLAGS;
-  int Flags::last_key = -1;
 
   Flags::Flags() :
     _values(0)
@@ -34,31 +33,24 @@ namespace tensor {
 
   double Flags::get(unsigned int code) const
   {
-    if (code >= _values.size())
-      return DEFAULT;
-    else
-      return _values[code];  
-  }
-
-  double Flags::get(unsigned int code, double def) const
-  {
-    double value = get(code);
-    if (value == DEFAULT)
-      return def;
-    return value;
+    return _values[code];  
   }
 
   class Flags &Flags::set(unsigned int code, double value)
   {
-    if (code >= _values.size())
-      _values.resize(code+1, DEFAULT);
+    if (code >= _values.size()) {
+      std::cerr << "Invalid flag code " << code << " into Flags array\n";
+      abort();
+    }
     _values.at(code) = value;
     return *this;
   }
 
-  unsigned int Flags::create_key()
+  unsigned int Flags::create_key(double value)
   {
-    return last_key++;
+    int size = _values.size();
+    _values.resize(size+1, value);
+    return size;
   }
 
 }
