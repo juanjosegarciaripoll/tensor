@@ -279,17 +279,6 @@ libtensor_la_SOURCES += ../arpack-ng/common.cc
 AM_FFLAGS += -E
 endif
 
-generated/tensor_unop_%_d.cc: tensor/tensor_unop.cc Makefile
-	k=`echo $@ | sed 's,.*unop_\(.*\)_d.cc,\1,g'`;\
-	sed -e "s,TYPE[12],Tensor<double>,g;s,OPERATOR1,$$k,;s,OPERATOR2,std::$$k,g" $< > $@
-generated/tensor_unop_%_z.cc: tensor/tensor_unop.cc Makefile
-	k=`echo $@ | sed 's,.*unop_\(.*\)_z.cc,\1,g'`;\
-	sed -e "s,TYPE[12],Tensor<cdouble>,g;s,OPERATOR1,$$k,;s,OPERATOR2,std::$$k,g" $< > $@
-generated/tensor_unop_abs_d.cc: tensor/tensor_unop.cc Makefile
-	sed -e "s,TYPE1,Tensor<double>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" $< > $@
-generated/tensor_unop_abs_z.cc: tensor/tensor_unop.cc Makefile
-	sed -e "s,TYPE1,Tensor<cdouble>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" $< > $@
-
 if HAVE_64BITS
 libtensor_la_SOURCES += rand/rand64.cc
 else
