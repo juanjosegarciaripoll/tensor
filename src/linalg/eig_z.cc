@@ -52,12 +52,12 @@ namespace linalg {
 
     char jobvl[2] = "N";
     char jobvr[2] = "N";
-    integer lda, ldvl, ldvr, lwork, info;
+    blas::integer lda, ldvl, ldvr, lwork, info;
     cdouble *vl, *vr, *w;
     double *rwork;
     CTensor aux(A);
     cdouble *a = tensor_pointer(aux);
-    integer n = A.rows();
+    blas::integer n = A.rows();
 
     if ((size_t)n != A.columns()) {
       std::cerr << "Routine eig() can only compute eigenvalues of square matrices, and you\n"

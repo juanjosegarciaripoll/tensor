@@ -47,7 +47,7 @@ namespace linalg {
     assert(A.rank() == 2);
     assert(A.rows() == A.columns());
 
-    integer n = A.rows();
+    blas::integer n = A.rows();
     if ((size_t)n != A.columns()) {
       std::cerr << "Routine eig_sym() can only compute eigenvalues of square matrices, and you\n"
                 << "have passed a matrix that is " << A.rows() << " by " << A.columns();
@@ -56,7 +56,7 @@ namespace linalg {
 
     RTensor aux(A);
     double *a = tensor_pointer(aux);
-    integer lda = n, info[1];
+    blas::integer lda = n, info[1];
     char jobz[2] = { (V == 0)? 'N' : 'V', 0 };
     char uplo[2] = { 'U', 0 };
     RTensor output(n);
@@ -65,7 +65,7 @@ namespace linalg {
 #ifdef TENSOR_USE_ACML
     dsyev(*jobz, *uplo, n, a, lda, w, info);
 #else
-    integer lwork = -1;
+    blas::integer lwork = -1;
     double work0[1];
     F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, info);
     lwork = (int)work0[0];

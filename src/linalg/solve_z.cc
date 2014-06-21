@@ -31,13 +31,13 @@ namespace linalg {
   */
   const CTensor
   solve(const CTensor &A, const CTensor &B) {
-    integer n = A.rows();
-    integer lda = n;
-    integer ldb = B.dimension(0);
-    integer nrhs;
+    blas::integer n = A.rows();
+    blas::integer lda = n;
+    blas::integer ldb = B.dimension(0);
+    blas::integer nrhs;
 
     // Currently, we only solve square systems
-    if (n != (integer)A.columns()) {
+    if (n != (blas::integer)A.columns()) {
       std::cerr << "Routine solve() can only operate on square systems of equations, i.e\n"
 		<< "when the number of unknowns is equal to the number of equations.\n"
 		<< "However, you have passed a matrix of size " << A.columns() << " by " << A.rows();
@@ -63,8 +63,8 @@ namespace linalg {
     CTensor aux(A);
     cdouble *a = tensor_pointer(aux);
 
-    integer *ipiv = new integer[n];
-    integer info;
+    blas::integer *ipiv = new blas::integer[n];
+    blas::integer info;
 #ifdef TENSOR_USE_ACML
     zgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
 #else

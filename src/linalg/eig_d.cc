@@ -50,11 +50,11 @@ namespace linalg {
 
     char jobvl[2] = "N";
     char jobvr[2] = "N";
-    integer lda, ldvl, ldvr, lwork, info;
+    blas::integer lda, ldvl, ldvr, lwork, info;
     double *vl, *vr, *wr, *wi;
     RTensor aux(A);
     double *a = tensor_pointer(aux);
-    integer n = A.rows();
+    blas::integer n = A.rows();
     RTensor *realL, *realR;
 
     if ((size_t)n != A.columns()) {

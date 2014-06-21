@@ -49,7 +49,7 @@ namespace linalg {
 
     //if (accurate_svd)
     //  return block_eig_sym(A, V);
-    integer n = A.rows();
+    blas::integer n = A.rows();
     if ((size_t)n != A.columns()) {
       std::cerr << "Routine eig() can only compute eigenvalues of square matrices, and you\n"
                 << "have passed a matrix that is " << A.rows() << " by " << A.columns();
@@ -58,7 +58,7 @@ namespace linalg {
 
     CTensor aux(A);
     cdouble *a = tensor_pointer(aux);
-    integer lda = n, info[1];
+    blas::integer lda = n, info[1];
     char jobz[2] = { (V == 0)? 'N' : 'V', 0 };
     char uplo[2] = { 'U', 0 };
     RTensor output(n);
@@ -68,7 +68,7 @@ namespace linalg {
 #ifdef TENSOR_USE_ACML
     zheev(*jobz, *uplo, n, a, lda, w, info);
 #else
-    integer lwork = -1;
+    blas::integer lwork = -1;
     CTensor work(1);
     F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, tensor_pointer(work),
                    &lwork, tensor_pointer(rwork), info);

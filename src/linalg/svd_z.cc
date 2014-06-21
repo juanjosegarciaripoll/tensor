@@ -53,10 +53,10 @@ namespace linalg {
     assert(A.columns() > 0);
     assert(A.rank() == 2);
 
-    integer m = A.rows();
-    integer n = A.columns();
-    integer k = std::min(m, n);
-    integer lwork, ldu, lda, ldv, info;
+    blas::integer m = A.rows();
+    blas::integer n = A.columns();
+    blas::integer k = std::min(m, n);
+    blas::integer lwork, ldu, lda, ldv, info;
     RTensor output(k);
     cdouble *work, *u, *v, *a = tensor_pointer(A), foo;
     double *rwork, *s = tensor_pointer(output);
