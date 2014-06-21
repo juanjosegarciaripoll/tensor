@@ -15,6 +15,7 @@ libtensor_la_SOURCES = \
 	tools/jobs.cc \
 	tools/jobs_save.cc \
 	tools/jobs_dataset.cc \
+	tools/flags.cc \
 	rand/rand.cc \
 	indices/indices.cc \
 	indices/concat.cc \
