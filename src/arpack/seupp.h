@@ -38,11 +38,11 @@
 #include "arpackf.h"
 
 inline void seupp(bool rvec, char HowMny, double d[], double Z[],
-                  integer ldz, double sigma, char bmat, integer n,
-                  const char* which, integer nev, double tol, double resid[],
-                  integer ncv, double V[], integer ldv, integer iparam[],
-                  integer ipntr[], double workd[], double workl[],
-                  integer lworkl, integer& info)
+                  blas::integer ldz, double sigma, char bmat, blas::integer n,
+                  const char* which, blas::integer nev, double tol, double resid[],
+                  blas::integer ncv, double V[], blas::integer ldv, blas::integer iparam[],
+                  blas::integer ipntr[], double workd[], double workl[],
+                  blas::integer lworkl, blas::integer& info)
 
 /*
   c++ version of ARPACK routine dseupd.
@@ -153,7 +153,7 @@ inline void seupp(bool rvec, char HowMny, double d[], double Z[],
 
 {
 
-  integer irvec;
+  blas::integer irvec;
   logical* iselect;
   double* iZ;
 

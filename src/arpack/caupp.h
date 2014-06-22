@@ -37,11 +37,11 @@
 
 #include "arpackf.h"
 
-inline void caupp(integer& ido, char bmat, integer n, const char* which, integer nev,
-                  double& tol, tensor::cdouble resid[], integer ncv,
-                  tensor::cdouble V[], integer ldv, integer iparam[], integer ipntr[],
+inline void caupp(blas::integer& ido, char bmat, blas::integer n, const char* which, blas::integer nev,
+                  double& tol, tensor::cdouble resid[], blas::integer ncv,
+                  tensor::cdouble V[], blas::integer ldv, blas::integer iparam[], blas::integer ipntr[],
                   tensor::cdouble workd[], tensor::cdouble workl[],
-                  integer lworkl, double rwork[], integer& info)
+                  blas::integer lworkl, double rwork[], blas::integer& info)
 
 /*
   c++ version of ARPACK routine znaupd that implements the

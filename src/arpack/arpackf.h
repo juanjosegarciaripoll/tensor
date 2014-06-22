@@ -40,7 +40,7 @@
 
 using namespace blas;
 
-typedef integer logical;
+typedef blas::integer logical;
 
 #ifdef __cplusplus
 extern "C"
@@ -50,74 +50,74 @@ extern "C"
   // debug "common" statement.
 
   extern struct { 
-    integer logfil, ndigit, mgetv0;
-    integer msaupd, msaup2, msaitr, mseigt, msapps, msgets, mseupd;
-    integer mnaupd, mnaup2, mnaitr, mneigt, mnapps, mngets, mneupd;
-    integer mcaupd, mcaup2, mcaitr, mceigt, mcapps, mcgets, mceupd;
+    blas::integer logfil, ndigit, mgetv0;
+    blas::integer msaupd, msaup2, msaitr, mseigt, msapps, msgets, mseupd;
+    blas::integer mnaupd, mnaup2, mnaitr, mneigt, mnapps, mngets, mneupd;
+    blas::integer mcaupd, mcaup2, mcaitr, mceigt, mcapps, mcgets, mceupd;
   } F77_FUNC(debug,DEBUG);
 
 
   // double precision symmetric routines.
 
   void F77_FUNC(dsaupd,DSAUPD)
-    (integer *ido, const char *bmat, integer *n, const char *which,
-     integer *nev, double *tol, double *resid,
-     integer *ncv, double *V, integer *ldv,
-     integer *iparam, integer *ipntr, double *workd,
-     double *workl, integer *lworkl, integer *info);
+    (blas::integer *ido, const char *bmat, blas::integer *n, const char *which,
+     blas::integer *nev, double *tol, double *resid,
+     blas::integer *ncv, double *V, blas::integer *ldv,
+     blas::integer *iparam, blas::integer *ipntr, double *workd,
+     double *workl, blas::integer *lworkl, blas::integer *info);
 
   void F77_FUNC(dseupd,DSEUPD)
     (logical *rvec, const char *HowMny, logical *select,
-     double *d, double *Z, integer *ldz,
-     double *sigma, const char *bmat, integer *n,
-     const char *which, integer *nev, double *tol,
-     double *resid, integer *ncv, double *V,
-     integer *ldv, integer *iparam, integer *ipntr,
+     double *d, double *Z, blas::integer *ldz,
+     double *sigma, const char *bmat, blas::integer *n,
+     const char *which, blas::integer *nev, double *tol,
+     double *resid, blas::integer *ncv, double *V,
+     blas::integer *ldv, blas::integer *iparam, blas::integer *ipntr,
      double *workd, double *workl,
-     integer *lworkl, integer *info);
+     blas::integer *lworkl, blas::integer *info);
 
   // double precision nonsymmetric routines.
 
   void F77_FUNC(dnaupd,DNAUPD)
-    (integer *ido, const char *bmat, integer *n, const char *which,
-     integer *nev, double *tol, double *resid,
-     integer *ncv, double *V, integer *ldv,
-     integer *iparam, integer *ipntr, double *workd,
-     double *workl, integer *lworkl, integer *info);
+    (blas::integer *ido, const char *bmat, blas::integer *n, const char *which,
+     blas::integer *nev, double *tol, double *resid,
+     blas::integer *ncv, double *V, blas::integer *ldv,
+     blas::integer *iparam, blas::integer *ipntr, double *workd,
+     double *workl, blas::integer *lworkl, blas::integer *info);
 
   void F77_FUNC(dneupd,DNEUPD)
     (logical *rvec, const char *HowMny, logical *select,
      double *dr, double *di, double *Z,
-     integer *ldz, double *sigmar,
+     blas::integer *ldz, double *sigmar,
      double *sigmai, double *workev,
-     const char *bmat, integer *n, const char *which,
-     integer *nev, double *tol, double *resid,
-     integer *ncv, double *V, integer *ldv,
-     integer *iparam, integer *ipntr,
+     const char *bmat, blas::integer *n, const char *which,
+     blas::integer *nev, double *tol, double *resid,
+     blas::integer *ncv, double *V, blas::integer *ldv,
+     blas::integer *iparam, blas::integer *ipntr,
      double *workd, double *workl,
-     integer *lworkl, integer *info);
+     blas::integer *lworkl, blas::integer *info);
 
   // double precision complex routines.
 
   void F77_FUNC(znaupd,ZNAUPD)
-    (integer *ido,
-     const char *bmat, integer *n, const char *which, integer *nev,
-     double *tol, cdouble *resid, integer *ncv,
-     cdouble *V, integer *ldv, integer *iparam,
-     integer *ipntr, cdouble *workd,
-     cdouble *workl, integer *lworkl,
-     double *rwork, integer *info);
+    (blas::integer *ido,
+     const char *bmat, blas::integer *n, const char *which, blas::integer *nev,
+     double *tol, cdouble *resid, blas::integer *ncv,
+     cdouble *V, blas::integer *ldv, blas::integer *iparam,
+     blas::integer *ipntr, cdouble *workd,
+     cdouble *workl, blas::integer *lworkl,
+     double *rwork, blas::integer *info);
 
   void F77_FUNC(zneupd,ZNEUPD)
     (logical *rvec, const char *HowMny, logical *select,
-     cdouble *d, cdouble *Z, integer *ldz,
+     cdouble *d, cdouble *Z, blas::integer *ldz,
      cdouble *sigma, cdouble *workev,
-     const char *bmat, integer *n, const char *which, integer *nev,
-     double *tol, cdouble *resid, integer *ncv,
-     cdouble *V, integer *ldv, integer *iparam,
-     integer *ipntr, cdouble *workd,
-     cdouble *workl, integer *lworkl,
-     double *rwork, integer *info);
+     const char *bmat, blas::integer *n, const char *which, blas::integer *nev,
+     double *tol, cdouble *resid, blas::integer *ncv,
+     cdouble *V, blas::integer *ldv, blas::integer *iparam,
+     blas::integer *ipntr, cdouble *workd,
+     cdouble *workl, blas::integer *lworkl,
+     double *rwork, blas::integer *info);
 
 #ifdef __cplusplus
 }

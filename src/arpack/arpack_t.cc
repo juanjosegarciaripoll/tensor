@@ -78,12 +78,12 @@ ARPACK::ARPACK(size_t _n, enum EigType _t, size_t _nev)
 
   // Reserve space for the lanczos basis in which the eigenvectors are
   // approximated.
-  ncv = std::min<integer>(std::max<integer>(2 * nev, 20), n);
+  ncv = std::min<blas::integer>(std::max<blas::integer>(2 * nev, 20), n);
   V = new ELT_T[n * ncv];
 
   // Conservative estimate by Matlab
 
-  maxit = std::max<integer>(300,(int)(ceil(2.0*n/std::max<integer>(ncv,1))));
+  maxit = std::max<blas::integer>(300,(int)(ceil(2.0*n/std::max<blas::integer>(ncv,1))));
 
   // Parameters for the algorithm: the (-1) in the index is to make it
   // look like FORTRAN.
