@@ -23,6 +23,7 @@
 #define TENSOR_DETAIL_TENSOR_OPS_HPP
 
 #include <cassert>
+#include <functional>
 
 namespace tensor {
 
