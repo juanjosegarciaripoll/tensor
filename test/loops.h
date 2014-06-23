@@ -10,7 +10,9 @@
 #include <iostream>
 #include <string>
 #include <gtest/gtest.h>
+#ifndef GTEST_INCLUDE_GTEST_GTEST_DEATH_TEST_H_
 #include <gtest/gtest-death-test.h>
+#endif
 #include <tensor/rand.h>
 #include <tensor/tensor.h>
 #include <tensor/io.h>
