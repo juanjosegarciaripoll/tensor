@@ -35,6 +35,7 @@ const enum DataFile::endianness DataFile::endian = BIG_ENDIAN_FILE;
 #else
 const enum DataFile::endianness DataFile::endian = LITTLE_ENDIAN_FILE;
 #endif
+const size_t DataFile::var_name_size = 64;
 
 /* Try to get lock. Return its file descriptor or -1 if failed.
  */
@@ -75,8 +76,6 @@ static void giveup_lock(int fd, char const *lockName)
     close(fd);
 #endif
 }
-
-const size_t DataFile::var_name_size;
 
 DataFile::DataFile(const std::string &a_filename, int flags) :
   _flags(flags),

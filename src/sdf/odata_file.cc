@@ -169,10 +169,11 @@ OutDataFile::write_raw(const cdouble *data, size_t n)
 void
 OutDataFile::write_variable_name(const std::string &name)
 {
-  char buffer[var_name_size];
+  char *buffer = new char[var_name_size];
   memset(buffer, 0, var_name_size);
   strncpy(buffer, name.c_str(), std::min<size_t>(var_name_size - 1, name.size()));
   write_raw(buffer, var_name_size);
+  delete buffer;
 }
 
 void

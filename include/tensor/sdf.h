@@ -57,7 +57,6 @@ namespace sdf {
     };
 
   protected:
-    static const size_t var_name_size = 64;
     const char *_suffix;
     std::string _actual_filename;
     std::string _filename;
@@ -66,6 +65,7 @@ namespace sdf {
     int _lock;
     bool _open;
     static const enum endianness endian;
+    static const unsigned int var_name_size;
 
     DataFile(const std::string &a_filename, int flags = SDF_SHARED);
     ~DataFile();

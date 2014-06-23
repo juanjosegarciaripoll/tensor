@@ -149,9 +149,11 @@ InDataFile::read_tag_code()
 std::string
 InDataFile::read_variable_name()
 {
-  char buffer[var_name_size];
+  char *buffer = new char[var_name_size];
   read_raw(buffer, var_name_size);
-  return std::string(buffer);
+  std::string output(buffer);
+  delete buffer;
+  return output;
 }
 
 void
