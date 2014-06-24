@@ -353,8 +353,15 @@ namespace tensor {
 
   const RTensor change_dimension(const RTensor &U, int dimension, index new_size);
 
+  /**Return the smallest element in the tensor.*/
+  double min(const RTensor &r);
+  /**Return the largest element in the tensor.*/
+  double max(const RTensor &r);
+  /**Return the sum of the elements in the tensor.*/
   double sum(const RTensor &r);
+  /**Return the mean of the elements in the tensor.*/
   double mean(const RTensor &r);
+  /**Return the mean of the elements in the along the given dimension.*/
   const RTensor mean(const RTensor &r, int which);
 
   double norm0(const RTensor &r);
@@ -439,8 +446,11 @@ namespace tensor {
 
   const CTensor change_dimension(const CTensor &U, int dimension, index new_size);
 
+  /**Return the sum of the elements in the tensor.*/
   cdouble sum(const CTensor &r);
+  /**Return the mean of the elements in the tensor.*/
   cdouble mean(const CTensor &r);
+  /**Return the mean of the elements in the along the given dimension.*/
   const CTensor mean(const CTensor &r, int ndx);
 
   double norm0(const CTensor &r);

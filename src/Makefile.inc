@@ -61,6 +61,8 @@ basic_SOURCES = \
 	tensor/tensor_kron_d.cc \
 	tensor/tensor_kron_z.cc \
 	tensor/tensor_round_d.cc \
+	tensor/tensor_max_d.cc \
+	tensor/tensor_min_d.cc \
 	tensor/tensor_sum_d.cc \
 	tensor/tensor_sum_z.cc \
 	tensor/tensor_mean_d.cc \
