@@ -34,7 +34,7 @@ namespace tensor {
     }
   };
 
-  RTensor tensor::round(const RTensor &r)
+  RTensor round(const RTensor &r)
   {
     RTensor output(r.dimensions());
     std::transform(r.begin(), r.end(), output.begin(), round1());
