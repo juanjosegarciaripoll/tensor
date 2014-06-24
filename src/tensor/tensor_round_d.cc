@@ -23,25 +23,22 @@
 
 namespace tensor {
 
-  namespace {
- 
-    // Creation of a user-defined function object
-    // that inherits from the unary_function base class
-    class round1: std::unary_function<double, double>
+  // Creation of a user-defined function object
+  // that inherits from the unary_function base class
+  class round1: std::unary_function<double, double>
+  {
+  public:
+    result_type operator()(argument_type i)
     {
-    public:
-      result_type operator()(argument_type i)
-      {
-	return ::round(i);
-      }
-    };
-
-    RTensor round(const RTensor &r)
-    {
-      RTensor output(r.dimensions());
-      std::transform(r.begin(), r.end(), output.begin(), round1());
-      return output;
+      return ::round(i);
     }
+  };
+
+  RTensor tensor::round(const RTensor &r)
+  {
+    RTensor output(r.dimensions());
+    std::transform(r.begin(), r.end(), output.begin(), round1());
+    return output;
   }
 
 } // namespace tensor
