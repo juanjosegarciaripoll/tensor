@@ -36,6 +36,9 @@ initialize_mt()
 }
 
 void rand_reseed() {
+#ifdef _MSC_VER
+  init_genrand((uint32_t)time(0));
+#else
   char *rand_seed = getenv("RANDSEED");
   if (rand_seed) {
     int seed = atoi(rand_seed);
@@ -57,6 +60,7 @@ void rand_reseed() {
       init_genrand(seed);
     }
   }
+#endif
   for (size_t i = 0; i < 624*10; i++) {
     // Warm up
     rand<long>();
@@ -78,7 +82,7 @@ template<> unsigned long rand<unsigned long>() { return genrand_int32(); }
 #endif
 
 template<> float rand<float>() {
-  return genrand_res53();
+  return (float)genrand_res53();
 }
 
 template<> double rand<double>() {
