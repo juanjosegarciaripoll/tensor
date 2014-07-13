@@ -117,7 +117,7 @@ namespace tensor {
     /* Fill in the Sparse structure.
      */
     std::fill(row_start_.begin(), row_start_.end(), 0);
-    for (last_row = -1, j = i = 0; i < l; i++) {
+    for (last_col = 0, last_row = -1, j = i = 0; i < l; i++) {
       const sparse_triplet<elt_t> &d = sorted_data[i];
       if (d.row == last_row) {
         if (d.col == last_col)
