@@ -21,10 +21,10 @@
 // ARPACK DRIVER FOR SYMMETRIC REAL EIGENVALUE PROBLEMS
 //
 
-#include <linalg.h>
-#include <arpack.h>
-#include <utils.h>
-#include <sys/blas.h>
+#include <tensor/linalg.h>
+#include <tensor/arpack.h>
+#include <tensor/utils.h>
+#include <tensor/sys/blas.h>
 
 RTensor
 eigs_sym(const RTensor &A, RArpack::EigType t, size_t neig, RTensor *eigenvectors,

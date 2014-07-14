@@ -17,8 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <linalg.h>
-#include <arpack.h>
+#include <tensor/linalg.h>
+#include <tensor/arpack.h>
 
 RTensor
 eigs_sym(const CSparse &A, RArpack::EigType t, size_t neig, CTensor *eigenvectors,
