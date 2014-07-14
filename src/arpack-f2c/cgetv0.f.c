@@ -11,6 +11,8 @@
 */
 
 #include <stdlib.h> /* For exit() */
+#undef min
+#undef max
 #include <f2c.h>
 
 /* Common Block Declarations */
