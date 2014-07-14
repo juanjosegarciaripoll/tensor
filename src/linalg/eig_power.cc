@@ -55,7 +55,6 @@ namespace linalg {
             break;
           }
         }
-        std::cout << std::endl;
       }
       old_eig = eig;
       v = v_new;
