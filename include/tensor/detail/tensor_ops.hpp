@@ -109,6 +109,7 @@ Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a, const t2 &b) 
   std::transform(a.begin(), a.end(), output.begin(), divided_constant<t1,t2>(b));
   return output;
 }
+
 //
 // NUMBER <OP> TENSOR
 //
@@ -137,6 +138,61 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b) 
   return output;
 }
 
+
+//
+// TENSOR <OP=> TENSOR
+//
+template<typename t1, typename t2>
+Tensor<t1> &operator+=(Tensor<t1> &a, const Tensor<t2> &b) {
+  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  std::transform(a.begin(), a.end(), b.begin(), a.begin(), plus<t1,t2>());
+  return a;
+}
+
+template<typename t1, typename t2>
+Tensor<t1> &operator-=(Tensor<t1> &a, const Tensor<t2> &b) {
+  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  std::transform(a.begin(), a.end(), b.begin(), a.begin(), minus<t1,t2>());
+  return a;
+}
+
+template<typename t1, typename t2>
+Tensor<t1> &operator*=(Tensor<t1> &a, const Tensor<t2> &b) {
+  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  std::transform(a.begin(), a.end(), b.begin(), a.begin(), times<t1,t2>());
+  return a;
+}
+
+template<typename t1, typename t2>
+Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t2> &b) {
+  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  std::transform(a.begin(), a.end(), b.begin(), a.begin(), divided<t1,t2>());
+  return a;
+}
+
+//
+// TENSOR <OP=> NUMBER
+//
+template<typename t1, typename t2>
+Tensor<t1> &operator+=(Tensor<t1> &a, const t2 &b) {
+  std::transform(a.begin(), a.end(), a.begin(), plus_constant<t1,t2>(b));
+  return a;
+}
+template<typename t1, typename t2>
+Tensor<t1> &operator-=(Tensor<t1> &a, const t2 &b) {
+  std::transform(a.begin(), a.end(), a.begin(), minus_constant<t1,t2>(b));
+  return a;
+}
+template<typename t1, typename t2>
+Tensor<t1> operator*=(Tensor<t1> &a, const t2 &b) {
+  std::transform(a.begin(), a.end(), a.begin(), times_constant<t1,t2>(b));
+  return a;
+}
+template<typename t1, typename t2>
+Tensor<t1> operator/=(Tensor<t1> &a, const t2 &b) {
+  std::transform(a.begin(), a.end(), a.begin(), divided_constant<t1,t2>(b));
+  return a;
+}
 
 } // namespace tensor
 
