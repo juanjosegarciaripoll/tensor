@@ -67,8 +67,8 @@ namespace linalg {
 
   /**Type of eigenvalues that eigs and Arpack compute.*/
   enum EigType {
-    LargestMagnitude = 0, /*!<Eigenvalues with smallest modulus.*/
-    SmallestMagnitude = 1, /*!<Eigenvalues with largest modulus.*/
+    LargestMagnitude = 0, /*!<Eigenvalues with largest modulus.*/
+    SmallestMagnitude = 1, /*!<Eigenvalues with smallest modulus.*/
     LargestReal = 2, /*!<Eigenvalues with largest real part.*/
     LargestAlgebraic = 2, /*!<Eigenvalues with largest real part.*/
     SmallestReal = 3, /*!<Eigenvalues with smallest real part.*/
