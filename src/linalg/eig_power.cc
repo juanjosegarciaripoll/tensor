@@ -20,6 +20,7 @@
 #include <tensor/tensor.h>
 #include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
+#include <tensor/io.h>
 
 namespace linalg {
 
@@ -33,14 +34,16 @@ namespace linalg {
       std::cerr << "eig_right_power cannot solve non-square problems";
       abort();
     }
-    if (iter == 0) {
-      iter = 20;
-    }
     if (tol <= 0) {
       tol = 1e-11;
     }
-    Tensor<elt_t> v = Tensor<elt_t>::random(O.columns());
-    v -= 0.5;
+    Tensor<elt_t> &v = *vector;
+    if (v.rank() != 1 || v.size() != O.columns()) {
+      v = 0.5 - Tensor<elt_t>::random(O.columns());
+    }
+    if (iter == 0) {
+      iter = std::max<size_t>(20, v.size());
+    }
     v /= norm2(v);
     elt_t eig, old_eig;
     for (size_t i = 0; i <= iter; i++) {
@@ -50,8 +53,8 @@ namespace linalg {
       if (i) {
         double eig_change = std::abs(eig - old_eig);
         if (eig_change < tol * std::abs(eig)) {
-          double vec_change = norm2(v_new - v);
-          if (vec_change < tol) {
+          double error = std::abs(std::abs(scprod(v_new, v)) - 1.0);
+          if (error < tol) {
             break;
           }
         }
@@ -59,7 +62,6 @@ namespace linalg {
       old_eig = eig;
       v = v_new;
     }
-    *vector = v;
     return eig;
   }
 
