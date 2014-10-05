@@ -20,7 +20,11 @@
 #define TENSOR_RAND_MT_H
 
 #include "tensor/config.h"
+#ifdef _MSC_VER
+#include <stdint.h>
+#else
 #include <inttypes.h>
+#endif
 
 namespace tensor {
 
