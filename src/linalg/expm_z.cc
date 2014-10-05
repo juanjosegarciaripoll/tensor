@@ -22,6 +22,12 @@
 #include <tensor/linalg.h>
 
 namespace linalg {
+
+#ifdef _MSC_VER
+  static double log2(double n) { return log(n) / log((double)2.0); }
+  static double exp2(double n) { return exp(log((double)2.0) * n); }
+#endif
+
 /**Compute the exponential of a real matrix.
    This function computes the exponential of a matrix using a Pade
    approximation of any given order.

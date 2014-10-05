@@ -20,6 +20,9 @@
 #ifndef TENSOR_NUMBERS_H
 #define TENSOR_NUMBERS_H
 
+#ifdef _MSC_VER
+#include <math.h>
+#endif
 #include <cmath>
 #include <complex>
 #include <iostream>
@@ -76,9 +79,16 @@ inline cdouble number_one<cdouble>() { return to_complex(1.0); }
 
 inline double abs2(cdouble z) { return abs2(real(z)) + abs2(imag(z)); }
 
+#ifdef _MSC_VER
+double round(double r);
+inline cdouble round(cdouble r) {
+  return to_complex(round(real(r)),round(imag(r)));
+};
+#else
 inline cdouble round(cdouble r) {
   return to_complex(::round(real(r)),::round(imag(r)));
 }
+#endif
 
 inline std::istream &operator>>(std::istream &s, cdouble &z) {
   double r, i;

@@ -16,12 +16,19 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <math.h>
 #include <cmath>
 #include <functional>
 #include <algorithm>
 #include <tensor/tensor.h>
 
 namespace tensor {
+
+#ifdef _MSC_VER
+  double tensor::round(double x) {
+    return floor((x < 0) ? (x - 0.5) : (x + 0.5));
+  }
+#endif
 
   // Creation of a user-defined function object
   // that inherits from the unary_function base class
@@ -30,7 +37,11 @@ namespace tensor {
   public:
     result_type operator()(argument_type i)
     {
+#ifdef _MSC_VER
+      return round(i);
+#else
       return ::round(i);
+#endif
     }
   };
 
