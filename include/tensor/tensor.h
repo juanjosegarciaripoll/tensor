@@ -21,6 +21,10 @@
 #ifndef TENSOR_TENSOR_H
 #define TENSOR_TENSOR_H
 
+
+/** Flag defining the order of elements in the arrays. */
+#define TENSOR_COLUMN_MAJOR_ORDER 1
+
 #include <cassert>
 #include <vector>
 #include <tensor/numbers.h>
