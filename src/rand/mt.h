@@ -20,7 +20,7 @@
 #define TENSOR_RAND_MT_H
 
 #include "tensor/config.h"
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && (_MSC_VER < 1800)
 #include <stdint.h>
 #else
 #include <inttypes.h>

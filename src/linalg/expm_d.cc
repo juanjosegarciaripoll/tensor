@@ -24,7 +24,7 @@
 
 namespace linalg {
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && (_MSC_VER < 1800)
   static double log2(double n) { return log(n) / log((double)2.0); }
   static double exp2(double n) { return exp(log((double)2.0) * n); }
 #endif

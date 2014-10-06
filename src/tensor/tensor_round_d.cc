@@ -24,7 +24,7 @@
 
 namespace tensor {
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && (_MSC_VER < 1800)
   double tensor::round(double x) {
     return floor((x < 0) ? (x - 0.5) : (x + 0.5));
   }
@@ -37,7 +37,7 @@ namespace tensor {
   public:
     result_type operator()(argument_type i)
     {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && (_MSC_VER < 1800)
       return round(i);
 #else
       return ::round(i);
