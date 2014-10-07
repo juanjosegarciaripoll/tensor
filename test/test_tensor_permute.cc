@@ -20,7 +20,6 @@
 #include <algorithm>
 #include "loops.h"
 #include <gtest/gtest.h>
-#include <gtest/gtest-death-test.h>
 #include <tensor/tensor.h>
 
 namespace tensor_test {

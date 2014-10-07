@@ -60,7 +60,7 @@ namespace tensor_test {
   template<typename elt_t1, typename elt_t2>
   bool simeq(elt_t1 a, elt_t2 b, double epsilon = 2*EPSILON)
   {
-    double x = abs(a - b);
+    double x = tensor::abs(a - b);
     if (x > epsilon) {
       std::cout << x << std::endl;
       return false;
@@ -73,7 +73,7 @@ namespace tensor_test {
   {
     for (typename Tensor<elt_t>::const_iterator ia = a.begin(), ib = b.begin();
          ia != a.end(); ia++, ib++) {
-      double x = abs(*ia - *ib);
+      double x = tensor::abs(*ia - *ib);
       if (x > epsilon) {
         std::cout << x << std::endl;
         return false;

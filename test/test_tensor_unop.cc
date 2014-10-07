@@ -19,7 +19,6 @@
 
 #include "loops.h"
 #include <gtest/gtest.h>
-#include <gtest/gtest-death-test.h>
 #include <tensor/tensor.h>
 
 namespace tensor_test {
@@ -28,7 +27,7 @@ namespace tensor_test {
   //
   // WRAPPERS FOR SOLVING SOME PROBLEMS WITH AIX
   //
-  template<typename elt_t> double _abs(elt_t x) { return abs(x); }
+  template<typename elt_t> double _abs(elt_t x) { return tensor::abs(x); }
   template<typename elt_t> elt_t _exp(elt_t x) { return exp(x); }
   template<typename elt_t> elt_t _sin(elt_t x) { return sin(x); }
   template<typename elt_t> elt_t _cos(elt_t x) { return cos(x); }

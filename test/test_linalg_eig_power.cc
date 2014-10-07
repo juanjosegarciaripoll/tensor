@@ -19,7 +19,6 @@
 
 #include "loops.h"
 #include <gtest/gtest.h>
-#include <gtest/gtest-death-test.h>
 #include <tensor/tensor.h>
 #include <tensor/linalg.h>
 
@@ -42,7 +41,7 @@ namespace tensor_test {
     Tensor<elt_t> U, Inn = Tensor<elt_t>::eye(n,n);
     elt_t s = linalg::eig_power_right(Inn, &U);
     EXPECT_TRUE(all_equal(U, mmult(Inn, U)));
-    EXPECT_TRUE(abs(s - 1.0) < EPSILON);
+    EXPECT_TRUE(tensor::abs(s - 1.0) < EPSILON);
   }
 
   template<typename elt_t>
@@ -56,7 +55,7 @@ namespace tensor_test {
     Tensor<elt_t> U, Inn = Tensor<elt_t>::eye(n,n);
     elt_t s = linalg::eig_power_left(Inn, &U);
     EXPECT_TRUE(all_equal(U, mmult(U, Inn)));
-    EXPECT_TRUE(abs(s - 1.0) < EPSILON);
+    EXPECT_TRUE(tensor::abs(s - 1.0) < EPSILON);
   }
 
   template<typename elt_t>
@@ -80,7 +79,7 @@ namespace tensor_test {
     for (int times = 10; times; --times) {
       Tensor<elt_t> R, A = random_Hermitian_with_gap<elt_t>(n);
       elt_t l = linalg::eig_power_right(A, &R, 30, 1e-13);
-      EXPECT_TRUE(abs(l - 5.0) < 1e-12);
+      EXPECT_TRUE(tensor::abs(l - 5.0) < 1e-12);
       EXPECT_TRUE(norm0(mmult(A, R) - l * R) < 1e-10);
     }
   }
@@ -96,7 +95,7 @@ namespace tensor_test {
     for (int times = 10; times; --times) {
       Tensor<elt_t> L, A = random_Hermitian_with_gap<elt_t>(n);
       elt_t l = linalg::eig_power_left(A, &L, 30, 1e-13);
-      EXPECT_TRUE(abs(l - 5.0) < 1e-12);
+      EXPECT_TRUE(tensor::abs(l - 5.0) < 1e-12);
       EXPECT_TRUE(norm0(mmult(L, A) - l * L) < 1e-10);
     }
   }

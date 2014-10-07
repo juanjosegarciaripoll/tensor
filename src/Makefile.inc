@@ -345,4 +345,10 @@ arpack_precompiled_SOURCES = \
 	arpack-f2c/zngets.f.c \
 	arpack-f2c/zsortc.f.c \
 	arpack-f2c/zstatn.f.c \
-	arpack-f2c/zvout.f.c
+	arpack-f2c/zvout.f.c \
+	arpack/arpack_d.cc \
+	arpack/arpack_z.cc \
+	arpack/eigs_d.cc \
+	arpack/eigs_z.cc \
+	arpack/eigs_sp_d.cc \
+	arpack/eigs_sp_z.cc

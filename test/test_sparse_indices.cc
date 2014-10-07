@@ -19,10 +19,7 @@
 
 #include <tensor/sparse.h>
 #include "loops.h"
-
-
 #include <gtest/gtest.h>
-#include <gtest/gtest-death-test.h>
 
 namespace tensor_test {
 
