@@ -215,11 +215,11 @@ Internally, these expressions are evaluated using recursive templates; consequen
 Note that the direct use of the generators always results in one-dimensional tensors of appropriate size.
 If you want to generate a tensor of a given size, you have to supply the dimensions as Indices vector.
 Typically, you will create this vector also statically.
-Note that the data is as usual interpreted in row-major form.
+Note that the data is as usual interpreted in column-major form.
 
 \code
-RTensor a(rgen << 1 << 2 << 3 << 4,   // creates matrix ( 1   2 )
-          igen << 2 << 2);            //                ( 3   4 )
+RTensor a(rgen << 1 << 2 << 3 << 4,   // creates matrix ( 1   3 )
+          igen << 2 << 2);            //                ( 2   4 )
 \endcode
 
 */
