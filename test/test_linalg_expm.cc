@@ -114,7 +114,7 @@ namespace tensor_test {
     for (int n = 1; n < 4; n++) {
       for (int i = 0; i < 30; i++) {
         double theta = rand(M_PI);
-        double phi = rand(M_PI);
+        double phi = rand(1.0);
         RTensor fA, expfA = pauli_exponential(theta, phi, &fA);
         RTensor B, expB = expm_diag(n, &B);
         RTensor in = RTensor::eye(n,n);
