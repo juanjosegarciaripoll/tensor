@@ -43,7 +43,7 @@ initialize_mt()
 
 void rand_reseed() {
 #ifdef _MSC_VER
-# if 0
+# if 1
   // The following code has a problem: it requires additional libraries
   HCRYPTPROV hCryptProv;
   union {
