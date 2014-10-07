@@ -22,7 +22,9 @@
 namespace linalg {
 
   /**Right eigenvalue and eigenvector with the largest absolute
-     value, computed using the power method.
+     value, computed using the power method. 'iter' is the maximum
+     number of iterations of the algorithm. 'tol' is the maximum
+     absolute error in the elements of the eigenvector.
 
      \ingroup Linalg
   */
@@ -33,7 +35,9 @@ namespace linalg {
   }
 
   /**Left eigenvalue and eigenvector with the largest absolute
-     value, computed using the power method.
+     value, computed using the power method. 'iter' is the maximum
+     number of iterations of the algorithm. 'tol' is the maximum
+     absolute error in the elements of the eigenvector.
 
      \ingroup Linalg
   */

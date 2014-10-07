@@ -54,8 +54,9 @@ namespace linalg {
       if (i) {
         double eig_change = std::abs(eig - old_eig);
         if (eig_change < tol * std::abs(eig)) {
-          double error = std::abs(std::abs(scprod(v_new, v)) - 1.0);
+          double error = norm0(v_new - v);
           if (error < tol) {
+            v = v_new;
             break;
           }
         }
