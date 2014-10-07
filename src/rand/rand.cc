@@ -19,6 +19,8 @@
 
 #include <cstdlib>
 #ifdef _MSC_VER
+#include <windows.h>
+#include <Wincrypt.h>
 #include <time.h>
 #else
 #include <cstdio>
@@ -35,9 +37,36 @@ initialize_mt()
   return true;
 }
 
+#ifndef SEED_SIZE
+#define SEED_SIZE 1
+#endif
+
 void rand_reseed() {
 #ifdef _MSC_VER
-  init_genrand((uint32_t)time(0));
+# if 0
+  // The following code has a problem: it requires additional libraries
+  HCRYPTPROV hCryptProv;
+  union {
+    BYTE data[SEED_SIZE * sizeof(rand_uint)];
+    rand_uint seed[SEED_SIZE];
+  } r;
+  int ok = 0;
+  if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+    ok = CryptGenRandom(hCryptProv, sizeof(r.seed), r.data);
+    CryptReleaseContext(hCryptProv, 0);
+  }
+  if (!ok) {
+    init_genrand((uint32_t)clock() ^ (uint32_t)time(0));
+  }
+# else
+  // Sleep one second at least to get a different value on each call.
+  static int firsttime = 1;
+  if (!firsttime) {
+    Sleep(1000);
+  }
+  firsttime = 0;
+  init_genrand((uint32_t)clock() ^ (uint32_t)time(0));
+#endif
 #else
   char *rand_seed = getenv("RANDSEED");
   if (rand_seed) {
@@ -47,9 +76,6 @@ void rand_reseed() {
     return;
   } else {
     FILE *fp = fopen("/dev/urandom", "r");
-#ifndef SEED_SIZE
-#define SEED_SIZE 1
-#endif
     rand_uint seed[SEED_SIZE];
     if (fp && (SEED_SIZE > 0)) {
       fread(&seed, sizeof(rand_uint), SEED_SIZE, fp);
