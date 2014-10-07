@@ -37,6 +37,7 @@ namespace linalg {
     if (tol <= 0) {
       tol = 1e-11;
     }
+    assert(vector);
     Tensor<elt_t> &v = *vector;
     if (v.rank() != 1 || v.size() != O.columns()) {
       v = 0.5 - Tensor<elt_t>::random(O.columns());
