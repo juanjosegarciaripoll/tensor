@@ -91,6 +91,34 @@ const Tensor<elt_t> Tensor<elt_t>::ones(const Indices &dimensions) {
   return output;
 }
 
+template<typename elt_t>
+const Tensor<elt_t> Tensor<elt_t>::ones(index d1, index d2, index d3) {
+  Tensor<elt_t> output(d1, d2, d3);
+  output.fill_with(number_one<elt_t>());
+  return output;
+}
+
+template<typename elt_t>
+const Tensor<elt_t> Tensor<elt_t>::ones(index d1, index d2, index d3, index d4) {
+  Tensor<elt_t> output(d1, d2, d3, d4);
+  output.fill_with(number_one<elt_t>());
+  return output;
+}
+
+template<typename elt_t>
+const Tensor<elt_t> Tensor<elt_t>::ones(index d1, index d2, index d3, index d4, index d5) {
+  Tensor<elt_t> output(d1, d2, d3, d4, d5);
+  output.fill_with(number_one<elt_t>());
+  return output;
+}
+
+template<typename elt_t>
+const Tensor<elt_t> Tensor<elt_t>::ones(index d1, index d2, index d3, index d4, index d5, index d6) {
+  Tensor<elt_t> output(d1, d2, d3, d4, d5, d6);
+  output.fill_with(number_one<elt_t>());
+  return output;
+}
+
 } // namespace tensor
 
 #endif // !TENSOR_DETAIL_TENSOR_MATRIX_H

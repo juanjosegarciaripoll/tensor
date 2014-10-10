@@ -246,14 +246,21 @@ class Tensor {
   /**5D Tensor of zeros.*/
   static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4, index d5);
   /**6D Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4, index d5, index d6);
-  /**Tensor of zeros.*/
+  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4, index d5, index d6);  /**Tensor of zeros.*/
   static const Tensor<elt_t> zeros(const Indices &dimensions);
+
   /**Matrix of ones.*/
   static const Tensor<elt_t> ones(index rows) { return ones(rows, rows); }
   /**Matrix of ones.*/
   static const Tensor<elt_t> ones(index rows, index cols);
-  /**Tensor of ones.*/
+  /**4D Tensor of ones.*/
+  static const Tensor<elt_t> ones(index d1, index d2, index d3);
+  /**4D Tensor of ones.*/
+  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4);
+  /**5D Tensor of ones.*/
+  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4, index d5);
+  /**6D Tensor of ones.*/
+  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4, index d5, index d6);  /**Tensor of ones.*/
   static const Tensor<elt_t> ones(const Indices &dimensions);
 
   /**Iterator at the beginning.*/
