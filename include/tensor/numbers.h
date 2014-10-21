@@ -26,6 +26,11 @@
 
 namespace tensor {
 
+using std::conj;
+using std::real;
+using std::imag;
+using std::abs;
+
 //
 // REAL NUMBERS
 //
@@ -41,20 +46,15 @@ inline double real(double r) { return r; }
 inline double imag(double r) { return 0.0; }
 inline double conj(double r) { return r; }
 inline double abs2(double r) { return r*r; }
-inline double abs(double r) { return std::abs(r); }
 
-template<class number> number square(number r) { return r*r; }
+template<class number>
+inline number square(number r) { return r*r; }
 
 //
 // COMPLEX NUMBERS
 //
 
 typedef std::complex<double> cdouble;
-
-inline double real(const cdouble &r) { return std::real(r); }
-inline double imag(const cdouble &r) { return std::imag(r); }
-inline cdouble conj(const cdouble &r) { return std::conj(r); }
-inline double abs(const cdouble &r) { return std::abs(r); }
 
 inline cdouble to_complex(const double &r) {
   return cdouble(r, 0);
