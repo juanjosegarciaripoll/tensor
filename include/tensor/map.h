@@ -62,7 +62,7 @@ namespace tensor {
 
   template<class out, class arg0, class arg1, class par1>
   inline Closure1<out,arg0,arg1,par1>
-  with_args(out (*f)(arg0, arg1), par1 &a1)
+  with_args(out (*f)(arg0, arg1), par1 a1)
   {
     return Closure1<out,arg0,arg1,par1>(f,a1);
   }
@@ -80,7 +80,7 @@ namespace tensor {
 
   template<class out, class arg0, class arg1, class arg2, class par1, class par2>
   inline Closure2<out,arg0,arg1,arg2,par1,par2>
-  with_args(out (*f)(arg0, arg1, arg2), par1 &a1, par2 &a2)
+  with_args(out (*f)(arg0, arg1, arg2), par1 a1, par2 a2)
   {
     return Closure2<out,arg0,arg1,arg2,par1,par2>(f,a1,a2);
   }
