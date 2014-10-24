@@ -33,7 +33,7 @@ namespace linalg {
   cgs(const CTensor &A, const CTensor &b, const CTensor *x_start,
       int maxiter, double tol)
   {
-    return cgs(new tensor::MatrixMap<CTensor>(A), b, x_start, maxiter, tol);
+    return do_cgs(new tensor::MatrixMap<CTensor>(A), b, x_start, maxiter, tol);
   }
 
 }

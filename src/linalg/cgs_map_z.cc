@@ -32,8 +32,8 @@ namespace linalg {
      \ingroup Linalg
   */
   const CTensor
-  cgs(const tensor::Map<CTensor> *A, const CTensor &b, const CTensor *x_start,
-      int maxiter, double tol)
+  do_cgs(const tensor::Map<CTensor> *A, const CTensor &b, const CTensor *x_start,
+	 int maxiter, double tol)
   {
     return solve(A, b, x_start, maxiter, tol);
   }

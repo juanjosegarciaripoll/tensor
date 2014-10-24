@@ -28,7 +28,7 @@ namespace tensor {
   template<class Tensor>
   struct Map {
     virtual ~Map() {};
-    virtual const Tensor operator()(const Tensor &arg) const = 0;
+    virtual const Tensor operator()(const Tensor &arg) const { return arg; };
   };
 
   template<class Matrix>
@@ -42,9 +42,9 @@ namespace tensor {
   };
 
   template<class Func, class Tensor>
-  struct FunctionMap : public Map<Func> {
+  struct FunctionMap : public Map<Tensor> {
     FunctionMap(const Func &f) : f_(f) {}
-    virtual ~FunctionMap();
+    virtual ~FunctionMap() {};
     virtual const Tensor operator()(const Tensor &arg) const { return f_(arg); }
   private:
     const Func &f_;

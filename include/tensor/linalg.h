@@ -40,20 +40,34 @@ namespace linalg {
   const RTensor solve_with_svd(const RTensor &A, const RTensor &B, double tol = 0.0);
   const CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol = 0.0);
 
-  const RTensor cgs(const Map<RTensor> *A, const RTensor &b,
+  const RTensor do_cgs(const Map<RTensor> *A, const RTensor &b,
                     const RTensor *x_start = 0, int maxiter = 0, double tol = 0);
-  const CTensor cgs(const Map<CTensor> *A, const CTensor &b,
+  const CTensor do_cgs(const Map<CTensor> *A, const CTensor &b,
                     const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
 
+  /**Solve a real linear system of equations by the conjugate gradient method.*/
   const RTensor cgs(const RTensor &A, const RTensor &b, const RTensor *x_start = 0,
                     int maxiter = 0, double tol = 0);
+  /**Solve a real linear system of equations by the conjugate gradient method.*/
   const CTensor cgs(const CTensor &A, const CTensor &b, const CTensor *x_start = 0,
                     int maxiter = 0, double tol = 0);
 
+  /**Solve a real linear system of equations by the conjugate gradient method.*/
   const RTensor cgs(const RSparse &A, const RTensor &b, const RTensor *x_start = 0,
                     int maxiter = 0, double tol = 0);
+  /**Solve a real linear system of equations by the conjugate gradient method.*/
   const CTensor cgs(const RSparse &A, const CTensor &b, const CTensor *x_start = 0,
                     int maxiter = 0, double tol = 0);
+
+  /**Solve a real linear system of equations by the conjugate gradient
+     method. 'f' is a function that takes in a Tensor and returns also a Tensor
+     of the same class and dimension. */
+  template<class func, class Tensor>
+  const Tensor cgs(const func &f, const Tensor &b, const Tensor *x_start = 0,
+                   int maxiter = 0, double tol = 0)
+  {
+    return do_cgs(new tensor::FunctionMap<func,Tensor>(f), b, x_start, maxiter, tol);
+  }
 
   extern bool accurate_svd;
 

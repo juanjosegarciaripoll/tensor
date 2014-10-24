@@ -86,6 +86,29 @@ namespace tensor_test {
     }
   }
 
+  template<class Tensor>
+  const Tensor f(const Tensor &f)
+  {
+    return 1.5 * f;
+  }
+
+  template<class Tensor>
+  void test_cgs_functor(int n) {
+    for (int cols = 1; cols < n; cols++) {
+      Tensor x = Tensor::random(n, cols);
+      Tensor y = f<Tensor>(x);
+
+      // If the initial state is a solution, this should be ok
+      Tensor x0 = cgs(f<Tensor>, y, &x, 0, 2*EPSILON);
+      EXPECT_CEQ(x, x0);
+
+      // Otherwise check a randomize initial state
+      Tensor x_start = x + Tensor::random(n,cols)*0.02;
+      x0 = cgs(f<Tensor>, y, &x_start, 0, 2*EPSILON);
+      EXPECT_CEQ(x, x0);
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////
   // REAL SPECIALIZATIONS
   //
@@ -102,6 +125,10 @@ namespace tensor_test {
     test_over_integers(1, 22, test_cgs_unitary<RTensor>);
   }
 
+  TEST(RCgs, Functor) {
+    test_over_integers(1, 22, test_cgs_functor<RTensor>);
+  }
+
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
@@ -116,6 +143,10 @@ namespace tensor_test {
 
   TEST(CCgs, Unitary) {
     test_over_integers(1, 22, test_cgs_unitary<CTensor>);
+  }
+
+  TEST(CCgs, Functor) {
+    test_over_integers(1, 22, test_cgs_functor<CTensor>);
   }
 
 } // namespace linalg_test
