@@ -33,16 +33,22 @@ namespace linalg {
     if (maxiter == 0) {
       maxiter = b.rows();
     }
-    if (tol == 0) {
+    if (tol <= 0) {
       tol = 1e-10;
     }
-    Tensor x = x_start? *x_start : b;
+    Tensor x = x_start? *x_start : (b + 0.05 * Tensor::random(b.dimensions()));
     Tensor r = b - (*A)(x);
     Tensor p = r;
     number rsold = scprod(r,r);
     if (sqrt(abs(rsold)) > tol) {
       while (maxiter-- >= 0) {
         Tensor Ap = (*A)(p);
+        number beta = scprod(p, Ap);
+        if (abs(beta) < 1e-15 * abs(rsold)) {
+          // We have hit a zero
+          std::cerr << "Singular system of equations hit in cgs()" << std::endl;
+          abort();
+        }
         number alpha = rsold / scprod(p, Ap);
         x += alpha * p;
         r -= alpha * Ap;
