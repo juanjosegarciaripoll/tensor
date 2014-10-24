@@ -22,6 +22,7 @@ nobase_include_HEADERS = \
 	tensor/io.h \
 	tensor/jobs.h \
 	tensor/linalg.h \
+	tensor/map.h \
 	tensor/numbers.h \
 	tensor/rand.h \
 	tensor/refcount.h \
