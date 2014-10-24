@@ -5,6 +5,10 @@ basic_SOURCES = \
 	tools/jobs_save.cc \
 	tools/jobs_dataset.cc \
 	tools/flags.cc \
+	tools/map_d.cc \
+	tools/map_z.cc \
+	tools/map_sp_d.cc \
+	tools/map_sp_z.cc \
 	rand/rand.cc \
 	indices/indices.cc \
 	indices/concat.cc \
@@ -137,6 +141,10 @@ basic_SOURCES = \
 	generated/tensor_unop_sqrt_z.cc \
 	linalg/cgs_d.cc \
 	linalg/cgs_z.cc \
+	linalg/cgs_sp_d.cc \
+	linalg/cgs_sp_z.cc \
+	linalg/cgs_map_d.cc \
+	linalg/cgs_map_z.cc \
 	linalg/eig_d.cc \
 	linalg/eig_z.cc \
 	linalg/svd_d.cc \

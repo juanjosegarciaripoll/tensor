@@ -17,9 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/tensor.h>
 #include <tensor/linalg.h>
-#include "cgs.cc"
 
 namespace linalg {
 
@@ -35,7 +33,7 @@ namespace linalg {
   cgs(const RTensor &A, const RTensor &b, const RTensor *x_start,
       int maxiter, double tol)
   {
-    return solve(A, b, x_start, maxiter, tol);
+    return cgs(new tensor::MatrixMap<RTensor>(A), b, x_start, maxiter, tol);
   }
 
 }

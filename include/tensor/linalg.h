@@ -22,6 +22,7 @@
 
 #include <tensor/tensor.h>
 #include <tensor/sparse.h>
+#include <tensor/map.h>
 
 /*!\addtogroup Linalg*/
 /** Namespace for Linear Algebra functions based on BLAS, LAPACK, Lanczos and related algorithms. */
@@ -31,6 +32,7 @@ namespace linalg {
   using tensor::CTensor;
   using tensor::RSparse;
   using tensor::CSparse;
+  using tensor::Map;
 
   const RTensor solve(const RTensor &A, const RTensor &B);
   const CTensor solve(const CTensor &A, const CTensor &B);
@@ -38,9 +40,20 @@ namespace linalg {
   const RTensor solve_with_svd(const RTensor &A, const RTensor &B, double tol = 0.0);
   const CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol = 0.0);
 
-  const RTensor cgs(const RTensor &A, const RTensor &b, const RTensor *x_start = NULL, int maxiter = 0, double tol = 0);
+  const RTensor cgs(const Map<RTensor> *A, const RTensor &b,
+                    const RTensor *x_start = 0, int maxiter = 0, double tol = 0);
+  const CTensor cgs(const Map<CTensor> *A, const CTensor &b,
+                    const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
 
-  const CTensor cgs(const CTensor &A, const CTensor &b, const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
+  const RTensor cgs(const RTensor &A, const RTensor &b, const RTensor *x_start = 0,
+                    int maxiter = 0, double tol = 0);
+  const CTensor cgs(const CTensor &A, const CTensor &b, const CTensor *x_start = 0,
+                    int maxiter = 0, double tol = 0);
+
+  const RTensor cgs(const RSparse &A, const RTensor &b, const RTensor *x_start = 0,
+                    int maxiter = 0, double tol = 0);
+  const CTensor cgs(const RSparse &A, const CTensor &b, const CTensor *x_start = 0,
+                    int maxiter = 0, double tol = 0);
 
   extern bool accurate_svd;
 

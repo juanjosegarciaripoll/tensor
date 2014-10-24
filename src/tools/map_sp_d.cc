@@ -17,23 +17,11 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/linalg.h>
+#include "map.cc"
 
-namespace linalg {
+namespace tensor {
 
-  /**Solve a real linear system of equations by the conjugate gradient method.
-
-     Given a matrix A, and a right hand matrix B, we find the matrix X that
-     satisfies
-     A X = B
-     using the iterative conjugate gradient method.
-     \ingroup Linalg
-  */
-  const CTensor
-  cgs(const CTensor &A, const CTensor &b, const CTensor *x_start,
-      int maxiter, double tol)
-  {
-    return cgs(new tensor::MatrixMap<CTensor>(A), b, x_start, maxiter, tol);
-  }
+  // Explicitely instantiate an specialization of MatrixMap
+  template class tensor::MatrixMap<RSparse>;
 
 }

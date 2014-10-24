@@ -30,10 +30,10 @@ namespace linalg {
      \ingroup Linalg
   */
   const CTensor
-  cgs(const CTensor &A, const CTensor &b, const CTensor *x_start,
+  cgs(const CSparse &A, const CTensor &b, const CTensor *x_start,
       int maxiter, double tol)
   {
-    return cgs(new tensor::MatrixMap<CTensor>(A), b, x_start, maxiter, tol);
+    return cgs(new tensor::MatrixMap<CSparse>(A), b, x_start, maxiter, tol);
   }
 
 }

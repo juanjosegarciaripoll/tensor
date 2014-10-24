@@ -24,25 +24,25 @@ namespace linalg {
 
   using namespace tensor;
 
-  template<class Tensor>
+  template<class Map, class Tensor>
   static const Tensor
-  solve(const Tensor &A, const Tensor &b, const Tensor *x_start,
+  solve(const Map *A, const Tensor &b, const Tensor *x_start,
 	int maxiter, double tol)
   {
     typedef typename Tensor::elt_t number;
     if (maxiter == 0) {
-      maxiter = A.rows();
+      maxiter = b.rows();
     }
     if (tol == 0) {
       tol = 1e-10;
     }
     Tensor x = x_start? *x_start : b;
-    Tensor r = b - mmult(A, x);
+    Tensor r = b - (*A)(x);
     Tensor p = r;
     number rsold = scprod(r,r);
     if (sqrt(abs(rsold)) > tol) {
       while (maxiter-- >= 0) {
-        Tensor Ap = mmult(A, p);
+        Tensor Ap = (*A)(p);
         number alpha = rsold / scprod(p, Ap);
         x += alpha * p;
         r -= alpha * Ap;
@@ -53,6 +53,7 @@ namespace linalg {
         rsold = rsnew;
       }
     }
+    delete A;
     return x;
   }
 

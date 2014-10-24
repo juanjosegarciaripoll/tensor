@@ -29,11 +29,11 @@ namespace linalg {
      using the iterative conjugate gradient method.
      \ingroup Linalg
   */
-  const CTensor
-  cgs(const CTensor &A, const CTensor &b, const CTensor *x_start,
+  const RTensor
+  cgs(const RSparse &A, const RTensor &b, const RTensor *x_start,
       int maxiter, double tol)
   {
-    return cgs(new tensor::MatrixMap<CTensor>(A), b, x_start, maxiter, tol);
+    return cgs(new tensor::MatrixMap<RSparse>(A), b, x_start, maxiter, tol);
   }
 
 }
