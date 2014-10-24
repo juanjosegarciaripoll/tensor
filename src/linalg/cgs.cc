@@ -31,28 +31,27 @@ namespace linalg {
   {
     typedef typename Tensor::elt_t number;
     if (maxiter == 0) {
-      maxiter = sqrt(b.size())*b.size();
+      maxiter = A.rows();
     }
     if (tol == 0) {
-      tol = 1e-7;
+      tol = 1e-10;
     }
-    if (!x_start) {
-      x_start = &b;
-    }
-    Tensor x = *x_start;
+    Tensor x = x_start? *x_start : b;
     Tensor r = b - mmult(A, x);
     Tensor p = r;
-    number rsold = real(scprod(r,r));
-    while (maxiter-- >= 0) {
-      Tensor Ap = mmult(A, p);
-      number alpha = rsold / scprod(p, Ap);
-      x += alpha * p;
-      r -= alpha * Ap;
-      number rsnew = scprod(r, r);
-      if (sqrt(abs(rsnew)) < tol)
-	break;
-      p = r + (rsnew / rsold) * p;
-      rsold = rsnew;
+    number rsold = scprod(r,r);
+    if (sqrt(abs(rsold)) > tol) {
+      while (maxiter-- >= 0) {
+        Tensor Ap = mmult(A, p);
+        number alpha = rsold / scprod(p, Ap);
+        x += alpha * p;
+        r -= alpha * Ap;
+        number rsnew = scprod(r, r);
+        if (sqrt(abs(rsnew)) < tol)
+          break;
+        p = r + (rsnew / rsold) * p;
+        rsold = rsnew;
+      }
     }
     return x;
   }
