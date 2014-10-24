@@ -158,6 +158,11 @@ check_PROGRAMS += test_linalg_solve
 test_linalg_solve_SOURCES = test_linalg_solve.cc
 test_linalg_solve_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_linalg_cgs
+check_PROGRAMS += test_linalg_cgs
+test_linalg_cgs_SOURCES = test_linalg_cgs.cc
+test_linalg_cgs_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_linalg_svd
 check_PROGRAMS += test_linalg_svd
 test_linalg_svd_SOURCES = test_linalg_svd.cc
