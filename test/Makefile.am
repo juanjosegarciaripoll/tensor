@@ -153,6 +153,11 @@ check_PROGRAMS += test_fold
 test_fold_SOURCES = test_fold.cc
 test_fold_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_linalg_solve
+check_PROGRAMS += test_linalg_solve
+test_linalg_solve_SOURCES = test_linalg_solve.cc
+test_linalg_solve_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_linalg_svd
 check_PROGRAMS += test_linalg_svd
 test_linalg_svd_SOURCES = test_linalg_svd.cc
