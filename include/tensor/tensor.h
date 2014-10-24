@@ -407,6 +407,9 @@ namespace tensor {
   double trace(const RTensor &d);
   const RTensor trace(const RTensor &A, index i1, index i2);
 
+  /**Convert a tensor to a 1D vector with the same elements.*/
+  const RTensor flatten(const RTensor &t);
+
   const RTensor reshape(const RTensor &t, const Indices &new_dims);
   const RTensor reshape(const RTensor &t, index length);
   const RTensor reshape(const RTensor &t, index rows, index columns);
@@ -506,6 +509,9 @@ namespace tensor {
   const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
   cdouble trace(const CTensor &d);
   const CTensor trace(const CTensor &A, index i1, index i2);
+
+  /**Convert a tensor to a 1D vector with the same elements.*/
+  const RTensor flatten(const RTensor &t);
 
   const CTensor reshape(const CTensor &t, const Indices &new_dims);
   const CTensor reshape(const CTensor &t, index length);
