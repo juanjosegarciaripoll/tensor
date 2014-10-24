@@ -109,6 +109,56 @@ namespace tensor_test {
     }
   }
 
+  template<class Tensor>
+  const Tensor f1(const Tensor &t, const Tensor &A)
+  {
+    return mmult(A, t);
+  }
+
+  template<class Tensor>
+  void test_cgs_functor_1arg(int n) {
+    for (int cols = 1; cols < n; cols++) {
+      Tensor B = Tensor::eye(n) + 0.125 * random_unitary<typename Tensor::elt_t>(n);
+      Tensor A = mmult(adjoint(B), B);
+      Tensor x = Tensor::random(n, cols);
+      Tensor y = mmult(A, x);
+
+      // If the initial state is a solution, this should be ok
+      Tensor x0 = cgs(with_args(f1<Tensor>, A), y, &x, 0, 2*EPSILON);
+      EXPECT_CEQ(x, x0);
+
+      // Otherwise check a randomize initial state
+      Tensor x_start = x + Tensor::random(n,cols)*0.02;
+      x0 = cgs(with_args(f1<Tensor>, A), y, &x_start, 0, 2*EPSILON);
+      EXPECT_CEQ(x, x0);
+    }
+  }
+
+  template<class Tensor>
+  const Tensor f2(const Tensor &t, const Tensor &A, const Tensor &B)
+  {
+    return mmult(A, mmult(B, t));
+  }
+
+  template<class Tensor>
+  void test_cgs_functor_2arg(int n) {
+    Tensor B = Tensor::eye(n) + 0.125 * random_unitary<typename Tensor::elt_t>(n);
+    Tensor Bd = adjoint(B);
+    for (int cols = 1; cols < n; cols++) {
+      Tensor x = Tensor::random(n, cols);
+      Tensor y = mmult(Bd, mmult(B, x));
+
+      // If the initial state is a solution, this should be ok
+      Tensor x0 = cgs(with_args(f2<Tensor>, Bd, B), y, &x, 0, 2*EPSILON);
+      EXPECT_CEQ(x, x0);
+
+      // Otherwise check a randomize initial state
+      Tensor x_start = x + Tensor::random(n,cols)*0.02;
+      x0 = cgs(with_args(f2<Tensor>, Bd, B), y, &x_start, 0, 2*EPSILON);
+      EXPECT_CEQ(x, x0);
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////
   // REAL SPECIALIZATIONS
   //
@@ -129,6 +179,14 @@ namespace tensor_test {
     test_over_integers(1, 22, test_cgs_functor<RTensor>);
   }
 
+  TEST(RCgs, Functor1Arg) {
+    test_over_integers(1, 22, test_cgs_functor_1arg<RTensor>);
+  }
+
+  TEST(RCgs, Functor2Arg) {
+    test_over_integers(1, 22, test_cgs_functor_2arg<RTensor>);
+  }
+
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
@@ -147,6 +205,15 @@ namespace tensor_test {
 
   TEST(CCgs, Functor) {
     test_over_integers(1, 22, test_cgs_functor<CTensor>);
+  }
+
+  TEST(CCgs, Functor1Arg) {
+    test_over_integers(1, 22, test_cgs_functor_1arg<CTensor>);
+  }
+
+
+  TEST(CCgs, Functor2Arg) {
+    test_over_integers(1, 22, test_cgs_functor_2arg<CTensor>);
   }
 
 } // namespace linalg_test

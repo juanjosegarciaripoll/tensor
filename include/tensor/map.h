@@ -50,6 +50,62 @@ namespace tensor {
     const Func &f_;
   };
 
+  template<class out, class arg0, class arg1, class par1>
+  struct Closure1 {
+    typedef out (*f_ptr)(arg0, arg1);
+    Closure1(f_ptr f, par1 a1) : f_(f), a1_(a1) {}
+    out operator()(arg0 a0) const { return (*f_)(a0,a1_); } 
+  private:
+    const f_ptr f_;
+    par1 a1_;
+  };
+
+  template<class out, class arg0, class arg1, class par1>
+  inline Closure1<out,arg0,arg1,par1>
+  with_args(out (*f)(arg0, arg1), par1 &a1)
+  {
+    return Closure1<out,arg0,arg1,par1>(f,a1);
+  }
+
+  template<class out, class arg0, class arg1, class arg2, class par1, class par2>
+  struct Closure2 {
+    typedef out (*f_ptr)(arg0, arg1, arg2);
+    Closure2(f_ptr f, par1 a1, par2 a2) : f_(f), a1_(a1), a2_(a2) {}
+    out operator()(arg0 a0) const { return (*f_)(a0,a1_,a2_); } 
+  private:
+    const f_ptr f_;
+    par1 a1_;
+    par2 a2_;
+  };
+
+  template<class out, class arg0, class arg1, class arg2, class par1, class par2>
+  inline Closure2<out,arg0,arg1,arg2,par1,par2>
+  with_args(out (*f)(arg0, arg1, arg2), par1 &a1, par2 &a2)
+  {
+    return Closure2<out,arg0,arg1,arg2,par1,par2>(f,a1,a2);
+  }
+
+  template<class out, class arg0, class arg1, class arg2, class arg3,
+	   class par1, class par2, class par3>
+  struct Closure3 {
+    typedef out (*f_ptr)(arg0, arg1, arg2, arg3);
+    Closure3(f_ptr f, par1 a1, par2 a2, par3 a3) : f_(f), a1_(a1), a2_(a2), a3_(a3) {}
+    out operator()(arg0 a0) const { return (*f_)(a0,a1_,a2_,a3_); } 
+  private:
+    const f_ptr f_;
+    par1 a1_;
+    par2 a2_;
+    par3 a3_;
+  };
+
+  template<class out, class arg0, class arg1, class arg2, class arg3,
+	   class par1, class par2, class par3>
+  inline Closure3<out,arg0,arg1,arg2,arg3,par1,par2,par3>
+  with_args(out (*f)(arg0, arg1, arg2, arg3), par1 &a1, par2 &a2, par3 &a3)
+  {
+    return Closure3<out,arg0,arg1,arg2,arg3,par1,par2,par3>(f,a1,a2,a3);
+  }
+
   extern template class MatrixMap<RTensor>;
   extern template class MatrixMap<CTensor>;
   extern template class MatrixMap<RSparse>;
