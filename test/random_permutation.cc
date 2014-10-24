@@ -37,6 +37,8 @@ namespace tensor_test {
 	Indices columns = rows;
 	int i = rand<int>(0, n);
 	int j = (i + rand<int>(1, n)) % n;
+        columns.at(j) = i;
+        columns.at(i) = j;
 	output = mmult(RSparse(rows, columns, diagonal, n, n), output);
       }
     }
