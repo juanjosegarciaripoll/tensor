@@ -511,7 +511,7 @@ namespace tensor {
   const CTensor trace(const CTensor &A, index i1, index i2);
 
   /**Convert a tensor to a 1D vector with the same elements.*/
-  const RTensor flatten(const RTensor &t);
+  const CTensor flatten(const CTensor &t);
 
   const CTensor reshape(const CTensor &t, const Indices &new_dims);
   const CTensor reshape(const CTensor &t, index length);
