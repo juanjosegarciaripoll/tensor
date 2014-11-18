@@ -34,11 +34,11 @@ namespace tensor {
   template<class Matrix>
   struct MatrixMap : public Map<Tensor<typename Matrix::elt_t> > {
     typedef Tensor<typename Matrix::elt_t> tensor_t;
-    MatrixMap(const Matrix &m);
+    MatrixMap(const Matrix &m, bool transpose = false);
     virtual ~MatrixMap();
     virtual const tensor_t operator()(const tensor_t &arg) const;
   private:
-    const Matrix m_;
+    const Matrix m_, transpose_;
   };
 
   template<class Func, class Tensor>

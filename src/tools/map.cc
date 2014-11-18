@@ -22,7 +22,9 @@
 namespace tensor {
 
   template<class Matrix>
-  MatrixMap<Matrix>::MatrixMap(const Matrix &m) : m_(m) {}
+  MatrixMap<Matrix>::MatrixMap(const Matrix &m, bool transpose)
+    : m_(m), transpose_(transpose)
+  {}
 
   template<class Matrix>
   MatrixMap<Matrix>::~MatrixMap() {}
@@ -30,6 +32,6 @@ namespace tensor {
   template<class Matrix>
   const typename MatrixMap<Matrix>::tensor_t
   MatrixMap<Matrix>::operator()(const tensor_t &arg) const
-  { return mmult(m_, arg); }
+  { return transpose? mmult(arg, m_) : mmult(m_, arg); }
 
 } // namespace tensor
