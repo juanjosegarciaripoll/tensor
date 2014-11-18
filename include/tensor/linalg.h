@@ -115,9 +115,9 @@ namespace linalg {
                                  size_t iter = 0, double tol = 1e-11);
 
   double do_eig_power(const Map<RTensor> *A, size_t dim, RTensor *vector,
-                      size_t iter, double tol);
+                      size_t iter = 0, double tol = 1e-11);
   tensor::cdouble do_eig_power(const Map<CTensor> *A, size_t dim, CTensor *vector,
-                               size_t iter, double tol);
+                               size_t iter = 0, double tol = 1e-11);
 
   /**Compute the eigenvector with the largest absolute eigenvalue using the
      power method. 'f' is a function that takes in a Tensor and returns also a
