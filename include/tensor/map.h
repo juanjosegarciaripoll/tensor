@@ -54,7 +54,7 @@ namespace tensor {
   template<class out, class arg0, class arg1, class par1>
   struct Closure1 {
     typedef out (*f_ptr)(arg0, arg1);
-    Closure1(f_ptr f, par1 a1) : f_(f), a1_(a1) {}
+    Closure1(f_ptr f, par1 &a1) : f_(f), a1_(a1) {}
     out operator()(arg0 a0) const { return (*f_)(a0,a1_); } 
   private:
     const f_ptr f_;
@@ -71,7 +71,7 @@ namespace tensor {
   template<class out, class arg0, class arg1, class arg2, class par1, class par2>
   struct Closure2 {
     typedef out (*f_ptr)(arg0, arg1, arg2);
-    Closure2(f_ptr f, par1 a1, par2 a2) : f_(f), a1_(a1), a2_(a2) {}
+    Closure2(f_ptr f, par1 &a1, par2 &a2) : f_(f), a1_(a1), a2_(a2) {}
     out operator()(arg0 a0) const { return (*f_)(a0,a1_,a2_); } 
   private:
     const f_ptr f_;
@@ -90,7 +90,7 @@ namespace tensor {
 	   class par1, class par2, class par3>
   struct Closure3 {
     typedef out (*f_ptr)(arg0, arg1, arg2, arg3);
-    Closure3(f_ptr f, par1 a1, par2 a2, par3 a3) : f_(f), a1_(a1), a2_(a2), a3_(a3) {}
+    Closure3(f_ptr f, par1 &a1, par2 &a2, par3 &a3) : f_(f), a1_(a1), a2_(a2), a3_(a3) {}
     out operator()(arg0 a0) const { return (*f_)(a0,a1_,a2_,a3_); } 
   private:
     const f_ptr f_;
