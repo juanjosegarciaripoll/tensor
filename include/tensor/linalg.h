@@ -41,9 +41,9 @@ namespace linalg {
   const CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol = 0.0);
 
   const RTensor do_cgs(const Map<RTensor> *A, const RTensor &b,
-                    const RTensor *x_start = 0, int maxiter = 0, double tol = 0);
+                       const RTensor *x_start = 0, int maxiter = 0, double tol = 0);
   const CTensor do_cgs(const Map<CTensor> *A, const CTensor &b,
-                    const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
+                       const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
 
   /**Solve a real linear system of equations by the conjugate gradient method.*/
   const RTensor cgs(const RTensor &A, const RTensor &b, const RTensor *x_start = 0,
@@ -127,6 +127,23 @@ namespace linalg {
   RTensor eigs(const RSparse &A, int eig_type, size_t neig,
                RTensor *vectors = NULL,
                const double *initial_guess = NULL);
+
+  RTensor do_eigs(const Map<RTensor> *A, size_t dim, int eig_type, size_t neig,
+                  RTensor *vectors, const double *initial_guess);
+  CTensor do_eigs(const Map<CTensor> *A, size_t dim, int eig_type, size_t neig,
+                  CTensor *vectors, const tensor::cdouble *initial_guess);
+
+  /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
+     matrix. 'f' is a function that takes in a Tensor and returns also a Tensor
+     of the same class and dimension. Because we do not know the dimensions of
+     'f', this has to be provided in 'dim' */
+  template<class func, class Tensor>
+  CTensor eigs(const func &f, size_t dim, int eig_type, size_t neig, Tensor *vectors,
+               const typename Tensor::elt_t *initial_guess = NULL) {
+    return do_eigs(new tensor::FunctionMap<func,Tensor>(f), dim, eig_type, neig, vectors,
+                   initial_guess);
+  }
+
 
   /**Find out a few eigenvalues and eigenvectors of a symmetric real matrix.*/
   RTensor eigs_sym(const RTensor &A, int eig_type, size_t neig,

@@ -272,7 +272,9 @@ arpack_SOURCES = \
 	arpack/eigs_d.cc			\
 	arpack/eigs_z.cc			\
 	arpack/eigs_sp_d.cc			\
-	arpack/eigs_sp_z.cc
+	arpack/eigs_sp_z.cc			\
+	arpack/eigs_map_d.cc			\
+	arpack/eigs_map_z.cc
 arpack_f2c_SOURCES = \
 	arpack-ng/common.cc
 arpack_precompiled_SOURCES = \
