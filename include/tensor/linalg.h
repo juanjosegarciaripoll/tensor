@@ -81,14 +81,53 @@ namespace linalg {
   /**Eigenvalue decomposition of a complex matrix.*/
   const CTensor eig(const CTensor &A, CTensor *R = 0, CTensor *L = 0);
 
+  /**Compute the right eigenvector with the largest absolute eigenvalue using the
+     power method.*/
   double eig_power_right(const RTensor &A, RTensor *vector,
                          size_t iter = 0, double tol = 1e-11);
+  /**Compute the left eigenvector with the largest absolute eigenvalue using the
+     power method.*/
   double eig_power_left(const RTensor &A, RTensor *vector,
                         size_t iter = 0, double tol = 1e-11);
+  /**Compute the right eigenvector with the largest absolute eigenvalue using the
+     power method.*/
+  double eig_power_right(const RSparse &A, RTensor *vector,
+                         size_t iter = 0, double tol = 1e-11);
+  /**Compute the left eigenvector with the largest absolute eigenvalue using the
+     power method.*/
+  double eig_power_left(const RSparse &A, RTensor *vector,
+                        size_t iter = 0, double tol = 1e-11);
+  /**Compute the right eigenvector with the largest absolute eigenvalue using the
+     power method.*/
   tensor::cdouble eig_power_right(const CTensor &A, CTensor *vector,
                                   size_t iter = 0, double tol = 1e-11);
+  /**Compute the left eigenvector with the largest absolute eigenvalue using the
+     power method.*/
   tensor::cdouble eig_power_left(const CTensor &A, CTensor *vector,
                                  size_t iter = 0, double tol = 1e-11);
+  /**Compute the right eigenvector with the largest absolute eigenvalue using the
+     power method.*/
+  tensor::cdouble eig_power_right(const CSparse &A, CTensor *vector,
+                                  size_t iter = 0, double tol = 1e-11);
+  /**Compute the left eigenvector with the largest absolute eigenvalue using the
+     power method.*/
+  tensor::cdouble eig_power_left(const CSparse &A, CTensor *vector,
+                                 size_t iter = 0, double tol = 1e-11);
+
+  double do_eig_power(const Map<RTensor> *A, size_t dim, RTensor *vector,
+                      size_t iter, double tol);
+  tensor::cdouble do_eig_power(const Map<CTensor> *A, size_t dim, CTensor *vector,
+                               size_t iter, double tol);
+
+  /**Compute the eigenvector with the largest absolute eigenvalue using the
+     power method. 'f' is a function that takes in a Tensor and returns also a
+     Tensor of the same class and dimension. */
+  template<class func, class Tensor>
+  const Tensor eig_power(const func &f, size_t dim, const Tensor *vector, size_t iter = 0,
+                         double tol = 1e-11)
+  {
+    return do_eig_power(new tensor::FunctionMap<func,Tensor>(f), dim, vector, iter, tol);
+  }
 
   RTensor eig_sym(const RTensor &A, RTensor *pR = 0);
   RTensor eig_sym(const CTensor &A, CTensor *pR = 0);

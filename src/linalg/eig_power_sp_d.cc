@@ -29,10 +29,10 @@ namespace linalg {
      \ingroup Linalg
   */
   double
-  eig_power_right(const RTensor &O, RTensor *vector, size_t iter, double tol)
+  eig_power_right(const RSparse &O, RTensor *vector, size_t iter, double tol)
   {
     assert(O.rows() == O.columns());
-    return do_eig_power(new tensor::MatrixMap<RTensor>(O), O.columns(),
+    return do_eig_power(new tensor::MatrixMap<RSparse>(O), O.columns(),
                         vector, iter, tol);
   }
 
@@ -44,10 +44,10 @@ namespace linalg {
      \ingroup Linalg
   */
   double
-  eig_power_left(const RTensor &O, RTensor *vector, size_t iter, double tol)
+  eig_power_left(const RSparse &O, RTensor *vector, size_t iter, double tol)
   {
     assert(O.rows() == O.columns());
-    return do_eig_power(new tensor::MatrixMap<RTensor>(O, true), O.columns(),
+    return do_eig_power(new tensor::MatrixMap<RSparse>(O, true), O.columns(),
                         vector, iter, tol);
   }
 

@@ -27,20 +27,16 @@ namespace linalg {
   using namespace tensor;
 
   template<typename elt_t>
-  elt_t eig_power_loop(const Tensor<elt_t> &O, Tensor<elt_t> *vector,
-                       bool right, size_t iter, double tol)
+  elt_t eig_power_loop(const Map<Tensor<elt_t> > *A, size_t dims, Tensor<elt_t> *vector,
+                       size_t iter, double tol)
   {
-    if (O.columns() != O.rows()) {
-      std::cerr << "eig_right_power cannot solve non-square problems";
-      abort();
-    }
     if (tol <= 0) {
       tol = 1e-11;
     }
     assert(vector);
     Tensor<elt_t> &v = *vector;
-    if (v.rank() != 1 || v.size() != O.columns()) {
-      v = 0.5 - Tensor<elt_t>::random(O.columns());
+    if (v.rank() != 1 || v.size() != dims) {
+      v = 0.5 - Tensor<elt_t>::random(dims);
     }
     if (iter == 0) {
       iter = std::max<size_t>(20, v.size());
@@ -48,7 +44,7 @@ namespace linalg {
     v /= norm2(v);
     elt_t eig, old_eig;
     for (size_t i = 0; i <= iter; i++) {
-      Tensor<elt_t> v_new = fold(O, right? -1 : 0, v, 0);
+      Tensor<elt_t> v_new = (*A)(v);
       eig = scprod(v_new, v);
       v_new /= norm2(v_new);
       if (i) {
@@ -64,6 +60,7 @@ namespace linalg {
       old_eig = eig;
       v = v_new;
     }
+    delete A;
     return eig;
   }
 

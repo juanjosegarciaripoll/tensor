@@ -159,6 +159,10 @@ basic_SOURCES = \
 	linalg/expm_z.cc \
 	linalg/eig_power_d.cc \
 	linalg/eig_power_z.cc \
+	linalg/eig_power_sp_d.cc \
+	linalg/eig_power_sp_z.cc \
+	linalg/eig_power_map_d.cc \
+	linalg/eig_power_map_z.cc \
 	linalg/eig_sym_d.cc \
 	linalg/eig_sym_z.cc \
 	views/range.cc \
