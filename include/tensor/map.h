@@ -38,7 +38,8 @@ namespace tensor {
     virtual ~MatrixMap();
     virtual const tensor_t operator()(const tensor_t &arg) const;
   private:
-    const Matrix m_, transpose_;
+    const Matrix m_;
+    const bool transpose_;
   };
 
   template<class Func, class Tensor>

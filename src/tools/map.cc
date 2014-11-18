@@ -32,6 +32,6 @@ namespace tensor {
   template<class Matrix>
   const typename MatrixMap<Matrix>::tensor_t
   MatrixMap<Matrix>::operator()(const tensor_t &arg) const
-  { return transpose? mmult(arg, m_) : mmult(m_, arg); }
+  { return transpose_? mmult(arg, m_) : mmult(m_, arg); }
 
 } // namespace tensor
