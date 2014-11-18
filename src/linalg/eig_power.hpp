@@ -35,7 +35,7 @@ namespace linalg {
     }
     assert(vector);
     Tensor<elt_t> &v = *vector;
-    if (v.rank() != 1 || v.size() != dims) {
+    if (v.size() != dims) {
       v = 0.5 - Tensor<elt_t>::random(dims);
     }
     if (iter == 0) {
