@@ -123,8 +123,8 @@ namespace linalg {
      power method. 'f' is a function that takes in a Tensor and returns also a
      Tensor of the same class and dimension. */
   template<class func, class Tensor>
-  const Tensor eig_power(const func &f, size_t dim, const Tensor *vector, size_t iter = 0,
-                         double tol = 1e-11)
+  const typename Tensor::elt_t
+  eig_power(const func &f, size_t dim, Tensor *vector, size_t iter = 0, double tol = 1e-11)
   {
     return do_eig_power(new tensor::FunctionMap<func,Tensor>(f), dim, vector, iter, tol);
   }
