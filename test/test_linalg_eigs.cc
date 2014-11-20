@@ -60,18 +60,19 @@ namespace tensor_test {
   void test_eigs_permuted_diagonal(int n) {
     typedef typename Matrix::elt_t elt_t;
     RTensor p = random_permutation(n, n);
+    RTensor pinv = adjoint(p);
     RTensor d = diag(linspace((double)1.0, n, n), 0);
 
     Tensor<elt_t> e1 = RTensor::zeros(igen << n);
     e1.at(0) = 1.0;
-    e1 = mmult(p, e1);
+    e1 = mmult(pinv, e1);
 
     Tensor<elt_t> en = RTensor::zeros(igen << n);
     en.at(n-1) = 1.0;
-    en = mmult(p, en);
+    en = mmult(pinv, en);
 
     typedef typename Matrix::elt_t elt_t;
-    Matrix A = mmult(adjoint(p), mmult(d, p));
+    Matrix A = mmult(pinv, mmult(d, p));
     Tensor<elt_t> U;
 
     CTensor E = eigs(A, SmallestMagnitude, 1, &U);
