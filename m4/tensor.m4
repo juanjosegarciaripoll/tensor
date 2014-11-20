@@ -49,7 +49,7 @@ AC_DEFUN([TENSOR_ATLAS],[
   AC_CHECK_LIB([atlas], [ATL_buildinfo], [have_atlas=yes], [have_atlas=no])
   AC_MSG_CHECKING([for ATLAS library])
   if test $have_atlas = yes ; then
-    ATLAS_LIBS="$LIBS -llapack -lcblas -latlas"
+    ATLAS_LIBS="$LIBS -llapack -lf77blas -lcblas -latlas"
     ATLAS_CXXFLAGS=""
     AC_CHECK_HEADERS_ONCE([atlas/cblas.h cblas.h])
   fi
