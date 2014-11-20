@@ -177,8 +177,8 @@ namespace linalg {
      of the same class and dimension. Because we do not know the dimensions of
      'f', this has to be provided in 'dim' */
   template<class func, class Tensor>
-  CTensor eigs(const func &f, size_t dim, int eig_type, size_t neig, Tensor *vectors,
-               const typename Tensor::elt_t *initial_guess = NULL) {
+  Tensor eigs(const func &f, size_t dim, int eig_type, size_t neig, Tensor *vectors,
+              const typename Tensor::elt_t *initial_guess = NULL) {
     return do_eigs(new tensor::FunctionMap<func,Tensor>(f), dim, eig_type, neig, vectors,
                    initial_guess);
   }
