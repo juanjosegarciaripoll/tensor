@@ -27,7 +27,7 @@ namespace linalg {
 
   RTensor
   eigs(const RTensor &A, int eig_type, size_t neig, RTensor *eigenvectors,
-       const RTensor::elt_t *initial_guess)
+       bool *converged)
   {
     EigType t = (EigType)eig_type;
     size_t n = A.columns();
@@ -59,24 +59,27 @@ namespace linalg {
       return tensor::real(values(range(ndx_out)));
     }
 
-    RTensor output;
-    {
-      RArpack data(n, t, neig);
+    RArpack data(n, t, neig);
 
-      if (initial_guess)
-        data.set_start_vector(initial_guess);
+    if (eigenvectors && eigenvectors->size() >= A.columns())
+      data.set_start_vector(eigenvectors->begin_const());
 
-      while (data.update() < RArpack::Finished) {
-        blas::gemv('N', n, n, 1.0, A.begin(), n, data.get_x_vector(), 1,
-                   0.0, data.get_y_vector(), 1);
-      }
-      if (data.get_status() != RArpack::Finished) {
+    while (data.update() < RArpack::Finished) {
+      blas::gemv('N', n, n, 1.0, A.begin(), n, data.get_x_vector(), 1,
+                 0.0, data.get_y_vector(), 1);
+    }
+    if (data.get_status() == RArpack::Finished) {
+      if (converged)
+        *converged = true;
+    } else {
+      if (converged) {
+        *converged = false;
+      } else {
         std::cerr << data.error_message() << '\n';
         abort();
       }
-      output = data.get_data(eigenvectors);
     }
-    return output;
+    return data.get_data(eigenvectors);
   }
 
 } // namespace linalg

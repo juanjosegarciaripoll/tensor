@@ -22,45 +22,15 @@
 //
 
 #include <tensor/linalg.h>
-#include <tensor/arpack_z.h>
-
-#define COMPLEX
 
 namespace linalg {
 
   CTensor
   eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
-       const CTensor::elt_t *initial_guess)
+       bool *converged)
   {
-    EigType t = (EigType)eig_type;
-    size_t n = A.columns();
-
-    if (n <= 10) {
-      return eigs(full(A), t, neig, eigenvectors, initial_guess);
-    }
-
-    if (A.rows() != n) {
-      std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-      abort();
-    }
-
-    CTensor output;
-    {
-      CArpack data(n, t, neig);
-
-      if (initial_guess)
-	data.set_start_vector(initial_guess);
-
-      while (data.update() < CArpack::Finished) {
-	data.set_y(mmult(A, data.get_x()));
-      }
-      if (data.get_status() != CArpack::Finished) {
-	std::cerr << data.error_message() << '\n';
-	abort();
-      }
-      output = data.get_data(eigenvectors);
-    }
-    return output;
+    return do_eigs(new tensor::MatrixMap<CSparse>(A), A.columns(), eig_type, neig,
+                   eigenvectors, converged);
   }
 
 } // namespace linalg

@@ -147,62 +147,68 @@ namespace linalg {
     SmallestImaginary = 5 /*!<Eigenvalues with the smallest imaginary part.*/
   };
 
-  /**Find out a few eigenvalues and eigenvectors of a complex nonsymmetric matrix.*/
+  /**Find out a few eigenvalues and eigenvectors of a complex nonsymmetric
+     matrix. 'vectors' is used to output the eigenvectors, but it can also
+     contain a good estimate of them. 'converged' is true when the algorithm
+     finished properly. */
   CTensor eigs(const CTensor &A, int eig_type, size_t neig,
-               CTensor *vectors = NULL,
-               const tensor::cdouble *initial_guess = NULL);
+               CTensor *vectors = NULL, bool *converged = NULL);
 
-  /**Find out a few eigenvalues and eigenvectors of a nonsymmetric complex sparse matrix.*/
+  /**Find out a few eigenvalues and eigenvectors of a nonsymmetric complex
+     sparse matrix. 'vectors' is used to output the eigenvectors, but it can
+     also contain a good estimate of them. 'converged' is true when the
+     algorithm finished properly. */
   CTensor eigs(const CSparse &A, int eig_type, size_t neig,
-               CTensor *vectors = NULL,
-               const tensor::cdouble *initial_guess = NULL);
+               CTensor *vectors = NULL, bool *converged = NULL);
 
-  /**Find out a few eigenvalues and eigenvectors of a real nonsymmetric matrix.*/
+  /**Find out a few eigenvalues and eigenvectors of a real nonsymmetric
+     matrix. 'vectors' is used to output the eigenvectors, but it can also
+     contain a good estimate of them. 'converged' is true when the algorithm
+     finished properly. */
   RTensor eigs(const RTensor &A, int eig_type, size_t neig,
-               RTensor *vectors = NULL,
-               const double *initial_guess = NULL);
+               RTensor *vectors = NULL, bool *converged = NULL);
 
-  /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse matrix.*/
+  /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
+     matrix. 'vectors' is used to output the eigenvectors, but it can also
+     contain a good estimate of them. 'converged' is true when the algorithm
+     finished properly. */
   RTensor eigs(const RSparse &A, int eig_type, size_t neig,
-               RTensor *vectors = NULL,
-               const double *initial_guess = NULL);
+               RTensor *vectors = NULL, bool *converged = NULL);
 
   RTensor do_eigs(const Map<RTensor> *A, size_t dim, int eig_type, size_t neig,
-                  RTensor *vectors, const double *initial_guess);
+                  RTensor *vectors, bool *converged);
   CTensor do_eigs(const Map<CTensor> *A, size_t dim, int eig_type, size_t neig,
-                  CTensor *vectors, const tensor::cdouble *initial_guess);
+                  CTensor *vectors, bool *converged);
 
   /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
      matrix. 'f' is a function that takes in a Tensor and returns also a Tensor
      of the same class and dimension. Because we do not know the dimensions of
-     'f', this has to be provided in 'dim' */
+     'f', this has to be provided in 'dim'. 'vectors' is used to output the
+     eigenvectors, but it can also contain a good estimate of them. 'converged'
+     is true when the algorithm finished properly. */
   template<class func, class Tensor>
-  Tensor eigs(const func &f, size_t dim, int eig_type, size_t neig, Tensor *vectors,
-              const typename Tensor::elt_t *initial_guess = NULL) {
-    return do_eigs(new tensor::FunctionMap<func,Tensor>(f), dim, eig_type, neig, vectors,
-                   initial_guess);
+  Tensor eigs(const func &f, size_t dim, int eig_type, size_t neig,
+              Tensor *vectors = NULL, bool *converged = NULL) {
+    return do_eigs(new tensor::FunctionMap<func,Tensor>(f), dim, eig_type, neig,
+                   vectors, converged);
   }
 
 
   /**Find out a few eigenvalues and eigenvectors of a symmetric real matrix.*/
   RTensor eigs_sym(const RTensor &A, int eig_type, size_t neig,
-                   RTensor *vectors = NULL,
-                   const double *initial_guess = NULL);
+                   RTensor *vectors = NULL, bool *converged = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a symmetric real matrix.*/
   RTensor eigs_sym(const CTensor &A, int eig_type, size_t neig,
-                   CTensor *vectors = NULL,
-                   const tensor::cdouble *initial_guess = NULL);
+                   CTensor *vectors = NULL, bool *converged = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a symmetric real sparse matrix.*/
   RTensor eigs_sym(const RSparse &A, int eig_type, size_t neig,
-                   RTensor *vectors = NULL,
-                   const double *initial_guess = NULL);
+                   RTensor *vectors = NULL, bool *converged = NULL);
 
   /**Find out a few eigenvalues and eigenvectors of a hermitian complex sparse matrix.*/
   RTensor eigs_sym(const CSparse &A, int eig_type, size_t neig,
-                   CTensor *vectors = NULL,
-                   const tensor::cdouble *initial_guess = NULL);
+                   CTensor *vectors = NULL, bool *converged = NULL);
 
 } // namespace linalg
 

@@ -26,7 +26,7 @@ namespace linalg {
 
   CTensor
   do_eigs(const Map<CTensor>  *A, size_t n, int eig_type, size_t neig,
-          CTensor *eigenvectors, const tensor::cdouble *initial_guess)
+          CTensor *eigenvectors, bool *converged)
   {
     EigType t = (EigType)eig_type;
 
@@ -58,23 +58,26 @@ namespace linalg {
       return CTensor(values(range(ndx_out)));
     }
 
-    CTensor output;
-    {
-      CArpack data(n, t, neig);
+    CArpack data(n, t, neig);
 
-      if (initial_guess)
-        data.set_start_vector(initial_guess);
+    if (eigenvectors && eigenvectors->size() >= n)
+      data.set_start_vector(eigenvectors->begin_const());
 
-      while (data.update() < CArpack::Finished) {
-        data.set_y((*A)(data.get_x()));
-      }
-      if (data.get_status() != CArpack::Finished) {
-        std::cerr << data.error_message() << '\n';
-        abort();
-      }
-      output = data.get_data(eigenvectors);
+    while (data.update() < CArpack::Finished) {
+      data.set_y((*A)(data.get_x()));
     }
-    return output;
+    if (data.get_status() == CArpack::Finished) {
+      if (converged)
+        *converged = true;
+    } else {
+      if (converged) {
+        *converged = false;
+      } else {
+        std::cerr << data.error_message() << '\n';
+	abort();
+      }
+    }
+    return data.get_data(eigenvectors);
   }
 
 } // namespace linalg

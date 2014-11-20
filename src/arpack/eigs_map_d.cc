@@ -27,7 +27,7 @@ namespace linalg {
 
   RTensor
   do_eigs(const Map<RTensor>  *A, size_t n, int eig_type, size_t neig,
-          RTensor *eigenvectors, const double *initial_guess)
+          RTensor *eigenvectors, bool *converged)
   {
     EigType t = (EigType)eig_type;
 
@@ -59,23 +59,26 @@ namespace linalg {
       return tensor::real(values(range(ndx_out)));
     }
 
-    RTensor output;
-    {
-      RArpack data(n, t, neig);
+    RArpack data(n, t, neig);
 
-      if (initial_guess)
-        data.set_start_vector(initial_guess);
+    if (eigenvectors && eigenvectors->size() >= n)
+      data.set_start_vector(eigenvectors->begin_const());
 
-      while (data.update() < RArpack::Finished) {
-        data.set_y((*A)(data.get_x()));
-      }
-      if (data.get_status() != RArpack::Finished) {
-        std::cerr << data.error_message() << '\n';
-        abort();
-      }
-      output = data.get_data(eigenvectors);
+    while (data.update() < RArpack::Finished) {
+      data.set_y((*A)(data.get_x()));
     }
-    return output;
+    if (data.get_status() == RArpack::Finished) {
+      if (converged)
+        *converged = true;
+    } else {
+      if (converged) {
+        *converged = false;
+      } else {
+        std::cerr << data.error_message() << '\n';
+	abort();
+      }
+    }
+    return data.get_data(eigenvectors);
   }
 
 } // namespace linalg
