@@ -55,6 +55,9 @@ namespace linalg {
       if (eigenvectors) {
         *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
       }
+      if (converged) {
+        *converged = true;
+      }
       return CTensor(values(range(ndx_out)));
     }
 
