@@ -43,7 +43,7 @@ namespace linalg {
        */
       CTensor M(n,n);
       for (int i = 0; i < n; i++) {
-        CTensor v = CTensor::zeros(n);
+        CTensor v = CTensor::zeros(igen << n);
         v.at(i) = 1.0;
         M.at(range(),range(i)) = (*A)(v);
       }
