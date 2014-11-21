@@ -62,6 +62,8 @@ namespace linalg {
   {
     index N = A.rows();
     index M = A.columns();
+    if (N > M)
+      return find_blocks(transpose(A), pnblocks, pblock_cols, pblock_rows);
 
     index &nblocks = *pnblocks;
     Indices *&block_rows = *pblock_rows;

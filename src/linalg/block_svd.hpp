@@ -18,6 +18,7 @@
 */
 
 #include <tensor/tensor.h>
+#include <tensor/io.h>
 #include <tensor/linalg.h>
 #include "find_blocks.hpp"
 
@@ -31,6 +32,8 @@ namespace linalg {
   {
     index rows = A.rows();
     index cols = A.columns();
+    if (rows != cols && !economic)
+      return svd(A, pU, pVT, economic);
     index minrc = std::min(rows, cols);
 
     index nblocks;
@@ -51,40 +54,42 @@ namespace linalg {
     RTensor s(minrc);
     s.fill_with_zeros();
     if (pU) {
-      *pU = Tensor(rows, economic? minrc : rows);
-      pU->fill_with_zeros();
+      *pU = Tensor::zeros(rows, economic? minrc : rows);
     }
     if (pVT) {
-      *pVT = Tensor(economic? minrc : cols, cols);
-      pVT->fill_with_zeros();
+      *pVT = Tensor::zeros(economic? minrc : cols, cols);
     }
 
     RTensor stemp;
     Tensor Utemp, Vtemp;
-    for (index b = 0, outrow = 0; b < nblocks; b++) {
+    Tensor *pUtemp = pU? &Utemp : 0;
+    Tensor *pVtemp = pVT? &Vtemp : 0;
+    for (index b = 0, sndx = 0; b < nblocks; b++) {
       Tensor m = A(range(block_rows[b]), range(block_cols[b]));
+      index n = m.size();
       if (m.size() > 1) {
-	stemp = svd(m, (pU? &Utemp : 0), (pVT? &Vtemp : 0), economic);
-	s.at(range(outrow, outrow + stemp.size() - 1)) = stemp;
+	stemp = svd(m, pUtemp, pVtemp, economic);
+        index slast = sndx + stemp.size() - 1;
+	s.at(range(sndx, slast)) = stemp;
 	if (pU) {
-	  (*pU).at(range(block_rows[b]), range(outrow, outrow + stemp.size() - 1)) = Utemp;
+          (*pU).at(range(block_rows[b]), range(sndx, slast)) = Utemp;
 	}
 	if (pVT) {
-	  (*pVT).at(range(outrow, outrow + stemp.size() - 1), range(block_cols[b])) = Vtemp;
+          (*pVT).at(range(sndx, slast), range(block_cols[b])) = Vtemp;
 	}
-	outrow += stemp.size();
+        sndx = slast + 1;
       } else {
 	index row = block_rows[b][0];
 	index col = block_cols[b][0];
 	double aux = abs(m[0]);
-	s.at(outrow) = aux;
+	s.at(sndx) = aux;
 	if (pU) {
-	  (*pU).at(row,outrow) = 1.0;
+	  (*pU).at(row,sndx) = 1.0;
 	}
 	if (pVT) {
-	  (*pVT).at(outrow,col) = m[0]/aux;
+	  (*pVT).at(sndx,col) = m[0]/aux;
 	}
-	outrow++;
+	++sndx;
       }
     }
     delete[] block_rows;
@@ -92,9 +97,10 @@ namespace linalg {
 
     Indices ndx = sort_indices(s, true);
     s = s(range(ndx));
-    if (pU) *pU = (*pU)(range(), range(ndx));
-    if (pVT) *pVT = (*pVT)(range(ndx), range());
-
+    if (pU)
+      *pU = (*pU)(range(), range(ndx));
+    if (pVT)
+      *pVT = (*pVT)(range(ndx), range());
     return s;
   }
 

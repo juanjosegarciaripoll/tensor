@@ -49,7 +49,7 @@ namespace tensor_test {
   // SINGULAR VALUE DECOMPOSITIONS
   //
 
-  template<typename elt_t>
+  template<typename elt_t, bool block>
   void test_eye_svd(int n) {
     if (n == 0) {
 #ifndef NDEBUG
@@ -65,18 +65,22 @@ namespace tensor_test {
       Tensor<elt_t> U, V;
       RTensor s;
       
-      s = linalg::svd(Imn, &U, &V, false);
+      s = block?
+        linalg::block_svd(Imn, &U, &V, false) :
+        linalg::svd(Imn, &U, &V, false);
       EXPECT_TRUE(all_equal(Imm, U));
       EXPECT_TRUE(all_equal(Inn, V));
       EXPECT_TRUE(all_equal(s, s1));
-      s = linalg::svd(Imn, &U, &V, true);
+      s = block?
+        linalg::block_svd(Imn, &U, &V, true) :
+        linalg::svd(Imn, &U, &V, true);
       EXPECT_TRUE(all_equal(U, m<n? Imm : Imn));
       EXPECT_TRUE(all_equal(V, m<n? Imn : Inn));
       EXPECT_TRUE(all_equal(s, s1));
     }
   }
 
-  template<typename elt_t>
+  template<typename elt_t, bool block>
   void test_random_svd(int n) {
     if (n == 0) {
 #ifndef NDEBUG
@@ -96,7 +100,9 @@ namespace tensor_test {
 #endif
 
         Tensor<elt_t> U, Vt;
-        RTensor s = linalg::svd(A, &U, &Vt, false);
+        RTensor s = block?
+          linalg::block_svd(A, &U, &Vt, false) :
+          linalg::svd(A, &U, &Vt, false);
         EXPECT_TRUE(unitaryp(U,1e-10));
         EXPECT_TRUE(unitaryp(Vt,1e-10));
         EXPECT_TRUE(approx_eq(abs(s), s));
@@ -104,7 +110,9 @@ namespace tensor_test {
 
         EXPECT_TRUE(approx_eq(true_s, s));
 
-        RTensor s2 = linalg::svd(A, &U, &Vt, true);
+        RTensor s2 = block?
+          linalg::block_svd(A, &U, &Vt, true) :
+          linalg::svd(A, &U, &Vt, true);
         EXPECT_TRUE(approx_eq(s, s2));
         EXPECT_TRUE(unitaryp(U));
         EXPECT_TRUE(unitaryp(Vt));
@@ -118,11 +126,19 @@ namespace tensor_test {
   //
   
   TEST(RMatrixTest, EyeSvdTest) {
-    test_over_integers(0, 32, test_eye_svd<double>);
+    test_over_integers(0, 32, test_eye_svd<double,false>);
   }
 
   TEST(RMatrixTest, RandomSvdTest) {
-    test_over_integers(0, 32, test_random_svd<double>);
+    test_over_integers(0, 32, test_random_svd<double,false>);
+  }
+
+  TEST(RMatrixTest, EyeBlockSvdTest) {
+    test_over_integers(0, 32, test_eye_svd<double,true>);
+  }
+
+  TEST(RMatrixTest, RandomSingleBlockSvdTest) {
+    test_over_integers(0, 32, test_random_svd<double,true>);
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -130,11 +146,19 @@ namespace tensor_test {
   //
 
   TEST(CMatrixTest, EyeSvdTest) {
-    test_over_integers(0, 32, test_eye_svd<cdouble>);
+    test_over_integers(0, 32, test_eye_svd<cdouble,false>);
   }
 
   TEST(CMatrixTest, RandomSvdTest) {
-    test_over_integers(0, 32, test_random_svd<cdouble>);
+    test_over_integers(0, 32, test_random_svd<cdouble,false>);
+  }
+
+  TEST(CMatrixTest, EyeBlockSvdTest) {
+    test_over_integers(0, 32, test_eye_svd<cdouble,true>);
+  }
+
+  TEST(CMatrixTest, RandomSingleBlockSvdTest) {
+    test_over_integers(0, 32, test_random_svd<cdouble,true>);
   }
 
 } // namespace linalg_test
