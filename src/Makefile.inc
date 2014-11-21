@@ -141,6 +141,8 @@ basic_SOURCES = \
 	generated/tensor_unop_tanh_z.cc \
 	generated/tensor_unop_exp_z.cc \
 	generated/tensor_unop_sqrt_z.cc \
+	linalg/block_svd_d.cc \
+	linalg/block_svd_z.cc \
 	linalg/cgs_d.cc \
 	linalg/cgs_z.cc \
 	linalg/cgs_sp_d.cc \
