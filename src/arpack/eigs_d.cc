@@ -74,15 +74,16 @@ namespace linalg {
     if (data.get_status() == RArpack::Finished) {
       if (converged)
         *converged = true;
+      return data.get_data(eigenvectors);
     } else {
+      std::cerr << "eigs: " << data.error_message() << '\n';
       if (converged) {
         *converged = false;
+        return CTensor();
       } else {
-        std::cerr << data.error_message() << '\n';
-        abort();
+	abort();
       }
     }
-    return data.get_data(eigenvectors);
   }
 
 } // namespace linalg
