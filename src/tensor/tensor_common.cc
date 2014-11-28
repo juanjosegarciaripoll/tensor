@@ -24,21 +24,9 @@
 namespace tensor {
 
 bool verify_tensor_dimensions(const Indices &d, index total_size) {
-  index aux = total_size;
-  if (aux == 0) {
-    if (d.size() == 0)
-      return true;
-    for (Indices::const_iterator it = d.begin_const(); it != d.end_const();
-	 ++it) {
-      if (*it == 0)
-	return true;
-    }
-    std::cerr << "Product of tensor dimensions exceeds data size."
-	      << std::endl
-	      << "All dimensions: " << d << std::endl
-	      << "Expected size: " << total_size << std::endl;
-    return false;
-  } else {
+  index aux = 0;
+  if (d.size()) {
+    aux = 1;
     for (Indices::const_iterator it = d.begin_const(); it != d.end_const();
 	 ++it) {
       if (*it < 0) {
@@ -48,17 +36,10 @@ bool verify_tensor_dimensions(const Indices &d, index total_size) {
 		  << d << std::endl;
 	return false;
       }
-      aux /= *it;
-      if (aux <= 0) {
-	std::cerr << "Product of tensor dimensions exceeds index range."
-		  << std::endl
-		  << "All dimensions: " << d << std::endl
-		  << "Expected size: " << total_size << std::endl;
-	return false;
-      }
+      aux *= *it;
     }
-    return true;
   }
+  return total_size == aux;
 }
 
 bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2) {
