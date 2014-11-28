@@ -286,3 +286,12 @@ InDataFile::read_header()
       abort();
     }
 }
+
+void
+InDataFile::close()
+{
+  if (is_open()) {
+    _open = false;
+    _stream.close();
+  }
+}
