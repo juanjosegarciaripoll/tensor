@@ -23,25 +23,6 @@
 
 namespace tensor {
 
-bool verify_tensor_dimensions(const Indices &d, index total_size) {
-  index aux = 0;
-  if (d.size()) {
-    aux = 1;
-    for (Indices::const_iterator it = d.begin_const(); it != d.end_const();
-	 ++it) {
-      if (*it < 0) {
-	std::cerr << "Negative dimension in tensor's dimension #"
-		  << (it - d.begin()) << std::endl
-		  << "All dimensions:" << std::endl
-		  << d << std::endl;
-	return false;
-      }
-      aux *= *it;
-    }
-  }
-  return total_size == aux;
-}
-
 bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2) {
   if ((d1.size() != d2.size()) || some_unequal(d1, d2)) {
     std::cerr << "A binary operation was attempted among two tensors" << std::endl

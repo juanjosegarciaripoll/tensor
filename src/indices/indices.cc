@@ -19,6 +19,7 @@
 
 #include <numeric>
 #include <functional>
+#include <tensor/io.h>
 #include <tensor/indices.h>
 
 namespace tensor {
@@ -36,8 +37,18 @@ namespace tensor {
 
   index Indices::total_size() const {
     if (size()) {
-      return std::accumulate(begin_const(), end_const(),
-                             static_cast<index>(1), std::multiplies<index>());
+      index aux = 1;
+      for (const_iterator it = begin_const(); it != end_const(); ++it) {
+        if (*it < 0) {
+          std::cerr << "Negative dimension in tensor's dimension #"
+                    << (it - begin_const()) << std::endl
+                    << "All dimensions:" << std::endl
+                    << *this << std::endl;
+          return false;
+        }
+        aux *= *it;
+      }
+      return aux;
     } else {
       return 0;
     }

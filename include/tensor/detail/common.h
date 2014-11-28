@@ -21,7 +21,6 @@
 #define TENSOR_DETAIL_COMMON_HPP
 
 namespace tensor {
-  bool verify_tensor_dimensions(const Indices &i, index total_size);
 
   inline index normalize_index(index i, index dimension) {
     if (i < 0)

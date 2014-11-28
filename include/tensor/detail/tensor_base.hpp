@@ -41,14 +41,13 @@ template<typename elt_t>
 Tensor<elt_t>::Tensor(const Indices &new_dims) :
   dims_(new_dims), data_(new_dims.total_size())
 {
-  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
 Tensor<elt_t>::Tensor(const Indices &new_dims, const Tensor<elt_t> &other) :
   dims_(new_dims), data_(other.data_)
 {
-  assert(verify_tensor_dimensions(dims_, size()));
+  assert(dims_.total_size() == size());
 }
 
 //
@@ -60,7 +59,6 @@ Tensor<elt_t>::Tensor(index length) :
   data_(length), dims_(1)
 {
   dims_.at(0) = length;
-  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -69,7 +67,6 @@ Tensor<elt_t>::Tensor(index rows, index cols) :
 {
   dims_.at(0) = rows;
   dims_.at(1) = cols;
-  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -79,7 +76,6 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3) :
   dims_.at(0) = d1;
   dims_.at(1) = d2;
   dims_.at(2) = d3;
-  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -90,7 +86,6 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4) :
   dims_.at(1) = d2;
   dims_.at(2) = d3;
   dims_.at(3) = d4;
-  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -102,7 +97,6 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5) :
   dims_.at(2) = d3;
   dims_.at(3) = d4;
   dims_.at(4) = d5;
-  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -116,7 +110,6 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
   dims_.at(3) = d4;
   dims_.at(4) = d5;
   dims_.at(5) = d6;
-  assert(verify_tensor_dimensions(dims_, size()));
 }
 
 template<typename elt_t>
@@ -203,10 +196,10 @@ void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2, index *d3,
 }
 
 template<typename elt_t>
-void Tensor<elt_t>::reshape(const Indices &new_dims)
+void Tensor<elt_t>::reshape(const Indices &new_dimensions)
 {
-  assert(verify_tensor_dimensions(new_dims, size()));
-  dims_ = new_dims;
+  assert(new_dimensions.total_size() == size());
+  dims_ = new_dimensions;
 }
 
 //
