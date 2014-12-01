@@ -22,10 +22,11 @@
 
 namespace tensor {
 
-void tic();
-double toc();
+  double tic();
+  double toc();
+  double toc(double when);
 
-void tensor_abort_handler();
+  void tensor_abort_handler();
 
 } // namespace tensor
 

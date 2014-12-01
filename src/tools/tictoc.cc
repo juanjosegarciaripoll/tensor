@@ -26,14 +26,25 @@
 
 namespace tensor {
 
+  static double now()
+  {
 #if defined(HAVE_GETTIMEOFDAY)
+    struct timeval tic_now;
+    gettimeofday(&tic_now, NULL);
+    double seconds = tic_now.tv_sec;
+    double museconds = tic_now.tv_usec;
+    return seconds + 1e-6 * museconds;
+#else
+    return ((double)clock())/((double)CLOCKS_PER_SEC);
+#endif
+  }
 
-  struct timeval tic_start;
+  static double sometime;
 
   /**Reset the time counter.*/
-  void tic()
+  double tic()
   {
-    gettimeofday(&tic_start, NULL);
+    return sometime = now();
   }
 
   /**Output the time in seconds since last invocation of tic(). This function
@@ -46,38 +57,20 @@ namespace tensor {
   */
   double toc()
   {
-    struct timeval tic_now;
-    gettimeofday(&tic_now, NULL);
-    double seconds = tic_now.tv_sec - tic_start.tv_sec;
-    double museconds = tic_now.tv_usec - tic_start.tv_usec;
-    return seconds + 1e-6 * museconds;
+    return now() - sometime;
   }
 
-#endif
-
-#if !defined(HAVE_GETTIMEOFDAY)
-
-  static clock_t tic_start;
-
-  /**Reset the time counter.*/
-  void tic()
-  {
-    tic_start = clock();
-  }
-
-  /**Output the time in seconds since last invocation of tic(). This function
-     only counts the processing time that the program has used since the last
-     call of tic(). If there are more than one program running in the computer,
-     or if your program makes use of functions such as sleep() to make pauses,
-     this time will be much shorter than the real elapsed time.
+  /**Output the time in seconds since the given time. This function
+     only counts the real time that the program has used since the last
+     call of tic(). This may not be related to the processing time if your
+     program is using more than one core and thus it may not be very accurate
+     for computing CPU consumption in clusters.
 
      Opposite to Matlab, toc() by itself does not produce any informative message.
   */
-  double toc()
+  double toc(double when)
   {
-    return (clock()-tic_start)/((double)CLOCKS_PER_SEC);
+    return now() - when;
   }
-
-#endif
 
 }
