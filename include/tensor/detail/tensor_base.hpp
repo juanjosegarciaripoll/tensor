@@ -136,7 +136,7 @@ const Tensor<elt_t> &Tensor<elt_t>::operator=(const Tensor<elt_t> &other)
 
 template<typename elt_t>
 index Tensor<elt_t>::dimension(int which) const {
-  assert(rank() >= which);
+  assert(rank() > which);
   assert(which >= 0);
   return dims_[which];
 }
