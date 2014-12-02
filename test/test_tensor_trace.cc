@@ -68,9 +68,11 @@ namespace tensor_test {
     test_matrix_trace<double>();
   }
 
+#if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
   TEST(TensorTrace, MatrixTraceExpectsRMatrix) {
     ASSERT_DEATH( trace(RTensor::zeros(1,1,1)), ".*" );
   }
+#endif
 
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
@@ -80,8 +82,10 @@ namespace tensor_test {
     test_matrix_trace<cdouble>();
   }
 
+#if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
   TEST(TensorTrace, MatrixTraceExpectsCMatrix) {
     ASSERT_DEATH( trace(CTensor::zeros(1,1,1)), ".*" );
   }
+#endif
 
 } // namespace tensor_test
