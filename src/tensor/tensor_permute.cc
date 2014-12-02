@@ -18,6 +18,7 @@
 */
 
 #define TENSOR_LOAD_IMPL
+#include <string.h>
 #include <tensor/tensor.h>
 
 namespace tensor {
@@ -159,22 +160,37 @@ namespace tensor {
       a5 *= new_dims[i++];
 
     std::swap(new_dims.at(n1), new_dims.at(n2));
-    Tensor<n> output(new_dims);
 
-    if (output.size()) {
+    if (a.size()) {
+      if (a2 == 1) {
+        a2 = a3;
+        goto NO_A3;
+      } else if (a4 == 1) {
+        a4 = a3;
+        goto NO_A3;
+      }
       if (a3 > 1) {
+        Tensor<n> output(new_dims);
         if (a1 > 1) {
           permute_24(output, a, a1,a2,a3,a4,a5);
         } else {
           permute_13(output, a, a2,a3,a4,a5);
         }
-      } else if (a1 > 1) {
-        permute_23(output, a, a1,a2,a4,a5);
+        return output;
       } else {
-        permute_12(output, a, a2,a4,a5);
+      NO_A3:
+        if (a4 > 1 || a2 > 1) {
+          Tensor<n> output(new_dims);
+          if (a1 > 1) {
+            permute_23(output, a, a1,a2,a4,a5);
+          } else {
+            permute_12(output, a, a2,a4,a5);
+          }
+          return output;
+        }
       }
     }
-    return output;
+    return reshape(a, new_dims);
   }
 
 } // namespace tensor
