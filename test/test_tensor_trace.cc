@@ -68,12 +68,20 @@ namespace tensor_test {
     test_matrix_trace<double>();
   }
 
+  TEST(TensorTrace, MatrixTraceExpectsRMatrix) {
+    ASSERT_DEATH( trace(RTensor::zeros(1,1,1)), ".*" );
+  }
+
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
 
   TEST(TensorTrace, CMatrix) {
     test_matrix_trace<cdouble>();
+  }
+
+  TEST(TensorTrace, MatrixTraceExpectsCMatrix) {
+    ASSERT_DEATH( trace(CTensor::zeros(1,1,1)), ".*" );
   }
 
 } // namespace tensor_test
