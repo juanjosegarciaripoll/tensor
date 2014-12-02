@@ -124,6 +124,10 @@ namespace tensor_test {
       std::fill(dimensions.begin(), dimensions.end(), (Indices::elt_t)2);
 
       Tensor<elt_t> P(dimensions);
+
+      ASSERT_DEATH(P.dimension(-1), ".*");
+      ASSERT_DEATH(P.dimension(i), ".*");
+
       for (size_t j = 0; j != i; j++) {
 	Indices::elt_t a[6];
 	switch (j) {
