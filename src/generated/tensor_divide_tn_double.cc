@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-  const Tensor<double> operator/(const Tensor<double> &a, double &b) {
+  const Tensor<double> operator/(const Tensor<double> &a, double b) {
     Tensor<double> output(a.dimensions());
     Tensor<double>::const_iterator ita = a.begin();
     Tensor<double>::iterator dest = output.begin();
@@ -31,7 +31,7 @@ namespace tensor {
     return output;
   }
 
-  const Tensor<double> operator/(double &a, const Tensor<double> &b) {
+  const Tensor<double> operator/(double a, const Tensor<double> &b) {
     Tensor<double> output(b.dimensions());
     Tensor<double>::const_iterator itb = b.begin();
     Tensor<double>::iterator dest = output.begin();

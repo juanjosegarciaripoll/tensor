@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-  const Tensor<cdouble> operator+(const Tensor<cdouble> &a, cdouble &b) {
+  const Tensor<cdouble> operator+(const Tensor<cdouble> &a, cdouble b) {
     Tensor<cdouble> output(a.dimensions());
     Tensor<cdouble>::const_iterator ita = a.begin();
     Tensor<cdouble>::iterator dest = output.begin();
@@ -31,7 +31,7 @@ namespace tensor {
     return output;
   }
 
-  const Tensor<cdouble> operator+(cdouble &a, const Tensor<cdouble> &b) {
+  const Tensor<cdouble> operator+(cdouble a, const Tensor<cdouble> &b) {
     Tensor<cdouble> output(b.dimensions());
     Tensor<cdouble>::const_iterator itb = b.begin();
     Tensor<cdouble>::iterator dest = output.begin();
