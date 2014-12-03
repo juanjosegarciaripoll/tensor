@@ -462,6 +462,21 @@ namespace tensor {
   inline const Booleans operator>=(double a, const RTensor &b) {  return b < a; }
   inline const Booleans operator!=(double a, const RTensor &b) { return b != a; }
 
+  const RTensor operator+(const RTensor &a, const RTensor &b);
+  const RTensor operator-(const RTensor &a, const RTensor &b);
+  const RTensor operator*(const RTensor &a, const RTensor &b);
+  const RTensor operator/(const RTensor &a, const RTensor &b);
+
+  const RTensor operator+(const RTensor &a, double b);
+  const RTensor operator-(const RTensor &a, double b);
+  const RTensor operator*(const RTensor &a, double b);
+  const RTensor operator/(const RTensor &a, double b);
+
+  const RTensor operator+(double a, const RTensor &b);
+  const RTensor operator-(double a, const RTensor &b);
+  const RTensor operator*(double a, const RTensor &b);
+  const RTensor operator/(double a, const RTensor &b);
+
   extern template class Tensor<cdouble>;
   /** Complex Tensor with elements of type "cdouble". */
 #ifdef DOXYGEN_ONLY
@@ -571,6 +586,21 @@ namespace tensor {
   const Booleans operator!=(const CTensor &a, cdouble b);
   inline const Booleans operator==(cdouble a, const CTensor &b) { return b == a; }
   inline const Booleans operator!=(cdouble a, const CTensor &b) { return b != a; }
+
+  const CTensor operator+(const CTensor &a, const CTensor &b);
+  const CTensor operator-(const CTensor &a, const CTensor &b);
+  const CTensor operator*(const CTensor &a, const CTensor &b);
+  const CTensor operator/(const CTensor &a, const CTensor &b);
+
+  const CTensor operator+(const CTensor &a, cdouble b);
+  const CTensor operator-(const CTensor &a, cdouble b);
+  const CTensor operator*(const CTensor &a, cdouble b);
+  const CTensor operator/(const CTensor &a, cdouble b);
+
+  const CTensor operator+(cdouble a, const CTensor &b);
+  const CTensor operator-(cdouble a, const CTensor &b);
+  const CTensor operator*(cdouble a, const CTensor &b);
+  const CTensor operator/(cdouble a, const CTensor &b);
 
 } // namespace tensor
 

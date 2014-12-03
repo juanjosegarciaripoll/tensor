@@ -141,6 +141,22 @@ basic_SOURCES = \
 	generated/tensor_unop_tanh_z.cc \
 	generated/tensor_unop_exp_z.cc \
 	generated/tensor_unop_sqrt_z.cc \
+	generated/tensor_divide_tn_cdouble.cc \
+	generated/tensor_divide_tn_double.cc \
+	generated/tensor_divide_tt_cdouble.cc \
+	generated/tensor_divide_tt_double.cc \
+	generated/tensor_minus_tn_cdouble.cc \
+	generated/tensor_minus_tn_double.cc \
+	generated/tensor_minus_tt_cdouble.cc \
+	generated/tensor_minus_tt_double.cc \
+	generated/tensor_plus_tn_cdouble.cc \
+	generated/tensor_plus_tn_double.cc \
+	generated/tensor_plus_tt_cdouble.cc \
+	generated/tensor_plus_tt_double.cc \
+	generated/tensor_times_tn_cdouble.cc \
+	generated/tensor_times_tn_double.cc \
+	generated/tensor_times_tt_cdouble.cc \
+	generated/tensor_times_tt_double.cc \
 	linalg/block_svd_d.cc \
 	linalg/block_svd_z.cc \
 	linalg/cgs_d.cc \
