@@ -35,32 +35,18 @@ namespace tensor {
 
     d.at(dim) = new_size;
     Tensor output(d);
-    elt_t *p1 = output.begin();
-    const elt_t *p2 = a.begin();
+    typename Tensor::iterator p_new = output.begin();
+    typename Tensor::const_iterator p_old = a.begin();
     index i_len, k_len;
     surrounding_dimensions(d, dim, &i_len, &new_size, &k_len);
-    if (old_size > new_size) {
-      output.fill_with_zeros();
-      index dp2 = (old_size - new_size) * i_len;
-      for (index k = 0; k < k_len; k++) {
-	for (index j = 0; j < new_size; j++) {
-	  memcpy(p1, p2, i_len * sizeof(*p1));
-	  p1 += i_len;
-	  p2 += i_len;
-	}
-	p2 += dp2;
-      }
-    } else {
-      index dp1 = (new_size - old_size) * i_len;
-      for (index k = 0; k < k_len; k++) {
-	for (index j = 0; j < old_size; j++) {
-	  memcpy(p1, p2, i_len * sizeof(*p1));
-	  p1 += i_len;
-	  p2 += i_len;
-	}
-	for (index i = 0; i < dp1; i++, p1++)
-	  *p1 = number_zero<elt_t>();
-      }
+
+    index dp_new = new_size * i_len;
+    index dp_old = old_size * i_len;
+    index data_size = std::min(dp_new, dp_old) * sizeof(*p_new);
+    while (k_len--) {
+      memcpy(p_new, p_old, data_size);
+      p_old += dp_old;
+      p_new += dp_new;
     }
     return output;
   }
