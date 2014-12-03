@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <algorithm>
 #include <tensor/tensor.h>
 
 namespace tensor {
@@ -28,8 +29,9 @@ namespace tensor {
     Tensor<cdouble> output(t.dimensions());
     Tensor<cdouble>::iterator a = output.begin();
     Tensor<cdouble>::const_iterator b = t.begin();
-    for (; b != t.end(); a++, b++) {
-      *a = tensor::conj(*b);
+    Tensor<cdouble>::const_iterator bend = t.end();
+    for (; b != bend; ++a, ++b) {
+      *a = conj(*b);
     }
     return output;
   }
