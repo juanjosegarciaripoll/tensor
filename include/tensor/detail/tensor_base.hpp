@@ -50,6 +50,11 @@ Tensor<elt_t>::Tensor(const Indices &new_dims, const Tensor<elt_t> &other) :
   assert(dims_.total_size() == size());
 }
 
+template<typename elt_t>
+Tensor<elt_t>::~Tensor()
+{
+}
+
 //
 // Integer dimensions
 //

@@ -60,7 +60,7 @@ class Tensor {
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
   explicit Tensor(const Indices &new_dims);
 
-  /**Consturcts an N-D Tensor with given initial data.*/
+  /**Constructs an N-D Tensor with given initial data.*/
   Tensor(const Indices &new_dims, const Tensor<elt_t> &data);
 
   /**Constructs a 1-D Tensor from a vector.*/
@@ -73,6 +73,9 @@ class Tensor {
     dims_.at(0) = data.size();
     std::copy(data.begin(), data.end(), begin());
   }
+
+  /**Destruct a Tensor.*/
+  ~Tensor();
 
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
   Tensor(const Tensor &other);
