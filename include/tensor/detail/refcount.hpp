@@ -90,6 +90,14 @@ inline RefPointer<cdouble>::RefPointer(size_t new_size) {
   ref_ = new pointer(reinterpret_cast<cdouble*>(new double[2*new_size]), new_size);
 }
 
+template<>
+inline typename RefPointer<cdouble>::pointer *
+RefPointer<cdouble>::pointer::clone() {
+  cdouble *output = reinterpret_cast<cdouble*>(new double[2*size()]);
+  memcpy(output, begin(), sizeof(*output)*size());
+  return new pointer(output, size());
+}
+
 template<class elt_t>
 RefPointer<elt_t>::RefPointer(elt_t *data, size_t new_size, bool owned) {
     ref_ = new pointer(data, new_size, owned);
