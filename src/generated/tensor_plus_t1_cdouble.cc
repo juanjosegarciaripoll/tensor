@@ -24,7 +24,6 @@ namespace tensor {
 
   Tensor<cdouble> &operator+=(Tensor<cdouble> &a, const Tensor<cdouble> &b) {
     assert(a.size() == b.size());
-#if 1
     Tensor<cdouble>::iterator ita = a.begin();
     Tensor<cdouble>::iterator itae = a.end();
     Tensor<cdouble>::const_iterator itb = b.begin();
@@ -33,11 +32,6 @@ namespace tensor {
       ++ita;
       ++itb;
     }
-#else
-    cblas_daxpy(2*a.size(),
-                1.0, static_cast<const double*>((void*)b.begin_const()), 1,
-                static_cast<double*>((void*)a.begin()), 1);
-#endif
     return a;
   }
 
