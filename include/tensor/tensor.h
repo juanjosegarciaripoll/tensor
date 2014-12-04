@@ -477,6 +477,9 @@ namespace tensor {
   const RTensor operator*(double a, const RTensor &b);
   const RTensor operator/(double a, const RTensor &b);
 
+  RTensor &operator+=(RTensor &a, const RTensor &b);
+  RTensor &operator-=(RTensor &a, const RTensor &b);
+
   extern template class Tensor<cdouble>;
   /** Complex Tensor with elements of type "cdouble". */
 #ifdef DOXYGEN_ONLY
@@ -601,6 +604,9 @@ namespace tensor {
   const CTensor operator-(cdouble a, const CTensor &b);
   const CTensor operator*(cdouble a, const CTensor &b);
   const CTensor operator/(cdouble a, const CTensor &b);
+
+  CTensor &operator+=(CTensor &a, const CTensor &b);
+  CTensor &operator-=(CTensor &a, const CTensor &b);
 
 } // namespace tensor
 

@@ -145,10 +145,14 @@ basic_SOURCES = \
 	generated/tensor_divide_tn_double.cc \
 	generated/tensor_divide_tt_cdouble.cc \
 	generated/tensor_divide_tt_double.cc \
+	generated/tensor_minus_t1_cdouble.cc \
+	generated/tensor_minus_t1_double.cc \
 	generated/tensor_minus_tn_cdouble.cc \
 	generated/tensor_minus_tn_double.cc \
 	generated/tensor_minus_tt_cdouble.cc \
 	generated/tensor_minus_tt_double.cc \
+	generated/tensor_plus_t1_cdouble.cc \
+	generated/tensor_plus_t1_double.cc \
 	generated/tensor_plus_tn_cdouble.cc \
 	generated/tensor_plus_tn_double.cc \
 	generated/tensor_plus_tt_cdouble.cc \
