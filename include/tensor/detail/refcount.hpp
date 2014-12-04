@@ -22,6 +22,8 @@
 #else
 #define TENSOR_DETAIL_REFCOUNT_HPP
 
+#include <tensor/numbers.h>
+
 namespace tensor {
 
 template<typename elt_t>
@@ -79,6 +81,13 @@ RefPointer<elt_t>::RefPointer() {
 template<class elt_t>
 RefPointer<elt_t>::RefPointer(size_t new_size) {
   ref_ = new pointer(new elt_t[new_size], new_size);
+}
+
+/* This is an optimization to ensure that complex double vectors are
+ * started uninitialized. */
+template<>
+inline RefPointer<cdouble>::RefPointer(size_t new_size) {
+  ref_ = new pointer(reinterpret_cast<cdouble*>(new double[2*new_size]), new_size);
 }
 
 template<class elt_t>
