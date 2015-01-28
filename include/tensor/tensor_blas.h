@@ -34,12 +34,7 @@
 #endif
 
 #ifdef TENSOR_USE_VECLIB
-# if defined(HAVE_VECLIB_CBLAS_H)
-#  include <vecLib/cblas.h>
-#  include <vecLib/clapack.h>
-# else
-#  error "Missing cblas.h"
-# endif
+# include <Accelerate/accelerate.h>
 # define F77NAME(x) x##_
 #endif
 

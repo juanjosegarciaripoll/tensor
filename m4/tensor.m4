@@ -31,11 +31,11 @@ dnl ----------------------------------------------------------------------
 dnl Find veclib framework
 dnl
 AC_DEFUN([TENSOR_VECLIB],[
-  AC_MSG_CHECKING([for VecLib library])
+  AC_MSG_CHECKING([for Accelerate library])
   if test `uname` = "Darwin"; then
     have_veclib=yes
-    VECLIB_LIBS="-framework veclib"
-    AC_CHECK_HEADERS_ONCE([vecLib/cblas.h])
+    VECLIB_LIBS="-framework Accelerate"
+    AC_CHECK_HEADERS_ONCE([Accelerate/accelerate.h])
   else
     have_veclib=no
   fi
