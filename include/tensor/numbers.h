@@ -26,9 +26,8 @@
 
 namespace tensor {
 
-using std::conj;
-using std::real;
 using std::imag;
+using std::real;
 using std::abs;
 
 //
@@ -42,8 +41,6 @@ template<typename number>
 inline number number_one() { return static_cast<number>(1); }
 
 /* Already in C++11 but they return complex */
-inline double real(double r) { return r; }
-inline double imag(double r) { return 0.0; }
 inline double conj(double r) { return r; }
 inline double abs2(double r) { return r*r; }
 
@@ -55,6 +52,8 @@ inline number square(number r) { return r*r; }
 //
 
 typedef std::complex<double> cdouble;
+
+inline cdouble conj(const cdouble &r) { return std::conj(r); }
 
 inline cdouble to_complex(const double &r) {
   return cdouble(r, 0);
