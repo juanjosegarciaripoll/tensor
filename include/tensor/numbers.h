@@ -26,9 +26,6 @@
 
 namespace tensor {
 
-using std::conj;
-using std::real;
-using std::imag;
 using std::abs;
 
 //
@@ -74,6 +71,9 @@ inline cdouble number_zero<cdouble>() { return to_complex(0.0); }
 template<>
 inline cdouble number_one<cdouble>() { return to_complex(1.0); }
 
+inline double real(cdouble z) { return std::real(z); }
+inline double imag(cdouble z) { return std::imag(z); }
+inline cdouble conj(cdouble z) { return std::conj(z); }
 inline double abs2(cdouble z) { return abs2(real(z)) + abs2(imag(z)); }
 
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
