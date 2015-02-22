@@ -38,7 +38,11 @@
 #  include <vecLib/cblas.h>
 #  include <vecLib/clapack.h>
 # else
-#  error "Missing cblas.h"
+#  if defined(HAVE_ACCELERATE_ACCELERATE_H)
+#   include <Accelerate/accelerate.h>
+#  else
+#   error "Missing cblas.h"
+#  endif
 # endif
 # define F77NAME(x) x##_
 #endif

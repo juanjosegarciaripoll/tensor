@@ -35,7 +35,11 @@ AC_DEFUN([TENSOR_VECLIB],[
   if test `uname` = "Darwin"; then
     have_veclib=yes
     VECLIB_LIBS="-framework veclib"
-    AC_CHECK_HEADERS_ONCE([vecLib/cblas.h])
+    AC_CHECK_HEADERS([vecLib/cblas.h],[have_veclib=yes],[have_veclib=no])
+    if test $have_veclib = no; then
+      VECLIB_LIBS="-framework Accelerate"
+      AC_CHECK_HEADERS([Accelerate/accelerate.h],[have_veclib=yes],[have_veclib=no])
+    fi
   else
     have_veclib=no
   fi
