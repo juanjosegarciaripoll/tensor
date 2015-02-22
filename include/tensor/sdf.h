@@ -115,7 +115,7 @@ namespace sdf {
 
     void write_header();
     void write_variable_name(const std::string &name);
-    void write_tag(const std::string &name, size_t tag);
+    void write_tag(const std::string &name, index tag);
   };
 
   class InDataFile : public DataFile {
@@ -152,11 +152,11 @@ namespace sdf {
 
     template<class Vector> const Vector load_vector();
 
-    size_t read_tag_code();
+    index read_tag_code();
     std::string read_variable_name();
 
     void read_header();
-    void read_tag(const std::string &record_name, size_t tag);
+    void read_tag(const std::string &record_name, index tag);
   };
 
 } // namespace sdf
