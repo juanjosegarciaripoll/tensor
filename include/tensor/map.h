@@ -107,6 +107,30 @@ namespace tensor {
     return Closure3<out,arg0,arg1,arg2,arg3,par1,par2,par3>(f,a1,a2,a3);
   }
 
+  template<class out, class arg0, class arg1, class arg2, class arg3,
+           class arg4, class par1, class par2, class par3, class par4>
+  struct Closure4 {
+    typedef out (*f_ptr)(arg0, arg1, arg2, arg3, arg4);
+    Closure4(f_ptr f, par1 &a1, par2 &a2, par3 &a3, par4 &a4) :
+      f_(f), a1_(a1), a2_(a2), a3_(a3), a4_(a4) {}
+    out operator()(arg0 a0) const { return (*f_)(a0,a1_,a2_,a3_,a4_); } 
+  private:
+    const f_ptr f_;
+    par1 a1_;
+    par2 a2_;
+    par3 a3_;
+    par4 a4_;
+  };
+
+  template<class out, class arg0, class arg1, class arg2, class arg3,
+           class arg4, class par1, class par2, class par3, class par4>
+  inline Closure4<out,arg0,arg1,arg2,arg3,arg4,par1,par2,par3,par4>
+  with_args(out (*f)(arg0, arg1, arg2, arg3, arg4),
+            par1 a1, par2 a2, par3 a3, par4 a4)
+  {
+    return Closure4<out,arg0,arg1,arg2,arg3,arg4,par1,par2,par3,par4>(f,a1,a2,a3,a4);
+  }
+
   extern template class MatrixMap<RTensor>;
   extern template class MatrixMap<CTensor>;
   extern template class MatrixMap<RSparse>;
