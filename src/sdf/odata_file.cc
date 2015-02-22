@@ -177,7 +177,7 @@ OutDataFile::write_variable_name(const std::string &name)
 }
 
 void
-OutDataFile::write_tag(const std::string &name, long type)
+OutDataFile::write_tag(const std::string &name, tensor::index type)
 {
   write_variable_name(name);
   write_raw(type);

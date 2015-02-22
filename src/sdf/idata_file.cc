@@ -138,10 +138,10 @@ InDataFile::read_raw(cdouble *data, size_t n)
   read_raw_with_endian(_stream, (double*)data, 2*n);
 }
 
-index
+tensor::index
 InDataFile::read_tag_code()
 {
-  index output;
+  tensor::index output;
   read_raw(output);
   return output;
 }
@@ -157,7 +157,7 @@ InDataFile::read_variable_name()
 }
 
 void
-InDataFile::read_tag(const std::string &name, index type)
+InDataFile::read_tag(const std::string &name, tensor::index type)
 {
   std::string other_name = read_variable_name();
   if (name.size() && (name != other_name)) {
@@ -166,7 +166,7 @@ InDataFile::read_tag(const std::string &name, index type)
 	      << other_name << '\n';
     abort();
   }
-  index other_type = read_tag_code();
+  tensor::index other_type = read_tag_code();
   if (type != other_type) {
     std::cerr << "While reading file " << _filename << ", an object of type "
 	      << tag_to_name(type) << " was expected but found a "
