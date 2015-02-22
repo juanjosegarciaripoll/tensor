@@ -26,7 +26,6 @@ using namespace sdf;
 template <class number>
 void write_raw_with_endian(std::ofstream &s, const number *data, size_t n)
 {
-  std::cout << "raw=" << n << " " << sizeof(number) << std::endl;
   s.write((char *)data, n * sizeof(number));
   if (s.bad()) {
 #ifdef _MSC_VER
@@ -173,7 +172,6 @@ OutDataFile::write_variable_name(const std::string &name)
   char *buffer = new char[var_name_size];
   memset(buffer, 0, var_name_size);
   strncpy(buffer, name.c_str(), std::min<size_t>(var_name_size - 1, name.size()));
-  std::cout << "variable: [" << buffer << "]\n";
   write_raw(buffer, var_name_size);
   delete buffer;
 }
