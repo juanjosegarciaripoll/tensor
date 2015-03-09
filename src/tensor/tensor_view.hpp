@@ -46,9 +46,10 @@ namespace tensor {
   template<typename elt_t> const typename Tensor<elt_t>::view
   Tensor<elt_t>::operator()(PRange r) const
   {
+    // a(range) is valid for 1D and for ND tensors which are treated
+    // as being 1D
     Indices dims(1);
-    assert(this->rank() == 1);
-    r->set_limit(dimension(0));
+    r->set_limit(size());
     dims.at(0) = r->size();
     return view(*this, dims, r);
   }
@@ -147,8 +148,9 @@ namespace tensor {
   Tensor<elt_t>::at(PRange r)
   {
     Indices dims(1);
-    assert(this->rank() == 1);
-    r->set_limit(dimension(0));
+    // a(range) is valid for 1D and for ND tensors which are treated
+    // as being 1D
+    r->set_limit(size());
     dims.at(0) = r->size();
     return mutable_view(*this, dims, r);
   }
