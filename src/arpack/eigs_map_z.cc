@@ -53,7 +53,7 @@ namespace linalg {
       Indices ndx_out(neig);
       std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
       if (eigenvectors) {
-        *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
+        *eigenvectors = vectors(range(), range(ndx_out));
       }
       if (converged) {
         *converged = true;
