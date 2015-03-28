@@ -28,26 +28,37 @@ end;
 
 
 function sdf_load_one(filename)
-global SDF_DATA;
+global SDF_DATA SDF_AVOID;
 f = {fopen(filename, 'rb'), filename};
 if f{1} >= 0
   %try
     while ~feof(f{1})
       [obj,name,dims] = sdf_load_record(f);
+      if ~isempty(SDF_AVOID)
+         if any(strcmp(name, SDF_AVOID))
+             name = [];
+         end
+      end
       if isempty(name)
         if isempty(obj)
           break;
         end;
       else
-        if isfield(SDF_DATA, name)
-          old = getfield(SDF_DATA, name);
-          l = length(dims);
-          if l > 1 || size(obj,1) > 1
-              l = l+1;
-          end
-          obj = cat(l, old, obj);
-        end;
-        SDF_DATA = setfield(SDF_DATA, name, obj);
+        try
+            if isfield(SDF_DATA, name)
+                old = getfield(SDF_DATA, name);
+                l = length(dims);
+                if l > 1 || size(obj,1) > 1
+                    l = l+1;
+                end
+                obj = cat(l, old, obj);
+            end;
+            SDF_DATA = setfield(SDF_DATA, name, obj);
+        catch
+            warning(['Unable to match dimensions for field ' name]);
+            SDF_DATA = rmfield(SDF_DATA, name);
+            SDF_AVOID{end+1} = name;
+        end
       end;
     end;
     fclose(f{1});
