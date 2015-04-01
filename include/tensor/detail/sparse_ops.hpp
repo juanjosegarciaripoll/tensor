@@ -91,7 +91,7 @@ namespace tensor {
     assert(rows == m2.rows() && cols == m2.columns());
 
     if (rows == 0 || cols == 0)
-      return m1;
+      return Sparse<T3>(rows,cols);
 
     index max_size = m1.priv_data().size() + m2.priv_data().size();
     Tensor<T3> data(max_size);

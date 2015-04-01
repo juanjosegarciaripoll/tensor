@@ -29,6 +29,8 @@ basic_SOURCES = \
 	sparse/sparse_kron_z.cc \
 	sparse/sparse_ops_d.cc \
 	sparse/sparse_ops_z.cc \
+	sparse/sparse_ops_dz.cc \
+	sparse/sparse_ops_zd.cc \
 	sparse/sparse_real.cc \
 	sparse/sparse_imag.cc \
 	sparse/sparse_conj.cc \
