@@ -32,6 +32,9 @@ basic_SOURCES = \
 	sparse/sparse_real.cc \
 	sparse/sparse_imag.cc \
 	sparse/sparse_conj.cc \
+	sparse/sparse_rows.cc \
+	sparse/sparse_transpose_z.cc \
+	sparse/sparse_transpose_d.cc \
 	sparse/mmult_sparse_tensor_d.cc \
 	sparse/mmult_sparse_tensor_z.cc \
 	sparse/mmult_tensor_sparse_d.cc \

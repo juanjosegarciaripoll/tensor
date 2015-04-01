@@ -157,6 +157,9 @@ namespace tensor {
     return all_equal(full(s2), s1);
   }
 
+  const RSparse transpose(const RSparse &s);
+  const CSparse transpose(const CSparse &s);
+
   const RTensor mmult(const RTensor &m1, const RSparse &m2);
   const CTensor mmult(const CTensor &m1, const CSparse &m2);
   const RTensor mmult(const RSparse &m1, const RTensor &m2);
