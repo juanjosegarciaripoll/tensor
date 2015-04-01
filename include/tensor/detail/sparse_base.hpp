@@ -78,14 +78,14 @@ namespace tensor {
 
   template<typename elt_t>
   Sparse<elt_t>::Sparse(const Indices &dims, const Indices &row_start,
-                        const Indices &column, const Vector<elt_t> &data) :
+                        const Indices &column, const Tensor<elt_t> &data) :
     dims_(dims), row_start_(row_start), column_(column), data_(data)
   {
 	  assert(row_start.size() == dims[0]+1);
   }
 
   template<typename elt_t>
-  Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols, const Vector<elt_t> &data,
+  Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols, const Tensor<elt_t> &data,
                         index nrows, index ncols) :
     dims_(2), row_start_(), column_(), data_()
   {
@@ -112,7 +112,7 @@ namespace tensor {
     dims_.at(1) = ncols;
     row_start_ = Indices(nrows+1);
     column_ = Indices(l = sorted_data.size());
-    data_ = Vector<elt_t>(l);
+    data_ = Tensor<elt_t>(l);
 
     /* Fill in the Sparse structure.
      */
@@ -178,7 +178,7 @@ namespace tensor {
   {
     index nonzero = number_of_nonzero<elt_t>(t);
     column_ = Indices(nonzero);
-    data_ = Vector<elt_t>(nonzero);
+    data_ = Tensor<elt_t>(nonzero);
 
     index nrows = rows();
     index ncols = columns();
@@ -186,7 +186,7 @@ namespace tensor {
     Indices::iterator row_it = row_start_.begin();
     Indices::iterator col_it = column_.begin();
     Indices::iterator col_begin = col_it;
-    typename Vector<elt_t>::iterator data_it = data_.begin();
+    typename Tensor<elt_t>::iterator data_it = data_.begin();
 
     *(row_it++) = 0;
     for (index r = 0; r < nrows; r++) {
@@ -212,7 +212,7 @@ namespace tensor {
 
       Indices::const_iterator row_start = s.priv_row_start().begin();
       Indices::const_iterator column = s.priv_column().begin();
-      typename Vector<elt_t>::const_iterator data = s.priv_data().begin();
+      typename Tensor<elt_t>::const_iterator data = s.priv_data().begin();
 
       for (index i = 0; i < nrows; i++) {
         for (index l = row_start[i+1] - row_start[i]; l; l--) {
@@ -232,7 +232,7 @@ namespace tensor {
   Sparse<elt_t> Sparse<elt_t>::eye(index rows, index columns)
   {
     index nel = std::min(rows, columns);
-    Vector<elt_t> data(nel);
+    Tensor<elt_t> data(nel);
     std::fill(data.begin(), data.end(), number_one<elt_t>());
     Indices row_start(rows+1);
     for (index i = 0; i <= rows; i++) {

@@ -36,7 +36,7 @@ namespace tensor {
   template<typename T>
   const Sparse<T> operator-(const Sparse<T> &s)
   {
-    Vector<T> data(s.priv_data().size());
+    Tensor<T> data(s.priv_data().size());
     std::transform(s.priv_data().begin(), s.priv_data().end(),
                    data.begin(), std::negate<T>());
     return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(),
@@ -51,7 +51,7 @@ namespace tensor {
   const Sparse<typename Binop<T1,T2>::type> operator*(const Sparse<T1> &s, T2 b)
   {
     typedef typename Binop<T1,T2>::type T3;
-    Vector<T3> data(s.priv_data().size());
+    Tensor<T3> data(s.priv_data().size());
     std::transform(s.priv_data().begin(), s.priv_data().end(),
                    data.begin(), times_constant<T1,T2>(b));
     return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(),
@@ -62,7 +62,7 @@ namespace tensor {
   const Sparse<typename Binop<T1,T2>::type> operator/(const Sparse<T1> &s, T2 b)
   {
     typedef typename Binop<T1,T2>::type T3;
-    Vector<T3> data(s.priv_data().size());
+    Tensor<T3> data(s.priv_data().size());
     std::transform(s.priv_data().begin(), s.priv_data().end(),
                    data.begin(), divided_constant<T1,T2>(b));
     return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(),
@@ -94,20 +94,20 @@ namespace tensor {
       return m1;
 
     index max_size = m1.priv_data().size() + m2.priv_data().size();
-    Vector<T3> data(max_size);
+    Tensor<T3> data(max_size);
     Indices column(max_size);
     Indices row_start(rows + 1);
 
-    typename Vector<T3>::iterator out_data = data.begin();
+    typename Tensor<T3>::iterator out_data = data.begin();
     typename Indices::iterator out_column = column.begin();
     typename Indices::iterator out_row_start = row_start.begin();
-    typename Vector<T3>::iterator out_begin = out_data;
+    typename Tensor<T3>::iterator out_begin = out_data;
 
-    typename Vector<T1>::const_iterator m1_data = m1.priv_data().begin();
+    typename Tensor<T1>::const_iterator m1_data = m1.priv_data().begin();
     typename Indices::const_iterator m1_row_start = m1.priv_row_start().begin();
     typename Indices::const_iterator m1_column = m1.priv_column().begin();
 
-    typename Vector<T2>::const_iterator m2_data = m2.priv_data().begin();
+    typename Tensor<T2>::const_iterator m2_data = m2.priv_data().begin();
     typename Indices::const_iterator m2_row_start = m2.priv_row_start().begin();
     typename Indices::const_iterator m2_column = m2.priv_column().begin();
 
@@ -162,7 +162,7 @@ namespace tensor {
     index j = out_data - out_begin;
     Indices the_column(j);
     std::copy(column.begin(), column.begin() + j, the_column.begin());
-    Vector<T3> the_data(j);
+    Tensor<T3> the_data(j);
     std::copy(data.begin(), data.begin() + j, the_data.begin());
     return Sparse<T3>(m1.dimensions(), row_start, the_column, the_data);
   }

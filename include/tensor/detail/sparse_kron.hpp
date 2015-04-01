@@ -45,12 +45,12 @@ namespace tensor {
     if (number_nonzero == 0)
       return Sparse<elt_t>(total_rows, total_cols);
 
-    Vector<elt_t> output_data(number_nonzero);
+    Tensor<elt_t> output_data(number_nonzero);
     Indices output_column(number_nonzero);
     Indices output_row_start(total_rows+1);
     Indices output_dims(igen << total_rows << total_cols);
 
-    typename Vector<elt_t>::iterator out_data = output_data.begin();
+    typename Tensor<elt_t>::iterator out_data = output_data.begin();
     typename Indices::iterator out_column = output_column.begin();
     typename Indices::iterator out_begin = out_column;
     typename Indices::iterator out_row_start = output_row_start.begin();

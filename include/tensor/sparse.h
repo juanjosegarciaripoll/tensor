@@ -44,11 +44,12 @@ namespace tensor {
     /**Create a matrix with all elements set to zero.*/
     Sparse(index rows, index cols, index nonzero = 0);
     /**Create a sparse matrix from the coordinates and values. */
-    Sparse(const Indices &row_indices, const Indices &column_indices, const Vector<elt_t> &data,
+    Sparse(const Indices &row_indices, const Indices &column_indices,
+           const Tensor<elt_t> &data,
            index rows = 0, index columns = 0);
     /* Create a sparse matrix from its internal representation. */
     Sparse(const Indices &dims, const Indices &row_start,
-           const Indices &column, const Vector<elt_t> &data);
+           const Indices &column, const Tensor<elt_t> &data);
     /**Convert a tensor to sparse form.*/
     explicit Sparse(const Tensor<elt_t> &tensor);
     /**Copy constructor.*/
@@ -85,7 +86,7 @@ namespace tensor {
     const Indices &priv_dims() const { return dims_; }
     const Indices &priv_row_start() const { return row_start_; }
     const Indices &priv_column() const { return column_; }
-    const Vector<elt> &priv_data() const { return data_; }
+    const Tensor<elt> &priv_data() const { return data_; }
 
   public:
     /** The dimensions (rows and columns) of the sparse matrix. */
@@ -95,7 +96,7 @@ namespace tensor {
     /** Gives for each data_ entry the column in the matrix. */
     Indices column_;
     /** The single data entries. */
-    Vector<elt_t> data_;
+    Tensor<elt_t> data_;
   };
 
   typedef Sparse<double> RSparse;
