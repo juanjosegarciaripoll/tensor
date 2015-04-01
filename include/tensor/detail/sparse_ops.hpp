@@ -47,28 +47,30 @@ namespace tensor {
   // MINIMAL ARITHMETICS WITH NUMBERS
   //
 
-  template<typename T>
-  const Sparse<T> operator*(const Sparse<T> &s, T b)
+  template<typename T1, typename T2>
+  const Sparse<typename Binop<T1,T2>::type> operator*(const Sparse<T1> &s, T2 b)
   {
-    Vector<T> data(s.priv_data().size());
+    typedef typename Binop<T1,T2>::type T3;
+    Vector<T3> data(s.priv_data().size());
     std::transform(s.priv_data().begin(), s.priv_data().end(),
-                   data.begin(), times_constant<T,T>(b));
-    return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(),
-                     data);
+                   data.begin(), times_constant<T1,T2>(b));
+    return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                      data);
   }
 
-  template<typename T>
-  const Sparse<T> operator/(const Sparse<T> &s, T b)
+  template<typename T1, typename T2>
+  const Sparse<typename Binop<T1,T2>::type> operator/(const Sparse<T1> &s, T2 b)
   {
-    Vector<T> data(s.priv_data().size());
+    typedef typename Binop<T1,T2>::type T3;
+    Vector<T3> data(s.priv_data().size());
     std::transform(s.priv_data().begin(), s.priv_data().end(),
-                   data.begin(), divided_constant<T,T>(b));
-    return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(),
-                     data);
+                   data.begin(), divided_constant<T1,T2>(b));
+    return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                      data);
   }
 
-  template<typename T>
-  const Sparse<T> operator*(T b, const Sparse<T> &s)
+  template<typename T1, typename T2>
+  const Sparse<typename Binop<T1,T2>::type> operator*(T1 b, const Sparse<T2> &s)
   {
     return s * b;
   }
@@ -77,10 +79,12 @@ namespace tensor {
   // ARITHMETIC BETWEEN MATRICES
   //
 
-  template<typename T, class binop>
-  const Sparse<T> sparse_binop(const Sparse<T> &m1, const Sparse<T> &m2,
-                               binop op)
+  template<typename T1, typename T2, class binop>
+  const Sparse<typename Binop<T1,T2>::type>
+  sparse_binop(const Sparse<T1> &m1, const Sparse<T2> &m2, binop op)
   {
+    typedef typename Binop<T1,T2>::type T3;
+  
     size_t rows = m1.rows();
     size_t cols = m1.columns();
 
@@ -90,20 +94,20 @@ namespace tensor {
       return m1;
 
     index max_size = m1.priv_data().size() + m2.priv_data().size();
-    Vector<T> data(max_size);
+    Vector<T3> data(max_size);
     Indices column(max_size);
     Indices row_start(rows + 1);
 
-    typename Vector<T>::iterator out_data = data.begin();
+    typename Vector<T3>::iterator out_data = data.begin();
     typename Indices::iterator out_column = column.begin();
     typename Indices::iterator out_row_start = row_start.begin();
-    typename Vector<T>::iterator out_begin = out_data;
+    typename Vector<T3>::iterator out_begin = out_data;
 
-    typename Vector<T>::const_iterator m1_data = m1.priv_data().begin();
+    typename Vector<T1>::const_iterator m1_data = m1.priv_data().begin();
     typename Indices::const_iterator m1_row_start = m1.priv_row_start().begin();
     typename Indices::const_iterator m1_column = m1.priv_column().begin();
 
-    typename Vector<T>::const_iterator m2_data = m2.priv_data().begin();
+    typename Vector<T2>::const_iterator m2_data = m2.priv_data().begin();
     typename Indices::const_iterator m2_row_start = m2.priv_row_start().begin();
     typename Indices::const_iterator m2_column = m2.priv_column().begin();
 
@@ -118,18 +122,18 @@ namespace tensor {
       // each element on each matrix.
       index c1 = l1 ? *m1_column : cols;
       index c2 = l2 ? *m2_column : cols;
-      T value;
+      T3 value;
       index c;
       if (c1 < c2) {
         // There is an element a column c1 on matrix m1, but the
         // same element at m2 is zero
-        value = op(*m1_data, number_zero<T>());
+        value = op(*m1_data, number_zero<T2>());
         c = c1;
         l1--; m1_column++; m1_data++;
       } else if (c2 < c1) {
         // There is an element a column c2 on matrix m2, but the
         // same element at m1 is zero
-        value = op(number_zero<T>(), *m2_data);
+        value = op(number_zero<T1>(), *m2_data);
         c = c2;
         l2--; m2_column++; m2_data++;
       } else if (c2 < cols) {
@@ -150,7 +154,7 @@ namespace tensor {
         j2 = *m2_row_start; m2_row_start++; l2 = (*m2_row_start) - j2;
         continue;
       }
-      if (!(value == number_zero<T>())) {
+      if (!(value == number_zero<T3>())) {
         *(out_data++) = value;
         *(out_column++) = c;
       }
@@ -158,27 +162,33 @@ namespace tensor {
     index j = out_data - out_begin;
     Indices the_column(j);
     std::copy(column.begin(), column.begin() + j, the_column.begin());
-    Vector<T> the_data(j);
+    Vector<T3> the_data(j);
     std::copy(data.begin(), data.begin() + j, the_data.begin());
-    return Sparse<T>(m1.dimensions(), row_start, the_column, the_data);
+    return Sparse<T3>(m1.dimensions(), row_start, the_column, the_data);
   }
 
-  template<typename T>
-  const Sparse<T> operator+(const Sparse<T> &m1, const Sparse<T> &m2)
+  template<typename T1, typename T2>
+  const Sparse<typename Binop<T1,T2>::type>
+  operator+(const Sparse<T1> &m1, const Sparse<T2> &m2)
   {
-    return sparse_binop(m1, m2, std::plus<T>());
+    typedef typename Binop<T1,T2>::type T3;
+    return sparse_binop(m1, m2, std::plus<T3>());
   }
 
-  template<typename T>
-  const Sparse<T> operator-(const Sparse<T> &m1, const Sparse<T> &m2)
+  template<typename T1, typename T2>
+  const Sparse<typename Binop<T1,T2>::type>
+  operator-(const Sparse<T1> &m1, const Sparse<T2> &m2)
   {
-    return sparse_binop(m1, m2, std::minus<T>());
+    typedef typename Binop<T1,T2>::type T3;
+    return sparse_binop(m1, m2, std::minus<T3>());
   }
 
-  template<typename T>
-  const Sparse<T> operator*(const Sparse<T> &m1, const Sparse<T> &m2)
+  template<typename T1, typename T2>
+  const Sparse<typename Binop<T1,T2>::type>
+  operator*(const Sparse<T1> &m1, const Sparse<T2> &m2)
   {
-    return sparse_binop(m1, m2, std::multiplies<T>());
+    typedef typename Binop<T1,T2>::type T3;
+    return sparse_binop(m1, m2, std::multiplies<T3>());
   }
 
 }

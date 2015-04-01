@@ -115,19 +115,19 @@ namespace tensor {
   // Binary operations
   //
 
-  template<typename t>
-  const Sparse<t> operator*(t b, const Sparse<t> &s);
-  template<typename t>
-  const Sparse<t> operator*(const Sparse<t> &s, t b);
-  template<typename t>
-  const Sparse<t> operator/(const Sparse<t> &s, t b);
+  template<typename t1, typename t2>
+  const Sparse<typename Binop<t1,t2>::type> operator*(t1 b, const Sparse<t2> &s);
+  template<typename t1, typename t2>
+  const Sparse<typename Binop<t1,t2>::type> operator*(const Sparse<t1> &s, t2 b);
+  template<typename t1, typename t2>
+  const Sparse<typename Binop<t1,t2>::type> operator/(const Sparse<t1> &s, t2 b);
 
-  template<typename t>
-  const Sparse<t> operator+(const Sparse<t> &m1, const Sparse<t> &m2);
-  template<typename t>
-  const Sparse<t> operator-(const Sparse<t> &m1, const Sparse<t> &m2);
-  template<typename t>
-  const Sparse<t> operator*(const Sparse<t> &m1, const Sparse<t> &m2);
+  template<typename t1, typename t2>
+  const Sparse<typename Binop<t1,t2>::type> operator+(const Sparse<t1> &m1, const Sparse<t2> &m2);
+  template<typename t1, typename t2>
+  const Sparse<typename Binop<t1,t2>::type> operator-(const Sparse<t1> &m1, const Sparse<t2> &m2);
+  template<typename t1, typename t2>
+  const Sparse<typename Binop<t1,t2>::type> operator*(const Sparse<t1> &m1, const Sparse<t2> &m2);
 
   /**Kronecker product between matrices, in Matlab order.*/
   template<typename t>
