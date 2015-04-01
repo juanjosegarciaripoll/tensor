@@ -30,7 +30,9 @@ namespace tensor {
   {
     return RSparse(s.priv_column(),
 		   sparse_rows(s.priv_row_start(), s.priv_column()),
-		   s.priv_data());
+		   s.priv_data(),
+                   s.columns(),
+                   s.rows());
   }
 
 } // namespace tensor
