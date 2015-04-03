@@ -56,6 +56,11 @@ namespace tensor {
     Sparse(const Sparse<elt_t> &s);
     /**Assignment operator.*/
     Sparse &operator=(const Sparse<elt_t> &s);
+    /**Implicit conversion from other sparse types.*/
+    template<typename e2> Sparse(const Sparse<e2> &other) :
+      dims_(other.dims_), row_start_(other.row_start_),
+      column_(other.column_), data_(other.data_)
+    {}
 
     /**Return an element of the sparse matrix.*/
     elt_t operator()(index row, index col) const;
