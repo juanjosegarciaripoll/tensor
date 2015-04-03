@@ -223,6 +223,13 @@ namespace tensor {
     return output;
   }
 
+  template<typename elt_t>
+  index Sparse<elt_t>::dimension(int dimension) const
+  {
+    assert(dimension < 2);
+    return dimension? columns() : rows();
+  }
+
 
   //////////////////////////////////////////////////////////////////////
   // SPECIAL MATRICES CONSTRUCTORS
