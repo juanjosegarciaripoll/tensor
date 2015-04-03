@@ -42,16 +42,18 @@ namespace {
 	  left *= d;
 	else if (i > ndx)
 	  right *= d;
-	else
+	else {
 	  middle = d;
+	  j--;
+	}
       }
       Tensor aux = reshape(t, left, middle, right);
-      Tensor output = Tensor::zeros(dimensions);
+      Tensor output = Tensor::zeros(left, right);
       for (tensor::index r = 0; r < right; r++)
 	for (tensor::index m = 0; m < middle; m++)
 	  for (tensor::index l = 0; l < left; l++)
 	    output.at(l,r) += aux(l,m,r);
-      return output / typename Tensor::elt_t(middle);
+      return reshape(output, dimensions) / typename Tensor::elt_t(middle);
     }
   }
 
