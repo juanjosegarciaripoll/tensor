@@ -1,4 +1,17 @@
 #!/bin/sh
+for op in plus times; do
+    case $op in
+	plus) opn="+"; op2="plus";;
+	times) opn="*"; op2="multiplies";;
+	*) echo "Wrong operator name"; exit;;
+    esac
+    for i in sparse_minus_{tt,tn,nt}*; do
+	name=`echo $i | sed "s,sparse_minus,sparse_$op,"`
+	echo Building $name from $i
+	sed -e "s,-,$opn,g;s,std::minus,std::$op2,g" $i > $name
+    done
+done
+
 for k in sqrt cos sin tan cosh sinh tanh exp; do
     sed -e "s,TYPE[12],Tensor<double>,g;s,OPERATOR1,$k,;s,OPERATOR2,std::$k,g" ../tensor/tensor_unop.cc > tensor_unop_${k}_d.cc
     sed -e "s,TYPE[12],Tensor<cdouble>,g;s,OPERATOR1,$k,;s,OPERATOR2,std::$k,g" ../tensor/tensor_unop.cc > tensor_unop_${k}_z.cc
