@@ -22,30 +22,9 @@
 
 namespace tensor {
 
-/*!This products builds, out of matrices \c A
-   and \c B of dimensions \c MxM and \c NxN, a bigger matrix of size \c (MxN)^2.
-   Roughly, the formula for such a matrix is
-   \f[
-   C_{i+Mj,k+Ml} = A_{ik} B_{jl} =: A \otimes B.
-   \f]
-
-   \ingroup Linalg
-   For example, if A = [1,0;0,2] and B = [1,2;3,4] then the kronecker product
-   of both matrices is \verbatim
-	C = [1, 2, 0, 0;
-	     3, 4, 0, 0;
-	     0, 0, 2, 4;
-	     0, 0, 6, 8];
-   \endverbatim
-*/
-  const Tensor<cdouble> kron(const Tensor<cdouble> &s1, const Tensor<cdouble> &s2)
+  const Tensor<cdouble> kron2_sum(const Tensor<cdouble> &s1, const Tensor<cdouble> &s2)
   {
-    return do_kron(s1, s2);
-  }
-
-  const Tensor<cdouble> kron2(const Tensor<cdouble> &s1, const Tensor<cdouble> &s2)
-  {
-    return do_kron(s2, s1);
+    return do_kron2_sum(s2, s1);
   }
 
 } // namespace tensor

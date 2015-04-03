@@ -340,13 +340,6 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
   template<typename t1, typename t2>
   Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t1> &b);
 
-  template<typename elt_t>
-  const Tensor<elt_t> kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b);
-  template<typename elt_t>
-  const Tensor<elt_t> kron2(const Tensor<elt_t> &a, const Tensor<elt_t> &b);
-  template<typename elt_t>
-  const Tensor<elt_t> kron2_sum(const Tensor<elt_t> &a, const Tensor<elt_t> &b);
-
 } // namespace tensor
 
 //////////////////////////////////////////////////////////////////////
@@ -355,7 +348,6 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/tensor_base.hpp>
 #include <tensor/detail/tensor_matrix.hpp>
-#include <tensor/detail/tensor_kron.hpp>
 #endif
 #include <tensor/detail/tensor_slice.hpp>
 #include <tensor/detail/tensor_ops.hpp>
@@ -479,6 +471,10 @@ namespace tensor {
 
   RTensor &operator+=(RTensor &a, const RTensor &b);
   RTensor &operator-=(RTensor &a, const RTensor &b);
+
+  const RTensor kron(const RTensor &a, const RTensor &b);
+  const RTensor kron2(const RTensor &a, const RTensor &b);
+  const RTensor kron2_sum(const RTensor &a, const RTensor &b);
 
   extern template class Tensor<cdouble>;
   /** Complex Tensor with elements of type "cdouble". */
@@ -607,6 +603,10 @@ namespace tensor {
 
   CTensor &operator+=(CTensor &a, const CTensor &b);
   CTensor &operator-=(CTensor &a, const CTensor &b);
+
+  const CTensor kron(const CTensor &a, const CTensor &b);
+  const CTensor kron2(const CTensor &a, const CTensor &b);
+  const CTensor kron2_sum(const CTensor &a, const CTensor &b);
 
 } // namespace tensor
 
