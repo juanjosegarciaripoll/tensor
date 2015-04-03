@@ -104,15 +104,6 @@ namespace tensor {
   const CSparse to_complex(const RSparse &s);
   inline const CSparse to_complex(const CSparse &c) { return c; }
 
-  //////////////////////////////////////////////////////////////////////
-
-  /**Kronecker product between matrices, in Matlab order.*/
-  template<typename t>
-  const Sparse<t> kron(const Sparse<t> &s1, const Sparse<t> &s2);
-  /**Kronecker product between matrices, opposite to Matlab order.*/
-  template<typename t>
-  const Sparse<t> kron2(const Sparse<t> &s1, const Sparse<t> &s2);
-
   //
   // Comparison
   //
@@ -134,25 +125,39 @@ namespace tensor {
     return all_equal(full(s2), s1);
   }
 
+  /* Adjoint of a sparse matrix. */
   const RSparse adjoint(const RSparse &s);
+  /* Transpose of a sparse matrix. */
   const RSparse transpose(const RSparse &s);
 
+  /* Adjoint of a sparse matrix. */
   const CSparse adjoint(const CSparse &s);
+  /* Transpose of a sparse matrix. */
   const CSparse transpose(const CSparse &s);
 
+  /* Matrix multiplication between tensor and sparse matrix. */
   const RTensor mmult(const RTensor &m1, const RSparse &m2);
+  /* Matrix multiplication between tensor and sparse matrix. */
   const CTensor mmult(const CTensor &m1, const CSparse &m2);
+  /* Matrix multiplication between tensor and sparse matrix. */
   const RTensor mmult(const RSparse &m1, const RTensor &m2);
+  /* Matrix multiplication between tensor and sparse matrix. */
   const CTensor mmult(const CSparse &m1, const CTensor &m2);
 
+  /* Real part of a sparse matrix.*/
   inline const RSparse &real(const RSparse &A) { return A; }
+  /* Conjugate of a sparse matrix.*/
   inline const RSparse &conj(const RSparse &A) { return A; }
+  /* Imaginary part of a sparse matrix.*/
   inline const RSparse imag(const RSparse &A) {
     return RSparse(A.rows(), A.columns());
   }
 
+  /* Real part of a sparse matrix.*/
   const RSparse real(const CSparse &A);
+  /* Conjugate of a sparse matrix.*/
   const CSparse conj(const CSparse &A);
+  /* Imaginary part of a sparse matrix.*/
   const RSparse imag(const CSparse &A);
 
   const RSparse operator-(const RSparse &a);
@@ -179,11 +184,24 @@ namespace tensor {
   const CSparse operator-(cdouble a, const CSparse &b);
   const CSparse operator*(cdouble a, const CSparse &b);
 
+  /**Kronecker product between matrices, in Matlab order.*/
+  const RSparse kron(const RSparse &s1, const RSparse &s2);
+  /**Kronecker product between matrices, opposite to Matlab order.*/
+  const RSparse kron2(const RSparse &s1, const RSparse &s2);
+  /**Implements A+B where A and B act on different spaces of a tensor product.*/
+  const RSparse kron2_sum(const RSparse &s1, const RSparse &s2);
+
+  /**Kronecker product between matrices, in Matlab order.*/
+  const CSparse kron(const CSparse &s1, const CSparse &s2);
+  /**Kronecker product between matrices, opposite to Matlab order.*/
+  const CSparse kron2(const CSparse &s1, const CSparse &s2);
+  /**Implements A+B where A and B act on different spaces of a tensor product.*/
+  const CSparse kron2_sum(const CSparse &s1, const CSparse &s2);
+
 } // namespace tensor
 
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/sparse_base.hpp>
-#include <tensor/detail/sparse_kron.hpp>
 #endif
 
 #endif // !TENSOR_SPARSE_H

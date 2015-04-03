@@ -17,17 +17,26 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#define TENSOR_LOAD_IMPL
 #include <tensor/sparse.h>
+#include "sparse_kron.hpp"
 
 namespace tensor {
 
   // Explicit instantiation
-  template const Sparse<double> kron(const Sparse<double> &s1,
-				     const Sparse<double> &s2);
-  template const Sparse<double> kron2(const Sparse<double> &s1,
-				     const Sparse<double> &s2);
-  template const Sparse<double> kron2_sum(const Sparse<double> &s1,
-					  const Sparse<double> &s2);
+  const Sparse<double> kron(const Sparse<double> &s1, const Sparse<double> &s2)
+  {
+    return do_kron(s1, s2);
+  }
+
+  const Sparse<double> kron2(const Sparse<double> &s1, const Sparse<double> &s2)
+  {
+    return kron(s2, s1);
+  }
+
+  const Sparse<double> kron2_sum(const Sparse<double> &s2, const Sparse<double> &s1)
+  {
+    return kron(s1, Sparse<double>::eye(s2.length())) +
+      kron(Sparse<double>::eye(s1.length()), s2);
+  }
 
 } // namespace tensor

@@ -17,14 +17,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#if !defined(TENSOR_SPARSE_H) || defined(TENSOR_DETAIL_SPARSE_KRON_HPP)
-#error "This header cannot be included manually"
-#else
-#define TENSOR_DETAIL_SPARSE_KRON_HPP
-
-#include <cassert>
-#include <tensor/detail/common.h>
-
 namespace tensor {
 
   //////////////////////////////////////////////////////////////////////
@@ -32,7 +24,7 @@ namespace tensor {
   //
 
   template<typename elt_t>
-  const Sparse<elt_t> kron(const Sparse<elt_t> &s2, const Sparse<elt_t> &s1)
+  static const Sparse<elt_t> do_kron(const Sparse<elt_t> &s2, const Sparse<elt_t> &s1)
   {
     index rows1 = s1.rows();
     index cols1 = s1.columns();
@@ -71,19 +63,4 @@ namespace tensor {
     return Sparse<elt_t>(output_dims, output_row_start, output_column, output_data);
   }
 
-  template<typename elt_t>
-  const Sparse<elt_t> kron2(const Sparse<elt_t> &s2, const Sparse<elt_t> &s1)
-  {
-    return kron(s1, s2);
-  }
-
-  template<typename elt_t>
-  const Sparse<elt_t> kron2_sum(const Sparse<elt_t> &s2, const Sparse<elt_t> &s1)
-  {
-    return kron(s1, Sparse<elt_t>::eye(s2.length())) +
-      kron(Sparse<elt_t>::eye(s1.length()), s2);
-  }
-
 } // namespace tensor
-
-#endif // TENSOR_DETAIL_SPARSE_KRON_HPP
