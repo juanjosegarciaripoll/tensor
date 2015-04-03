@@ -17,13 +17,9 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#define TENSOR_LOAD_IMPL
-#include <algorithm>
 #include <tensor/sparse.h>
 
 namespace tensor {
-
-  const Indices sparse_rows(const Indices &row_start, const Indices &column);
 
   const RSparse
   adjoint(const RSparse &s)
