@@ -169,32 +169,20 @@ namespace tensor {
   const RSparse operator+(const RSparse &a, const RSparse &b);
   const RSparse operator-(const RSparse &a, const RSparse &b);
   const RSparse operator*(const RSparse &a, const RSparse &b);
-  const RSparse operator+(const RSparse &a, double b);
-  const RSparse operator-(const RSparse &a, double b);
   const RSparse operator*(const RSparse &a, double b);
   const RSparse operator/(const RSparse &a, double b);
-  const RSparse operator+(double a, const RSparse &b);
-  const RSparse operator-(double a, const RSparse &b);
   const RSparse operator*(double a, const RSparse &b);
 
   const CSparse operator-(const CSparse &a);
   const CSparse operator+(const CSparse &a, const CSparse &b);
   const CSparse operator-(const CSparse &a, const CSparse &b);
   const CSparse operator*(const CSparse &a, const CSparse &b);
-  const CSparse operator+(const CSparse &a, cdouble b);
-  const CSparse operator-(const CSparse &a, cdouble b);
   const CSparse operator*(const CSparse &a, cdouble b);
   const CSparse operator/(const CSparse &a, cdouble b);
-  const CSparse operator+(cdouble a, const CSparse &b);
-  const CSparse operator-(cdouble a, const CSparse &b);
   const CSparse operator*(cdouble a, const CSparse &b);
 
-  const CSparse operator+(const CSparse &a, double b);
-  const CSparse operator-(const CSparse &a, double b);
   const CSparse operator*(const CSparse &a, double b);
   const CSparse operator/(const CSparse &a, double b);
-  const CSparse operator+(double a, const CSparse &b);
-  const CSparse operator-(double a, const CSparse &b);
   const CSparse operator*(double a, const CSparse &b);
 
   /**Kronecker product between matrices, in Matlab order.*/
