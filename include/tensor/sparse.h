@@ -181,6 +181,13 @@ namespace tensor {
   const CSparse operator/(const CSparse &a, cdouble b);
   const CSparse operator*(cdouble a, const CSparse &b);
 
+  const CSparse operator+(const CSparse &a, const RSparse &b);
+  const CSparse operator-(const CSparse &a, const RSparse &b);
+  const CSparse operator*(const CSparse &a, const RSparse &b);
+  const CSparse operator+(const RSparse &a, const CSparse &b);
+  const CSparse operator-(const RSparse &a, const CSparse &b);
+  const CSparse operator*(const RSparse &a, const CSparse &b);
+
   const CSparse operator*(const CSparse &a, double b);
   const CSparse operator/(const CSparse &a, double b);
   const CSparse operator*(double a, const CSparse &b);

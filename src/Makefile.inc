@@ -170,16 +170,8 @@ basic_SOURCES = \
 	generated/sparse_minus_t1_cdouble.cc \
 	generated/sparse_minus_tt_double.cc \
 	generated/sparse_minus_tt_cdouble.cc \
-	generated/sparse_minus_tn_double.cc \
-	generated/sparse_minus_tn_cdouble.cc \
-	generated/sparse_minus_nt_double.cc \
-	generated/sparse_minus_nt_cdouble.cc \
 	generated/sparse_plus_tt_double.cc \
 	generated/sparse_plus_tt_cdouble.cc \
-	generated/sparse_plus_tn_double.cc \
-	generated/sparse_plus_tn_cdouble.cc \
-	generated/sparse_plus_nt_double.cc \
-	generated/sparse_plus_nt_cdouble.cc \
 	generated/sparse_times_tt_double.cc \
 	generated/sparse_times_tt_cdouble.cc \
 	generated/sparse_times_tn_double.cc \
@@ -189,12 +181,11 @@ basic_SOURCES = \
 	generated/sparse_divide_tn_double.cc \
 	generated/sparse_divide_tn_cdouble.cc \
 	generated/sparse_divide_td_cdouble.cc \
-	generated/sparse_minus_dt_cdouble.cc \
-	generated/sparse_minus_td_cdouble.cc \
-	generated/sparse_plus_dt_cdouble.cc \
-	generated/sparse_plus_td_cdouble.cc \
 	generated/sparse_times_dt_cdouble.cc \
 	generated/sparse_times_td_cdouble.cc \
+	generated/sparse_minus_tr_cdouble.cc \
+	generated/sparse_plus_tr_cdouble.cc \
+	generated/sparse_times_tr_cdouble.cc \
 	linalg/block_svd_d.cc \
 	linalg/block_svd_z.cc \
 	linalg/cgs_d.cc \
