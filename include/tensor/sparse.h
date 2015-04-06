@@ -192,6 +192,10 @@ namespace tensor {
   const CSparse operator/(const CSparse &a, double b);
   const CSparse operator*(double a, const CSparse &b);
 
+  const CSparse operator*(const RSparse &a, cdouble b);
+  const CSparse operator/(const RSparse &a, cdouble b);
+  const CSparse operator*(cdouble a, const RSparse &b);
+
   /**Kronecker product between matrices, in Matlab order.*/
   const RSparse kron(const RSparse &s1, const RSparse &s2);
   /**Kronecker product between matrices, opposite to Matlab order.*/
