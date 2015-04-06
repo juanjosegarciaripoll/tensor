@@ -188,6 +188,13 @@ basic_SOURCES = \
 	generated/sparse_times_nt_cdouble.cc \
 	generated/sparse_divide_tn_double.cc \
 	generated/sparse_divide_tn_cdouble.cc \
+	generated/sparse_divide_td_cdouble.cc \
+	generated/sparse_minus_dt_cdouble.cc \
+	generated/sparse_minus_td_cdouble.cc \
+	generated/sparse_plus_dt_cdouble.cc \
+	generated/sparse_plus_td_cdouble.cc \
+	generated/sparse_times_dt_cdouble.cc \
+	generated/sparse_times_td_cdouble.cc \
 	linalg/block_svd_d.cc \
 	linalg/block_svd_z.cc \
 	linalg/cgs_d.cc \
