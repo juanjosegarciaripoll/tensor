@@ -91,8 +91,11 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
 #endif
 
 InDataFile::InDataFile(const std::string &a_filename, int flags) :
-  DataFile(a_filename, flags), _stream(actual_filename().c_str())
+  DataFile(a_filename, flags),
+  _stream(actual_filename().c_str(),
+          std::ios_base::in || std::ios_base::binary)
 {
+  _stream.seekg(std::ios_base::beg);
   read_header();
 }
 
@@ -271,7 +274,8 @@ InDataFile::read_header()
   std::string var_name = read_variable_name();
 
   if (var_name[0] != 's' || var_name[1] != 'd' || var_name[2] != 'f') {
-    std::cerr << "Bogus SDF file";
+    std::cerr << "Bogus SDF file" << std::endl
+              << "Wrong header: '" << var_name << "'" << std::endl;
     abort();
   }
   int file_int_size = var_name[3] - '0';
