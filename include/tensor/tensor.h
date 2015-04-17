@@ -569,6 +569,9 @@ namespace tensor {
   const CTensor linspace(cdouble min, cdouble max, index n = 100);
   const CTensor linspace(const CTensor &min, const CTensor &max, index n = 100);
 
+  const Indices sort(const Indices &v, bool reverse = false);
+  const Indices sort_indices(const Indices &v, bool reverse = false);
+
   const RTensor sort(const RTensor &v, bool reverse = false);
   const Indices sort_indices(const RTensor &v, bool reverse = false);
 

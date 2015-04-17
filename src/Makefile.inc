@@ -84,6 +84,7 @@ basic_SOURCES = \
 	tensor/tensor_norm2_z.cc \
 	tensor/tensor_scale_d.cc \
 	tensor/tensor_scale_z.cc \
+	tensor/tensor_sort_i.cc \
 	tensor/tensor_sort_d.cc \
 	tensor/tensor_flatten_d.cc \
 	tensor/tensor_flatten_z.cc \
