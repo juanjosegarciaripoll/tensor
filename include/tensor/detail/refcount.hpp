@@ -91,7 +91,7 @@ inline RefPointer<cdouble>::RefPointer(size_t new_size) {
 }
 
 template<>
-inline typename RefPointer<cdouble>::pointer *
+inline RefPointer<cdouble>::pointer *
 RefPointer<cdouble>::pointer::clone() {
   cdouble *output = reinterpret_cast<cdouble*>(new double[2*size()]);
   memcpy(output, begin(), sizeof(*output)*size());
