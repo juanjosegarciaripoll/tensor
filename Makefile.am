@@ -12,9 +12,6 @@ if BUILD_ESSL_LAPACK
 SUBDIRS += essl_lapack
 endif
 
-upload-doc: doxygen-doc
-	rsync -rauvz doc/html dreamhost:tream.dreamhosters.com/tensor/
-
 install-doxygen-doc: doxygen-doc
 	$(MKDIR_P) $(DESTDIR)$(docdir)/{html,html/search}
 	for i in doc/html/*.{html,js,css,png}; do \
