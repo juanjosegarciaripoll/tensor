@@ -257,6 +257,22 @@ namespace tensor_test {
     test_over_tensors(test_reshape<double>);
   }
 
+  TEST(RTensorTest, RTensorChangeDimension) {
+    {
+      RTensor A = RTensor::zeros(3,2);
+      RTensor B = change_dimension(A, 1, 10);
+      RTensor C = RTensor::zeros(3,10);
+      EXPECT_CEQ(B, C);
+    }
+    {
+      RTensor A = RTensor::ones(3,1);
+      RTensor B = change_dimension(A, 1, 10);
+      RTensor C = RTensor::zeros(3,10);
+      C.at(0,0) = C.at(1,0) = C.at(2,0) = A.at(0,0);
+      EXPECT_CEQ(B, C);
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////
   // COMPLEX SPECIALIZATIONS
   //
@@ -283,6 +299,22 @@ namespace tensor_test {
 
   TEST(CTensorTest, CTensorReshape) {
     test_over_tensors(test_reshape<cdouble>);
+  }
+
+  TEST(CTensorTest, CTensorChangeDimension) {
+    {
+      CTensor A = CTensor::zeros(3,2);
+      CTensor B = change_dimension(A, 1, 10);
+      CTensor C = CTensor::zeros(3,10);
+      EXPECT_CEQ(B, C);
+    }
+    {
+      CTensor A = CTensor::ones(3,1);
+      CTensor B = change_dimension(A, 1, 10);
+      CTensor C = CTensor::zeros(3,10);
+      C.at(0,0) = C.at(1,0) = C.at(2,0) = A.at(0,0);
+      EXPECT_CEQ(B, C);
+    }
   }
 
 } // namespace tensor_test
