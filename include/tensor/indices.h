@@ -228,7 +228,6 @@ namespace tensor {
     return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
   }
 
-
 }; // namespace
 
 /*@}*/

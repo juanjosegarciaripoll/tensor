@@ -611,6 +611,9 @@ namespace tensor {
   const CTensor kron2(const CTensor &a, const CTensor &b);
   const CTensor kron2_sum(const CTensor &a, const CTensor &b);
 
+  /** Convert a vector of indices to a 1D tensor of real numbers.*/
+  const RTensor index_to_tensor(const Indices &i);
+
 } // namespace tensor
 
 /* @} */

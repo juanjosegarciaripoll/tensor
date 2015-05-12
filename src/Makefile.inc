@@ -20,6 +20,7 @@ basic_SOURCES = \
 	indices/booleans_not.cc \
 	indices/which.cc \
 	indices/surrounding_dimensions.cc \
+	indices/to_tensor.cc \
 	sparse/full_d.cc \
 	sparse/full_z.cc \
 	sparse/sparse_d.cc \
