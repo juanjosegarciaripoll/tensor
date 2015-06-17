@@ -297,5 +297,6 @@ InDataFile::close()
   if (is_open()) {
     _open = false;
     _stream.close();
+    DataFile::close();
   }
 }
