@@ -18,7 +18,7 @@
 */
 
 #include <cstdlib>
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
 #include <windows.h>
 #include <Wincrypt.h>
 #include <time.h>
@@ -42,7 +42,7 @@ initialize_mt()
 #endif
 
 void rand_reseed() {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
 # if 1
   // The following code has a problem: it requires additional libraries
   HCRYPTPROV hCryptProv;

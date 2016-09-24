@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#if !defined(_MSC_VER)
+#if !defined(_MSC_VER) && !defined(__MINGW32__)
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/file.h>
@@ -41,7 +41,7 @@ const unsigned int DataFile::var_name_size = 64;
  */
 static int get_lock(char const *lockName, bool wait)
 {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
   return 1;
 #else
     int fd;
@@ -69,7 +69,7 @@ static int get_lock(char const *lockName, bool wait)
  */
 static void giveup_lock(int fd, char const *lockName)
 {
-#if !defined(_MSC_VER)
+#if !defined(_MSC_VER) && !defined(__MINGW32__)
     if( fd < 0 )
         return;
     unlink(lockName);
