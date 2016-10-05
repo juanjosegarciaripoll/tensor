@@ -15,12 +15,21 @@ def load(filename,**kwargs):
     else:
         return sdf.load()
 
+def load_sorted_dataset(path,field):
+    set = [load(f) for f in pathlib.Path(path).iterdir()]
+    set.sort(key=lambda data: data[field][0])
+    return combine_dataset(set)
+
 def load_dataset(path):
+    set = [load(f) for f in pathlib.Path(path).iterdir()]
+    return combine_dataset(set)
+
+def combine_dataset(set):
     output = {}
-    for f in pathlib.Path(path).iterdir():
-        if f.is_file():
-            load(f,into=output)
-    return output    
+    for name in list(set[0].keys()):
+        objs = [data[name] for data in set]
+        output[name] = np.stack(objs, axis=objs[0].ndim)
+    return output
 
 class SDF:
     """Reading binary files from libtensor"""
@@ -40,39 +49,17 @@ class SDF:
         self.endian = sys.byteorder
         self.interpret = False # is the same endian?
 
-    def load_into(self,output):
+    def load(self):
         self.f = self.filename.open("rb")
-        if '_ignored' in output:
-            ignored = output['_ignored']
-        else:
-            ignored = []
+        output = {}
         while self.f.readable():
             obj, name = self.load_record()
             if not name:
                 break
-            if name in ignored:
-                continue
-            if name in output:
-                aux = output[name]
-                if aux.ndim == obj.ndim:
-                    aux = aux.reshape(aux.shape + (1,))
-                obj = obj.reshape(obj.shape + (1,))
-                try:
-                    obj = np.concatenate((aux, obj), axis=obj.ndim-1)
-                except:
-                    print('Ignoring field '+name+' because it does not match shapes.')
-                    print(' so far loaded: ', output[name].shape)
-                    print(' new object:    ', obj.shape)
-                    ignored = ignored + [name]
             output[name] = obj
-        if ignored:
-            output['_ignored'] = ignored
         self.f.close()
         f = []
         return output
-
-    def load(self):
-        return self.load_into({})
 
     def set_endian(self, newendian):
         self.endian = newendian
