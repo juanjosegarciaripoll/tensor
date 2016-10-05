@@ -93,6 +93,9 @@ class SDF:
             else:
                 raise Error('Unknown SDF tag')
         return obj, name
+
+    def load_mp(self, iscomplex):
+        [ self.load_tensor(iscomplex) for i in range(sefl.read_longs(1))]
     
     def load_tensor(self, iscomplex):
         rank = self.read_longs(1)
@@ -102,7 +105,7 @@ class SDF:
             data = self.read_complex(L)
         else:
             data = self.read_doubles(L)
-        return data.reshape(dims)
+        return np.ndarray(shape=dims,buffer=data,order='F')
 
     def read_longs(self, n):
         output = np.ndarray(shape=(n,),dtype=self.long_type)
