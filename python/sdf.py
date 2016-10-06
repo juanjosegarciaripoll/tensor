@@ -69,7 +69,6 @@ class SDF:
         name, code = self.load_tag()
         obj = []
         if name:
-            code = code[0]
             if code == -1:
                 name = '';
                 obj = [];
@@ -82,12 +81,12 @@ class SDF:
         return obj, name
 
     def load_mp(self, iscomplex):
-        [ self.load_tensor(iscomplex) for i in range(sefl.read_longs(1))]
+        [ self.load_tensor(iscomplex) for i in range(sefl.read_longs(1)[0])]
 
     def load_tensor(self, iscomplex):
-        rank = self.read_longs(1)
+        rank = self.read_longs(1)[0]
         dims = self.read_longs(rank)
-        L = self.read_longs(1)
+        L = self.read_longs(1)[0]
         if iscomplex:
             data = self.read_complex(L)
         else:
@@ -133,5 +132,5 @@ class SDF:
                 name = self.f.read(64)
             name, sep, rest = name.partition(b'\x00')
             name = str(name,'utf-8')
-            code = self.read_longs(1)
+            code = self.read_longs(1)[0]
         return name, code
