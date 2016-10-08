@@ -47,6 +47,16 @@ AC_DEFUN([TENSOR_VECLIB],[
 ])
 
 dnl ----------------------------------------------------------------------
+dnl Find veclib framework
+dnl
+AC_DEFUN([TENSOR_OPENBLAS],[
+  AC_MSG_CHECKING([for OpenBLAS library])
+  OPENBLAS_LIBS="-lopenblas"
+  AC_CHECK_HEADERS([openblas_config.h],[have_openblas=yes],[have_openblas=no])
+  AC_MSG_RESULT([$have_openblas])
+])
+
+dnl ----------------------------------------------------------------------
 dnl Find the ATLAS library
 dnl
 AC_DEFUN([TENSOR_ATLAS],[
@@ -208,6 +218,7 @@ dnl Choose library
 dnl
 AC_DEFUN([TENSOR_CHOOSE_LIB],[
 TENSOR_VECLIB
+TENSOR_OPENBLAS
 TENSOR_ATLAS
 TENSOR_ACML
 TENSOR_MKL
@@ -221,6 +232,9 @@ TENSOR_CBLAPACK
   fi
   if test "$with_backend" = "auto" -a "$have_mkl" != "no"; then
     with_backend=mkl
+  fi
+  if test "$with_backend" = "auto" -a "$have_openblas" = "yes"; then
+    with_backend=openblas
   fi
   if test "$with_backend" = "auto" -a "$have_atlas" = "yes"; then
     with_backend=atlas
@@ -258,6 +272,14 @@ TENSOR_CBLAPACK
       CXXFLAGS="$CXXFLAGS $VECLIB_CXXFLAGS"
     else
       AC_MSG_ERROR([Apple Veclib libraries are not available])
+    fi;;
+   xopenblas)
+    if test $have_openblas = yes; then
+      AC_DEFINE(TENSOR_USE_OPENBLAS, [1], [Use OpenBLAS for matrix operations])
+      NUM_LIBS="$LIBS $OPENBLAS_LIBS"
+      CXXFLAGS="$CXXFLAGS $OPENBLAS_CXXFLAGS"
+    else
+      AC_MSG_ERROR([OpenBLAS libraries are not available])
     fi;;
    xatlas)
     if test $have_atlas = yes; then

@@ -39,7 +39,7 @@ namespace lapack {
 #undef dsyev
 #undef zheev
 #endif
-#if defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_ESSL)
+#if defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_ESSL) || defined(TENSOR_USE_OPENBLAS)
 extern "C" {
   int F77NAME(dgesv)
     (__CLPK_integer *n, __CLPK_integer *nrhs, __CLPK_doublereal *a,

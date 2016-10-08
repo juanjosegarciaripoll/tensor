@@ -62,7 +62,17 @@ namespace blas {
           reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(&beta)),
           reinterpret_cast<doublecomplex *>(C), ldc);
 #endif
-#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
+#ifdef TENSOR_USE_OPENBLAS
+    cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2), m, n, k,
+                reinterpret_cast<double *>(const_cast<tensor::cdouble *>(&alpha)),
+                reinterpret_cast<double *>(const_cast<tensor::cdouble *>(A)),
+                lda,
+                reinterpret_cast<double *>(const_cast<tensor::cdouble *>(B)),
+                ldb,
+                reinterpret_cast<double *>(const_cast<tensor::cdouble *>(&beta)),
+                reinterpret_cast<double *>(C), ldc);
+#endif
+#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML) && !defined(TENSOR_USE_OPENBLAS)
     cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
                 m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc);
 #endif
