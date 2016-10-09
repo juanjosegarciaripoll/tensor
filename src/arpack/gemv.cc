@@ -54,7 +54,15 @@ namespace blas {
 #ifdef TENSOR_USE_ACML
     zgemv(trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 #endif
-#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
+#ifdef TENSOR_USE_OPENBLAS
+    cblas_zgemv(CblasColMajor, char_to_op(trans), m, n,
+		reinterpret_cast<const double*>(&alpha),
+                reinterpret_cast<const double*>(a), lda,
+                reinterpret_cast<const double*>(x), incx,
+                reinterpret_cast<const double*>(&beta),
+                reinterpret_cast<double*>(y), incy);
+#endif
+#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML) && !defined(TENSOR_USE_OPENBLAS)
     cblas_zgemv(CblasColMajor, char_to_op(trans), m, n,
 		&alpha, a, lda, x, incx, &beta, y, incy);
 #endif
