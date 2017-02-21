@@ -28,7 +28,10 @@ def combine_dataset(set):
     output = {}
     for name in list(set[0].keys()):
         objs = [data[name] for data in set]
-        output[name] = np.stack(objs, axis=objs[0].ndim)
+        if type(objs[0]) is list:
+            output[name] = objs
+        else:
+            output[name] = np.stack(objs, axis=objs[0].ndim)
     return output
 
 class SDF:
@@ -50,13 +53,14 @@ class SDF:
         self.interpret = False # is the same endian?
 
     def load(self):
-        self.f = self.filename.open("rb")
+        self.f = self.filename.open('rb')
         output = {}
         while self.f.readable():
             obj, name = self.load_record()
-            if not name:
+            if len(name):
+                output[name] = obj
+            else:
                 break
-            output[name] = obj
         self.f.close()
         f = []
         return output
@@ -68,20 +72,25 @@ class SDF:
     def load_record(self):
         name, code = self.load_tag()
         obj = []
-        if name:
-            if code == -1:
-                name = '';
-                obj = [];
-            elif code == 0:
-                obj = self.load_tensor(False)
-            elif code == 1:
-                obj = self.load_tensor(True)
-            else:
-                raise Error('Unknown SDF tag')
+        if code == -1:
+            name = '';
+            obj = [];
+        elif code == 0:
+            obj = self.load_tensor(False)
+        elif code == 1:
+            obj = self.load_tensor(True)
+        elif code == 2:
+            obj = self.load_mp(False)
+        elif code == 3:
+            obj = self.load_mp(True)
+        else:
+            raise Error('Unknown SDF tag')
         return obj, name
 
     def load_mp(self, iscomplex):
-        [ self.load_tensor(iscomplex) for i in range(sefl.read_longs(1)[0])]
+        L = self.read_longs(1)[0]
+        [self.load_record()[0] for i in range(L)]
+        return []
 
     def load_tensor(self, iscomplex):
         rank = self.read_longs(1)[0]
@@ -133,4 +142,6 @@ class SDF:
             name, sep, rest = name.partition(b'\x00')
             name = str(name,'utf-8')
             code = self.read_longs(1)[0]
+        else:
+            code = -1
         return name, code
