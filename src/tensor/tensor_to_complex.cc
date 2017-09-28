@@ -37,7 +37,7 @@ namespace tensor {
     CTensor output(r.dimensions());
     RTensor::const_iterator ir = r.begin();
     RTensor::const_iterator ii = i.begin();
-    for (CTensor::iterator io = output.begin(); io != output.end(); ++io, ++ir, +ii) {
+    for (CTensor::iterator io = output.begin(); io != output.end(); ++io, ++ir, ++ii) {
       *io = to_complex(*ir,*ii);
     }
     return output;
