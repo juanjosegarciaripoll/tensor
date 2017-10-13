@@ -240,6 +240,16 @@ fftw_SOURCES=\
 	fftw/fftw_common.cc \
 	fftw/fftshift.cc
 
+arpack_cpp_SOURCES = \
+	arpack/arpack_d.cc			\
+	arpack/arpack_z.cc			\
+	arpack/eigs_d.cc			\
+	arpack/eigs_z.cc			\
+	arpack/eigs_sp_d.cc			\
+	arpack/eigs_sp_z.cc			\
+	arpack/eigs_map_d.cc			\
+	arpack/eigs_map_z.cc
+
 arpack_SOURCES = \
 	arpack-ng/sgetv0.f			\
 	arpack-ng/slaqrb.f			\
@@ -322,15 +332,7 @@ arpack_SOURCES = \
 	arpack-ng/cvout.f			\
 	arpack-ng/cmout.f			\
 	arpack-ng/zvout.f			\
-	arpack-ng/zmout.f			\
-	arpack/arpack_d.cc			\
-	arpack/arpack_z.cc			\
-	arpack/eigs_d.cc			\
-	arpack/eigs_z.cc			\
-	arpack/eigs_sp_d.cc			\
-	arpack/eigs_sp_z.cc			\
-	arpack/eigs_map_d.cc			\
-	arpack/eigs_map_z.cc
+	arpack-ng/zmout.f
 arpack_f2c_SOURCES = \
 	arpack-ng/common.cc
 arpack_precompiled_SOURCES = \
@@ -415,12 +417,4 @@ arpack_precompiled_SOURCES = \
 	arpack-f2c/zngets.f.c \
 	arpack-f2c/zsortc.f.c \
 	arpack-f2c/zstatn.f.c \
-	arpack-f2c/zvout.f.c \
-	arpack/arpack_d.cc \
-	arpack/arpack_z.cc \
-	arpack/eigs_d.cc \
-	arpack/eigs_z.cc \
-	arpack/eigs_sp_d.cc \
-	arpack/eigs_sp_z.cc \
-	arpack/eigs_map_d.cc \
-	arpack/eigs_map_z.cc
+	arpack-f2c/zvout.f.c

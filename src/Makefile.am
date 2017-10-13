@@ -17,14 +17,17 @@ if WITH_FFTW3
 libtensor_la_SOURCES += $(fftw_SOURCES)
 endif
 
-if TENSOR_ARPACK
-libtensor_la_SOURCES +=	$(arpack_SOURCES)
-libtensor_la_LIBS = $(FLIBS)
-endif
 AM_FFLAGS = $(FFLAGS)
+if TENSOR_ARPACK
+libtensor_la_SOURCES += $(arpack_cpp_SOURCES)
+if BUILD_ARPACK
+libtensor_la_SOURCES +=	$(arpack_SOURCES)
+endif
 if USE_F2C
 libtensor_la_SOURCES += $(arpack_f2c_SOURCES)
 AM_FFLAGS += -E
+endif
+libtensor_la_LIBS = $(FLIBS)
 endif
 
 if HAVE_64BITS

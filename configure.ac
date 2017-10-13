@@ -87,7 +87,7 @@ TENSOR_CHOOSE_LIB
 AC_CHECK_FUNCS_ONCE([gettimeofday])
 
 # Fortran stuff
-AC_PROG_F77([f77 gfortran])
+AC_PROG_F77([gfortran f77])
 AC_F77_LIBRARY_LDFLAGS
 AC_F77_WRAPPERS
 AM_CONDITIONAL(TENSOR_ARPACK, [test $with_arpack = yes])
@@ -112,6 +112,12 @@ if test "$F77" = "f77"; then
    esac
 fi
 AM_CONDITIONAL(USE_F2C, [test $have_f2c99 = yes])
+if test $have_f2c99 = no -a $with_arpack = yes; then
+   AC_CHECK_LIB([arpack], [cgetv0_],
+   	        [have_arpack=yes; ARPACK_LIBS="-larpack $LIBS"],
+		[have_arpack=no])
+   AM_CONDITIONAL(BUILD_ARPACK, [test $have_arpack = no])
+fi
 AC_SUBST(F2C_CPPFLAGS)
 
 # Initialization code for the fortran library
@@ -126,7 +132,7 @@ TENSOR_GTEST
 # Find FFTW library
 TENSOR_FFTW
 
-LIBS="$NUM_LIBS $FFTW_LIBS $LIBS"
+LIBS="$NUM_LIBS $ARPACK_LIBS $FFTW_LIBS $LIBS"
 
 # Disable crap optimization in latest Ubuntu
 TENSOR_LD_NO_AS_NEEDED
