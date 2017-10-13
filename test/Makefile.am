@@ -1,12 +1,11 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src \
-	-I$(top_builddir)/include -I"@GTEST_DIR@/include" -I"@GTEST_DIR@" \
-	-DGTEST_HAS_TR1_TUPLE=0
+	-I$(top_builddir)/include -DGTEST_HAS_TR1_TUPLE=0
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
-GTEST_LDFLAGS = libgtest_main.a -L$(top_builddir)/essl_lapack $(LDFLAGS) -lpthread
+GTEST_LDFLAGS = -L$(top_builddir)/essl_lapack $(LDFLAGS) -lgtest -lpthread
 
 # This selects the way in which we run death tests. The threadsafe alternative is slower
 if TENSOR_THREADSAFE_DEATHTEST
@@ -210,26 +209,15 @@ test_linalg_eigs_SOURCES = test_linalg_eigs.cc
 test_linalg_eigs_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 endif
 
-if HAVE_GTEST
 noinst_LIBRARIES += libtestmain.a
 libtestmain_a_SOURCES = test_main.cc alloc_informer.cc \
 	 random_unitary_d.cc random_unitary_z.cc random_permutation.cc
-endif
 
 #
 # Build the Google Test library. The way this library has changed: we now have to
 # compile it for every project. However, since we have downloaded the library, we
 # cannot rely on automake and we have to generate the sources.
 #
-
-if HAVE_GTEST
-noinst_LIBRARIES += libgtest.a libgtest_main.a
-libgtest_a_SOURCES = gtest-all.cc
-libgtest_main_a_SOURCES = gtest-all.cc gtest_main.cc
-endif
-
-gtest-all.cc gtest_main.cc :
-	cp "@GTEST_DIR@/src/$@" .
 
 OUTPUT_FLAGS = CXX CXXFLAGS LDFLAGS \
 	TENSOR_USE_VECLIB TENSOR_USE_MKL TENSOR_USE_ATLAS \
