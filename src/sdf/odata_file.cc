@@ -28,11 +28,7 @@ void write_raw_with_endian(std::ofstream &s, const number *data, size_t n)
 {
   s.write((char *)data, n * sizeof(number));
   if (s.bad()) {
-#ifdef _MSC_VER
     std::cerr << "I/O error when writing to SDF stream";
-#else
-    std::cerr << "I/O error when writing to stream " << s;
-#endif
     abort();
   }
 }
@@ -46,11 +42,7 @@ void write_raw_with_endian(std::ofstream &s, const number *data, size_t n)
   if (size == 1) {
     s.write((char *)data, n * sizeof(number));
     if (s.bad()) {
-#ifdef _MSC_VER
       std::cerr << "I/O error when writing to SDF stream";
-#else
-      std::cerr << "I/O error when writing to stream " << s;
-#endif
       abort();
     }
     s.flush();
