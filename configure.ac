@@ -87,7 +87,7 @@ TENSOR_CHOOSE_LIB
 AC_CHECK_FUNCS_ONCE([gettimeofday])
 
 # Fortran stuff
-AC_PROG_F77([gfortran f77])
+AC_PROG_F77([ifort gfortran f77])
 AC_F77_LIBRARY_LDFLAGS
 AC_F77_WRAPPERS
 AM_CONDITIONAL(TENSOR_ARPACK, [test $with_arpack = yes])
