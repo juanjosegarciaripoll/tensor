@@ -165,7 +165,7 @@ OutDataFile::write_variable_name(const std::string &name)
   memset(buffer, 0, var_name_size);
   strncpy(buffer, name.c_str(), std::min<size_t>(var_name_size - 1, name.size()));
   write_raw(buffer, var_name_size);
-  delete buffer;
+  delete[] buffer;
 }
 
 void

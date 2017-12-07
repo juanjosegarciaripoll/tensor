@@ -104,7 +104,6 @@ Job::parse_file(std::istream &s, var_list &data)
 Job::Job(int argc, const char **argv) :
   filename_("no file")
 {
-  bool loaded = false;
   bool print_jobs = false;
   bool first_job_found = false;
   bool last_job_found = false;
@@ -127,7 +126,6 @@ Job::Job(int argc, const char **argv) :
 		  << std::endl;
 	abort();
       }
-      loaded = true;
     } else if (!strcmp(argv[i], "--print-jobs")) { 
       print_jobs = true;
     } else if (!strcmp(argv[i], "--this-job")) {
@@ -178,7 +176,6 @@ Job::Job(int argc, const char **argv) :
 	abort();
       }
       variables_.push_back(v);
-      loaded = true;
     } else if (!strcmp(argv[i], "--help")) {
       std::cout << "Arguments:\n"
 	"--help\n"

@@ -111,6 +111,8 @@ namespace linalg {
     if (nblocks == 1) {
       block_rows = 0;
       block_cols = 0;
+      delete[] row_block;
+      delete[] col_block;
       return false;
     }
 

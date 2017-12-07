@@ -44,10 +44,9 @@ static int get_lock(char const *lockName, bool wait)
 #if defined(_MSC_VER) || defined(__MINGW32__)
   return 1;
 #else
-    int fd;
     do {
       mode_t m = umask(0);
-      fd = open(lockName, O_RDWR|O_CREAT, 0666);
+      int fd = open(lockName, O_RDWR|O_CREAT, 0666);
       umask(m);
       if( fd >= 0 && flock( fd, LOCK_EX | LOCK_NB ) < 0 )
 	{

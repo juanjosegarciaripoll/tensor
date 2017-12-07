@@ -147,7 +147,7 @@ InDataFile::read_variable_name()
   char *buffer = new char[var_name_size];
   read_raw(buffer, var_name_size);
   std::string output(buffer);
-  delete buffer;
+  delete[] buffer;
   return output;
 }
 

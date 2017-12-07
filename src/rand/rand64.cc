@@ -108,7 +108,6 @@ void init_by_array(uint64_t init_key[], int key_length)
 /* generates a random number on [0, 2^64-1]-interval */
 uint64_t genrand_int64(void)
 {
-  int i;
   uint64_t x;
   static uint64_t mag01[2]={0ULL, MATRIX_A};
 
@@ -119,6 +118,7 @@ uint64_t genrand_int64(void)
     if (mti == NN+1) 
       init_genrand(5489ULL); 
 
+    int i;
     for (i=0;i<NN-MM;i++) {
       x = (mt[i]&UM)|(mt[i+1]&LM);
       mt[i] = mt[i+MM] ^ (x>>1) ^ mag01[(int)(x&1ULL)];
