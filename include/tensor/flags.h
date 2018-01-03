@@ -39,6 +39,9 @@ namespace tensor {
 
   extern Flags FLAGS;
 
+  /**Debug level block_svd() routine.*/
+  extern const unsigned int TENSOR_DEBUG_BLOCK_SVD;
+
 } // namespace tensor
 
 #endif

@@ -53,4 +53,6 @@ namespace tensor {
     return size;
   }
 
+  const unsigned int TENSOR_DEBUG_BLOCK_SVD = FLAGS.create_key(0.0);
+
 }

@@ -19,6 +19,7 @@
 
 #include <list>
 #include <algorithm>
+#include <tensor/flags.h>
 #include <tensor/tensor.h>
 
 namespace linalg {
@@ -107,6 +108,10 @@ namespace linalg {
       } else {
 	col_block[col] = empty;
       }
+    }
+    if (tensor::FLAGS.get(tensor::TENSOR_DEBUG_BLOCK_SVD)) {
+      std::cout << "*** find_blocks: nxm=" << N << "x" << M
+                << ", n_blocks=" << nblocks << std::endl;
     }
     if (nblocks == 1) {
       block_rows = 0;
