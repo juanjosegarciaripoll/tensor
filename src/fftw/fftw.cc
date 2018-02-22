@@ -20,7 +20,6 @@
 /* MULTIDIMENSIONAL FAST FOURIER TRANSFORM */
 
 #include <tensor/fftw.h>
-#include <fftw3.h>
 #include "fftw_common.hpp"
 
 namespace tensor {

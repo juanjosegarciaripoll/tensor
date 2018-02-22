@@ -17,7 +17,11 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#ifdef TENSOR_USE_MKL
+#include <fftw/fftw3.h>
+#else
 #include <fftw3.h>
+#endif
 #include <tensor/indices.h>
 
 namespace tensor {
