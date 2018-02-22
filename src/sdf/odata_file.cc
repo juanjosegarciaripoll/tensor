@@ -31,6 +31,9 @@ void write_raw_with_endian(std::ofstream &s, const number *data, size_t n)
     std::cerr << "I/O error when writing to SDF stream";
     abort();
   }
+  // Horrible hack to ensure icc flushes our buffers and does not
+  // cause buffer overflow.
+  s.flush();
 }
 
 #else
