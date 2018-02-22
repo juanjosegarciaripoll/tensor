@@ -114,6 +114,7 @@ void
 OutDataFile::close()
 {
   if (is_open()) {
+    _stream.flush();
     _stream.close();
     DataFile::close();
   }
