@@ -86,7 +86,7 @@ DataFile::DataFile(const std::string &a_filename, int flags) :
 {
   switch (flags) {
   case SDF_OVERWRITE:
-    if (file_exists(_actual_file) && !delete_file(_actual_filename)) {
+    if (file_exists(_actual_filename) && !delete_file(_actual_filename)) {
       std::cerr << "Cannot overwrite file " << _actual_filename << std::endl;
       abort();
     }
