@@ -348,8 +348,12 @@ dnl Find the FFTW library
 dnl
 AC_DEFUN([TENSOR_FFTW],[
   if test "x$with_fftw" = xyes; then
-    AC_CHECK_LIB([fftw3], [fftw_plan_dft], [have_fftw=yes], [have_fftw=no])
-    AC_MSG_CHECKING([for FFTW library])
+    if test "x$with_backend" = xmkl; then
+      have_fftw=no
+    else
+      AC_CHECK_LIB([fftw3], [fftw_plan_dft], [have_fftw=yes], [have_fftw=no])
+      AC_MSG_CHECKING([for FFTW library])
+    fi
     if test $have_fftw = yes -a $with_fftw = yes ; then
       FFTW_LIBS="-lfftw3 $LIBS"
       AC_DEFINE([TENSOR_USE_FFTW3], [1], [Use FFTW3 library])
