@@ -393,6 +393,7 @@ namespace tensor {
   RTensor tanh(const RTensor &t);
   RTensor exp(const RTensor &t);
   RTensor sqrt(const RTensor &t);
+  RTensor log(const RTensor &t);
 
   RTensor round(const RTensor &t);
 
@@ -520,6 +521,7 @@ namespace tensor {
   CTensor tanh(const CTensor &t);
   CTensor exp(const CTensor &t);
   CTensor sqrt(const CTensor &t);
+  CTensor log(const CTensor &t);
 
   const CTensor diag(const CTensor &d, int which, int rows, int cols);
   const CTensor diag(const CTensor &d, int which = 0);

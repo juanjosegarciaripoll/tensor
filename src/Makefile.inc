@@ -139,6 +139,7 @@ basic_SOURCES = \
 	generated/tensor_unop_cosh_d.cc \
 	generated/tensor_unop_sinh_d.cc \
 	generated/tensor_unop_tanh_d.cc \
+	generated/tensor_unop_log_d.cc \
 	generated/tensor_unop_abs_z.cc \
 	generated/tensor_unop_cos_z.cc \
 	generated/tensor_unop_sin_z.cc \
@@ -148,6 +149,7 @@ basic_SOURCES = \
 	generated/tensor_unop_tanh_z.cc \
 	generated/tensor_unop_exp_z.cc \
 	generated/tensor_unop_sqrt_z.cc \
+	generated/tensor_unop_log_z.cc \
 	generated/tensor_divide_tn_cdouble.cc \
 	generated/tensor_divide_tn_double.cc \
 	generated/tensor_divide_tt_cdouble.cc \
