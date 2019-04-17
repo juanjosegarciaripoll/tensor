@@ -41,6 +41,11 @@ initialize_mt()
 #define SEED_SIZE 1
 #endif
 
+void set_seed(unsigned long seed)
+{
+  init_genrand(seed);
+}
+
 void rand_reseed() {
 #if defined(_MSC_VER) || defined(__MINGW32__)
 # if 1

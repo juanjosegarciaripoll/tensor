@@ -30,6 +30,9 @@ namespace tensor {
     the clock or from other sources. */
 void rand_reseed();
 
+/** Explicitely sed the seed of the RNG. */
+void set_seed(unsigned long seed);
+
 /** Returns a random number. If the type is an integral one, the range
     is the whole integer range; if the type is a complex or floating point
     type, then the range is a n-dimensional cube with a corner on [0,...,0]
