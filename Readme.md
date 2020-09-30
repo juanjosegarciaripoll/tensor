@@ -105,15 +105,14 @@ Follow these steps to prepare, configure, build and install this library:
 
    To test the library you will need the Google Test framework, which is
    available at
-   < http://code.google.com/p/googletest/ >
+   <http://code.google.com/p/googletest/>
 
 Documentation
 -------------
 
    Documentation is built using the Doxygen package, which is available in
    most Linux-type software distributions
-
-     < http://www.stack.nl/~dimitri/doxygen/ >
+      <http://www.stack.nl/~dimitri/doxygen/>
 
    The documentation itself is built using the command "make doxygen-doc"
    after "make" and before "make install"
