@@ -31,7 +31,7 @@ with them, designed to allow Matlab-style programming. Some of the key features:
 * Fast Fourier Transforms (to be done)
 
 The Tensor library is discussed in the libtensor Google Group, currently found
-here < https://groups.google.com/forum/#!forum/libtensor > Go to this forum for
+here <https://groups.google.com/forum/#!forum/libtensor> Go to this forum for
 help in configuring and installing the library.
 
 Bug reports should be submitted using the GitHub Issues interface.
@@ -106,7 +106,7 @@ Follow these steps to prepare, configure, build and install this library:
    To test the library you will need the Google Test framework, which is
    available at
 
-     ``` < http://code.google.com/p/googletest/ > ```
+    <http://code.google.com/p/googletest/>
 
 Documentation
 -------------
@@ -114,7 +114,7 @@ Documentation
    Documentation is built using the Doxygen package, which is available in
    most Linux-type software distributions
 
-     ```  <http://www.stack.nl/~dimitri/doxygen/> ```
+     <http://www.stack.nl/~dimitri/doxygen/>
 
    The documentation itself is built using the command "make doxygen-doc"
    after "make" and before "make install"
