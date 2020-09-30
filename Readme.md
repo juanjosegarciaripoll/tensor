@@ -57,7 +57,7 @@ Follow these steps to prepare, configure, build and install this library:
    using the Google Test library, etc. The process involves again a terminal
    and typing something like
 
-    ```  ./configure --prefix=$HOME LIBS="..." CXXFLAGS="..." ```
+    ``` ./configure --prefix=$HOME LIBS="..." CXXFLAGS="..." ```
 
    Here we are using --prefix=$HOME to tell the configuration program that the
    libraries are going to be installed in our home directory, under $HOME/lib
@@ -82,7 +82,7 @@ Follow these steps to prepare, configure, build and install this library:
    Typically, with Debian systems there are the Atlas libraries. To tell
    the tensor library that you are going to use them pass the option
 
-    ```   LIBS="-llapack -lcblas -latlas" ```
+    LIBS="-llapack -lcblas -latlas" 
 
    to the "configure" program listed above.
 
@@ -92,9 +92,9 @@ Follow these steps to prepare, configure, build and install this library:
    The OS X operating system is shipped with an optimized version of the Atlas
    libraries that can be used by passing the option
 
-     ```  LIBS="-framework veclib" ```
+      LIBS="-framework veclib" 
 
-   to ``` "configure" ```
+   to   ``` "configure" ```
 
 
 ### OPTIONAL COMPONENTS
@@ -105,8 +105,7 @@ Follow these steps to prepare, configure, build and install this library:
 
    To test the library you will need the Google Test framework, which is
    available at
-
-    <http://code.google.com/p/googletest/>
+   < http://code.google.com/p/googletest/ >
 
 Documentation
 -------------
@@ -114,7 +113,7 @@ Documentation
    Documentation is built using the Doxygen package, which is available in
    most Linux-type software distributions
 
-     <http://www.stack.nl/~dimitri/doxygen/>
+     < http://www.stack.nl/~dimitri/doxygen/ >
 
    The documentation itself is built using the command "make doxygen-doc"
    after "make" and before "make install"
