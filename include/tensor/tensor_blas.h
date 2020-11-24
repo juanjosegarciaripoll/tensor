@@ -30,7 +30,11 @@
 #endif
 
 #ifdef TENSOR_USE_OPENBLAS
-# include <cblas.h>
+# ifdef HAVE_OPENBLAS_CBLAS_H
+#  include <OpenBLAS/cblas.h>
+# else
+#  include <cblas.h>
+# endif
 # define F77NAME(x) BLASFUNC(x)
 #endif
 

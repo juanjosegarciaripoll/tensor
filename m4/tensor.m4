@@ -50,9 +50,12 @@ dnl ----------------------------------------------------------------------
 dnl Find veclib framework
 dnl
 AC_DEFUN([TENSOR_OPENBLAS],[
+  AC_CHECK_LIB([openblas], [openblas_get_config], [have_openblas=yes], [have_openblas=no])
   AC_MSG_CHECKING([for OpenBLAS library])
-  OPENBLAS_LIBS="-lopenblas"
-  AC_CHECK_HEADERS([openblas_config.h],[have_openblas=yes],[have_openblas=no])
+  if test $have_openblas = yes ; then
+    OPENBLAS_LIBS="-lopenblas"
+    AC_CHECK_HEADERS_ONCE([OpenBLAS/cblas.h cblas.h])
+  fi
   AC_MSG_RESULT([$have_openblas])
 ])
 
@@ -63,7 +66,7 @@ AC_DEFUN([TENSOR_ATLAS],[
   AC_CHECK_LIB([atlas], [ATL_buildinfo], [have_atlas=yes], [have_atlas=no])
   AC_MSG_CHECKING([for ATLAS library])
   if test $have_atlas = yes ; then
-    ATLAS_LIBS="$LIBS -llapack -lf77blas -lcblas -latlas"
+    ATLAS_LIBS="-llapack -lf77blas -lcblas -latlas"
     ATLAS_CXXFLAGS=""
     AC_CHECK_HEADERS_ONCE([atlas/cblas.h cblas.h])
   fi
@@ -88,7 +91,7 @@ AC_DEFUN([TENSOR_ESSL],[
     ESSL_CXXFLAGS="-qnocinc=/usr/include/essl"
   fi
   have_lapack_essl=no
-  if test $ac_cv_sizeof_long = 8 ; then    
+  if test $ac_cv_sizeof_long = 8 ; then
     AC_CHECK_LIB([esslsmp6464], [esvsgemm],
                  [have_essl=yes;
 		  ESSL_F77="xlf_r -q64 -qnosave -qintsize=8";
@@ -162,7 +165,7 @@ AC_DEFUN([TENSOR_MKL],[
 	esac
       else
          MKL_LIBS="-mkl=parallel"
-      fi 
+      fi
     else
       #
       # If we do not use ICC but GCC, we only allow building with
