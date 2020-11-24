@@ -1,0 +1,11 @@
+target_sources(tensor
+  PRIVATE
+    data_file.cc
+    delete_file.cc
+    file_exists.cc
+    idata_file.cc
+    isdir.cc
+    make_directory.cc
+    odata_file.cc
+    rename_file.cc
+    )

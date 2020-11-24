@@ -1,0 +1,22 @@
+target_sources(tensor
+  PRIVATE
+    full_d.cc
+    full_z.cc
+    sparse_d.cc
+    sparse_z.cc
+    sparse_d_to_z.cc
+    sparse_kron_d.cc
+    sparse_kron_z.cc
+    sparse_real.cc
+    sparse_imag.cc
+    sparse_conj.cc
+    sparse_rows.cc
+    sparse_adjoint_z.cc
+    sparse_adjoint_d.cc
+    sparse_transpose_z.cc
+    sparse_transpose_d.cc
+    mmult_sparse_tensor_d.cc
+    mmult_sparse_tensor_z.cc
+    mmult_tensor_sparse_d.cc
+    mmult_tensor_sparse_z.cc
+    )

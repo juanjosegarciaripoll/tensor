@@ -1,0 +1,11 @@
+target_sources(arpack
+  PRIVATE
+    arpack/arpack_d.cc
+    arpack/arpack_z.cc
+    arpack/eigs_d.cc
+    arpack/eigs_z.cc
+    arpack/eigs_sp_d.cc
+    arpack/eigs_sp_z.cc
+    arpack/eigs_map_d.cc
+    arpack/eigs_map_z.cc
+    )

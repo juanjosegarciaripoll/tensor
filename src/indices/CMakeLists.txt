@@ -1,0 +1,14 @@
+target_sources(tensor
+  PRIVATE
+    booleans.cc
+    booleans_and.cc
+    booleans_or.cc
+    booleans_not.cc
+    concat.cc
+    indices.cc
+    linspace_d.cc
+    linspace_z.cc
+    surrounding_dimensions.cc
+    to_tensor.cc
+    which.cc
+    )

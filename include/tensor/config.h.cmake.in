@@ -1,0 +1,33 @@
+// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+//
+// Copyright 2008, Juan Jose Garcia-Ripoll
+//
+
+#ifndef TENSOR_CONFIG_H
+#define TENSOR_CONFIG_H
+
+#cmakedefine TENSOR_USE_ATLAS
+#cmakedefine TENSOR_USE_OPENBLAS
+#cmakedefine TENSOR_USE_VECLIB
+#cmakedefine TENSOR_USE_LAPACK
+#cmakedefine TENSOR_USE_MKL
+#cmakedefine TENSOR_USE_ACML
+#cmakedefine TENSOR_USE_ESSL
+#cmakedefine TENSOR_USE_CBLAPACK
+#cmakedefine TENSOR_USE_FFTW3
+#cmakedefine HAVE_CBLAS_H
+#cmakedefine HAVE_ATLAS_CBLAS_H
+#cmakedefine HAVE_VECLIB_CBLAS_H
+#cmakedefine HAVE_OPENBLAS_CBLAS_H
+#cmakedefine HAVE_ACCELERATE_ACCELERATE_H
+#cmakedefine HAVE_DLADDR
+#cmakedefine HAVE_BACKTRACE
+#cmakedefine HAVE_BACKTRACE_SYMBOLS
+#cmakedefine HAVE___BUILTIN_RETURN_ADDRESS
+#cmakedefine HAVE_GETTIMEOFDAY
+#cmakedefine TENSOR_BIGENDIAN
+#cmakedefine F77_FUNC
+
+#cmakedefine TENSOR_64BITS
+
+#endif // !TENSOR_CONFIG_H
