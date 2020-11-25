@@ -115,7 +115,7 @@ include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
   ${CMAKE_BINARY_DIR}/tensorConfigVersion.cmake
   VERSION ${PACKAGE_VERSION}
-  COMPATIBILITY AnyNewerVersion
+  COMPATIBILITY SameMajorVersion
   )
 install(EXPORT tensorConfig
   DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/tensor"
