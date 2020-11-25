@@ -98,6 +98,10 @@ target_include_directories(tensor
     $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/config_aux>
     $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
   )
+target_link_options(tensor
+  PUBLIC ${LAPACK_LINKER_FLAGS} ${BLAS_LINKER_FLAGS})
+target_link_libraries(tensor
+  PUBLIC ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 add_subdirectory(include)
 add_subdirectory(src)
 
