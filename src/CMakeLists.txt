@@ -16,3 +16,7 @@ if(${TENSOR_USE_FFTW3})
     add_subdirectory(fftw)
   endif()
 endif()
+
+if(${TENSOR_ARPACK})
+  add_subdirectory(arpack)
+endif()

@@ -28,12 +28,18 @@ include(GNUInstallDirs)
 
 # Configuration options
 option(TENSOR_FFTW "Enable support for FFTW" ON)
-option(TENSOR_ARPACK "Enable support for Arpack" OFF)
+option(TENSOR_ARPACK "Enable support for Arpack" ON)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 
 # Fortran and Fortran-like libraries
 find_package(BLAS)
 find_package(LAPACK)
+if(${TENSOR_ARPACK})
+  find_library(ARPACK_LIBRARIES NAMES arpack libarpack libARPACK ARPACK)
+  if(NOT ARPACK_LIBRARIES)
+    message(FATAL_ERROR "Could not find ARPACK libraries")
+  endif()
+endif()
 
 # Search for a C/C++ interface for those libraries
 set(CBLAS_FOUND FALSE)
@@ -63,6 +69,33 @@ endif()
 if(NOT ${CBLAS_FOUND})
   check_include_file("cblas.h" HAVE_CBLAS_H)
 endif()
+
+############################################################
+# Fortran name mangling
+#
+if(${TENSOR_ARPACK})
+  enable_language(Fortran)
+  include(FortranCInterface)
+  FortranCInterface_HEADER(dummy.h)
+  if(FortranCInterface_GLOBAL_FOUND)
+    if(${FortranCInterface_GLOBAL_CASE} STREQUAL "UPPER")
+      set(F77_FUNC NAME)
+    else()
+      set(F77_FUNC name)
+    endif()
+    if(NOT ("${FortranCInterface_GLOBAL_PREFIX}" STREQUAL ""))
+      set(F77_FUNC "${FortranCInterface_GLOBAL_PREFIX}##${F77_FUNC}")
+    endif()
+    if(NOT ("${FortranCInterface_GLOBAL_SUFFIX}" STREQUAL ""))
+      set(F77_FUNC "${F77_FUNC}##${FortranCInterface_GLOBAL_SUFFIX}")
+    endif()
+  else()
+    message(FATAL_ERROR "Unable to find Fortran-C interface")
+  endif()
+endif()
+
+############################################################
+# CONFIGURATION FILES
 
 # Additional headers and details used by Tensor
 check_symbol_exists(dladdr "dlfcn.h" HAVE_DLADDR)
@@ -103,6 +136,9 @@ target_link_options(tensor
   PUBLIC ${LAPACK_LINKER_FLAGS} ${BLAS_LINKER_FLAGS})
 target_link_libraries(tensor
   PUBLIC ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+if(${TENSOR_ARPACK})
+  target_link_libraries(tensor PUBLIC ${ARPACK_LIBRARIES})
+endif()
 add_subdirectory(include)
 add_subdirectory(src)
 

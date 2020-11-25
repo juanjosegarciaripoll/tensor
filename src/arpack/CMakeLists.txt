@@ -1,11 +1,11 @@
-target_sources(arpack
+target_sources(tensor
   PRIVATE
-    arpack/arpack_d.cc
-    arpack/arpack_z.cc
-    arpack/eigs_d.cc
-    arpack/eigs_z.cc
-    arpack/eigs_sp_d.cc
-    arpack/eigs_sp_z.cc
-    arpack/eigs_map_d.cc
-    arpack/eigs_map_z.cc
+    arpack_d.cc
+    arpack_z.cc
+    eigs_d.cc
+    eigs_z.cc
+    eigs_sp_d.cc
+    eigs_sp_z.cc
+    eigs_map_d.cc
+    eigs_map_z.cc
     )
