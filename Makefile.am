@@ -6,7 +6,7 @@ include aminclude.am
 EXTRA_DIST = autogen.sh $(DX_CONFIG) doc/html
 
 if HAVE_GTEST
-SUBDIRS += test
+SUBDIRS += tests
 endif
 if BUILD_ESSL_LAPACK
 SUBDIRS += essl_lapack

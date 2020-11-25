@@ -29,6 +29,7 @@ include(GNUInstallDirs)
 # Configuration options
 option(TENSOR_FFTW "Enable support for FFTW" ON)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
+option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 
 # Fortran and Fortran-like libraries
 find_package(BLAS)
@@ -104,6 +105,13 @@ target_link_libraries(tensor
   PUBLIC ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 add_subdirectory(include)
 add_subdirectory(src)
+
+############################################################
+# TESTING
+#
+if(${TENSOR_TEST})
+  add_subdirectory(tests)
+endif()
 
 ############################################################
 # INSTALLATION

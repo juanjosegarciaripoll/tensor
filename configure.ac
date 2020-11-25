@@ -14,7 +14,7 @@ AC_CONFIG_MACRO_DIR([m4])		dnl Additional macro directories
 AC_CONFIG_AUX_DIR([config_aux])		dnl Where to put autoconf files
 AC_CONFIG_HEADERS([config_aux/config.h])	dnl Automatically generated
 AC_CONFIG_FILES([Makefile src/Makefile include/Makefile
-                 scripts/Makefile test/Makefile www/Makefile
+                 scripts/Makefile tests/Makefile www/Makefile
                  essl_lapack/Makefile])
 AC_CONFIG_FILES([scripts/tensor-config], [chmod +x scripts/tensor-config])
 AC_CONFIG_HEADERS([include/tensor/config.h:include/tensor/config.h.in])
@@ -100,7 +100,7 @@ if test "$F77" = "f77"; then
 		lt_prog_compiler_static_F77="$lt_prog_compiler_static_CXX"
 		lt_prog_compiler_pic_works_F77="$lt_prog_compiler_pic_works_CXX"
 		lt_prog_compiler_static_works_F77="$lt_prog_compiler_static_works_CXX"
-		
+
 		have_f2c99=yes
 		F2C_CPPFLAGS=`f77 --print-cppflags`
 		FLIBS="-lf2c"
