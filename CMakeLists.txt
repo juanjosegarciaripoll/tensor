@@ -21,6 +21,7 @@ include(CheckIncludeFile)
 include(CheckSymbolExists)
 include(CheckTypeSize)
 include(GNUInstallDirs)
+include(TestBigEndian)
 
 ############################################################
 # SYTEM CHECKS AND CONFIGURATION
@@ -70,7 +71,7 @@ if(NOT ${CBLAS_FOUND})
   check_include_file("cblas.h" HAVE_CBLAS_H)
 endif()
 
-############################################################
+#
 # Fortran name mangling
 #
 if(${TENSOR_ARPACK})
@@ -93,6 +94,11 @@ if(${TENSOR_ARPACK})
     message(FATAL_ERROR "Unable to find Fortran-C interface")
   endif()
 endif()
+
+#
+# Type sizes and endianness
+#
+TEST_BIG_ENDIAN(TENSOR_BIGENDIAN)
 
 ############################################################
 # CONFIGURATION FILES
