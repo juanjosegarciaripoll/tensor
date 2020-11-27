@@ -21,7 +21,7 @@
 
 namespace linalg {
 
-  /**Singular value decomposition of a real matrix by blocks.
+/**Singular value decomposition of a real matrix by blocks.
 
      The difference between this function and svd() is that this one performs
      the decomposition in blocks, preserving the symmetries of the original
@@ -29,9 +29,8 @@ namespace linalg {
      
      \ingroup Linalg
   */
-  RTensor block_svd(RTensor A, RTensor *pU, RTensor *pVT, bool economic)
-  {
-    return do_block_svd<RTensor>(A, pU, pVT, economic);
-  }
+RTensor block_svd(RTensor A, RTensor *pU, RTensor *pVT, bool economic) {
+  return do_block_svd<RTensor>(A, pU, pVT, economic);
+}
 
-} // namespace linalg
+}  // namespace linalg

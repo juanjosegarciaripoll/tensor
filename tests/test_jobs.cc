@@ -25,24 +25,24 @@ static bool zerop(int n) { return n == 0; }
 TEST(Jobs, ErrorCheck) {
   {
     int argc = 1;
-    const char *argv[] = { "--variable" };
+    const char *argv[] = {"--variable"};
     ASSERT_DEATH(jobs::Job(argc, argv), ".*");
   }
   {
     int argc = 1;
-    const char *argv[] = { "--this-job" };
+    const char *argv[] = {"--this-job"};
     ASSERT_DEATH(jobs::Job(argc, argv), ".*");
   }
   {
     int argc = 1;
-    const char *argv[] = { "--help" };
+    const char *argv[] = {"--help"};
     ASSERT_EXIT(jobs::Job(argc, argv), zerop, ".*");
   }
 }
 
 TEST(Jobs, FixedVariable) {
   int argc = 2;
-  const char *argv[] = { "--variable", "var,0.13" };
+  const char *argv[] = {"--variable", "var,0.13"};
   jobs::Job job(argc, argv);
   EXPECT_DOUBLE_EQ(job.get_value("var"), 0.13);
 }
@@ -50,17 +50,17 @@ TEST(Jobs, FixedVariable) {
 TEST(Jobs, DefaultRange) {
   {
     int argc = 2;
-    const char *argv[] = { "--variable", "var,0,9" };
+    const char *argv[] = {"--variable", "var,0,9"};
     EXPECT_DOUBLE_EQ(jobs::Job(argc, argv).get_value("var"), 0);
   }
   {
     int argc = 4;
-    const char *argv[] = { "--this-job", "3", "--variable", "var,0,9" };
+    const char *argv[] = {"--this-job", "3", "--variable", "var,0,9"};
     EXPECT_DOUBLE_EQ(jobs::Job(argc, argv).get_value("var"), 3.0);
   }
   {
     int argc = 4;
-    const char *argv[] = { "--this-job", "7", "--variable", "var,0,9" };
+    const char *argv[] = {"--this-job", "7", "--variable", "var,0,9"};
     EXPECT_DOUBLE_EQ(jobs::Job(argc, argv).get_value("var"), 7.0);
   }
 }
@@ -68,18 +68,17 @@ TEST(Jobs, DefaultRange) {
 TEST(Jobs, ProvidedRange) {
   {
     int argc = 2;
-    const char *argv[] = { "--variable", "var,0,19,20" };
+    const char *argv[] = {"--variable", "var,0,19,20"};
     EXPECT_DOUBLE_EQ(jobs::Job(argc, argv).get_value("var"), 0);
   }
   {
     int argc = 4;
-    const char *argv[] = { "--this-job", "3", "--variable", "var,0,19,20" };
+    const char *argv[] = {"--this-job", "3", "--variable", "var,0,19,20"};
     EXPECT_DOUBLE_EQ(jobs::Job(argc, argv).get_value("var"), 3.0);
   }
   {
     int argc = 4;
-    const char *argv[] = { "--this-job", "7", "--variable", "var,0,19,20" };
+    const char *argv[] = {"--this-job", "7", "--variable", "var,0,19,20"};
     EXPECT_DOUBLE_EQ(jobs::Job(argc, argv).get_value("var"), 7.0);
   }
 }
-

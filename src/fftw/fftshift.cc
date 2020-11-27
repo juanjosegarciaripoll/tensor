@@ -21,75 +21,75 @@
 
 namespace tensor {
 
-  const CTensor
-  fftshift(const CTensor& input, int direction) {
-    // just forward to the simpler function
-    CTensor output(input);
-    for (index dim = 0; dim < input.rank(); dim++) {
+const CTensor fftshift(const CTensor& input, int direction) {
+  // just forward to the simpler function
+  CTensor output(input);
+  for (index dim = 0; dim < input.rank(); dim++) {
+    output = fftshift(output, dim, direction);
+  }
+
+  return output;
+}
+
+const CTensor fftshift(const CTensor& input, index dim, int direction) {
+  assert(dim >= 0 && dim < input.rank());
+
+  const Indices& size = input.dimensions();
+  if (size[dim] == 1) {
+    // nothing to do
+    return input;
+  }
+
+  index before = 1;
+  for (index i = 0; i < dim; i++) {
+    before *= size[i];
+  }
+
+  index after = 1;
+  for (index i = dim + 1; i < size.size(); i++) {
+    after *= size[i];
+  }
+
+  // Transform the tensor into a 3-dimensional form, then use slicing.
+  // Not terribly efficient, but we can delay extensive memory handling to
+  // until someone needs the speed.
+  CTensor output(before, size[dim], after);
+  const CTensor reshape_input = reshape(input, output.dimensions());
+
+  // even number of grid points as default => direction has no effect.
+  index minfreq = size[dim] / 2;
+  index Nhalf = size[dim] / 2;
+  index end = size[dim] - 1;
+
+  if (size[dim] % 2 == 1) {
+    minfreq = (size[dim] + 1) / 2;
+    Nhalf = (size[dim] - 1) / 2;
+    if (direction == FFTW_BACKWARD) {
+      // undo the effects of the forward shift, requires some creativity
+      minfreq--;
+      Nhalf++;
+    }
+  }
+
+  output.at(range(), range(0, Nhalf - 1), range()) =
+      reshape_input(range(), range(minfreq, end), range());
+  output.at(range(), range(Nhalf, end), range()) =
+      reshape_input(range(), range(0, minfreq - 1), range());
+
+  return reshape(output, size);
+}
+
+const CTensor fftshift(const CTensor& input, const Booleans& convert,
+                       int direction) {
+  assert(input.rank() == convert.size());
+
+  CTensor output(input);
+  for (index dim = 0; dim < input.rank(); dim++) {
+    if (convert[dim]) {
       output = fftshift(output, dim, direction);
     }
-
-    return output;
   }
 
-  const CTensor
-  fftshift(const CTensor& input, index dim, int direction) {
-    assert(dim >= 0 && dim < input.rank());
-
-    const Indices& size = input.dimensions();
-    if (size[dim] == 1) {
-      // nothing to do
-      return input;
-    }
-
-    index before = 1;
-    for (index i = 0; i < dim; i++) {
-      before *= size[i];
-    }
-
-    index after = 1;
-    for (index i = dim+1; i < size.size(); i++) {
-      after *= size[i];
-    }
-
-    // Transform the tensor into a 3-dimensional form, then use slicing.
-    // Not terribly efficient, but we can delay extensive memory handling to
-    // until someone needs the speed.
-    CTensor output(before, size[dim], after);
-    const CTensor reshape_input = reshape(input, output.dimensions());
-
-    // even number of grid points as default => direction has no effect.
-    index minfreq = size[dim]/2;
-    index Nhalf = size[dim]/2;
-    index end = size[dim]-1;
-
-    if (size[dim] % 2 == 1) {
-      minfreq = (size[dim]+1)/2;
-      Nhalf = (size[dim]-1)/2;
-      if (direction == FFTW_BACKWARD) {
-        // undo the effects of the forward shift, requires some creativity
-        minfreq--;
-        Nhalf++;
-      }
-    }
-
-    output.at(range(), range(0,Nhalf-1), range()) = reshape_input(range(), range(minfreq,end), range());
-    output.at(range(), range(Nhalf, end), range()) = reshape_input(range(), range(0, minfreq-1), range());
-
-    return reshape(output, size);
-  }
-
-  const CTensor
-  fftshift(const CTensor& input, const Booleans& convert, int direction) {
-    assert(input.rank() == convert.size());
-    
-    CTensor output(input);
-    for (index dim = 0; dim < input.rank(); dim++) {
-      if (convert[dim]) {
-        output = fftshift(output, dim, direction);
-      }
-    }
-
-    return output;
-  }
+  return output;
 }
+}  // namespace tensor

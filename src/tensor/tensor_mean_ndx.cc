@@ -21,40 +21,39 @@
 
 namespace {
 
-  using namespace tensor;
+using namespace tensor;
 
-  template<typename Tensor>
-  Tensor do_mean(const Tensor &t, int ndx)
-  {
-    int rank = t.rank();
-    if (rank == 1) {
-      Tensor output(1);
-      output.at(0) = mean(t);
-      return output;
-    } else {
-      ndx = normalize_index(ndx, rank);
-      Indices dimensions(rank-1);
-      tensor::index left = 1, middle, right = 1;
-      for (int i = 0, j = 0; i < rank; i++) {
-	tensor::index d = t.dimension(i);
-	dimensions.at(j++) = d;
-	if (i < ndx)
-	  left *= d;
-	else if (i > ndx)
-	  right *= d;
-	else {
-	  middle = d;
-	  j--;
-	}
+template <typename Tensor>
+Tensor do_mean(const Tensor &t, int ndx) {
+  int rank = t.rank();
+  if (rank == 1) {
+    Tensor output(1);
+    output.at(0) = mean(t);
+    return output;
+  } else {
+    ndx = normalize_index(ndx, rank);
+    Indices dimensions(rank - 1);
+    tensor::index left = 1, middle, right = 1;
+    for (int i = 0, j = 0; i < rank; i++) {
+      tensor::index d = t.dimension(i);
+      dimensions.at(j++) = d;
+      if (i < ndx)
+        left *= d;
+      else if (i > ndx)
+        right *= d;
+      else {
+        middle = d;
+        j--;
       }
-      Tensor aux = reshape(t, left, middle, right);
-      Tensor output = Tensor::zeros(left, right);
-      for (tensor::index r = 0; r < right; r++)
-	for (tensor::index m = 0; m < middle; m++)
-	  for (tensor::index l = 0; l < left; l++)
-	    output.at(l,r) += aux(l,m,r);
-      return reshape(output, dimensions) / typename Tensor::elt_t(middle);
     }
+    Tensor aux = reshape(t, left, middle, right);
+    Tensor output = Tensor::zeros(left, right);
+    for (tensor::index r = 0; r < right; r++)
+      for (tensor::index m = 0; m < middle; m++)
+        for (tensor::index l = 0; l < left; l++)
+          output.at(l, r) += aux(l, m, r);
+    return reshape(output, dimensions) / typename Tensor::elt_t(middle);
   }
+}
 
-} // namespace tensor
+}  // namespace

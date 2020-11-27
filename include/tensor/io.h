@@ -27,27 +27,25 @@
 namespace tensor {
 
 /**Simple text representation of vector.*/
-template<typename elt_t>
+template <typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t);
 
 /**Simple text representation of tensor.*/
-template<typename elt_t>
+template <typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t);
 
 /**Simple text representation of tensor.*/
-template<typename elt_t>
+template <typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t);
 
-template<typename t, size_t n>
-inline std::ostream &operator<<(std::ostream &s, const StaticVector<t,n> &v)
-{
+template <typename t, size_t n>
+inline std::ostream &operator<<(std::ostream &s, const StaticVector<t, n> &v) {
   return s << Vector<t>(v);
 }
 
 /**Simple text representation of a sparse matrix (undistinguishable from a tensor).*/
-template<typename elt_t>
-inline std::ostream &operator<<(std::ostream &s, const Sparse<elt_t> &t)
-{
+template <typename elt_t>
+inline std::ostream &operator<<(std::ostream &s, const Sparse<elt_t> &t) {
   return s << full(t);
 }
 
@@ -55,17 +53,18 @@ inline std::ostream &operator<<(std::ostream &s, const Sparse<elt_t> &t)
  * a tensor with a slightly more attractive representation. We need to
  * create a template and then specializations because templates do not do
  * implicit type coercion. */
-template<typename elt_t>
+template <typename elt_t>
 class MatrixForm {
   const Tensor<elt_t> data;
   MatrixForm();
-public:
+
+ public:
   /**Creates an object that displays a tensor as a matrix.*/
   MatrixForm(const Tensor<elt_t> &t) : data(t) {}
   std::ostream &display(std::ostream &s) const;
 };
 
-template<typename elt_t>
+template <typename elt_t>
 inline std::ostream &operator<<(std::ostream &s, const MatrixForm<elt_t> &m) {
   return m.display(s);
 }
@@ -82,8 +81,8 @@ const MatrixForm<double> matrix_form(const Sparse<double> &t);
 /**Matrix form representation of a tensor.*/
 const MatrixForm<cdouble> matrix_form(const Sparse<cdouble> &t);
 
-} // namespace tensor
+}  // namespace tensor
 
 #include <tensor/detail/io.hpp>
 
-#endif // !TENSOR_IO_H
+#endif  // !TENSOR_IO_H

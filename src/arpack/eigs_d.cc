@@ -23,67 +23,64 @@
 
 namespace linalg {
 
-  using namespace tensor;
+using namespace tensor;
 
-  RTensor
-  eigs(const RTensor &A, int eig_type, size_t neig, RTensor *eigenvectors,
-       bool *converged)
-  {
-    EigType t = (EigType)eig_type;
-    size_t n = A.columns();
+RTensor eigs(const RTensor &A, int eig_type, size_t neig, RTensor *eigenvectors,
+             bool *converged) {
+  EigType t = (EigType)eig_type;
+  size_t n = A.columns();
 
-    if ((A.rank() != 2) || (A.rows() != n)) {
-      std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-      abort();
-    }
+  if ((A.rank() != 2) || (A.rows() != n)) {
+    std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
+    abort();
+  }
 
-    if (neig > n || neig == 0) {
-      std::cerr << "In eigs(): Can only compute up to " << n << " eigenvalues\n"
-                << "in a matrix that has " << n << " times " << n << " elements.";
-      abort();
-    }
+  if (neig > n || neig == 0) {
+    std::cerr << "In eigs(): Can only compute up to " << n << " eigenvalues\n"
+              << "in a matrix that has " << n << " times " << n << " elements.";
+    abort();
+  }
 
-    if (n <= 4) {
-      /* For small sizes, the ARPACK solver produces wrong results!
+  if (n <= 4) {
+    /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-      CTensor vectors;
-      CTensor values = eig(A, NULL, eigenvectors? &vectors : 0);
-      Indices ndx = RArpack::sort_values(values, t);
-      Indices ndx_out(neig);
-      std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
-      if (eigenvectors) {
-        *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
-      }
-      if (converged) {
-        *converged = true;
-      }
-      return tensor::real(values(range(ndx_out)));
+    CTensor vectors;
+    CTensor values = eig(A, NULL, eigenvectors ? &vectors : 0);
+    Indices ndx = RArpack::sort_values(values, t);
+    Indices ndx_out(neig);
+    std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
+    if (eigenvectors) {
+      *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
     }
-
-    RArpack data(n, t, neig);
-
-    if (eigenvectors && eigenvectors->size() >= A.columns())
-      data.set_start_vector(eigenvectors->begin_const());
-
-    while (data.update() < RArpack::Finished) {
-      blas::gemv('N', n, n, 1.0, A.begin(), n, data.get_x_vector(), 1,
-                 0.0, data.get_y_vector(), 1);
+    if (converged) {
+      *converged = true;
     }
-    if (data.get_status() == RArpack::Finished) {
-      if (converged)
-        *converged = true;
-      return data.get_data(eigenvectors);
-    } else {
-      std::cerr << "eigs: " << data.error_message() << '\n';
-      if (converged) {
-        *converged = false;
-        return RTensor::zeros(igen << neig);
-      } else {
-	abort();
-      }
-    }
+    return tensor::real(values(range(ndx_out)));
   }
 
-} // namespace linalg
+  RArpack data(n, t, neig);
+
+  if (eigenvectors && eigenvectors->size() >= A.columns())
+    data.set_start_vector(eigenvectors->begin_const());
+
+  while (data.update() < RArpack::Finished) {
+    blas::gemv('N', n, n, 1.0, A.begin(), n, data.get_x_vector(), 1, 0.0,
+               data.get_y_vector(), 1);
+  }
+  if (data.get_status() == RArpack::Finished) {
+    if (converged) *converged = true;
+    return data.get_data(eigenvectors);
+  } else {
+    std::cerr << "eigs: " << data.error_message() << '\n';
+    if (converged) {
+      *converged = false;
+      return RTensor::zeros(igen << neig);
+    } else {
+      abort();
+    }
+  }
+}
+
+}  // namespace linalg

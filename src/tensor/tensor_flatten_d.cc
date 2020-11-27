@@ -22,9 +22,6 @@
 
 namespace tensor {
 
-  const RTensor flatten(const RTensor &t)
-  {
-    return reshape(t, t.size());
-  }
+const RTensor flatten(const RTensor &t) { return reshape(t, t.size()); }
 
-} // namespace tensor
+}  // namespace tensor

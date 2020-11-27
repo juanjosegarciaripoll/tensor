@@ -22,16 +22,14 @@
 
 namespace tensor {
 
-  const Booleans operator==(const CTensor &a, const CTensor &b)
-  {
-    assert(a.size() == b.size());
-    Booleans c(a.size());
-    Booleans::iterator ic = c.begin();
-    for (CTensor::const_iterator ia = a.begin(), ib = b.begin();
-	 ia != a.end();
-	 ia++, ib++, ic++)
-      *ic = (*ia) == (*ib);
-    return c;
-  }
+const Booleans operator==(const CTensor &a, const CTensor &b) {
+  assert(a.size() == b.size());
+  Booleans c(a.size());
+  Booleans::iterator ic = c.begin();
+  for (CTensor::const_iterator ia = a.begin(), ib = b.begin(); ia != a.end();
+       ia++, ib++, ic++)
+    *ic = (*ia) == (*ib);
+  return c;
+}
 
-} // namespace tensor
+}  // namespace tensor

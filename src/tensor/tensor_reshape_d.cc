@@ -21,77 +21,69 @@
 
 namespace tensor {
 
-  /**Return a RTensor with same data and given dimensions.*/
-  const RTensor reshape(const RTensor &t, const Indices &new_dims)
-  {
-    return RTensor(new_dims, t);
-  }
+/**Return a RTensor with same data and given dimensions.*/
+const RTensor reshape(const RTensor &t, const Indices &new_dims) {
+  return RTensor(new_dims, t);
+}
 
-  /**Return a RTensor with same data and given dimensions.*/
-  const RTensor reshape(const RTensor &t, index length)
-  {
-    Indices new_dims(1);
-    new_dims.at(0) = length;
-    return RTensor(new_dims, t);
-  }
+/**Return a RTensor with same data and given dimensions.*/
+const RTensor reshape(const RTensor &t, index length) {
+  Indices new_dims(1);
+  new_dims.at(0) = length;
+  return RTensor(new_dims, t);
+}
 
-  /**Return a RTensor with same data and given dimensions.*/
-  const RTensor reshape(const RTensor &t, index rows, index cols)
-  {
-    Indices new_dims(2);
-    new_dims.at(0) = rows;
-    new_dims.at(1) = cols;
-    return RTensor(new_dims, t);
-  }
+/**Return a RTensor with same data and given dimensions.*/
+const RTensor reshape(const RTensor &t, index rows, index cols) {
+  Indices new_dims(2);
+  new_dims.at(0) = rows;
+  new_dims.at(1) = cols;
+  return RTensor(new_dims, t);
+}
 
-  /**Return a RTensor with same data and given dimensions.*/
-  const RTensor reshape(const RTensor &t, index d1, index d2, index d3)
-  {
-    Indices new_dims(3);
-    new_dims.at(0) = d1;
-    new_dims.at(1) = d2;
-    new_dims.at(2) = d3;
-    return RTensor(new_dims, t);
-  }
+/**Return a RTensor with same data and given dimensions.*/
+const RTensor reshape(const RTensor &t, index d1, index d2, index d3) {
+  Indices new_dims(3);
+  new_dims.at(0) = d1;
+  new_dims.at(1) = d2;
+  new_dims.at(2) = d3;
+  return RTensor(new_dims, t);
+}
 
-  /**Return a RTensor with same data and given dimensions.*/
-  const RTensor reshape(const RTensor &t, index d1, index d2, index d3,
-                        index d4)
-  {
-    Indices new_dims(4);
-    new_dims.at(0) = d1;
-    new_dims.at(1) = d2;
-    new_dims.at(2) = d3;
-    new_dims.at(3) = d4;
-    return RTensor(new_dims, t);
-  }
+/**Return a RTensor with same data and given dimensions.*/
+const RTensor reshape(const RTensor &t, index d1, index d2, index d3,
+                      index d4) {
+  Indices new_dims(4);
+  new_dims.at(0) = d1;
+  new_dims.at(1) = d2;
+  new_dims.at(2) = d3;
+  new_dims.at(3) = d4;
+  return RTensor(new_dims, t);
+}
 
-  /**Return a RTensor with same data and given dimensions.*/
-  const RTensor reshape(const RTensor &t, index d1, index d2, index d3,
-                        index d4, index d5)
-  {
-    Indices new_dims(5);
-    new_dims.at(0) = d1;
-    new_dims.at(1) = d2;
-    new_dims.at(2) = d3;
-    new_dims.at(3) = d4;
-    new_dims.at(4) = d5;
-    return RTensor(new_dims, t);
-  }
+/**Return a RTensor with same data and given dimensions.*/
+const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
+                      index d5) {
+  Indices new_dims(5);
+  new_dims.at(0) = d1;
+  new_dims.at(1) = d2;
+  new_dims.at(2) = d3;
+  new_dims.at(3) = d4;
+  new_dims.at(4) = d5;
+  return RTensor(new_dims, t);
+}
 
-  /**Return a RTensor with same data and given dimensions.*/
-  const RTensor reshape(const RTensor &t, index d1, index d2, index d3,
-                        index d4, index d5, index d6)
-  {
-    Indices new_dims(6);
-    new_dims.at(0) = d1;
-    new_dims.at(1) = d2;
-    new_dims.at(2) = d3;
-    new_dims.at(3) = d4;
-    new_dims.at(4) = d5;
-    new_dims.at(5) = d6;
-    return RTensor(new_dims, t);
-  }
+/**Return a RTensor with same data and given dimensions.*/
+const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
+                      index d5, index d6) {
+  Indices new_dims(6);
+  new_dims.at(0) = d1;
+  new_dims.at(1) = d2;
+  new_dims.at(2) = d3;
+  new_dims.at(3) = d4;
+  new_dims.at(4) = d5;
+  new_dims.at(5) = d6;
+  return RTensor(new_dims, t);
+}
 
-} // namespace tensor
-
+}  // namespace tensor

@@ -20,36 +20,34 @@
 
 namespace tensor {
 
-  double matrix_norminf(const CTensor &m)
-  {
-    assert(m.rank() == 2);
+double matrix_norminf(const CTensor &m) {
+  assert(m.rank() == 2);
 
-    size_t r = m.rows();
-    size_t c = m.columns();
+  size_t r = m.rows();
+  size_t c = m.columns();
 
-    // aux[i] = sum_j abs(A(i,j))
+  // aux[i] = sum_j abs(A(i,j))
 
-    double *aux = new double[r];
-    CTensor::const_iterator p = m.begin_const();
+  double *aux = new double[r];
+  CTensor::const_iterator p = m.begin_const();
+  for (size_t i = 0; i < r; i++, p++) {
+    aux[i] = abs(*p);
+  }
+  for (size_t j = 1; j < c; j++) {
     for (size_t i = 0; i < r; i++, p++) {
-      aux[i] = abs(*p);
+      aux[i] += abs(*p);
     }
-    for (size_t j = 1; j < c; j++) {
-      for (size_t i = 0; i < r; i++, p++) {
-	aux[i] += abs(*p);
-      }
-    }
-
-    // output = max_i aux[i]
-
-    double output = 0.0;
-    for (size_t i = 0; i < r; i++) {
-      if (output < aux[i])
-	output = aux[i];
-    }
-    delete[] aux;
-
-    return output;
   }
 
-} // namespace tensor
+  // output = max_i aux[i]
+
+  double output = 0.0;
+  for (size_t i = 0; i < r; i++) {
+    if (output < aux[i]) output = aux[i];
+  }
+  delete[] aux;
+
+  return output;
+}
+
+}  // namespace tensor

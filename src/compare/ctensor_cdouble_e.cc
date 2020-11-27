@@ -22,13 +22,12 @@
 
 namespace tensor {
 
-  const Booleans operator==(const CTensor &a, double b)
-  {
-    Booleans c(a.size());
-    Booleans::iterator ic = c.begin();
-    for (CTensor::const_iterator ia = a.begin(); ia != a.end(); ia++, ic++)
-      *ic = (*ia) == b;
-    return c;
-  }
+const Booleans operator==(const CTensor &a, double b) {
+  Booleans c(a.size());
+  Booleans::iterator ic = c.begin();
+  for (CTensor::const_iterator ia = a.begin(); ia != a.end(); ia++, ic++)
+    *ic = (*ia) == b;
+  return c;
+}
 
-} // namespace tensor
+}  // namespace tensor

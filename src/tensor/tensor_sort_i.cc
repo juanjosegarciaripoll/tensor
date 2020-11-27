@@ -23,54 +23,46 @@
 
 namespace tensor {
 
-  const Indices
-  sort(const Indices &v, bool reverse)
-  {
-    Indices output(v);
+const Indices sort(const Indices &v, bool reverse) {
+  Indices output(v);
+  if (reverse) {
+    std::sort(output.begin(), output.end(), std::greater<double>());
+  } else {
+    std::sort(output.begin(), output.end(), std::less<double>());
+  }
+  return output;
+}
+
+template <typename elt_t>
+struct Compare {
+  const elt_t *p;
+
+  Compare(const elt_t *newp) : p(newp){};
+  int operator()(size_t i1, size_t i2) { return p[i1] < p[i2]; }
+};
+
+template <typename elt_t>
+struct CompareInv {
+  const elt_t *p;
+
+  CompareInv(const elt_t *newp) : p(newp){};
+  int operator()(size_t i1, size_t i2) { return p[i1] > p[i2]; }
+};
+
+const Indices sort_indices(const Indices &v, bool reverse) {
+  if (v.size()) {
+    Indices output = iota(0, v.size() - 1);
     if (reverse) {
-      std::sort(output.begin(), output.end(), std::greater<double>());
+      CompareInv<index> c(v.begin());
+      std::sort(output.begin(), output.end(), c);
     } else {
-      std::sort(output.begin(), output.end(), std::less<double>());
+      Compare<index> c(v.begin());
+      std::sort(output.begin(), output.end(), c);
     }
     return output;
+  } else {
+    return Indices();
   }
-
-  template<typename elt_t>
-  struct Compare {
-    const elt_t *p;
-
-    Compare(const elt_t *newp) : p(newp) {};
-    int operator()(size_t i1, size_t i2) {
-      return p[i1] < p [i2];
-    }
-  };
-
-  template<typename elt_t>
-  struct CompareInv {
-    const elt_t *p;
-
-    CompareInv(const elt_t *newp) : p(newp) {};
-    int operator()(size_t i1, size_t i2) {
-      return p[i1] > p[i2];
-    }
-  };
-
-  const Indices
-  sort_indices(const Indices &v, bool reverse)
-  {
-    if (v.size()) {
-      Indices output = iota(0,v.size()-1);
-      if (reverse) {
-        CompareInv<index> c(v.begin());
-        std::sort(output.begin(), output.end(), c);
-      } else {
-        Compare<index> c(v.begin());
-        std::sort(output.begin(), output.end(), c);
-      }
-      return output;
-    } else {
-      return Indices();
-    }
-  }
-
 }
+
+}  // namespace tensor

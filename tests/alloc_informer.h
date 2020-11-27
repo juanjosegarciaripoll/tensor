@@ -6,7 +6,7 @@
 #ifndef TENSOR_TEST_ALLOC_INFORMER_H
 #define TENSOR_TEST_ALLOC_INFORMER_H
 
-class AllocInformer{
+class AllocInformer {
  public:
   static int allocations;
   static int deallocations;
@@ -14,9 +14,7 @@ class AllocInformer{
   AllocInformer() { allocations++; }
   ~AllocInformer() { deallocations++; }
 
-  static void reset_counters() {
-    allocations = deallocations = 0;
-  }
+  static void reset_counters() { allocations = deallocations = 0; }
 };
 
-#endif // !TENSOR_TEST_ALLOC_INFORMER_H
+#endif  // !TENSOR_TEST_ALLOC_INFORMER_H

@@ -21,16 +21,17 @@
 
 namespace tensor {
 
-  const Tensor<cdouble> operator*(const Tensor<cdouble> &a, const Tensor<cdouble> &b) {
-    assert(a.size() == b.size());
-    Tensor<cdouble> output(a.dimensions());
-    Tensor<cdouble>::const_iterator ita = a.begin();
-    Tensor<cdouble>::const_iterator itb = b.begin();
-    Tensor<cdouble>::iterator dest = output.begin();
-    for (index i = a.size(); i; --i, ++dest, ++ita, ++itb) {
-      *dest = (*ita) * (*itb);
-    }
-    return output;
+const Tensor<cdouble> operator*(const Tensor<cdouble> &a,
+                                const Tensor<cdouble> &b) {
+  assert(a.size() == b.size());
+  Tensor<cdouble> output(a.dimensions());
+  Tensor<cdouble>::const_iterator ita = a.begin();
+  Tensor<cdouble>::const_iterator itb = b.begin();
+  Tensor<cdouble>::iterator dest = output.begin();
+  for (index i = a.size(); i; --i, ++dest, ++ita, ++itb) {
+    *dest = (*ita) * (*itb);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

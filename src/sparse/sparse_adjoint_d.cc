@@ -21,10 +21,6 @@
 
 namespace tensor {
 
-  const RSparse
-  adjoint(const RSparse &s)
-  {
-    return transpose(s);
-  }
+const RSparse adjoint(const RSparse &s) { return transpose(s); }
 
-} // namespace tensor
+}  // namespace tensor

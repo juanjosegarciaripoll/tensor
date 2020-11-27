@@ -23,86 +23,77 @@
 
 namespace tensor_test {
 
-  //
-  // SIZES OF KRONECKER PRODUCTS
-  //
+//
+// SIZES OF KRONECKER PRODUCTS
+//
 
-  template<typename elt_t>
-  void do_test_kron_size(Tensor<elt_t> &a, Tensor<elt_t> &b) {
-    Sparse<elt_t> sa = Sparse<elt_t>::random(a.rows(), a.columns());
-    Sparse<elt_t> sb = Sparse<elt_t>::random(b.rows(), b.columns());
+template <typename elt_t>
+void do_test_kron_size(Tensor<elt_t> &a, Tensor<elt_t> &b) {
+  Sparse<elt_t> sa = Sparse<elt_t>::random(a.rows(), a.columns());
+  Sparse<elt_t> sb = Sparse<elt_t>::random(b.rows(), b.columns());
 
-    Sparse<elt_t> sk = kron(sa, sb);
+  Sparse<elt_t> sk = kron(sa, sb);
 
-    ASSERT_EQ(sk.rows(), sa.rows() * sb.rows());
-    ASSERT_EQ(sk.columns(), sa.columns() * sb.columns());
-    ASSERT_EQ(sk.length(), sa.length() * sb.length());
+  ASSERT_EQ(sk.rows(), sa.rows() * sb.rows());
+  ASSERT_EQ(sk.columns(), sa.columns() * sb.columns());
+  ASSERT_EQ(sk.length(), sa.length() * sb.length());
 
-    Sparse<elt_t> sk2 = kron2(sa, sb);
-    ASSERT_EQ(sk2.rows(), sa.rows() * sb.rows());
-    ASSERT_EQ(sk2.columns(), sa.columns() * sb.columns());
-    ASSERT_EQ(sk2.length(), sa.length() * sb.length());
+  Sparse<elt_t> sk2 = kron2(sa, sb);
+  ASSERT_EQ(sk2.rows(), sa.rows() * sb.rows());
+  ASSERT_EQ(sk2.columns(), sa.columns() * sb.columns());
+  ASSERT_EQ(sk2.length(), sa.length() * sb.length());
+}
+
+TEST(RSparseKronTest, KronSize) {
+  test_over_fixed_rank_pairs<double>(do_test_kron_size<double>, 2);
+}
+
+TEST(CSparseKronTest, KronSize) {
+  test_over_fixed_rank_pairs<cdouble>(do_test_kron_size<cdouble>, 2);
+}
+
+//
+// HAND-BUILT KRONECKER PRODUCTS
+//
+
+template <typename elt_t>
+void test_kron_small() {
+  kron_2d_fixture<elt_t> fixture;
+
+  for (typename kron_2d_fixture<elt_t>::const_iterator it = fixture.begin();
+       it != fixture.end();) {
+    Sparse<elt_t> sa(*(it++));
+    Sparse<elt_t> sb(*(it++));
+    Sparse<elt_t> sk(*(it++));
+
+    ASSERT_TRUE(all_equal(sk, kron(sa, sb)));
+    ASSERT_TRUE(all_equal(kron(sb, sa), kron2(sa, sb)));
   }
+}
 
-  TEST(RSparseKronTest, KronSize) {
-    test_over_fixed_rank_pairs<double>(do_test_kron_size<double>, 2);
-  }
+TEST(RSparseKronTest, KronSmall) { test_kron_small<double>(); }
 
-  TEST(CSparseKronTest, KronSize) {
-    test_over_fixed_rank_pairs<cdouble>(do_test_kron_size<cdouble>, 2);
-  }
+TEST(CSparseKronTest, KronSmall) { test_kron_small<cdouble>(); }
 
-  //
-  // HAND-BUILT KRONECKER PRODUCTS
-  //
+//
+// COMPARISON WITH SLOW FORMULAS
+//
 
-  template<typename elt_t>
-  void test_kron_small() {
-    kron_2d_fixture<elt_t> fixture;
+template <typename elt_t>
+void test_tensor_kron(Tensor<elt_t> &a, Tensor<elt_t> &b) {
+  Sparse<elt_t> sa = Sparse<elt_t>::random(a.rows(), a.columns());
+  Sparse<elt_t> sb = Sparse<elt_t>::random(b.rows(), b.columns());
+  a = full(sa);
+  b = full(sb);
+  ASSERT_TRUE(all_equal(kron(a, b), full(kron(sa, sb))));
+}
 
-    for(typename kron_2d_fixture<elt_t>::const_iterator it = fixture.begin();
-        it != fixture.end();
-        )
-      {
-        Sparse<elt_t> sa(*(it++));
-        Sparse<elt_t> sb(*(it++));
-        Sparse<elt_t> sk(*(it++));
+TEST(RTensorKronTest, CompareWithTensorKron) {
+  test_over_fixed_rank_pairs<double>(test_tensor_kron<double>, 2);
+}
 
-        ASSERT_TRUE(all_equal(sk, kron(sa, sb)));
-        ASSERT_TRUE(all_equal(kron(sb, sa), kron2(sa, sb)));
-      }
-  }
+TEST(CTensorKronTest, CompareWithTensorKron) {
+  test_over_fixed_rank_pairs<cdouble>(test_tensor_kron<cdouble>, 2);
+}
 
-  TEST(RSparseKronTest, KronSmall) {
-    test_kron_small<double>();
-  }
-
-  TEST(CSparseKronTest, KronSmall) {
-    test_kron_small<cdouble>();
-  }
-
-  //
-  // COMPARISON WITH SLOW FORMULAS
-  //
-
-  template<typename elt_t>
-  void test_tensor_kron(Tensor<elt_t> &a, Tensor<elt_t> &b)
-  {
-    Sparse<elt_t> sa = Sparse<elt_t>::random(a.rows(), a.columns());
-    Sparse<elt_t> sb = Sparse<elt_t>::random(b.rows(), b.columns());
-    a = full(sa);
-    b = full(sb);
-    ASSERT_TRUE(all_equal(kron(a,b), full(kron(sa,sb))));
-  }
-
-  TEST(RTensorKronTest, CompareWithTensorKron) {
-    test_over_fixed_rank_pairs<double>(test_tensor_kron<double>, 2);
-  }
-
-  TEST(CTensorKronTest, CompareWithTensorKron) {
-    test_over_fixed_rank_pairs<cdouble>(test_tensor_kron<cdouble>, 2);
-  }
-
-
-
-} // namespace tensor_test
+}  // namespace tensor_test

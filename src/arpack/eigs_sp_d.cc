@@ -25,12 +25,10 @@
 
 namespace linalg {
 
-  RTensor
-  eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
-       bool *converged)
-  {
-    return do_eigs(new tensor::MatrixMap<RSparse>(A), A.columns(), eig_type, neig,
-                   eigenvectors, converged);
-  }
+RTensor eigs(const RSparse &A, int eig_type, size_t neig, RTensor *eigenvectors,
+             bool *converged) {
+  return do_eigs(new tensor::MatrixMap<RSparse>(A), A.columns(), eig_type, neig,
+                 eigenvectors, converged);
+}
 
-} // namespace linalg
+}  // namespace linalg

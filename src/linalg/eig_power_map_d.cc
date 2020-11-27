@@ -22,11 +22,9 @@
 
 namespace linalg {
 
-  double
-  do_eig_power(const Map<RTensor> *A, size_t dims, RTensor *vector,
-               size_t iter, double tol)
-  {
-    return eig_power_loop(A, dims, vector, iter, tol);
-  }
+double do_eig_power(const Map<RTensor> *A, size_t dims, RTensor *vector,
+                    size_t iter, double tol) {
+  return eig_power_loop(A, dims, vector, iter, tol);
+}
 
-} // namespace linalg
+}  // namespace linalg

@@ -24,28 +24,27 @@
 
 namespace tensor {
 
-  template<typename elt_t>
-  static inline const Tensor<elt_t>
-  do_linspace(const Tensor<elt_t> &min, const Tensor<elt_t> &max, index n = 100)
-  {
-    index d = min.size();
-    Tensor<elt_t> output(d, n);
-    if (n == 1) {
-      output = min;
-    } else if (n) {
-      const Tensor<elt_t> base = reshape(max, d);
-      const Tensor<elt_t> delta = reshape((max - min) / (n - 1.0), d);
-      for (index i = 0; i < n; i++) {
-        output.at(range(), range(i)) = delta * (double)i + min;
-      }
+template <typename elt_t>
+static inline const Tensor<elt_t> do_linspace(const Tensor<elt_t> &min,
+                                              const Tensor<elt_t> &max,
+                                              index n = 100) {
+  index d = min.size();
+  Tensor<elt_t> output(d, n);
+  if (n == 1) {
+    output = min;
+  } else if (n) {
+    const Tensor<elt_t> base = reshape(max, d);
+    const Tensor<elt_t> delta = reshape((max - min) / (n - 1.0), d);
+    for (index i = 0; i < n; i++) {
+      output.at(range(), range(i)) = delta * (double)i + min;
     }
-    if (d == 1)
-      return reshape(output, n);
-    else
-      return reshape(output, min.dimensions() << (igen << n));
   }
+  if (d == 1)
+    return reshape(output, n);
+  else
+    return reshape(output, min.dimensions() << (igen << n));
+}
 
+}  // namespace tensor
 
-} // namespace tensor
-
-#endif // TENSOR_LINSPACE_HPP
+#endif  // TENSOR_LINSPACE_HPP

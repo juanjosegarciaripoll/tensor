@@ -25,31 +25,28 @@
 namespace tensor {
 
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
-  double tensor::round(double x) {
-    return floor((x < 0) ? (x - 0.5) : (x + 0.5));
-  }
+double tensor::round(double x) {
+  return floor((x < 0) ? (x - 0.5) : (x + 0.5));
+}
 #endif
 
-  // Creation of a user-defined function object
-  // that inherits from the unary_function base class
-  class round1: std::unary_function<double, double>
-  {
-  public:
-    result_type operator()(argument_type i)
-    {
+// Creation of a user-defined function object
+// that inherits from the unary_function base class
+class round1 : std::unary_function<double, double> {
+ public:
+  result_type operator()(argument_type i) {
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
-      return round(i);
+    return round(i);
 #else
-      return ::round(i);
+    return ::round(i);
 #endif
-    }
-  };
-
-  RTensor round(const RTensor &r)
-  {
-    RTensor output(r.dimensions());
-    std::transform(r.begin(), r.end(), output.begin(), round1());
-    return output;
   }
+};
 
-} // namespace tensor
+RTensor round(const RTensor &r) {
+  RTensor output(r.dimensions());
+  std::transform(r.begin(), r.end(), output.begin(), round1());
+  return output;
+}
+
+}  // namespace tensor

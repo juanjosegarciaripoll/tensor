@@ -27,7 +27,7 @@ namespace tensor_test {
 // MATRIX CONSTRUCTORS
 //
 
-template<typename elt_t>
+template <typename elt_t>
 void test_ones(int n) {
   elt_t one = number_one<elt_t>();
   SCOPED_TRACE("square matrix");
@@ -63,7 +63,7 @@ void test_ones(int n) {
   }
 }
 
-template<typename elt_t>
+template <typename elt_t>
 void test_zeros(int n) {
   elt_t zero = number_zero<elt_t>();
   SCOPED_TRACE("square matrix");
@@ -99,7 +99,7 @@ void test_zeros(int n) {
   }
 }
 
-template<typename elt_t>
+template <typename elt_t>
 void test_diag(int n) {
   elt_t zero = number_zero<elt_t>();
   Tensor<elt_t> d(n);
@@ -115,32 +115,32 @@ void test_diag(int n) {
       EXPECT_EQ(n, M.rows());
       EXPECT_EQ(n, M.columns());
       if (n) {
-        EXPECT_EQ(d(0), M(0,0));
-        EXPECT_EQ(d(n-1), M(n-1,n-1));
+        EXPECT_EQ(d(0), M(0, 0));
+        EXPECT_EQ(d(n - 1), M(n - 1, n - 1));
       }
     } else if (i > 0) {
       if (n) {
-        EXPECT_EQ(d(0), M(0,i));
-        EXPECT_EQ(d(n-1), M(n-1,i+n-1));
+        EXPECT_EQ(d(0), M(0, i));
+        EXPECT_EQ(d(n - 1), M(n - 1, i + n - 1));
       }
     } else {
       if (n) {
-        EXPECT_EQ(d(0), M(-i,0));
-        EXPECT_EQ(d(n-1), M(-i+n-1,n-1));
+        EXPECT_EQ(d(0), M(-i, 0));
+        EXPECT_EQ(d(n - 1), M(-i + n - 1, n - 1));
       }
     }
   }
   SCOPED_TRACE("errors");
 #ifndef NDEBUG
-  ASSERT_DEATH(diag(d,-n-1, n,n), ".*");
-  ASSERT_DEATH(diag(d, n+1, n,n), ".*");
+  ASSERT_DEATH(diag(d, -n - 1, n, n), ".*");
+  ASSERT_DEATH(diag(d, n + 1, n, n), ".*");
 #endif
 }
 
-template<typename elt_t>
+template <typename elt_t>
 void test_transpose(int n) {
   for (int m = 0; m <= n; m++) {
-    Tensor<elt_t> A(n,m);
+    Tensor<elt_t> A(n, m);
     A.randomize();
 
     Tensor<elt_t> At = transpose(A);
@@ -149,7 +149,7 @@ void test_transpose(int n) {
     EXPECT_EQ(At.columns(), n);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        EXPECT_TRUE(A(i,j) == At(j,i));
+        EXPECT_TRUE(A(i, j) == At(j, i));
       }
     }
 
@@ -159,16 +159,16 @@ void test_transpose(int n) {
     EXPECT_EQ(Att.columns(), m);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        EXPECT_TRUE(A(i,j) == Att(i,j));
+        EXPECT_TRUE(A(i, j) == Att(i, j));
       }
     }
   }
 }
 
-template<typename elt_t>
+template <typename elt_t>
 void test_adjoint(int n) {
   for (int m = 0; m <= n; m++) {
-    Tensor<elt_t> A(n,m);
+    Tensor<elt_t> A(n, m);
     A.randomize();
 
     Tensor<elt_t> At = adjoint(A);
@@ -177,7 +177,7 @@ void test_adjoint(int n) {
     EXPECT_EQ(At.columns(), n);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        EXPECT_TRUE(A(i,j) == conj(At(j,i)));
+        EXPECT_TRUE(A(i, j) == conj(At(j, i)));
       }
     }
 
@@ -187,16 +187,16 @@ void test_adjoint(int n) {
     EXPECT_EQ(Att.columns(), m);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        EXPECT_TRUE(A(i,j) == Att(i,j));
+        EXPECT_TRUE(A(i, j) == Att(i, j));
       }
     }
   }
 }
 
-template<typename elt_t>
+template <typename elt_t>
 void test_permute(int n) {
   for (int m = 0; m <= n; m++) {
-    Tensor<elt_t> A(n,m);
+    Tensor<elt_t> A(n, m);
     A.randomize();
 
     Tensor<elt_t> At = transpose(A);
@@ -205,8 +205,7 @@ void test_permute(int n) {
     EXPECT_EQ(Ap.rows(), m);
     EXPECT_EQ(Ap.columns(), n);
     for (typename Tensor<elt_t>::iterator it = At.begin(), ip = Ap.begin();
-         ip != Ap.end();
-         ip++, it++) {
+         ip != Ap.end(); ip++, it++) {
       EXPECT_TRUE(*ip == *it);
     }
 
@@ -216,7 +215,7 @@ void test_permute(int n) {
     EXPECT_EQ(Att.columns(), m);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        EXPECT_TRUE(A(i,j) == Att(i,j));
+        EXPECT_TRUE(A(i, j) == Att(i, j));
       }
     }
   }
@@ -226,17 +225,11 @@ void test_permute(int n) {
 // REAL SPECIALIZATIONS
 //
 
-TEST(RMatrixTest, OnesTest) {
-  test_over_integers(0, 10, test_ones<double>);
-}
+TEST(RMatrixTest, OnesTest) { test_over_integers(0, 10, test_ones<double>); }
 
-TEST(RMatrixTest, ZerosTest) {
-  test_over_integers(0, 10, test_zeros<double>);
-}
+TEST(RMatrixTest, ZerosTest) { test_over_integers(0, 10, test_zeros<double>); }
 
-TEST(RMatrixTest, DiagTest) {
-  test_over_integers(0, 10, test_diag<double>);
-}
+TEST(RMatrixTest, DiagTest) { test_over_integers(0, 10, test_diag<double>); }
 
 TEST(RMatrixTest, TransposeTest) {
   test_over_integers(0, 10, test_transpose<double>);
@@ -254,13 +247,9 @@ TEST(RMatrixTest, AdjointTest) {
 // COMPLEX SPECIALIZATIONS
 //
 
-TEST(CMatrixTest, OnesTest) {
-  test_over_integers(0, 10, test_ones<cdouble>);
-}
+TEST(CMatrixTest, OnesTest) { test_over_integers(0, 10, test_ones<cdouble>); }
 
-TEST(CMatrixTest, ZerosTest) {
-  test_over_integers(0, 10, test_zeros<cdouble>);
-}
+TEST(CMatrixTest, ZerosTest) { test_over_integers(0, 10, test_zeros<cdouble>); }
 
 TEST(CMatrixTest, TransposeTest) {
   test_over_integers(0, 10, test_transpose<cdouble>);
@@ -274,4 +263,4 @@ TEST(CMatrixTest, AdjointTest) {
   test_over_integers(0, 10, test_adjoint<cdouble>);
 }
 
-} // namespace tensor_test
+}  // namespace tensor_test

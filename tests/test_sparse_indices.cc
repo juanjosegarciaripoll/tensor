@@ -23,35 +23,32 @@
 
 namespace tensor_test {
 
-  template<typename elt_t>
-  void test_sparse_index()
-  {
-    int i;
-    Indices row, col;
-    for (int N = 2; N < 3; N++) {
-      Tensor<elt_t> aux = Tensor<elt_t>::random(N,N);
-      for (int j = -N+1; j < N; j++) {
-        Tensor<elt_t> diagonal = aux.diag(j);
-        if (j >= 0) {
-          row = iota(0, N-j-1);
-          col = iota(j, N-1);
-        } else {
-          col = iota(0, N+j-1);
-          row = iota(-j, N-1);
-        }
-        Sparse<elt_t> sparse(row, col, diagonal, N, N);
-        Tensor<elt_t> exact = diag(diagonal, j, N, N);
-        EXPECT_TRUE(all_equal(sparse, exact));
+template <typename elt_t>
+void test_sparse_index() {
+  int i;
+  Indices row, col;
+  for (int N = 2; N < 3; N++) {
+    Tensor<elt_t> aux = Tensor<elt_t>::random(N, N);
+    for (int j = -N + 1; j < N; j++) {
+      Tensor<elt_t> diagonal = aux.diag(j);
+      if (j >= 0) {
+        row = iota(0, N - j - 1);
+        col = iota(j, N - 1);
+      } else {
+        col = iota(0, N + j - 1);
+        row = iota(-j, N - 1);
       }
+      Sparse<elt_t> sparse(row, col, diagonal, N, N);
+      Tensor<elt_t> exact = diag(diagonal, j, N, N);
+      EXPECT_TRUE(all_equal(sparse, exact));
     }
   }
+}
 
-  TEST(RSparseIndexTest, RSparseEmptyConstructor) {
-    test_sparse_index<double>();
-  }
+TEST(RSparseIndexTest, RSparseEmptyConstructor) { test_sparse_index<double>(); }
 
-  TEST(CSparseIndexTest, CSparseEmptyConstructor) {
-    test_sparse_index<cdouble>();
-  }
+TEST(CSparseIndexTest, CSparseEmptyConstructor) {
+  test_sparse_index<cdouble>();
+}
 
-} // namespace tensor_test
+}  // namespace tensor_test

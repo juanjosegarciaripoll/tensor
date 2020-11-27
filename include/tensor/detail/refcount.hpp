@@ -26,23 +26,19 @@
 
 namespace tensor {
 
-template<typename elt_t>
+template <typename elt_t>
 class RefPointer<elt_t>::pointer {
-public:
+ public:
   /* Reference counter for null pointer */
-  pointer():
-    data_(0), size_(0), references_(1), owned_(true)
-  {}
+  pointer() : data_(0), size_(0), references_(1), owned_(true) {}
 
   /* Reference count a given data */
-  pointer(elt_t *data, size_t size, bool owned = true) :
-    data_(data), size_(size), references_(1), owned_(owned)
-  {}
+  pointer(elt_t *data, size_t size, bool owned = true)
+      : data_(data), size_(size), references_(1), owned_(owned) {}
 
   /* Delete the object and its data */
   ~pointer() {
-    if (owned_)
-      delete[] data_;
+    if (owned_) delete[] data_;
   }
 
   /* Create a new reference object with the same data and only 1 ro reference. */
@@ -59,9 +55,8 @@ public:
   elt_t *begin() { return data_; }
   elt_t *end() { return begin() + size(); }
 
-private:
-
-  pointer(const pointer &p); // Prevents copy constructor
+ private:
+  pointer(const pointer &p);  // Prevents copy constructor
 
   elt_t *data_;
   size_t size_;
@@ -73,59 +68,58 @@ private:
 // SHARED POINTER WITH COPY ON WRITE
 //
 
-template<class elt_t>
+template <class elt_t>
 RefPointer<elt_t>::RefPointer() {
   ref_ = new pointer();
 }
 
-template<class elt_t>
+template <class elt_t>
 RefPointer<elt_t>::RefPointer(size_t new_size) {
   ref_ = new pointer(new elt_t[new_size], new_size);
 }
 
 /* This is an optimization to ensure that complex double vectors are
  * started uninitialized. */
-template<>
+template <>
 inline RefPointer<cdouble>::RefPointer(size_t new_size) {
-  ref_ = new pointer(reinterpret_cast<cdouble*>(new double[2*new_size]), new_size);
+  ref_ = new pointer(reinterpret_cast<cdouble *>(new double[2 * new_size]),
+                     new_size);
 }
 
-template<>
-inline RefPointer<cdouble>::pointer *
-RefPointer<cdouble>::pointer::clone() {
-  cdouble *output = reinterpret_cast<cdouble*>(new double[2*size()]);
-  memcpy(output, begin(), sizeof(*output)*size());
+template <>
+inline RefPointer<cdouble>::pointer *RefPointer<cdouble>::pointer::clone() {
+  cdouble *output = reinterpret_cast<cdouble *>(new double[2 * size()]);
+  memcpy(output, begin(), sizeof(*output) * size());
   return new pointer(output, size());
 }
 
-template<class elt_t>
+template <class elt_t>
 RefPointer<elt_t>::RefPointer(elt_t *data, size_t new_size, bool owned) {
-    ref_ = new pointer(data, new_size, owned);
+  ref_ = new pointer(data, new_size, owned);
 }
 
-template<class elt_t>
+template <class elt_t>
 RefPointer<elt_t>::RefPointer(const RefPointer<elt_t> &p) {
   ref_ = p.reference();
 }
 
-template<class elt_t>
+template <class elt_t>
 RefPointer<elt_t>::~RefPointer() {
   dereference();
 }
 
-template<class elt_t>
+template <class elt_t>
 typename RefPointer<elt_t>::pointer *RefPointer<elt_t>::reference() const {
   ref_->reference();
   return ref_;
 }
 
-template<class elt_t>
+template <class elt_t>
 void RefPointer<elt_t>::dereference() {
-  if (ref_->dereference() <= 0)
-    delete ref_;
+  if (ref_->dereference() <= 0) delete ref_;
 }
 
-template<class elt_t>
+template <class elt_t>
 void RefPointer<elt_t>::appropriate() {
   if (ref_count() > 1) {
     pointer *new_ref = ref_->clone();
@@ -134,14 +128,15 @@ void RefPointer<elt_t>::appropriate() {
   }
 }
 
-template<class elt_t>
+template <class elt_t>
 void RefPointer<elt_t>::reallocate(size_t new_size) {
   dereference();
   ref_ = new pointer(new elt_t[new_size], new_size);
 }
 
-template<class elt_t>
-RefPointer<elt_t> &RefPointer<elt_t>::operator=(const RefPointer<elt_t> &other) {
+template <class elt_t>
+RefPointer<elt_t> &RefPointer<elt_t>::operator=(
+    const RefPointer<elt_t> &other) {
   if (other.ref_ != ref_) {
     dereference();
     ref_ = other.reference();
@@ -149,6 +144,6 @@ RefPointer<elt_t> &RefPointer<elt_t>::operator=(const RefPointer<elt_t> &other) 
   return *this;
 }
 
-} // namespace tensor
+}  // namespace tensor
 
-#endif // !TENSOR_DETAIL_REFCOUNT
+#endif  // !TENSOR_DETAIL_REFCOUNT

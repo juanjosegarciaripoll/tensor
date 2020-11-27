@@ -24,10 +24,9 @@
 
 namespace jobs {
 
-  template <typename T>
-  std::string NumberToString ( T Number )
-  {
-    /*
+template <typename T>
+std::string NumberToString(T Number) {
+  /*
      * Input:
      *	T = a number
      * Output:
@@ -36,51 +35,46 @@ namespace jobs {
      *	There is no way to control the length of this string or
      *	its accuracy.
      */
-    std::ostringstream ss;
-    ss << Number;
-    return ss.str();
-  }
-
-  static std::string
-  dataset_name(const std::string &base, int jobid)
-  {
-    return base + "/" + NumberToString(jobid);
-  }
-
-  Job::dataset
-  Job::open_dataset(const std::string &filename) const
-  {
-    if (sdf::file_exists(filename)) {
-      if (!sdf::isdir(filename)) {
-	std::cerr << "Cannot create Job dataset on existing file\n";
-	abort();
-      }
-    } else {
-      // In a shared environment with multiple jobs, we cannot
-      // be certain that another job creates the same directory
-      // between the previous check and here.
-      sdf::make_directory(filename);
-      if (!sdf::file_exists(filename)) {
-	std::cerr << "Cannot create Job dataset\n";
-	abort();
-      }
-    }
-    std::string dataset_record_name = dataset_name(filename, current_job());
-    sdf::OutDataFile *output;
-    if (sdf::file_exists(dataset_record_name)) {
-      std::cout << "File " << dataset_record_name << " already exists" << std::endl;
-      output = NULL;
-    } else {
-      output = new sdf::OutDataFile(dataset_record_name,
-				    sdf::DataFile::SDF_PARANOID);
-    }
-    return dataset(output);
-  }
-
-  bool
-  Job::dataset_record_exists(const std::string &filename) const
-  {
-    return sdf::file_exists(dataset_name(filename, current_job()));
-  }
-
+  std::ostringstream ss;
+  ss << Number;
+  return ss.str();
 }
+
+static std::string dataset_name(const std::string &base, int jobid) {
+  return base + "/" + NumberToString(jobid);
+}
+
+Job::dataset Job::open_dataset(const std::string &filename) const {
+  if (sdf::file_exists(filename)) {
+    if (!sdf::isdir(filename)) {
+      std::cerr << "Cannot create Job dataset on existing file\n";
+      abort();
+    }
+  } else {
+    // In a shared environment with multiple jobs, we cannot
+    // be certain that another job creates the same directory
+    // between the previous check and here.
+    sdf::make_directory(filename);
+    if (!sdf::file_exists(filename)) {
+      std::cerr << "Cannot create Job dataset\n";
+      abort();
+    }
+  }
+  std::string dataset_record_name = dataset_name(filename, current_job());
+  sdf::OutDataFile *output;
+  if (sdf::file_exists(dataset_record_name)) {
+    std::cout << "File " << dataset_record_name << " already exists"
+              << std::endl;
+    output = NULL;
+  } else {
+    output =
+        new sdf::OutDataFile(dataset_record_name, sdf::DataFile::SDF_PARANOID);
+  }
+  return dataset(output);
+}
+
+bool Job::dataset_record_exists(const std::string &filename) const {
+  return sdf::file_exists(dataset_name(filename, current_job()));
+}
+
+}  // namespace jobs

@@ -22,14 +22,14 @@
 
 namespace tensor {
 
-  Tensor<cdouble> tan(const Tensor<cdouble> &t) {
-    Tensor<cdouble> output(t.dimensions());
-    Tensor<cdouble>::const_iterator src = t.begin();
-    Tensor<cdouble>::iterator dest = output.begin();
-    for (; src != t.end(); src++, dest++) {
-      *dest = std::tan(*src);
-    }
-    return output;
+Tensor<cdouble> tan(const Tensor<cdouble> &t) {
+  Tensor<cdouble> output(t.dimensions());
+  Tensor<cdouble>::const_iterator src = t.begin();
+  Tensor<cdouble>::iterator dest = output.begin();
+  for (; src != t.end(); src++, dest++) {
+    *dest = std::tan(*src);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

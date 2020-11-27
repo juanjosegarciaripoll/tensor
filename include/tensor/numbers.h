@@ -32,20 +32,26 @@ using std::abs;
 // REAL NUMBERS
 //
 
-template<typename number>
-inline number number_zero() { return static_cast<number>(0); }
+template <typename number>
+inline number number_zero() {
+  return static_cast<number>(0);
+}
 
-template<typename number>
-inline number number_one() { return static_cast<number>(1); }
+template <typename number>
+inline number number_one() {
+  return static_cast<number>(1);
+}
 
 /* Already in C++11 but they return complex */
 inline double real(double r) { return r; }
 inline double imag(double r) { return 0.0; }
 inline double conj(double r) { return r; }
-inline double abs2(double r) { return r*r; }
+inline double abs2(double r) { return r * r; }
 
-template<class number>
-inline number square(number r) { return r*r; }
+template <class number>
+inline number square(number r) {
+  return r * r;
+}
 
 //
 // COMPLEX NUMBERS
@@ -53,23 +59,23 @@ inline number square(number r) { return r*r; }
 
 typedef std::complex<double> cdouble;
 
-inline cdouble to_complex(const double &r) {
-  return cdouble(r, 0);
-}
+inline cdouble to_complex(const double &r) { return cdouble(r, 0); }
 
 inline cdouble to_complex(const double &r, const double &i) {
   return cdouble(r, i);
 }
 
-inline cdouble to_complex(const cdouble &z) {
-  return z;
+inline cdouble to_complex(const cdouble &z) { return z; }
+
+template <>
+inline cdouble number_zero<cdouble>() {
+  return to_complex(0.0);
 }
 
-template<>
-inline cdouble number_zero<cdouble>() { return to_complex(0.0); }
-
-template<>
-inline cdouble number_one<cdouble>() { return to_complex(1.0); }
+template <>
+inline cdouble number_one<cdouble>() {
+  return to_complex(1.0);
+}
 
 inline double real(cdouble z) { return std::real(z); }
 inline double imag(cdouble z) { return std::imag(z); }
@@ -79,11 +85,11 @@ inline double abs2(cdouble z) { return abs2(real(z)) + abs2(imag(z)); }
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
 double round(double r);
 inline cdouble round(cdouble r) {
-  return to_complex(round(real(r)),round(imag(r)));
+  return to_complex(round(real(r)), round(imag(r)));
 };
 #else
 inline cdouble round(cdouble r) {
-  return to_complex(::round(real(r)),::round(imag(r)));
+  return to_complex(::round(real(r)), ::round(imag(r)));
 }
 #endif
 
@@ -98,6 +104,6 @@ inline std::ostream &operator<<(std::ostream &s, const cdouble &d) {
   return s << real(d) << ' ' << imag(d);
 }
 
-} // namespace tensor
+}  // namespace tensor
 
-#endif // !TENSOR_NUMBERS_H
+#endif  // !TENSOR_NUMBERS_H

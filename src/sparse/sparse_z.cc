@@ -22,10 +22,10 @@
 
 namespace tensor {
 
-  //
-  // Explicitely instantiate an specialization of CSparse. This generates
-  // all required code.
-  //
-  template class Sparse<cdouble>;
+//
+// Explicitely instantiate an specialization of CSparse. This generates
+// all required code.
+//
+template class Sparse<cdouble>;
 
-} // namespace tensor
+}  // namespace tensor

@@ -24,9 +24,9 @@
 
 namespace tensor {
 
-template<class ForwardIterator>
+template <class ForwardIterator>
 void write_to_stream(std::ostream &s, ForwardIterator begin,
-		     ForwardIterator end) {
+                     ForwardIterator end) {
   bool first = true;
   for (bool first = true; begin != end; ++begin, first = false) {
     if (!first) s << ", ";
@@ -34,7 +34,7 @@ void write_to_stream(std::ostream &s, ForwardIterator begin,
   }
 }
 
-template<typename elt_t>
+template <typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t) {
   s << "[";
   write_to_stream(s, t.begin_const(), t.end_const());
@@ -42,7 +42,7 @@ std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t) {
   return s;
 }
 
-template<typename elt_t>
+template <typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t) {
   s << "(" << t.dimensions() << ")/[";
   write_to_stream(s, t.begin_const(), t.end_const());
@@ -50,6 +50,6 @@ std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t) {
   return s;
 }
 
-} // namespace tensor
+}  // namespace tensor
 
-#endif // !TENSOR_DETAIL_IO_HPP
+#endif  // !TENSOR_DETAIL_IO_HPP

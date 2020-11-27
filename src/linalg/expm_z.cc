@@ -24,8 +24,8 @@
 namespace linalg {
 
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
-  static double log2(double n) { return log(n) / log((double)2.0); }
-  static double exp2(double n) { return exp(log((double)2.0) * n); }
+static double log2(double n) { return log(n) / log((double)2.0); }
+static double exp2(double n) { return exp(log((double)2.0) * n); }
 #endif
 
 /**Compute the exponential of a real matrix.
@@ -42,39 +42,37 @@ namespace linalg {
 
    \ingroup Linalg
 */
-  const CTensor
-  expm(const CTensor &Aunorm, unsigned int order)
-  {
-    assert(Aunorm.rank() == 2);
-    assert(Aunorm.columns() == Aunorm.rows());
+const CTensor expm(const CTensor &Aunorm, unsigned int order) {
+  assert(Aunorm.rank() == 2);
+  assert(Aunorm.columns() == Aunorm.rows());
 
-    // Scale A until the norm is < 1/2
-    double val = log2(matrix_norminf(Aunorm));
-    int e = (int)floor(val);
-    size_t j = std::max(0, e+1);
+  // Scale A until the norm is < 1/2
+  double val = log2(matrix_norminf(Aunorm));
+  int e = (int)floor(val);
+  size_t j = std::max(0, e + 1);
 
-    // Pade approximation for exp(A)
-    double c = 1.0/2;
-    CTensor A = Aunorm / exp2(j);
-    CTensor N = CTensor::eye(A.rows()) + c * A;
-    CTensor D = CTensor::eye(A.rows()) - c * A;
-    CTensor X = A;
+  // Pade approximation for exp(A)
+  double c = 1.0 / 2;
+  CTensor A = Aunorm / exp2(j);
+  CTensor N = CTensor::eye(A.rows()) + c * A;
+  CTensor D = CTensor::eye(A.rows()) - c * A;
+  CTensor X = A;
 
-    for (size_t k = 2; k <= order; k++) {
-      c = c * (order-k+1) / (k*(2*order-k+1));
-      X = fold(A, -1, X, 0);
-      CTensor cX = c * X;
-      N = N + cX;
-      if ((k & 1) == 0) {
-	D = D + cX;
-      } else {
-	D = D - cX;
-      }
+  for (size_t k = 2; k <= order; k++) {
+    c = c * (order - k + 1) / (k * (2 * order - k + 1));
+    X = fold(A, -1, X, 0);
+    CTensor cX = c * X;
+    N = N + cX;
+    if ((k & 1) == 0) {
+      D = D + cX;
+    } else {
+      D = D - cX;
     }
-    X = solve(D, N);
-    for (size_t k = 1; k <= j; k++) {
-      X = fold(X, -1, X, 0);
-    }
-    return X;
   }
+  X = solve(D, N);
+  for (size_t k = 1; k <= j; k++) {
+    X = fold(X, -1, X, 0);
+  }
+  return X;
 }
+}  // namespace linalg

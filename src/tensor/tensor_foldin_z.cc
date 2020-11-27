@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-  /**Contraction of two tensors with complex conjugation. Similar to the fold()
+/**Contraction of two tensors with complex conjugation. Similar to the fold()
      routine, but the indices of the first tensor are inserted in the output.
      In other words the code \c
      C=foldc(A,1,B,0) performs
@@ -31,23 +31,20 @@ namespace tensor {
 
      \ingroup Tensors
   */
-  const Tensor<cdouble>
-  foldin(const Tensor<cdouble> &a, int _ndx1, const Tensor<cdouble> &b, int _ndx2)
-  {
-    Tensor<cdouble> output;
-    do_foldin_into(output, a, _ndx1, b, _ndx2);
-    return output;
-  }
+const Tensor<cdouble> foldin(const Tensor<cdouble> &a, int _ndx1,
+                             const Tensor<cdouble> &b, int _ndx2) {
+  Tensor<cdouble> output;
+  do_foldin_into(output, a, _ndx1, b, _ndx2);
+  return output;
+}
 
-  /**Similar to foldin(), but the output has been preallocated.
+/**Similar to foldin(), but the output has been preallocated.
 
      \ingroup Tensors
   */
-  void
-  foldin_into(Tensor<cdouble> &output, const Tensor<cdouble> &a, int _ndx1,
-              const Tensor<cdouble> &b, int _ndx2)
-  {
-    do_foldin_into(output, a, _ndx1, b, _ndx2);
-  }
+void foldin_into(Tensor<cdouble> &output, const Tensor<cdouble> &a, int _ndx1,
+                 const Tensor<cdouble> &b, int _ndx2) {
+  do_foldin_into(output, a, _ndx1, b, _ndx2);
+}
 
-} // namespace tensor
+}  // namespace tensor

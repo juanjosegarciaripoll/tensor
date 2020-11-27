@@ -38,14 +38,12 @@ namespace tensor {
 	     0, 0, 6, 8];
    \endverbatim
 */
-  const Tensor<double> kron(const Tensor<double> &s1, const Tensor<double> &s2)
-  {
-    return do_kron(s1, s2);
-  }
+const Tensor<double> kron(const Tensor<double> &s1, const Tensor<double> &s2) {
+  return do_kron(s1, s2);
+}
 
-  const Tensor<double> kron2(const Tensor<double> &s1, const Tensor<double> &s2)
-  {
-    return do_kron(s2, s1);
-  }
+const Tensor<double> kron2(const Tensor<double> &s1, const Tensor<double> &s2) {
+  return do_kron(s2, s1);
+}
 
-} // namespace tensor
+}  // namespace tensor

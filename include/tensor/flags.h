@@ -24,24 +24,24 @@
 
 namespace tensor {
 
-  class Flags {
-  public:
-    Flags();
+class Flags {
+ public:
+  Flags();
 
-    double get(unsigned int code) const;
-    Flags &set(unsigned int code, double value);
+  double get(unsigned int code) const;
+  Flags &set(unsigned int code, double value);
 
-    unsigned int create_key(double value);
+  unsigned int create_key(double value);
 
-  private:
-    std::vector<double> _values;
-  };
+ private:
+  std::vector<double> _values;
+};
 
-  extern Flags FLAGS;
+extern Flags FLAGS;
 
-  /**Debug level block_svd() routine.*/
-  extern const unsigned int TENSOR_DEBUG_BLOCK_SVD;
+/**Debug level block_svd() routine.*/
+extern const unsigned int TENSOR_DEBUG_BLOCK_SVD;
 
-} // namespace tensor
+}  // namespace tensor
 
 #endif

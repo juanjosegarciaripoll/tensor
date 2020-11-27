@@ -22,14 +22,14 @@
 
 namespace tensor {
 
-  Tensor<cdouble> cos(const Tensor<cdouble> &t) {
-    Tensor<cdouble> output(t.dimensions());
-    Tensor<cdouble>::const_iterator src = t.begin();
-    Tensor<cdouble>::iterator dest = output.begin();
-    for (; src != t.end(); src++, dest++) {
-      *dest = std::cos(*src);
-    }
-    return output;
+Tensor<cdouble> cos(const Tensor<cdouble> &t) {
+  Tensor<cdouble> output(t.dimensions());
+  Tensor<cdouble>::const_iterator src = t.begin();
+  Tensor<cdouble>::iterator dest = output.begin();
+  for (; src != t.end(); src++, dest++) {
+    *dest = std::cos(*src);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

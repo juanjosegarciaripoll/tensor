@@ -24,196 +24,182 @@
 
 namespace tensor_test {
 
-  using namespace tensor;
-  using namespace linalg;
+using namespace tensor;
+using namespace linalg;
 
-  //////////////////////////////////////////////////////////////////////
-  // EIGENVALUE DECOMPOSITIONS
-  //
+//////////////////////////////////////////////////////////////////////
+// EIGENVALUE DECOMPOSITIONS
+//
 
-  template<class Tensor>
-  void test_cgs_eye(int n) {
-    Tensor A = Tensor::eye(n,n);
-    for (int cols = 1; cols < n; cols++) {
-      Tensor y = Tensor::random(n, cols);
+template <class Tensor>
+void test_cgs_eye(int n) {
+  Tensor A = Tensor::eye(n, n);
+  for (int cols = 1; cols < n; cols++) {
+    Tensor y = Tensor::random(n, cols);
 
-      // If the initial state is a solution, this should be ok
-      Tensor x = cgs(A, y, &y);
-      EXPECT_CEQ(x, y);
+    // If the initial state is a solution, this should be ok
+    Tensor x = cgs(A, y, &y);
+    EXPECT_CEQ(x, y);
 
-      // Otherwise check a randomize initial state
-      Tensor x_start = y + Tensor::random(n,cols)*0.01;
-      x = cgs(A, y, &x_start);
-      EXPECT_CEQ(x, y);
-    }
+    // Otherwise check a randomize initial state
+    Tensor x_start = y + Tensor::random(n, cols) * 0.01;
+    x = cgs(A, y, &x_start);
+    EXPECT_CEQ(x, y);
   }
+}
 
-  template<class Tensor>
-  void test_cgs_permuted_diagonal(int n) {
-    for (int cols = 1; cols < n; cols++) {
-      Tensor B = Tensor::eye(n) + 0.125 * random_permutation(n);
-      Tensor A = mmult(adjoint(B), B);
-      Tensor x = Tensor::random(n, cols);
-      Tensor y = mmult(A, x);
+template <class Tensor>
+void test_cgs_permuted_diagonal(int n) {
+  for (int cols = 1; cols < n; cols++) {
+    Tensor B = Tensor::eye(n) + 0.125 * random_permutation(n);
+    Tensor A = mmult(adjoint(B), B);
+    Tensor x = Tensor::random(n, cols);
+    Tensor y = mmult(A, x);
 
-      // If the initial state is a solution, this should be ok
-      Tensor x0 = cgs(A, y, &x, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
+    // If the initial state is a solution, this should be ok
+    Tensor x0 = cgs(A, y, &x, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
 
-      // Otherwise check a randomize initial state
-      Tensor x_start = x + Tensor::random(n,cols)*0.02;
-      x0 = cgs(A, y, &x_start, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
-    }
+    // Otherwise check a randomize initial state
+    Tensor x_start = x + Tensor::random(n, cols) * 0.02;
+    x0 = cgs(A, y, &x_start, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
   }
+}
 
-  template<class Tensor>
-  void test_cgs_unitary(int n) {
-    for (int cols = 1; cols < n; cols++) {
-      Tensor B = Tensor::eye(n) + 0.125 * random_unitary<typename Tensor::elt_t>(n);
-      Tensor A = mmult(adjoint(B), B);
-      Tensor x = Tensor::random(n, cols);
-      Tensor y = mmult(A, x);
+template <class Tensor>
+void test_cgs_unitary(int n) {
+  for (int cols = 1; cols < n; cols++) {
+    Tensor B =
+        Tensor::eye(n) + 0.125 * random_unitary<typename Tensor::elt_t>(n);
+    Tensor A = mmult(adjoint(B), B);
+    Tensor x = Tensor::random(n, cols);
+    Tensor y = mmult(A, x);
 
-      // If the initial state is a solution, this should be ok
-      Tensor x0 = cgs(A, y, &x, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
+    // If the initial state is a solution, this should be ok
+    Tensor x0 = cgs(A, y, &x, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
 
-      // Otherwise check a randomize initial state
-      Tensor x_start = x + Tensor::random(n,cols)*0.02;
-      x0 = cgs(A, y, &x_start, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
-    }
+    // Otherwise check a randomize initial state
+    Tensor x_start = x + Tensor::random(n, cols) * 0.02;
+    x0 = cgs(A, y, &x_start, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
   }
+}
 
-  template<class Tensor>
-  const Tensor f(const Tensor &f)
-  {
-    return 1.5 * f;
+template <class Tensor>
+const Tensor f(const Tensor &f) {
+  return 1.5 * f;
+}
+
+template <class Tensor>
+void test_cgs_functor(int n) {
+  for (int cols = 1; cols < n; cols++) {
+    Tensor x = Tensor::random(n, cols);
+    Tensor y = f<Tensor>(x);
+
+    // If the initial state is a solution, this should be ok
+    Tensor x0 = cgs(f<Tensor>, y, &x, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
+
+    // Otherwise check a randomize initial state
+    Tensor x_start = x + Tensor::random(n, cols) * 0.02;
+    x0 = cgs(f<Tensor>, y, &x_start, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
   }
+}
 
-  template<class Tensor>
-  void test_cgs_functor(int n) {
-    for (int cols = 1; cols < n; cols++) {
-      Tensor x = Tensor::random(n, cols);
-      Tensor y = f<Tensor>(x);
+template <class Tensor>
+const Tensor f1(const Tensor &t, const Tensor &A) {
+  return mmult(A, t);
+}
 
-      // If the initial state is a solution, this should be ok
-      Tensor x0 = cgs(f<Tensor>, y, &x, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
+template <class Tensor>
+void test_cgs_functor_1arg(int n) {
+  for (int cols = 1; cols < n; cols++) {
+    Tensor B =
+        Tensor::eye(n) + 0.125 * random_unitary<typename Tensor::elt_t>(n);
+    Tensor A = mmult(adjoint(B), B);
+    Tensor x = Tensor::random(n, cols);
+    Tensor y = mmult(A, x);
 
-      // Otherwise check a randomize initial state
-      Tensor x_start = x + Tensor::random(n,cols)*0.02;
-      x0 = cgs(f<Tensor>, y, &x_start, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
-    }
+    // If the initial state is a solution, this should be ok
+    Tensor x0 = cgs(with_args(f1<Tensor>, A), y, &x, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
+
+    // Otherwise check a randomize initial state
+    Tensor x_start = x + Tensor::random(n, cols) * 0.02;
+    x0 = cgs(with_args(f1<Tensor>, A), y, &x_start, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
   }
+}
 
-  template<class Tensor>
-  const Tensor f1(const Tensor &t, const Tensor &A)
-  {
-    return mmult(A, t);
+template <class Tensor>
+const Tensor f2(const Tensor &t, const Tensor &A, const Tensor &B) {
+  return mmult(A, mmult(B, t));
+}
+
+template <class Tensor>
+void test_cgs_functor_2arg(int n) {
+  Tensor B = Tensor::eye(n) + 0.125 * random_unitary<typename Tensor::elt_t>(n);
+  Tensor Bd = adjoint(B);
+  for (int cols = 1; cols < n; cols++) {
+    Tensor x = Tensor::random(n, cols);
+    Tensor y = mmult(Bd, mmult(B, x));
+
+    // If the initial state is a solution, this should be ok
+    Tensor x0 = cgs(with_args(f2<Tensor>, Bd, B), y, &x, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
+
+    // Otherwise check a randomize initial state
+    Tensor x_start = x + Tensor::random(n, cols) * 0.02;
+    x0 = cgs(with_args(f2<Tensor>, Bd, B), y, &x_start, 0, 2 * EPSILON);
+    EXPECT_CEQ(x, x0);
   }
+}
 
-  template<class Tensor>
-  void test_cgs_functor_1arg(int n) {
-    for (int cols = 1; cols < n; cols++) {
-      Tensor B = Tensor::eye(n) + 0.125 * random_unitary<typename Tensor::elt_t>(n);
-      Tensor A = mmult(adjoint(B), B);
-      Tensor x = Tensor::random(n, cols);
-      Tensor y = mmult(A, x);
+//////////////////////////////////////////////////////////////////////
+// REAL SPECIALIZATIONS
+//
 
-      // If the initial state is a solution, this should be ok
-      Tensor x0 = cgs(with_args(f1<Tensor>, A), y, &x, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
+TEST(RCgs, Eye) { test_over_integers(0, 22, test_cgs_eye<RTensor>); }
 
-      // Otherwise check a randomize initial state
-      Tensor x_start = x + Tensor::random(n,cols)*0.02;
-      x0 = cgs(with_args(f1<Tensor>, A), y, &x_start, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
-    }
-  }
+TEST(RCgs, PermutedDiagonal) {
+  test_over_integers(1, 22, test_cgs_permuted_diagonal<RTensor>);
+}
 
-  template<class Tensor>
-  const Tensor f2(const Tensor &t, const Tensor &A, const Tensor &B)
-  {
-    return mmult(A, mmult(B, t));
-  }
+TEST(RCgs, Unitary) { test_over_integers(1, 22, test_cgs_unitary<RTensor>); }
 
-  template<class Tensor>
-  void test_cgs_functor_2arg(int n) {
-    Tensor B = Tensor::eye(n) + 0.125 * random_unitary<typename Tensor::elt_t>(n);
-    Tensor Bd = adjoint(B);
-    for (int cols = 1; cols < n; cols++) {
-      Tensor x = Tensor::random(n, cols);
-      Tensor y = mmult(Bd, mmult(B, x));
+TEST(RCgs, Functor) { test_over_integers(1, 22, test_cgs_functor<RTensor>); }
 
-      // If the initial state is a solution, this should be ok
-      Tensor x0 = cgs(with_args(f2<Tensor>, Bd, B), y, &x, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
+TEST(RCgs, Functor1Arg) {
+  test_over_integers(1, 22, test_cgs_functor_1arg<RTensor>);
+}
 
-      // Otherwise check a randomize initial state
-      Tensor x_start = x + Tensor::random(n,cols)*0.02;
-      x0 = cgs(with_args(f2<Tensor>, Bd, B), y, &x_start, 0, 2*EPSILON);
-      EXPECT_CEQ(x, x0);
-    }
-  }
+TEST(RCgs, Functor2Arg) {
+  test_over_integers(1, 22, test_cgs_functor_2arg<RTensor>);
+}
 
-  //////////////////////////////////////////////////////////////////////
-  // REAL SPECIALIZATIONS
-  //
+//////////////////////////////////////////////////////////////////////
+// COMPLEX SPECIALIZATIONS
+//
 
-  TEST(RCgs, Eye) {
-    test_over_integers(0, 22, test_cgs_eye<RTensor>);
-  }
+TEST(CCgs, Eye) { test_over_integers(0, 22, test_cgs_eye<CTensor>); }
 
-  TEST(RCgs, PermutedDiagonal) {
-    test_over_integers(1, 22, test_cgs_permuted_diagonal<RTensor>);
-  }
+TEST(CCgs, PermutedDiagonal) {
+  test_over_integers(1, 22, test_cgs_permuted_diagonal<CTensor>);
+}
 
-  TEST(RCgs, Unitary) {
-    test_over_integers(1, 22, test_cgs_unitary<RTensor>);
-  }
+TEST(CCgs, Unitary) { test_over_integers(1, 22, test_cgs_unitary<CTensor>); }
 
-  TEST(RCgs, Functor) {
-    test_over_integers(1, 22, test_cgs_functor<RTensor>);
-  }
+TEST(CCgs, Functor) { test_over_integers(1, 22, test_cgs_functor<CTensor>); }
 
-  TEST(RCgs, Functor1Arg) {
-    test_over_integers(1, 22, test_cgs_functor_1arg<RTensor>);
-  }
+TEST(CCgs, Functor1Arg) {
+  test_over_integers(1, 22, test_cgs_functor_1arg<CTensor>);
+}
 
-  TEST(RCgs, Functor2Arg) {
-    test_over_integers(1, 22, test_cgs_functor_2arg<RTensor>);
-  }
+TEST(CCgs, Functor2Arg) {
+  test_over_integers(1, 22, test_cgs_functor_2arg<CTensor>);
+}
 
-  //////////////////////////////////////////////////////////////////////
-  // COMPLEX SPECIALIZATIONS
-  //
-
-  TEST(CCgs, Eye) {
-    test_over_integers(0, 22, test_cgs_eye<CTensor>);
-  }
-
-  TEST(CCgs, PermutedDiagonal) {
-    test_over_integers(1, 22, test_cgs_permuted_diagonal<CTensor>);
-  }
-
-  TEST(CCgs, Unitary) {
-    test_over_integers(1, 22, test_cgs_unitary<CTensor>);
-  }
-
-  TEST(CCgs, Functor) {
-    test_over_integers(1, 22, test_cgs_functor<CTensor>);
-  }
-
-  TEST(CCgs, Functor1Arg) {
-    test_over_integers(1, 22, test_cgs_functor_1arg<CTensor>);
-  }
-
-
-  TEST(CCgs, Functor2Arg) {
-    test_over_integers(1, 22, test_cgs_functor_2arg<CTensor>);
-  }
-
-} // namespace linalg_test
+}  // namespace tensor_test

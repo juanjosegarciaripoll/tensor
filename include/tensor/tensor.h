@@ -17,10 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-
 #ifndef TENSOR_TENSOR_H
 #define TENSOR_TENSOR_H
-
 
 /** Flag defining the order of elements in the arrays. */
 #define TENSOR_COLUMN_MAJOR_ORDER 1
@@ -47,7 +45,7 @@ namespace tensor {
    syntaxes, reshaped, sliced, and all that with an automated memory management.
    \see \ref sec_tensor
 */
-template<typename elt>
+template <typename elt>
 class Tensor {
  public:
   typedef elt elt_t;
@@ -67,9 +65,7 @@ class Tensor {
   Tensor(const Vector<elt_t> &data);
 
   /**Constructs a 1-D Tensor from a vector.*/
-  Tensor(const std::vector<elt_t> &data) :
-    data_(data.size()), dims_(1)
-  {
+  Tensor(const std::vector<elt_t> &data) : data_(data.size()), dims_(1) {
     dims_.at(0) = data.size();
     std::copy(data.begin(), data.end(), begin());
   }
@@ -81,21 +77,20 @@ class Tensor {
   Tensor(const Tensor &other);
 
   /**Implicit coercion. */
-  template<typename e2> Tensor(const Tensor<e2> &other) :
-    data_(other.size()), dims_(other.dimensions())
-  {
+  template <typename e2>
+  Tensor(const Tensor<e2> &other)
+      : data_(other.size()), dims_(other.dimensions()) {
     std::copy(other.begin(), other.end(), begin());
   }
 
   /**Create a one-dimensional tensor from data created with "gen" expressions.*/
-  template<size_t n> Tensor(const StaticVector<elt_t,n> &t) :
-    data_(t), dims_(igen << t.size())
-  {}
+  template <size_t n>
+  Tensor(const StaticVector<elt_t, n> &t) : data_(t), dims_(igen << t.size()) {}
 
   /**Create a general tensor from data created with "gen" expressions.*/
-  template<size_t n> Tensor(const StaticVector<elt_t,n> &t, const Indices &d) :
-    data_(t), dims_(d)
-  {
+  template <size_t n>
+  Tensor(const StaticVector<elt_t, n> &t, const Indices &d)
+      : data_(t), dims_(d) {
     assert(data_.size() == d.total_size());
   }
 
@@ -137,9 +132,11 @@ class Tensor {
   /**Query dimensions of 4D Tensor.*/
   void get_dimensions(index *d0, index *d1, index *d2, index *d3) const;
   /**Query dimensions of 5D Tensor.*/
-  void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4) const;
+  void get_dimensions(index *d0, index *d1, index *d2, index *d3,
+                      index *d4) const;
   /**Query dimensions of 6D Tensor.*/
-  void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4, index *d5) const;
+  void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4,
+                      index *d5) const;
   /**Query the size of 2nd index.*/
   index columns() const { return dimension(1); }
   /**Query then size of 1st index. */
@@ -159,9 +156,11 @@ class Tensor {
   /**Return an element of a 4D Tensor.*/
   const elt_t &operator()(index d0, index d1, index d2, index d3) const;
   /**Return an element of a 5D Tensor.*/
-  const elt_t &operator()(index d0, index d1, index d2, index d3, index d4) const;
+  const elt_t &operator()(index d0, index d1, index d2, index d3,
+                          index d4) const;
   /**Return an element of a 6D Tensor.*/
-  const elt_t &operator()(index d0, index d1, index d2, index d3, index d4, index d5w) const;
+  const elt_t &operator()(index d0, index d1, index d2, index d3, index d4,
+                          index d5w) const;
 
   /**Return a mutable reference to the i-th element of a Tensor, in column major order.*/
   elt_t &at_seq(index i);
@@ -194,9 +193,11 @@ class Tensor {
   /**Build a random 4D Tensor.*/
   static const Tensor<elt_t> random(index d1, index d2, index d3, index d4);
   /**Build a random 5D Tensor.*/
-  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4, index d5);
+  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4,
+                                    index d5);
   /**Build a random 6D Tensor.*/
-  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4, index d5, index d6);
+  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4,
+                                    index d5, index d6);
   /**Build a random Tensor with arbitrary dimensions. */
   static const Tensor<elt_t> random(const Indices &dimensions);
 
@@ -213,9 +214,11 @@ class Tensor {
   /**Extracts a slice from a 4D Tensor. */
   const view operator()(PRange r1, PRange r2, PRange r3, PRange r4) const;
   /**Extracts a slice from a 5D Tensor. */
-  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5) const;
+  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4,
+                        PRange r5) const;
   /**Extracts a slice from a 6D Tensor. */
-  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5, PRange r6) const;
+  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5,
+                        PRange r6) const;
 
   class mutable_view;
   /**Mutable slice from a 1D Tensor. */
@@ -229,7 +232,8 @@ class Tensor {
   /**Mutable slice from a 5D Tensor. */
   mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5);
   /**Mutable slice from a 6D Tensor. */
-  mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5, PRange r6);
+  mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5,
+                  PRange r6);
 
   //
   // Matrix operations
@@ -247,9 +251,11 @@ class Tensor {
   /**4D Tensor of zeros.*/
   static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4);
   /**5D Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4, index d5);
+  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4,
+                                   index d5);
   /**6D Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4, index d5, index d6);  /**Tensor of zeros.*/
+  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4,
+                                   index d5, index d6); /**Tensor of zeros.*/
   static const Tensor<elt_t> zeros(const Indices &dimensions);
 
   /**Matrix of ones.*/
@@ -261,9 +267,11 @@ class Tensor {
   /**4D Tensor of ones.*/
   static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4);
   /**5D Tensor of ones.*/
-  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4, index d5);
+  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4,
+                                  index d5);
   /**6D Tensor of ones.*/
-  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4, index d5, index d6);  /**Tensor of ones.*/
+  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4,
+                                  index d5, index d6); /**Tensor of ones.*/
   static const Tensor<elt_t> ones(const Indices &dimensions);
 
   /**Iterator at the beginning.*/
@@ -298,49 +306,61 @@ class Tensor {
 //
 // Unary operations
 //
-template<typename t>
+template <typename t>
 Tensor<t> operator-(const Tensor<t> &);
 
 //
 // Binary operations
 //
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a, const Tensor<t2> &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator-(const Tensor<t1> &a, const Tensor<t2> &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a, const Tensor<t2> &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a, const Tensor<t2> &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator+(const Tensor<t1> &a,
+                                               const Tensor<t2> &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator-(const Tensor<t1> &a,
+                                               const Tensor<t2> &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator*(const Tensor<t1> &a,
+                                               const Tensor<t2> &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator/(const Tensor<t1> &a,
+                                               const Tensor<t2> &b);
 
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator+(const Tensor<t1> &a, const t2 &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator-(const Tensor<t1> &a, const t2 &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator*(const Tensor<t1> &a, const t2 &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator/(const Tensor<t1> &a, const t2 &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator+(const Tensor<t1> &a,
+                                               const t2 &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator-(const Tensor<t1> &a,
+                                               const t2 &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator*(const Tensor<t1> &a,
+                                               const t2 &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator/(const Tensor<t1> &a,
+                                               const t2 &b);
 
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator+(const t1 &a, const Tensor<t2> &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator-(const t1 &a, const Tensor<t2> &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator*(const t1 &a, const Tensor<t2> &b);
-template<typename t1, typename t2>
-Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator+(const t1 &a,
+                                               const Tensor<t2> &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator-(const t1 &a,
+                                               const Tensor<t2> &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator*(const t1 &a,
+                                               const Tensor<t2> &b);
+template <typename t1, typename t2>
+Tensor<typename Binop<t1, t2>::type> operator/(const t1 &a,
+                                               const Tensor<t2> &b);
 
-  template<typename t1, typename t2>
-  Tensor<t1> &operator+=(Tensor<t1> &a, const Tensor<t1> &b);
-  template<typename t1, typename t2>
-  Tensor<t1> &operator-=(Tensor<t1> &a, const Tensor<t1> &b);
-  template<typename t1, typename t2>
-  Tensor<t1> &operator*=(Tensor<t1> &a, const Tensor<t1> &b);
-  template<typename t1, typename t2>
-  Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t1> &b);
+template <typename t1, typename t2>
+Tensor<t1> &operator+=(Tensor<t1> &a, const Tensor<t1> &b);
+template <typename t1, typename t2>
+Tensor<t1> &operator-=(Tensor<t1> &a, const Tensor<t1> &b);
+template <typename t1, typename t2>
+Tensor<t1> &operator*=(Tensor<t1> &a, const Tensor<t1> &b);
+template <typename t1, typename t2>
+Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t1> &b);
 
-} // namespace tensor
+}  // namespace tensor
 
 //////////////////////////////////////////////////////////////////////
 // IMPLEMENTATIONS
@@ -358,266 +378,280 @@ Tensor<typename Binop<t1,t2>::type> operator/(const t1 &a, const Tensor<t2> &b);
 
 namespace tensor {
 
-  extern template class Tensor<double>;
-  /** Real Tensor with elements of type "double". */
+extern template class Tensor<double>;
+/** Real Tensor with elements of type "double". */
 #ifdef DOXYGEN_ONLY
-  struct RTensor : public Tensor<double> {}
+struct RTensor : public Tensor<double> {
+}
 #else
-  typedef Tensor<double> RTensor;
+typedef Tensor<double> RTensor;
 #endif
 
-  const RTensor change_dimension(const RTensor &U, int dimension, index new_size);
+const RTensor
+change_dimension(const RTensor &U, int dimension, index new_size);
 
-  /**Return the smallest element in the tensor.*/
-  double min(const RTensor &r);
-  /**Return the largest element in the tensor.*/
-  double max(const RTensor &r);
-  /**Return the sum of the elements in the tensor.*/
-  double sum(const RTensor &r);
-  /**Return the mean of the elements in the tensor.*/
-  double mean(const RTensor &r);
-  /**Return the mean of the elements in the along the given dimension.*/
-  const RTensor mean(const RTensor &r, int which);
+/**Return the smallest element in the tensor.*/
+double min(const RTensor &r);
+/**Return the largest element in the tensor.*/
+double max(const RTensor &r);
+/**Return the sum of the elements in the tensor.*/
+double sum(const RTensor &r);
+/**Return the mean of the elements in the tensor.*/
+double mean(const RTensor &r);
+/**Return the mean of the elements in the along the given dimension.*/
+const RTensor mean(const RTensor &r, int which);
 
-  double norm0(const RTensor &r);
-  double scprod(const RTensor &a, const RTensor &b);
-  double norm2(const RTensor &r);
-  double matrix_norminf(const RTensor &r);
+double norm0(const RTensor &r);
+double scprod(const RTensor &a, const RTensor &b);
+double norm2(const RTensor &r);
+double matrix_norminf(const RTensor &r);
 
-  RTensor abs(const RTensor &t);
-  RTensor cos(const RTensor &t);
-  RTensor sin(const RTensor &t);
-  RTensor tan(const RTensor &t);
-  RTensor cosh(const RTensor &t);
-  RTensor sinh(const RTensor &t);
-  RTensor tanh(const RTensor &t);
-  RTensor exp(const RTensor &t);
-  RTensor sqrt(const RTensor &t);
-  RTensor log(const RTensor &t);
+RTensor abs(const RTensor &t);
+RTensor cos(const RTensor &t);
+RTensor sin(const RTensor &t);
+RTensor tan(const RTensor &t);
+RTensor cosh(const RTensor &t);
+RTensor sinh(const RTensor &t);
+RTensor tanh(const RTensor &t);
+RTensor exp(const RTensor &t);
+RTensor sqrt(const RTensor &t);
+RTensor log(const RTensor &t);
 
-  RTensor round(const RTensor &t);
+RTensor round(const RTensor &t);
 
-  const RTensor diag(const RTensor &d, int which, int rows, int cols);
-  const RTensor diag(const RTensor &d, int which = 0);
-  const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
-  double trace(const RTensor &d);
-  const RTensor trace(const RTensor &A, index i1, index i2);
+const RTensor diag(const RTensor &d, int which, int rows, int cols);
+const RTensor diag(const RTensor &d, int which = 0);
+const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0,
+                        int ndx2 = -1);
+double trace(const RTensor &d);
+const RTensor trace(const RTensor &A, index i1, index i2);
 
-  /**Convert a tensor to a 1D vector with the same elements.*/
-  const RTensor flatten(const RTensor &t);
+/**Convert a tensor to a 1D vector with the same elements.*/
+const RTensor flatten(const RTensor &t);
 
-  const RTensor reshape(const RTensor &t, const Indices &new_dims);
-  const RTensor reshape(const RTensor &t, index length);
-  const RTensor reshape(const RTensor &t, index rows, index columns);
-  const RTensor reshape(const RTensor &t, index d1, index d2, index d3);
-  const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4);
-  const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4, index d5);
-  const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4, index d5, index d6);
+const RTensor reshape(const RTensor &t, const Indices &new_dims);
+const RTensor reshape(const RTensor &t, index length);
+const RTensor reshape(const RTensor &t, index rows, index columns);
+const RTensor reshape(const RTensor &t, index d1, index d2, index d3);
+const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4);
+const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
+                      index d5);
+const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
+                      index d5, index d6);
 
-  const RTensor squeeze(const RTensor &t);
-  const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
-  const RTensor transpose(const RTensor &a);
-  inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
+const RTensor squeeze(const RTensor &t);
+const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
+const RTensor transpose(const RTensor &a);
+inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
 
-  const RTensor fold(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
-  const RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
-  const RTensor foldin(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
-  const RTensor mmult(const RTensor &a, const RTensor &b);
+const RTensor fold(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+const RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+const RTensor foldin(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+const RTensor mmult(const RTensor &a, const RTensor &b);
 
-  void fold_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b, int ndx2);
-  void foldin_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b, int ndx2);
-  void mmult_into(RTensor &output, const RTensor &a, const RTensor &b);
+void fold_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b,
+               int ndx2);
+void foldin_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b,
+                 int ndx2);
+void mmult_into(RTensor &output, const RTensor &a, const RTensor &b);
 
-  bool all_equal(const RTensor &a, const RTensor &b);
-  bool all_equal(const RTensor &a, double b);
-  inline bool all_equal(double b, const RTensor &a) { return all_equal(a, b); }
-  template<typename t1, typename t2>
-  inline bool some_unequal(const t1 &a, const t2 &b) { return !all_equal(a,b); }
+bool all_equal(const RTensor &a, const RTensor &b);
+bool all_equal(const RTensor &a, double b);
+inline bool all_equal(double b, const RTensor &a) { return all_equal(a, b); }
+template <typename t1, typename t2>
+inline bool some_unequal(const t1 &a, const t2 &b) {
+  return !all_equal(a, b);
+}
 
-  const Booleans operator==(const RTensor &a, const RTensor &b);
-  const Booleans operator<(const RTensor &a, const RTensor &b);
-  const Booleans operator>(const RTensor &a, const RTensor &b);
-  const Booleans operator<=(const RTensor &a, const RTensor &b);
-  const Booleans operator>=(const RTensor &a, const RTensor &b);
-  const Booleans operator!=(const RTensor &a, const RTensor &b);
+const Booleans operator==(const RTensor &a, const RTensor &b);
+const Booleans operator<(const RTensor &a, const RTensor &b);
+const Booleans operator>(const RTensor &a, const RTensor &b);
+const Booleans operator<=(const RTensor &a, const RTensor &b);
+const Booleans operator>=(const RTensor &a, const RTensor &b);
+const Booleans operator!=(const RTensor &a, const RTensor &b);
 
-  const Booleans operator==(const RTensor &a, double b);
-  const Booleans operator<(const RTensor &a, double b);
-  const Booleans operator>(const RTensor &a, double b);
-  const Booleans operator<=(const RTensor &a, double b);
-  const Booleans operator>=(const RTensor &a, double b);
-  const Booleans operator!=(const RTensor &a, double b);
+const Booleans operator==(const RTensor &a, double b);
+const Booleans operator<(const RTensor &a, double b);
+const Booleans operator>(const RTensor &a, double b);
+const Booleans operator<=(const RTensor &a, double b);
+const Booleans operator>=(const RTensor &a, double b);
+const Booleans operator!=(const RTensor &a, double b);
 
-  inline const Booleans operator==(double a, const RTensor &b) { return b == a; }
-  inline const Booleans operator<(double a, const RTensor &b) { return b >= a; }
-  inline const Booleans operator>(double a, const RTensor &b) { return b <= a; }
-  inline const Booleans operator<=(double a, const RTensor &b) { return b > a; }
-  inline const Booleans operator>=(double a, const RTensor &b) {  return b < a; }
-  inline const Booleans operator!=(double a, const RTensor &b) { return b != a; }
+inline const Booleans operator==(double a, const RTensor &b) { return b == a; }
+inline const Booleans operator<(double a, const RTensor &b) { return b >= a; }
+inline const Booleans operator>(double a, const RTensor &b) { return b <= a; }
+inline const Booleans operator<=(double a, const RTensor &b) { return b > a; }
+inline const Booleans operator>=(double a, const RTensor &b) { return b < a; }
+inline const Booleans operator!=(double a, const RTensor &b) { return b != a; }
 
-  const RTensor operator+(const RTensor &a, const RTensor &b);
-  const RTensor operator-(const RTensor &a, const RTensor &b);
-  const RTensor operator*(const RTensor &a, const RTensor &b);
-  const RTensor operator/(const RTensor &a, const RTensor &b);
+const RTensor operator+(const RTensor &a, const RTensor &b);
+const RTensor operator-(const RTensor &a, const RTensor &b);
+const RTensor operator*(const RTensor &a, const RTensor &b);
+const RTensor operator/(const RTensor &a, const RTensor &b);
 
-  const RTensor operator+(const RTensor &a, double b);
-  const RTensor operator-(const RTensor &a, double b);
-  const RTensor operator*(const RTensor &a, double b);
-  const RTensor operator/(const RTensor &a, double b);
+const RTensor operator+(const RTensor &a, double b);
+const RTensor operator-(const RTensor &a, double b);
+const RTensor operator*(const RTensor &a, double b);
+const RTensor operator/(const RTensor &a, double b);
 
-  const RTensor operator+(double a, const RTensor &b);
-  const RTensor operator-(double a, const RTensor &b);
-  const RTensor operator*(double a, const RTensor &b);
-  const RTensor operator/(double a, const RTensor &b);
+const RTensor operator+(double a, const RTensor &b);
+const RTensor operator-(double a, const RTensor &b);
+const RTensor operator*(double a, const RTensor &b);
+const RTensor operator/(double a, const RTensor &b);
 
-  RTensor &operator+=(RTensor &a, const RTensor &b);
-  RTensor &operator-=(RTensor &a, const RTensor &b);
+RTensor &operator+=(RTensor &a, const RTensor &b);
+RTensor &operator-=(RTensor &a, const RTensor &b);
 
-  const RTensor kron(const RTensor &a, const RTensor &b);
-  const RTensor kron2(const RTensor &a, const RTensor &b);
-  const RTensor kron2_sum(const RTensor &a, const RTensor &b);
+const RTensor kron(const RTensor &a, const RTensor &b);
+const RTensor kron2(const RTensor &a, const RTensor &b);
+const RTensor kron2_sum(const RTensor &a, const RTensor &b);
 
-  extern template class Tensor<cdouble>;
-  /** Complex Tensor with elements of type "cdouble". */
+extern template class Tensor<cdouble>;
+/** Complex Tensor with elements of type "cdouble". */
 #ifdef DOXYGEN_ONLY
-  struct CTensor : public Tensor<cdouble> {}
+struct CTensor : public Tensor<cdouble> {
+}
 #else
-  typedef Tensor<cdouble> CTensor;
+typedef Tensor<cdouble> CTensor;
 #endif
 
-  const CTensor change_dimension(const CTensor &U, int dimension, index new_size);
+const CTensor
+change_dimension(const CTensor &U, int dimension, index new_size);
 
-  /**Return the sum of the elements in the tensor.*/
-  cdouble sum(const CTensor &r);
-  /**Return the mean of the elements in the tensor.*/
-  cdouble mean(const CTensor &r);
-  /**Return the mean of the elements in the along the given dimension.*/
-  const CTensor mean(const CTensor &r, int ndx);
+/**Return the sum of the elements in the tensor.*/
+cdouble sum(const CTensor &r);
+/**Return the mean of the elements in the tensor.*/
+cdouble mean(const CTensor &r);
+/**Return the mean of the elements in the along the given dimension.*/
+const CTensor mean(const CTensor &r, int ndx);
 
-  double norm0(const CTensor &r);
-  cdouble scprod(const CTensor &a, const CTensor &b);
-  double norm2(const CTensor &r);
-  double matrix_norminf(const CTensor &r);
+double norm0(const CTensor &r);
+cdouble scprod(const CTensor &a, const CTensor &b);
+double norm2(const CTensor &r);
+double matrix_norminf(const CTensor &r);
 
-  inline const RTensor real(const RTensor &r) { return r; }
-  const RTensor imag(const RTensor &r);
-  const RTensor real(const CTensor &r);
-  const RTensor imag(const CTensor &r);
+inline const RTensor real(const RTensor &r) { return r; }
+const RTensor imag(const RTensor &r);
+const RTensor real(const CTensor &r);
+const RTensor imag(const CTensor &r);
 
-  const CTensor to_complex(const RTensor &r);
-  inline const CTensor to_complex(const CTensor &r) { return r; }
-  const CTensor to_complex(const RTensor &r, const RTensor &i);
+const CTensor to_complex(const RTensor &r);
+inline const CTensor to_complex(const CTensor &r) { return r; }
+const CTensor to_complex(const RTensor &r, const RTensor &i);
 
-  /**Complex conjugate of a real tensor. Returns the same tensor.*/
-  inline const RTensor conj(const RTensor &r) { return r; }
-  const CTensor conj(const CTensor &c);
+/**Complex conjugate of a real tensor. Returns the same tensor.*/
+inline const RTensor conj(const RTensor &r) { return r; }
+const CTensor conj(const CTensor &c);
 
-  RTensor abs(const CTensor &t);
-  CTensor cos(const CTensor &t);
-  CTensor sin(const CTensor &t);
-  CTensor tan(const CTensor &t);
-  CTensor cosh(const CTensor &t);
-  CTensor sinh(const CTensor &t);
-  CTensor tanh(const CTensor &t);
-  CTensor exp(const CTensor &t);
-  CTensor sqrt(const CTensor &t);
-  CTensor log(const CTensor &t);
+RTensor abs(const CTensor &t);
+CTensor cos(const CTensor &t);
+CTensor sin(const CTensor &t);
+CTensor tan(const CTensor &t);
+CTensor cosh(const CTensor &t);
+CTensor sinh(const CTensor &t);
+CTensor tanh(const CTensor &t);
+CTensor exp(const CTensor &t);
+CTensor sqrt(const CTensor &t);
+CTensor log(const CTensor &t);
 
-  const CTensor diag(const CTensor &d, int which, int rows, int cols);
-  const CTensor diag(const CTensor &d, int which = 0);
-  const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
-  cdouble trace(const CTensor &d);
-  const CTensor trace(const CTensor &A, index i1, index i2);
+const CTensor diag(const CTensor &d, int which, int rows, int cols);
+const CTensor diag(const CTensor &d, int which = 0);
+const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0,
+                        int ndx2 = -1);
+cdouble trace(const CTensor &d);
+const CTensor trace(const CTensor &A, index i1, index i2);
 
-  /**Convert a tensor to a 1D vector with the same elements.*/
-  const CTensor flatten(const CTensor &t);
+/**Convert a tensor to a 1D vector with the same elements.*/
+const CTensor flatten(const CTensor &t);
 
-  const CTensor reshape(const CTensor &t, const Indices &new_dims);
-  const CTensor reshape(const CTensor &t, index length);
-  const CTensor reshape(const CTensor &t, index rows, index columns);
-  const CTensor reshape(const CTensor &t, index d1, index d2, index d3);
-  const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4);
-  const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4, index d5);
-  const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4, index d5, index d6);
+const CTensor reshape(const CTensor &t, const Indices &new_dims);
+const CTensor reshape(const CTensor &t, index length);
+const CTensor reshape(const CTensor &t, index rows, index columns);
+const CTensor reshape(const CTensor &t, index d1, index d2, index d3);
+const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4);
+const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
+                      index d5);
+const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
+                      index d5, index d6);
 
-  const CTensor squeeze(const CTensor &t);
-  const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
-  const CTensor transpose(const CTensor &a);
-  const CTensor adjoint(const CTensor &a);
+const CTensor squeeze(const CTensor &t);
+const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
+const CTensor transpose(const CTensor &a);
+const CTensor adjoint(const CTensor &a);
 
-  const CTensor fold(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
-  const CTensor fold(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
-  const CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
+const CTensor fold(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
+const CTensor fold(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
+const CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
 
-  const CTensor foldc(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
-  const CTensor foldc(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
-  const CTensor foldc(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
+const CTensor foldc(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
+const CTensor foldc(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
+const CTensor foldc(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
 
-  const CTensor mmult(const CTensor &a, const CTensor &b);
-  const CTensor mmult(const RTensor &a, const CTensor &b);
-  const CTensor mmult(const CTensor &a, const RTensor &b);
+const CTensor mmult(const CTensor &a, const CTensor &b);
+const CTensor mmult(const RTensor &a, const CTensor &b);
+const CTensor mmult(const CTensor &a, const RTensor &b);
 
-  const RTensor scale(const RTensor &t, int ndx1, const RTensor &v);
-  const CTensor scale(const CTensor &t, int ndx1, const CTensor &v);
-  const CTensor scale(const CTensor &t, int ndx1, const RTensor &v);
-  void scale_inplace(RTensor &t, int ndx1, const RTensor &v);
-  void scale_inplace(CTensor &t, int ndx1, const CTensor &v);
-  void scale_inplace(CTensor &t, int ndx1, const RTensor &v);
+const RTensor scale(const RTensor &t, int ndx1, const RTensor &v);
+const CTensor scale(const CTensor &t, int ndx1, const CTensor &v);
+const CTensor scale(const CTensor &t, int ndx1, const RTensor &v);
+void scale_inplace(RTensor &t, int ndx1, const RTensor &v);
+void scale_inplace(CTensor &t, int ndx1, const CTensor &v);
+void scale_inplace(CTensor &t, int ndx1, const RTensor &v);
 
-  const CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
+const CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 
-  const RTensor linspace(double min, double max, index n = 100);
-  const RTensor linspace(const RTensor &min, const RTensor &max, index n = 100);
-  const CTensor linspace(cdouble min, cdouble max, index n = 100);
-  const CTensor linspace(const CTensor &min, const CTensor &max, index n = 100);
+const RTensor linspace(double min, double max, index n = 100);
+const RTensor linspace(const RTensor &min, const RTensor &max, index n = 100);
+const CTensor linspace(cdouble min, cdouble max, index n = 100);
+const CTensor linspace(const CTensor &min, const CTensor &max, index n = 100);
 
-  const Indices sort(const Indices &v, bool reverse = false);
-  const Indices sort_indices(const Indices &v, bool reverse = false);
+const Indices sort(const Indices &v, bool reverse = false);
+const Indices sort_indices(const Indices &v, bool reverse = false);
 
-  const RTensor sort(const RTensor &v, bool reverse = false);
-  const Indices sort_indices(const RTensor &v, bool reverse = false);
+const RTensor sort(const RTensor &v, bool reverse = false);
+const Indices sort_indices(const RTensor &v, bool reverse = false);
 
-  const CTensor sort(const CTensor &v, bool reverse = false);
-  const Indices sort_indices(const CTensor &v, bool reverse = false);
+const CTensor sort(const CTensor &v, bool reverse = false);
+const Indices sort_indices(const CTensor &v, bool reverse = false);
 
-  bool all_equal(const CTensor &a, const CTensor &b);
-  bool all_equal(const CTensor &a, const cdouble &b);
-  inline bool all_equal(cdouble b, const CTensor &a) { return all_equal(a, b); }
+bool all_equal(const CTensor &a, const CTensor &b);
+bool all_equal(const CTensor &a, const cdouble &b);
+inline bool all_equal(cdouble b, const CTensor &a) { return all_equal(a, b); }
 
-  const Booleans operator==(const CTensor &a, const CTensor &b);
-  const Booleans operator!=(const CTensor &a, const CTensor &b);
-  const Booleans operator==(const CTensor &a, cdouble b);
-  const Booleans operator!=(const CTensor &a, cdouble b);
-  inline const Booleans operator==(cdouble a, const CTensor &b) { return b == a; }
-  inline const Booleans operator!=(cdouble a, const CTensor &b) { return b != a; }
+const Booleans operator==(const CTensor &a, const CTensor &b);
+const Booleans operator!=(const CTensor &a, const CTensor &b);
+const Booleans operator==(const CTensor &a, cdouble b);
+const Booleans operator!=(const CTensor &a, cdouble b);
+inline const Booleans operator==(cdouble a, const CTensor &b) { return b == a; }
+inline const Booleans operator!=(cdouble a, const CTensor &b) { return b != a; }
 
-  const CTensor operator+(const CTensor &a, const CTensor &b);
-  const CTensor operator-(const CTensor &a, const CTensor &b);
-  const CTensor operator*(const CTensor &a, const CTensor &b);
-  const CTensor operator/(const CTensor &a, const CTensor &b);
+const CTensor operator+(const CTensor &a, const CTensor &b);
+const CTensor operator-(const CTensor &a, const CTensor &b);
+const CTensor operator*(const CTensor &a, const CTensor &b);
+const CTensor operator/(const CTensor &a, const CTensor &b);
 
-  const CTensor operator+(const CTensor &a, cdouble b);
-  const CTensor operator-(const CTensor &a, cdouble b);
-  const CTensor operator*(const CTensor &a, cdouble b);
-  const CTensor operator/(const CTensor &a, cdouble b);
+const CTensor operator+(const CTensor &a, cdouble b);
+const CTensor operator-(const CTensor &a, cdouble b);
+const CTensor operator*(const CTensor &a, cdouble b);
+const CTensor operator/(const CTensor &a, cdouble b);
 
-  const CTensor operator+(cdouble a, const CTensor &b);
-  const CTensor operator-(cdouble a, const CTensor &b);
-  const CTensor operator*(cdouble a, const CTensor &b);
-  const CTensor operator/(cdouble a, const CTensor &b);
+const CTensor operator+(cdouble a, const CTensor &b);
+const CTensor operator-(cdouble a, const CTensor &b);
+const CTensor operator*(cdouble a, const CTensor &b);
+const CTensor operator/(cdouble a, const CTensor &b);
 
-  CTensor &operator+=(CTensor &a, const CTensor &b);
-  CTensor &operator-=(CTensor &a, const CTensor &b);
+CTensor &operator+=(CTensor &a, const CTensor &b);
+CTensor &operator-=(CTensor &a, const CTensor &b);
 
-  const CTensor kron(const CTensor &a, const CTensor &b);
-  const CTensor kron2(const CTensor &a, const CTensor &b);
-  const CTensor kron2_sum(const CTensor &a, const CTensor &b);
+const CTensor kron(const CTensor &a, const CTensor &b);
+const CTensor kron2(const CTensor &a, const CTensor &b);
+const CTensor kron2_sum(const CTensor &a, const CTensor &b);
 
-  /** Convert a vector of indices to a 1D tensor of real numbers.*/
-  const RTensor index_to_tensor(const Indices &i);
+/** Convert a vector of indices to a 1D tensor of real numbers.*/
+const RTensor index_to_tensor(const Indices &i);
 
-} // namespace tensor
+}  // namespace tensor
 
 /* @} */
 
-#endif // !TENSOR_H
+#endif  // !TENSOR_H

@@ -21,10 +21,9 @@
 
 namespace tensor {
 
-  const Sparse<double> operator*(const Sparse<double> &s, double n)
-  {
-    return Sparse<double>(s.dimensions(), s.priv_row_start(), s.priv_column(),
-			  s.priv_data() * n);
-  }
+const Sparse<double> operator*(const Sparse<double> &s, double n) {
+  return Sparse<double>(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                        s.priv_data() * n);
+}
 
-} // namespace tensor
+}  // namespace tensor

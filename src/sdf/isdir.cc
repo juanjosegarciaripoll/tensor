@@ -22,13 +22,10 @@
 
 namespace sdf {
 
-  bool
-  isdir(const std::string &filename)
-  {
-    struct stat s[1];
-    if (stat(filename.c_str(), s))
-      return false;
-    return s->st_mode & S_IFDIR;
-  }
-
+bool isdir(const std::string &filename) {
+  struct stat s[1];
+  if (stat(filename.c_str(), s)) return false;
+  return s->st_mode & S_IFDIR;
 }
+
+}  // namespace sdf

@@ -21,10 +21,9 @@
 
 namespace tensor {
 
-  double max(const RTensor &r)
-  {
-    assert(r.size());
-    return *(std::max_element(r.begin_const(), r.end_const()));
-  }
+double max(const RTensor &r) {
+  assert(r.size());
+  return *(std::max_element(r.begin_const(), r.end_const()));
+}
 
-} // namespace tensor
+}  // namespace tensor

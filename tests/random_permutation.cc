@@ -23,27 +23,24 @@
 
 namespace tensor_test {
 
-  using namespace tensor;
+using namespace tensor;
 
-  Tensor<double> random_permutation(int n, int iterations)
-  {
-    RTensor output = RTensor::eye(n);
-    if (n > 1) {
-      if (iterations <= 0)
-	iterations = 2*n;
-      Indices rows = iota(0, n-1);
-      Tensor<double> diagonal = RTensor::ones(igen << n);
-      while (iterations--) {
-	Indices columns = rows;
-	int i = rand<int>(0, n);
-	int j = (i + rand<int>(1, n)) % n;
-        columns.at(j) = i;
-        columns.at(i) = j;
-	output = mmult(RSparse(rows, columns, diagonal, n, n), output);
-      }
+Tensor<double> random_permutation(int n, int iterations) {
+  RTensor output = RTensor::eye(n);
+  if (n > 1) {
+    if (iterations <= 0) iterations = 2 * n;
+    Indices rows = iota(0, n - 1);
+    Tensor<double> diagonal = RTensor::ones(igen << n);
+    while (iterations--) {
+      Indices columns = rows;
+      int i = rand<int>(0, n);
+      int j = (i + rand<int>(1, n)) % n;
+      columns.at(j) = i;
+      columns.at(i) = j;
+      output = mmult(RSparse(rows, columns, diagonal, n, n), output);
     }
-    return output;
   }
+  return output;
+}
 
-} // namespace tensor_test
-
+}  // namespace tensor_test

@@ -23,8 +23,7 @@ using namespace sdf;
 
 #if !defined(aix)
 template <class number>
-void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
-{
+void read_raw_with_endian(std::ifstream &s, number *data, size_t n) {
   s.read((char *)data, n * sizeof(number));
   if (s.bad()) {
     std::cerr << "I/O error when reading from SDF stream";
@@ -33,8 +32,7 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
 }
 #else
 template <class number>
-void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
-{
+void read_raw_with_endian(std::ifstream &s, number *data, size_t n) {
   const int size = sizeof(number);
   if (size == 1) {
     s.read((char *)data, n * sizeof(number));
@@ -50,31 +48,31 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
   char buffer[buffer_size];
 
   do {
-    size_t now = min<size_t>(n*size, buffer_size);
+    size_t now = min<size_t>(n * size, buffer_size);
     s.read(buffer, now);
     if (s.bad()) {
       std::cerr << "I/O error when reading from stream " << s;
       abort();
     }
-    for (size_t i = 0; i < now; i+=size) {
+    for (size_t i = 0; i < now; i += size) {
       if (size == 4) {
-	*(alias++) = buffer[i+3];
-	*(alias++) = buffer[i+2];
-	*(alias++) = buffer[i+1];
-	*(alias++) = buffer[i];
+        *(alias++) = buffer[i + 3];
+        *(alias++) = buffer[i + 2];
+        *(alias++) = buffer[i + 1];
+        *(alias++) = buffer[i];
       } else if (size == 8) {
-	*(alias++) = buffer[i+7];
-	*(alias++) = buffer[i+6];
-	*(alias++) = buffer[i+5];
-	*(alias++) = buffer[i+4];
-	*(alias++) = buffer[i+3];
-	*(alias++) = buffer[i+2];
-	*(alias++) = buffer[i+1];
-	*(alias++) = buffer[i];
+        *(alias++) = buffer[i + 7];
+        *(alias++) = buffer[i + 6];
+        *(alias++) = buffer[i + 5];
+        *(alias++) = buffer[i + 4];
+        *(alias++) = buffer[i + 3];
+        *(alias++) = buffer[i + 2];
+        *(alias++) = buffer[i + 1];
+        *(alias++) = buffer[i];
       } else {
-	for (size_t j = size; j--; ) {
-	  *(alias++) = buffer[i+j];
-	}
+        for (size_t j = size; j--;) {
+          *(alias++) = buffer[i + j];
+        }
       }
       n--;
     }
@@ -82,68 +80,51 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n)
 }
 #endif
 
-InDataFile::InDataFile(const std::string &a_filename, int flags) :
-  DataFile(a_filename, flags),
-  _stream(actual_filename().c_str(),
-          std::ios_base::in | std::ios_base::binary)
-{
+InDataFile::InDataFile(const std::string &a_filename, int flags)
+    : DataFile(a_filename, flags),
+      _stream(actual_filename().c_str(),
+              std::ios_base::in | std::ios_base::binary) {
   _stream.seekg(std::ios_base::beg);
   read_header();
 }
 
-void
-InDataFile::read_raw(char *data, size_t n)
-{
+void InDataFile::read_raw(char *data, size_t n) {
   assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
-void
-InDataFile::read_raw(int *data, size_t n)
-{
+void InDataFile::read_raw(int *data, size_t n) {
   assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
-void
-InDataFile::read_raw(long *data, size_t n)
-{
+void InDataFile::read_raw(long *data, size_t n) {
   assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
-void
-InDataFile::read_raw(size_t *data, size_t n)
-{
+void InDataFile::read_raw(size_t *data, size_t n) {
   assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
-void
-InDataFile::read_raw(double *data, size_t n)
-{
+void InDataFile::read_raw(double *data, size_t n) {
   assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
-void
-InDataFile::read_raw(cdouble *data, size_t n)
-{
+void InDataFile::read_raw(cdouble *data, size_t n) {
   assert(is_open());
-  read_raw_with_endian(_stream, (double*)data, 2*n);
+  read_raw_with_endian(_stream, (double *)data, 2 * n);
 }
 
-tensor::index
-InDataFile::read_tag_code()
-{
+tensor::index InDataFile::read_tag_code() {
   tensor::index output;
   read_raw(output);
   return output;
 }
 
-std::string
-InDataFile::read_variable_name()
-{
+std::string InDataFile::read_variable_name() {
   char *buffer = new char[var_name_size];
   read_raw(buffer, var_name_size);
   std::string output(buffer);
@@ -151,28 +132,24 @@ InDataFile::read_variable_name()
   return output;
 }
 
-void
-InDataFile::read_tag(const std::string &name, tensor::index type)
-{
+void InDataFile::read_tag(const std::string &name, tensor::index type) {
   std::string other_name = read_variable_name();
   if (name.size() && (name != other_name)) {
-    std::cerr << "While reading file " << _filename << ", variable "
-	      << name << " was expected but found "
-	      << other_name << '\n';
+    std::cerr << "While reading file " << _filename << ", variable " << name
+              << " was expected but found " << other_name << '\n';
     abort();
   }
   tensor::index other_type = read_tag_code();
   if (type != other_type) {
     std::cerr << "While reading file " << _filename << ", an object of type "
-	      << tag_to_name(type) << " was expected but found a "
-	      << tag_to_name(other_type) << '\n';
+              << tag_to_name(type) << " was expected but found a "
+              << tag_to_name(other_type) << '\n';
     abort();
   }
 }
 
-template<class Vector>
-const Vector InDataFile::load_vector()
-{
+template <class Vector>
+const Vector InDataFile::load_vector() {
   size_t length;
   read_raw(length);
   Vector v(length);
@@ -180,23 +157,19 @@ const Vector InDataFile::load_vector()
   return v;
 }
 
-void
-InDataFile::load(RTensor *t, const std::string &name) {
+void InDataFile::load(RTensor *t, const std::string &name) {
   read_tag(name, TAG_RTENSOR);
   Indices dims = load_vector<Indices>();
   *t = RTensor(dims, load_vector<RTensor>());
 }
 
-void
-InDataFile::load(CTensor *t, const std::string &name) {
+void InDataFile::load(CTensor *t, const std::string &name) {
   read_tag(name, TAG_CTENSOR);
   Indices dims = load_vector<Indices>();
   *t = CTensor(dims, load_vector<CTensor>());
 }
 
-void
-InDataFile::load(std::vector<RTensor> *m, const std::string &name)
-{
+void InDataFile::load(std::vector<RTensor> *m, const std::string &name) {
   read_tag(name, TAG_RTENSOR_VECTOR);
   size_t l;
   read_raw(l);
@@ -206,9 +179,7 @@ InDataFile::load(std::vector<RTensor> *m, const std::string &name)
   }
 }
 
-void
-InDataFile::load(std::vector<CTensor> *m, const std::string &name)
-{
+void InDataFile::load(std::vector<CTensor> *m, const std::string &name) {
   read_tag(name, TAG_CTENSOR_VECTOR);
   size_t l;
   read_raw(l);
@@ -218,51 +189,43 @@ InDataFile::load(std::vector<CTensor> *m, const std::string &name)
   }
 }
 
-void
-InDataFile::load(double *value, const std::string &name)
-{
+void InDataFile::load(double *value, const std::string &name) {
   RTensor t;
   load(&t, name);
   if (t.size() > 1) {
-    std::cerr << "While reading file " << _filename << " found a tensor of size "
-	      << t.size() << " while a single value was expected.";
+    std::cerr << "While reading file " << _filename
+              << " found a tensor of size " << t.size()
+              << " while a single value was expected.";
     abort();
   }
   *value = t[0];
 }
 
-void
-InDataFile::load(cdouble *value, const std::string &name)
-{
+void InDataFile::load(cdouble *value, const std::string &name) {
   CTensor t;
   load(&t, name);
   if (t.size() > 1) {
-    std::cerr << "While reading file " << _filename << " found a tensor of size "
-	      << t.size() << " while a single value was expected.";
+    std::cerr << "While reading file " << _filename
+              << " found a tensor of size " << t.size()
+              << " while a single value was expected.";
     abort();
   }
   *value = t[0];
 }
 
-void
-InDataFile::load(size_t *v, const std::string &name)
-{
+void InDataFile::load(size_t *v, const std::string &name) {
   double aux;
   load(&aux, name);
   *v = (size_t)aux;
 }
 
-void
-InDataFile::load(int *v, const std::string &name)
-{
+void InDataFile::load(int *v, const std::string &name) {
   double aux;
   load(&aux, name);
   *v = (int)aux;
 }
 
-void
-InDataFile::read_header()
-{
+void InDataFile::read_header() {
   std::string var_name = read_variable_name();
 
   if (var_name[0] != 's' || var_name[1] != 'd' || var_name[2] != 'f') {
@@ -273,19 +236,16 @@ InDataFile::read_header()
   int file_int_size = var_name[3] - '0';
   int file_long_size = var_name[4] - '0';
   int file_endianness = var_name[5] - '0';
-  if (file_int_size != sizeof(int) ||
-      file_long_size != sizeof(long) ||
-      file_endianness != endian)
-    {
-      std::cerr << "File " << _filename << " has word sizes (" << file_int_size
-		<< ',' << file_long_size << ") and cannot be read by this computer";
-      abort();
-    }
+  if (file_int_size != sizeof(int) || file_long_size != sizeof(long) ||
+      file_endianness != endian) {
+    std::cerr << "File " << _filename << " has word sizes (" << file_int_size
+              << ',' << file_long_size
+              << ") and cannot be read by this computer";
+    abort();
+  }
 }
 
-void
-InDataFile::close()
-{
+void InDataFile::close() {
   if (is_open()) {
     DataFile::close();
     _open = false;

@@ -18,20 +18,18 @@
 */
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
-# include <direct.h>
-# define mkdir(x,mode) _mkdir(x)
+#include <direct.h>
+#define mkdir(x, mode) _mkdir(x)
 #else
-# include <sys/stat.h>
+#include <sys/stat.h>
 #endif
 #include <tensor/jobs.h>
 
 namespace sdf {
 
-  bool
-  make_directory(const std::string &dirname, int mode)
-  {
-    std::cout << dirname << std::endl;
-    return !mkdir(dirname.c_str(), mode);
-  }
-
+bool make_directory(const std::string &dirname, int mode) {
+  std::cout << dirname << std::endl;
+  return !mkdir(dirname.c_str(), mode);
 }
+
+}  // namespace sdf

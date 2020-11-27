@@ -23,9 +23,9 @@
 
 namespace linalg {
 
-  using namespace tensor;
+using namespace tensor;
 
-  /**Solution of a linear system of equations using Penrose's pseudoinvese.
+/**Solution of a linear system of equations using Penrose's pseudoinvese.
 
      This function solves the system of equations A * X = B using the SVD
      of the matrix A = U * S * VT, through the formula X = V * (S^-1) * UT * B.
@@ -33,24 +33,22 @@ namespace linalg {
      
      \ingroup Linalg
   */
-  const CTensor
-  solve_with_svd(const CTensor &A, const CTensor &B, double tol)
-  {
-    CTensor U, VT;
-    RTensor s = svd(A, &U, &VT, SVD_ECONOMIC);
-    if (tol <= 0) {
-      tol = DBL_EPSILON;
-    }
-    for (tensor::index i = 0; i < s.size(); i++) {
-      if (s[i] <= tol) {
-	U = U(range(), range(0,i-1));
-	s = s(range(0,i-1));
-	VT = VT(range(0,i-1), range());
-      }
-    }
-    CTensor X = foldc(U, 0, B, 0);
-    scale_inplace(X, 0, 1.0/s);
-    return foldc(VT, 0, X, 0);
+const CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol) {
+  CTensor U, VT;
+  RTensor s = svd(A, &U, &VT, SVD_ECONOMIC);
+  if (tol <= 0) {
+    tol = DBL_EPSILON;
   }
+  for (tensor::index i = 0; i < s.size(); i++) {
+    if (s[i] <= tol) {
+      U = U(range(), range(0, i - 1));
+      s = s(range(0, i - 1));
+      VT = VT(range(0, i - 1), range());
+    }
+  }
+  CTensor X = foldc(U, 0, B, 0);
+  scale_inplace(X, 0, 1.0 / s);
+  return foldc(VT, 0, X, 0);
+}
 
-} // namespace linalg
+}  // namespace linalg

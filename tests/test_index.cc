@@ -96,8 +96,7 @@ TEST(StaticRTensorTest, Size2) {
 }
 
 TEST(StaticRTensorTest, DataAndDim) {
-  RTensor v(rgen << 1.0 << 2.0 << 3.0 << 4.0 << 5.0 << 6.0,
-            igen << 2 << 3);
+  RTensor v(rgen << 1.0 << 2.0 << 3.0 << 4.0 << 5.0 << 6.0, igen << 2 << 3);
   EXPECT_EQ(6, v.size());
   EXPECT_EQ(2, v.rank());
   EXPECT_EQ(2, v.dimension(0));
@@ -106,10 +105,10 @@ TEST(StaticRTensorTest, DataAndDim) {
   EXPECT_EQ(2.0, v[1]);
   EXPECT_EQ(3.0, v[2]);
   EXPECT_EQ(4.0, v[3]);
-  EXPECT_EQ(1.0, v(0,0));
-  EXPECT_EQ(2.0, v(1,0));
-  EXPECT_EQ(3.0, v(0,1));
-  EXPECT_EQ(4.0, v(1,1));
+  EXPECT_EQ(1.0, v(0, 0));
+  EXPECT_EQ(2.0, v(1, 0));
+  EXPECT_EQ(3.0, v(0, 1));
+  EXPECT_EQ(4.0, v(1, 1));
   EXPECT_EQ(1, v.ref_count());
 }
 
@@ -133,8 +132,7 @@ TEST(StaticCTensorTest, Size2) {
 }
 
 TEST(StaticCTensorTest, DataAndDim) {
-  CTensor v(cgen << 1.0 << 2.0 << 3.0 << 4.0 << 5.0 << 6.0,
-            igen << 2 << 3);
+  CTensor v(cgen << 1.0 << 2.0 << 3.0 << 4.0 << 5.0 << 6.0, igen << 2 << 3);
   EXPECT_EQ(6, v.size());
   EXPECT_EQ(2, v.rank());
   EXPECT_EQ(2, v.dimension(0));
@@ -143,9 +141,9 @@ TEST(StaticCTensorTest, DataAndDim) {
   EXPECT_EQ(2.0, v[1]);
   EXPECT_EQ(3.0, v[2]);
   EXPECT_EQ(4.0, v[3]);
-  EXPECT_EQ(1.0, v(0,0));
-  EXPECT_EQ(2.0, v(1,0));
-  EXPECT_EQ(3.0, v(0,1));
-  EXPECT_EQ(4.0, v(1,1));
+  EXPECT_EQ(1.0, v(0, 0));
+  EXPECT_EQ(2.0, v(1, 0));
+  EXPECT_EQ(3.0, v(0, 1));
+  EXPECT_EQ(4.0, v(1, 1));
   EXPECT_EQ(1, v.ref_count());
 }

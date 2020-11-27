@@ -22,11 +22,9 @@
 
 namespace linalg {
 
-  tensor::cdouble
-  do_eig_power(const Map<CTensor> *A, size_t dims, CTensor *vector,
-               size_t iter, double tol)
-  {
-    return eig_power_loop(A, dims, vector, iter, tol);
-  }
+tensor::cdouble do_eig_power(const Map<CTensor> *A, size_t dims,
+                             CTensor *vector, size_t iter, double tol) {
+  return eig_power_loop(A, dims, vector, iter, tol);
+}
 
-} // namespace linalg
+}  // namespace linalg

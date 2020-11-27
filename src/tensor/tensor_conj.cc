@@ -22,18 +22,16 @@
 
 namespace tensor {
 
-  /**Complex conjugate of a tensor.*/
-  const Tensor<cdouble>
-  conj(const Tensor<cdouble> &t)
-  {
-    Tensor<cdouble> output(t.dimensions());
-    Tensor<cdouble>::iterator a = output.begin();
-    Tensor<cdouble>::const_iterator b = t.begin();
-    Tensor<cdouble>::const_iterator bend = t.end();
-    for (; b != bend; ++a, ++b) {
-      *a = tensor::conj(*b);
-    }
-    return output;
+/**Complex conjugate of a tensor.*/
+const Tensor<cdouble> conj(const Tensor<cdouble> &t) {
+  Tensor<cdouble> output(t.dimensions());
+  Tensor<cdouble>::iterator a = output.begin();
+  Tensor<cdouble>::const_iterator b = t.begin();
+  Tensor<cdouble>::const_iterator bend = t.end();
+  for (; b != bend; ++a, ++b) {
+    *a = tensor::conj(*b);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

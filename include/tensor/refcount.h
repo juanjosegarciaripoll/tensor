@@ -45,10 +45,10 @@ namespace tensor {
 
    \ingroup Internals
 */
-template<class value_type>
+template <class value_type>
 class RefPointer {
-public:
-  typedef value_type elt_t; ///< Type of data pointed to
+ public:
+  typedef value_type elt_t;  ///< Type of data pointed to
 
   /** Create an empty reference */
   RefPointer();
@@ -59,7 +59,6 @@ public:
   /** Copy constructor that increases the reference count. */
   RefPointer(const RefPointer<elt_t> &p);
 
-
   /** Destructor that deletes no longer reference data. */
   ~RefPointer();
 
@@ -67,7 +66,10 @@ public:
   RefPointer<elt_t> &operator=(const RefPointer<elt_t> &p);
 
   /** Retreive the pointer without caring for references (unsafe). */
-  elt_t *begin() { appropriate(); return ref_->begin(); }
+  elt_t *begin() {
+    appropriate();
+    return ref_->begin();
+  }
   /** Retreive the pointer without caring for references (unsafe). */
   const elt_t *begin() const { return ref_->begin(); }
   /** Retreive the pointer without caring for references (unsafe). */
@@ -77,7 +79,10 @@ public:
   /** Retreive the pointer without caring for references (unsafe). */
   const elt_t *end() const { return ref_->end(); }
   /** Retreive the pointer without caring for references (unsafe). */
-  elt_t *end() { appropriate(); return ref_->end(); }
+  elt_t *end() {
+    appropriate();
+    return ref_->end();
+  }
 
   /** Size of pointed-to data. */
   size_t size() const { return ref_->size(); }
@@ -88,9 +93,9 @@ public:
   /** Replace the pointer with newly allocated data. */
   void reallocate(size_t new_size);
 
-private:
+ private:
   class pointer;
-  mutable pointer *ref_; // Pointer to data we reference or NULL
+  mutable pointer *ref_;  // Pointer to data we reference or NULL
 
   /** Ensure that we have a unique copy of the data. If the pointer has more
       than one reference, a fresh new copy of the data is created.
@@ -100,19 +105,26 @@ private:
   void dereference();
 };
 
-  template<typename T>
-  class shared_ptr {
-  public:
-    shared_ptr(T *t) : _value(t), _ref(new int(1)) {}
-    ~shared_ptr() { --(*_ref); if (!(*_ref)) { delete _value; delete _ref; }}
-    T* operator->() const { return _value; }
-    T& operator*() const { return *_value; }
-  private:
-    int *_ref;
-    T *_value;
-  };
+template <typename T>
+class shared_ptr {
+ public:
+  shared_ptr(T *t) : _value(t), _ref(new int(1)) {}
+  ~shared_ptr() {
+    --(*_ref);
+    if (!(*_ref)) {
+      delete _value;
+      delete _ref;
+    }
+  }
+  T *operator->() const { return _value; }
+  T &operator*() const { return *_value; }
 
-}; // namespace
+ private:
+  int *_ref;
+  T *_value;
+};
+
+};  // namespace tensor
 
 #include <tensor/detail/refcount.hpp>
 

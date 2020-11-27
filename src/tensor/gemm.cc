@@ -27,57 +27,53 @@
 
 namespace blas {
 
-  inline void gemm(char op1, char op2, integer m, integer n, integer k,
-                   double alpha, const double *A, integer lda, const double *B,
-                   integer ldb, double beta, double *C, integer ldc)
-  {
+inline void gemm(char op1, char op2, integer m, integer n, integer k,
+                 double alpha, const double *A, integer lda, const double *B,
+                 integer ldb, double beta, double *C, integer ldc) {
 #ifdef TENSOR_USE_ESSL
-    dgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+  dgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
 #endif
 #ifdef TENSOR_USE_ACML
-    dgemm(op1, op2, m, n, k, alpha, const_cast<double *>(A),
-          lda, const_cast<double*>(B), ldb, beta, C, ldc);
+  dgemm(op1, op2, m, n, k, alpha, const_cast<double *>(A), lda,
+        const_cast<double *>(B), ldb, beta, C, ldc);
 #endif
 #if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
-    cblas_dgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
-                m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+  cblas_dgemm(CblasColMajor, char_to_op(op1), char_to_op(op2), m, n, k, alpha,
+              A, lda, B, ldb, beta, C, ldc);
 #endif
-  }
+}
 
-  inline void gemm(char op1, char op2, integer m, integer n, integer k,
-                   const tensor::cdouble &alpha, const tensor::cdouble *A, integer lda,
-                   const tensor::cdouble *B, integer ldb, const tensor::cdouble &beta,
-                   tensor::cdouble *C, integer ldc)
-  {
+inline void gemm(char op1, char op2, integer m, integer n, integer k,
+                 const tensor::cdouble &alpha, const tensor::cdouble *A,
+                 integer lda, const tensor::cdouble *B, integer ldb,
+                 const tensor::cdouble &beta, tensor::cdouble *C, integer ldc) {
 #ifdef TENSOR_USE_ESSL
-    zgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+  zgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
 #endif
 #ifdef TENSOR_USE_ACML
-    zgemm(op1, op2, m, n, k,
-          reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(&alpha)),
-          reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(A)),
-          lda,
-          reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(B)),
-          ldb,
-          reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(&beta)),
-          reinterpret_cast<doublecomplex *>(C), ldc);
+  zgemm(
+      op1, op2, m, n, k,
+      reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(&alpha)),
+      reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(A)), lda,
+      reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(B)), ldb,
+      reinterpret_cast<doublecomplex *>(const_cast<tensor::cdouble *>(&beta)),
+      reinterpret_cast<doublecomplex *>(C), ldc);
 #endif
 #ifdef TENSOR_USE_OPENBLAS
-    cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2), m, n, k,
-                reinterpret_cast<double *>(const_cast<tensor::cdouble *>(&alpha)),
-                reinterpret_cast<double *>(const_cast<tensor::cdouble *>(A)),
-                lda,
-                reinterpret_cast<double *>(const_cast<tensor::cdouble *>(B)),
-                ldb,
-                reinterpret_cast<double *>(const_cast<tensor::cdouble *>(&beta)),
-                reinterpret_cast<double *>(C), ldc);
+  cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2), m, n, k,
+              reinterpret_cast<double *>(const_cast<tensor::cdouble *>(&alpha)),
+              reinterpret_cast<double *>(const_cast<tensor::cdouble *>(A)), lda,
+              reinterpret_cast<double *>(const_cast<tensor::cdouble *>(B)), ldb,
+              reinterpret_cast<double *>(const_cast<tensor::cdouble *>(&beta)),
+              reinterpret_cast<double *>(C), ldc);
 #endif
-#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML) && !defined(TENSOR_USE_OPENBLAS)
-    cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
-                m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc);
+#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML) && \
+    !defined(TENSOR_USE_OPENBLAS)
+  cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2), m, n, k, &alpha,
+              A, lda, B, ldb, &beta, C, ldc);
 #endif
-  }
-
 }
+
+}  // namespace blas
 
 #endif

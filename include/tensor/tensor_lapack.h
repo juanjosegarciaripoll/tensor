@@ -24,7 +24,7 @@
 
 namespace lapack {
 
-  using namespace blas;
+using namespace blas;
 
 #ifdef TENSOR_USE_MKL
 #include <mkl_lapack.h>
@@ -39,53 +39,57 @@ namespace lapack {
 #undef dsyev
 #undef zheev
 #endif
-#if defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_ESSL) || defined(TENSOR_USE_OPENBLAS)
+#if defined(TENSOR_USE_ATLAS) || defined(TENSOR_USE_ESSL) || \
+    defined(TENSOR_USE_OPENBLAS)
 extern "C" {
-  int F77NAME(dgesv)
-    (__CLPK_integer *n, __CLPK_integer *nrhs, __CLPK_doublereal *a,
-     __CLPK_integer *lda, __CLPK_integer *ipiv, __CLPK_doublereal *b,
-     __CLPK_integer *ldb, __CLPK_integer *info);
-  int F77NAME(zgesv)
-    (__CLPK_integer *n, __CLPK_integer *nrhs, __CLPK_doublecomplex *a,
-     __CLPK_integer *lda, __CLPK_integer *ipiv, __CLPK_doublecomplex *b,
-     __CLPK_integer *ldb, __CLPK_integer *info);
-  int F77NAME(dgeev)
-    (char *jobvl, char *jobvr, __CLPK_integer *n, __CLPK_doublereal *
-     a, __CLPK_integer *lda, __CLPK_doublereal *wr, __CLPK_doublereal *wi,
-     __CLPK_doublereal *vl, __CLPK_integer *ldvl, __CLPK_doublereal *vr,
-     __CLPK_integer *ldvr, __CLPK_doublereal *work,
-     __CLPK_integer *lwork, __CLPK_integer *info);
-  void F77NAME(dsyev)
-    (char *jobz, char *uplo,
-     __CLPK_integer *n, __CLPK_doublereal *a, __CLPK_integer *lda,
-     __CLPK_doublereal *w, __CLPK_doublereal *work, __CLPK_integer *lwork,
-     __CLPK_integer *info);
-  int F77NAME(zgeev)
-    (char *jobvl, char *jobvr, __CLPK_integer *n, 
-     __CLPK_doublecomplex *a, __CLPK_integer *lda, __CLPK_doublecomplex *w,
-     __CLPK_doublecomplex *vl, __CLPK_integer *ldvl, __CLPK_doublecomplex *vr,
-     __CLPK_integer *ldvr, __CLPK_doublecomplex *work,
-     __CLPK_integer *lwork, __CLPK_doublereal *rwork, __CLPK_integer *info);
-  int F77NAME(dgesvd)
-    (char *jobu, char *jobvt, __CLPK_integer *m, __CLPK_integer *n, 
-     __CLPK_doublereal *a, __CLPK_integer *lda, __CLPK_doublereal *s,
-     __CLPK_doublereal *u, __CLPK_integer *ldu, __CLPK_doublereal *vt,
-     __CLPK_integer *ldvt, __CLPK_doublereal *work, __CLPK_integer *lwork, 
-     __CLPK_integer *info);
-  int F77NAME(zgesvd)
-    (char *jobu, char *jobvt, __CLPK_integer *m, __CLPK_integer *n, 
-     __CLPK_doublecomplex *a, __CLPK_integer *lda, __CLPK_doublereal *s,
-     __CLPK_doublecomplex *u, __CLPK_integer *ldu, __CLPK_doublecomplex *vt,
-     __CLPK_integer *ldvt, __CLPK_doublecomplex *work, 
-     __CLPK_integer *lwork, __CLPK_doublereal *rwork, __CLPK_integer *info);
-  void F77NAME(zheev)
-    (char *jobz, char *uplo,
-     __CLPK_integer *n, __CLPK_doublecomplex *a, __CLPK_integer *lda,
-     __CLPK_doublereal *w, __CLPK_doublecomplex *work,
-     __CLPK_integer *lwork, __CLPK_doublereal *rwork, __CLPK_integer *info);
+int F77NAME(dgesv)(__CLPK_integer *n, __CLPK_integer *nrhs,
+                   __CLPK_doublereal *a, __CLPK_integer *lda,
+                   __CLPK_integer *ipiv, __CLPK_doublereal *b,
+                   __CLPK_integer *ldb, __CLPK_integer *info);
+int F77NAME(zgesv)(__CLPK_integer *n, __CLPK_integer *nrhs,
+                   __CLPK_doublecomplex *a, __CLPK_integer *lda,
+                   __CLPK_integer *ipiv, __CLPK_doublecomplex *b,
+                   __CLPK_integer *ldb, __CLPK_integer *info);
+int F77NAME(dgeev)(char *jobvl, char *jobvr, __CLPK_integer *n,
+                   __CLPK_doublereal *a, __CLPK_integer *lda,
+                   __CLPK_doublereal *wr, __CLPK_doublereal *wi,
+                   __CLPK_doublereal *vl, __CLPK_integer *ldvl,
+                   __CLPK_doublereal *vr, __CLPK_integer *ldvr,
+                   __CLPK_doublereal *work, __CLPK_integer *lwork,
+                   __CLPK_integer *info);
+void F77NAME(dsyev)(char *jobz, char *uplo, __CLPK_integer *n,
+                    __CLPK_doublereal *a, __CLPK_integer *lda,
+                    __CLPK_doublereal *w, __CLPK_doublereal *work,
+                    __CLPK_integer *lwork, __CLPK_integer *info);
+int F77NAME(zgeev)(char *jobvl, char *jobvr, __CLPK_integer *n,
+                   __CLPK_doublecomplex *a, __CLPK_integer *lda,
+                   __CLPK_doublecomplex *w, __CLPK_doublecomplex *vl,
+                   __CLPK_integer *ldvl, __CLPK_doublecomplex *vr,
+                   __CLPK_integer *ldvr, __CLPK_doublecomplex *work,
+                   __CLPK_integer *lwork, __CLPK_doublereal *rwork,
+                   __CLPK_integer *info);
+int F77NAME(dgesvd)(char *jobu, char *jobvt, __CLPK_integer *m,
+                    __CLPK_integer *n, __CLPK_doublereal *a,
+                    __CLPK_integer *lda, __CLPK_doublereal *s,
+                    __CLPK_doublereal *u, __CLPK_integer *ldu,
+                    __CLPK_doublereal *vt, __CLPK_integer *ldvt,
+                    __CLPK_doublereal *work, __CLPK_integer *lwork,
+                    __CLPK_integer *info);
+int F77NAME(zgesvd)(char *jobu, char *jobvt, __CLPK_integer *m,
+                    __CLPK_integer *n, __CLPK_doublecomplex *a,
+                    __CLPK_integer *lda, __CLPK_doublereal *s,
+                    __CLPK_doublecomplex *u, __CLPK_integer *ldu,
+                    __CLPK_doublecomplex *vt, __CLPK_integer *ldvt,
+                    __CLPK_doublecomplex *work, __CLPK_integer *lwork,
+                    __CLPK_doublereal *rwork, __CLPK_integer *info);
+void F77NAME(zheev)(char *jobz, char *uplo, __CLPK_integer *n,
+                    __CLPK_doublecomplex *a, __CLPK_integer *lda,
+                    __CLPK_doublereal *w, __CLPK_doublecomplex *work,
+                    __CLPK_integer *lwork, __CLPK_doublereal *rwork,
+                    __CLPK_integer *info);
 }
 #endif
 
-}
+}  // namespace lapack
 
-#endif // TENSOR_TENSOR_LAPACK_H
+#endif  // TENSOR_TENSOR_LAPACK_H

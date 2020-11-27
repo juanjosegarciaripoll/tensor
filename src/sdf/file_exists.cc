@@ -18,22 +18,19 @@
 */
 
 #ifdef _MSC_VER
-# include <io.h>
-# define access _access
-# define R_OK 2
-# define W_OK 4
+#include <io.h>
+#define access _access
+#define R_OK 2
+#define W_OK 4
 #else
-# include <unistd.h>
+#include <unistd.h>
 #endif
 #include <tensor/sdf.h>
 
 namespace sdf {
 
-  bool file_exists(const std::string &filename)
-  {
-    return access(filename.c_str(), R_OK | W_OK) == 0;
-  }
-
+bool file_exists(const std::string &filename) {
+  return access(filename.c_str(), R_OK | W_OK) == 0;
 }
 
-
+}  // namespace sdf

@@ -22,44 +22,30 @@
 
 namespace tensor_test {
 
-  template<typename elt_t>
-  class kron_2d_fixture: public std::vector<Tensor<elt_t> > {
-  public:
-    kron_2d_fixture() {
-#define add(a,b) this->push_back(Tensor<elt_t>(a,b))
-      add(0,0);
-      add(1,0);
-      add(0,0);
+template <typename elt_t>
+class kron_2d_fixture : public std::vector<Tensor<elt_t> > {
+ public:
+  kron_2d_fixture() {
+#define add(a, b) this->push_back(Tensor<elt_t>(a, b))
+    add(0, 0);
+    add(1, 0);
+    add(0, 0);
 
-      add(igen << 1 << 1, gen<elt_t>(1));
-      add(igen << 1 << 1, gen<elt_t>(-2));
-      add(igen << 1 << 1, gen<elt_t>(-2));
+    add(igen << 1 << 1, gen<elt_t>(1));
+    add(igen << 1 << 1, gen<elt_t>(-2));
+    add(igen << 1 << 1, gen<elt_t>(-2));
 
-      add(igen << 1 << 2, gen<elt_t>(1) << 2);
-      add(igen << 2 << 3,
-          gen<elt_t>(1) << 7 <<
-          3 << 9 <<
-          5 << 11);
-      add(igen << 2 << 6,
-          gen<elt_t>(1) << 7 <<
-          3 << 9 <<
-          5 << 11 <<
-          2 << 14 <<
-          6 << 18 <<
-          10 << 22);
+    add(igen << 1 << 2, gen<elt_t>(1) << 2);
+    add(igen << 2 << 3, gen<elt_t>(1) << 7 << 3 << 9 << 5 << 11);
+    add(igen << 2 << 6, gen<elt_t>(1) << 7 << 3 << 9 << 5 << 11 << 2 << 14 << 6
+                                      << 18 << 10 << 22);
 
-      add(igen << 2 << 1, gen<elt_t>(1) << 2);
-      add(igen << 2 << 3,
-          gen<elt_t>(1) << 7 <<
-          3 << 9 <<
-          5 << 11);
-      add(igen << 4 << 3,
-          gen<elt_t>(1) << 7 << 2 << 14 <<
-          3 << 9 << 6 << 18 <<
-          5 << 11 << 10 << 22);
+    add(igen << 2 << 1, gen<elt_t>(1) << 2);
+    add(igen << 2 << 3, gen<elt_t>(1) << 7 << 3 << 9 << 5 << 11);
+    add(igen << 4 << 3, gen<elt_t>(1) << 7 << 2 << 14 << 3 << 9 << 6 << 18 << 5
+                                      << 11 << 10 << 22);
 #undef add
-    }
-  };
+  }
+};
 
-} // namespace tensor_test
-
+}  // namespace tensor_test

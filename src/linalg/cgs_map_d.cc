@@ -23,7 +23,7 @@
 
 namespace linalg {
 
-  /**Solve a real linear system of equations by the conjugate gradient method.
+/**Solve a real linear system of equations by the conjugate gradient method.
 
      Given a matrix A, and a right hand matrix B, we find the matrix X that
      satisfies
@@ -31,11 +31,9 @@ namespace linalg {
      using the iterative conjugate gradient method.
      \ingroup Linalg
   */
-  const RTensor
-  do_cgs(const tensor::Map<RTensor> *A, const RTensor &b, const RTensor *x_start,
-	 int maxiter, double tol)
-  {
-    return solve(A, b, x_start, maxiter, tol);
-  }
-
+const RTensor do_cgs(const tensor::Map<RTensor> *A, const RTensor &b,
+                     const RTensor *x_start, int maxiter, double tol) {
+  return solve(A, b, x_start, maxiter, tol);
 }
+
+}  // namespace linalg

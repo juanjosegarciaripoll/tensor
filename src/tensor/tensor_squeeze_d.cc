@@ -21,12 +21,11 @@
 
 namespace tensor {
 
-  const Indices squeeze_dimensions(const Indices &d);
+const Indices squeeze_dimensions(const Indices &d);
 
-  /** Eliminate all singleton dimensions from a tensor, preserving the data. */
-  const RTensor squeeze(const RTensor &t)
-  {
-    return reshape(t, squeeze_dimensions(t.dimensions()));
-  }
+/** Eliminate all singleton dimensions from a tensor, preserving the data. */
+const RTensor squeeze(const RTensor &t) {
+  return reshape(t, squeeze_dimensions(t.dimensions()));
+}
 
-} // namespace tensor
+}  // namespace tensor

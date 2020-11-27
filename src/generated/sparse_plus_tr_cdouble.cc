@@ -21,14 +21,14 @@
 
 namespace tensor {
 
-  const Sparse<cdouble> operator+(const Sparse<cdouble> &a, const Sparse<double> &b)
-  {
-    return a + Sparse<cdouble>(b);
-  }
-   
-  const Sparse<cdouble> operator+(const Sparse<double> &a, const Sparse<cdouble> &b)
-  {
-    return Sparse<cdouble>(a) + b;
-  }
-   
-} // namespace tensor
+const Sparse<cdouble> operator+(const Sparse<cdouble> &a,
+                                const Sparse<double> &b) {
+  return a + Sparse<cdouble>(b);
+}
+
+const Sparse<cdouble> operator+(const Sparse<double> &a,
+                                const Sparse<cdouble> &b) {
+  return Sparse<cdouble>(a) + b;
+}
+
+}  // namespace tensor

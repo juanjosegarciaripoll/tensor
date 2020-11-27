@@ -22,17 +22,17 @@
 
 namespace tensor {
 
-  Tensor<cdouble> &operator+=(Tensor<cdouble> &a, const Tensor<cdouble> &b) {
-    assert(a.size() == b.size());
-    Tensor<cdouble>::iterator ita = a.begin();
-    Tensor<cdouble>::iterator itae = a.end();
-    Tensor<cdouble>::const_iterator itb = b.begin();
-    while (ita != itae) {
-      (*ita) += (*itb);
-      ++ita;
-      ++itb;
-    }
-    return a;
+Tensor<cdouble> &operator+=(Tensor<cdouble> &a, const Tensor<cdouble> &b) {
+  assert(a.size() == b.size());
+  Tensor<cdouble>::iterator ita = a.begin();
+  Tensor<cdouble>::iterator itae = a.end();
+  Tensor<cdouble>::const_iterator itb = b.begin();
+  while (ita != itae) {
+    (*ita) += (*itb);
+    ++ita;
+    ++itb;
   }
+  return a;
+}
 
-} // namespace tensor
+}  // namespace tensor

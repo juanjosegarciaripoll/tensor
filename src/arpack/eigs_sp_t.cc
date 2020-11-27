@@ -24,36 +24,33 @@
 #include "linalg.h"
 #include "arpack.h"
 
-Tensor<ELT_T>
-eigs(const Sparse<ELT_T> &A, int eig_type, size_t neig,
-     Tensor<ELT_T> *eigenvectors,
-     const Tensor::elt_t *initial_guess)
-{
-    Arpack::EigType t = (Arpack::EigType)eig_type;
-    size_t n = A.columns();
+Tensor<ELT_T> eigs(const Sparse<ELT_T> &A, int eig_type, size_t neig,
+                   Tensor<ELT_T> *eigenvectors,
+                   const Tensor::elt_t *initial_guess) {
+  Arpack::EigType t = (Arpack::EigType)eig_type;
+  size_t n = A.columns();
 
-    if (n <= 10) {
-	return eigs(full(A), t, neig, eigenvectors, initial_guess);
-    }
+  if (n <= 10) {
+    return eigs(full(A), t, neig, eigenvectors, initial_guess);
+  }
 
-    if (A.rows() != n) {
-	std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-	myabort();
-    }
+  if (A.rows() != n) {
+    std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
+    myabort();
+  }
 
-    Arpack data(A.columns(), t, neig);
+  Arpack data(A.columns(), t, neig);
 
-    if (initial_guess)
-	data.set_start_vector(initial_guess);
+  if (initial_guess) data.set_start_vector(initial_guess);
 
-    while (data.update() < Arpack::Finished) {
-	data.set_y(mmult(A, data.get_x()));
-    }
-    if (data.get_status() == Arpack::Finished) {
-	return data.get_data(eigenvectors);
-    } else {
-        std::cerr << data.error_message() << '\n';
-	myabort();
-    }
-    return Tensor<ELT_T>();
+  while (data.update() < Arpack::Finished) {
+    data.set_y(mmult(A, data.get_x()));
+  }
+  if (data.get_status() == Arpack::Finished) {
+    return data.get_data(eigenvectors);
+  } else {
+    std::cerr << data.error_message() << '\n';
+    myabort();
+  }
+  return Tensor<ELT_T>();
 }

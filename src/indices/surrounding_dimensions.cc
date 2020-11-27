@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-  /** Calculates the number of elements before, at and after a given index.
+/** Calculates the number of elements before, at and after a given index.
    *
    * @param d    a dimension vector that is studied (usually, got by Tensor::dimensions())
    * @param ndx  the index of an element of d.
@@ -31,18 +31,16 @@ namespace tensor {
    * @param d3   the value at this pointer position is set to the product of all
    *             d[i] with \f$ i > ndx \f$
    */
-  void
-  surrounding_dimensions(const Indices &d, index ndx,
-			 index *d1, index *d2, index *d3)
-  {
-    index i, l = d.size();
-    for (i = 0, *d1 = 1; i < ndx; i++) {
-      *d1 *= d[i];
-    }
-    *d2 = d[i++];
-    for (*d3 = 1; i < l; i++) {
-      *d3 *= d[i];
-    }
+void surrounding_dimensions(const Indices &d, index ndx, index *d1, index *d2,
+                            index *d3) {
+  index i, l = d.size();
+  for (i = 0, *d1 = 1; i < ndx; i++) {
+    *d1 *= d[i];
   }
+  *d2 = d[i++];
+  for (*d3 = 1; i < l; i++) {
+    *d3 *= d[i];
+  }
+}
 
-} // namespace tensor
+}  // namespace tensor

@@ -23,64 +23,68 @@
 
 namespace linalg {
 
-  using namespace lapack;
+using namespace lapack;
 
-  /**Solve a complex linear system of equations by Gauss-Seidel method.
+/**Solve a complex linear system of equations by Gauss-Seidel method.
 
      \ingroup Linalg
   */
-  const CTensor
-  solve(const CTensor &A, const CTensor &B) {
-    blas::integer n = A.rows();
-    blas::integer lda = n;
-    blas::integer ldb = B.dimension(0);
-    blas::integer nrhs;
+const CTensor solve(const CTensor &A, const CTensor &B) {
+  blas::integer n = A.rows();
+  blas::integer lda = n;
+  blas::integer ldb = B.dimension(0);
+  blas::integer nrhs;
 
-    // Currently, we only solve square systems
-    if (n != (blas::integer)A.columns()) {
-      std::cerr << "Routine solve() can only operate on square systems of equations, i.e\n"
-		<< "when the number of unknowns is equal to the number of equations.\n"
-		<< "However, you have passed a matrix of size " << A.columns() << " by " << A.rows();
-      abort();
-    }
-    // The size of B has to be compatible with that of A
-    if (n != ldb) {
-      std::cerr << "In solve(A,B), the number of equations does not match the number of right\n"
-		<< "hand members. That is, while matrix A has " << n << " columns, the vector\n"
-		<< "B has " << ldb << " elements.";
-      abort();
-    }
-
-    // The matrix that we pass to LAPACK is overwritten with the solution X
-    CTensor output(B);
-    cdouble *b = tensor_pointer(output);
-
-    // Since B may be a tensor, we compute how many effective
-    // right-hand-sides (nrhs) there are.
-    nrhs = B.size() / ldb;
-
-    // The matrix that we pass to LAPACK is modified
-    CTensor aux(A);
-    cdouble *a = tensor_pointer(aux);
-
-    blas::integer *ipiv = new blas::integer[n];
-    blas::integer info;
-#ifdef TENSOR_USE_ACML
-    zgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
-#else
-    F77NAME(zgesv)(&n, &nrhs, a, &lda, ipiv, b, &ldb, &info);
-#endif
-    delete[] ipiv;
-
-    if (info) {
-      std::cerr <<
-	"In solve()\n"
-	"The matrix of the system of equations is singular and thus the problem cannot be\n"
-	"solved with the standard resolutor.\n";
-      abort();
-    }
-
-    return output;
+  // Currently, we only solve square systems
+  if (n != (blas::integer)A.columns()) {
+    std::cerr
+        << "Routine solve() can only operate on square systems of equations, "
+           "i.e\n"
+        << "when the number of unknowns is equal to the number of equations.\n"
+        << "However, you have passed a matrix of size " << A.columns() << " by "
+        << A.rows();
+    abort();
+  }
+  // The size of B has to be compatible with that of A
+  if (n != ldb) {
+    std::cerr << "In solve(A,B), the number of equations does not match the "
+                 "number of right\n"
+              << "hand members. That is, while matrix A has " << n
+              << " columns, the vector\n"
+              << "B has " << ldb << " elements.";
+    abort();
   }
 
+  // The matrix that we pass to LAPACK is overwritten with the solution X
+  CTensor output(B);
+  cdouble *b = tensor_pointer(output);
+
+  // Since B may be a tensor, we compute how many effective
+  // right-hand-sides (nrhs) there are.
+  nrhs = B.size() / ldb;
+
+  // The matrix that we pass to LAPACK is modified
+  CTensor aux(A);
+  cdouble *a = tensor_pointer(aux);
+
+  blas::integer *ipiv = new blas::integer[n];
+  blas::integer info;
+#ifdef TENSOR_USE_ACML
+  zgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
+#else
+  F77NAME(zgesv)(&n, &nrhs, a, &lda, ipiv, b, &ldb, &info);
+#endif
+  delete[] ipiv;
+
+  if (info) {
+    std::cerr << "In solve()\n"
+                 "The matrix of the system of equations is singular and thus "
+                 "the problem cannot be\n"
+                 "solved with the standard resolutor.\n";
+    abort();
+  }
+
+  return output;
 }
+
+}  // namespace linalg

@@ -22,14 +22,14 @@
 
 namespace tensor {
 
-  Tensor<double> tanh(const Tensor<double> &t) {
-    Tensor<double> output(t.dimensions());
-    Tensor<double>::const_iterator src = t.begin();
-    Tensor<double>::iterator dest = output.begin();
-    for (; src != t.end(); src++, dest++) {
-      *dest = std::tanh(*src);
-    }
-    return output;
+Tensor<double> tanh(const Tensor<double> &t) {
+  Tensor<double> output(t.dimensions());
+  Tensor<double>::const_iterator src = t.begin();
+  Tensor<double>::iterator dest = output.begin();
+  for (; src != t.end(); src++, dest++) {
+    *dest = std::tanh(*src);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

@@ -27,4 +27,4 @@ namespace tensor {
 //
 template const Tensor<cdouble> full(const Sparse<cdouble> &s);
 
-} // namespace tensor
+}  // namespace tensor

@@ -21,39 +21,36 @@
 
 namespace tensor {
 
-  template<typename elt_t>
-  std::ostream &
-  MatrixForm<elt_t>::display(std::ostream &s) const
-  {
-    if (data.rank() > 2) {
-      std::cerr << "MatrixForm can only be used with two-dimensional tensors.\n";
-      abort();
-    } else if (data.rank() == 2) {
-      index rows = data.rows();
-      index cols = data.columns();
-      for (index i = 0; i < rows; i++) {
-	if (i == 0)
-	  s << "[";
-	else
-	  s << "\n ";
-	for (index j = 0; j < cols; j++) {
-	  if (j) s << ", ";
-	  s << data(i,j);
-	}
+template <typename elt_t>
+std::ostream &MatrixForm<elt_t>::display(std::ostream &s) const {
+  if (data.rank() > 2) {
+    std::cerr << "MatrixForm can only be used with two-dimensional tensors.\n";
+    abort();
+  } else if (data.rank() == 2) {
+    index rows = data.rows();
+    index cols = data.columns();
+    for (index i = 0; i < rows; i++) {
+      if (i == 0)
+        s << "[";
+      else
+        s << "\n ";
+      for (index j = 0; j < cols; j++) {
+        if (j) s << ", ";
+        s << data(i, j);
       }
-      s << "]";
-    } else if (data.rank() == 1) {
-      for (index i = 0; i < data.size(); i++) {
-	if (i)
-	  s << ", ";
-	else
-	  s << "[";
-	s << data[i];
-      }
-      s << "]";
     }
-    return s;
-  };
+    s << "]";
+  } else if (data.rank() == 1) {
+    for (index i = 0; i < data.size(); i++) {
+      if (i)
+        s << ", ";
+      else
+        s << "[";
+      s << data[i];
+    }
+    s << "]";
+  }
+  return s;
+};
 
-} // namespace tensor
-
+}  // namespace tensor

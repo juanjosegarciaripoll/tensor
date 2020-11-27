@@ -22,45 +22,42 @@
 
 namespace linalg {
 
-  using namespace tensor;
+using namespace tensor;
 
-  template<class Map, class Tensor>
-  static const Tensor
-  solve(const Map *A, const Tensor &b, const Tensor *x_start,
-	int maxiter, double tol)
-  {
-    typedef typename Tensor::elt_t number;
-    if (maxiter == 0) {
-      maxiter = b.rows();
-    }
-    if (tol <= 0) {
-      tol = 1e-10;
-    }
-    Tensor x = x_start? *x_start : (b + 0.05 * Tensor::random(b.dimensions()));
-    Tensor r = b - (*A)(x);
-    Tensor p = r;
-    number rsold = scprod(r,r);
-    if (sqrt(abs(rsold)) > tol) {
-      while (maxiter-- >= 0) {
-        Tensor Ap = (*A)(p);
-        number beta = scprod(p, Ap);
-        if (abs(beta) < 1e-15 * abs(rsold)) {
-          // We have hit a zero
-          std::cerr << "Singular system of equations hit in cgs()" << std::endl;
-          abort();
-        }
-        number alpha = rsold / scprod(p, Ap);
-        x += alpha * p;
-        r -= alpha * Ap;
-        number rsnew = scprod(r, r);
-        if (sqrt(abs(rsnew)) < tol)
-          break;
-        p = r + (rsnew / rsold) * p;
-        rsold = rsnew;
-      }
-    }
-    delete A;
-    return x;
+template <class Map, class Tensor>
+static const Tensor solve(const Map *A, const Tensor &b, const Tensor *x_start,
+                          int maxiter, double tol) {
+  typedef typename Tensor::elt_t number;
+  if (maxiter == 0) {
+    maxiter = b.rows();
   }
-
+  if (tol <= 0) {
+    tol = 1e-10;
+  }
+  Tensor x = x_start ? *x_start : (b + 0.05 * Tensor::random(b.dimensions()));
+  Tensor r = b - (*A)(x);
+  Tensor p = r;
+  number rsold = scprod(r, r);
+  if (sqrt(abs(rsold)) > tol) {
+    while (maxiter-- >= 0) {
+      Tensor Ap = (*A)(p);
+      number beta = scprod(p, Ap);
+      if (abs(beta) < 1e-15 * abs(rsold)) {
+        // We have hit a zero
+        std::cerr << "Singular system of equations hit in cgs()" << std::endl;
+        abort();
+      }
+      number alpha = rsold / scprod(p, Ap);
+      x += alpha * p;
+      r -= alpha * Ap;
+      number rsnew = scprod(r, r);
+      if (sqrt(abs(rsnew)) < tol) break;
+      p = r + (rsnew / rsold) * p;
+      rsold = rsnew;
+    }
+  }
+  delete A;
+  return x;
 }
+
+}  // namespace linalg

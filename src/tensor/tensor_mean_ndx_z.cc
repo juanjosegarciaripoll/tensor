@@ -20,10 +20,7 @@
 
 namespace tensor {
 
-  /* Compute the mean of the tensor T over dimension NDX. */
-  const CTensor mean(const CTensor &t, int ndx)
-  {
-    return ::do_mean(t, ndx);
-  }
+/* Compute the mean of the tensor T over dimension NDX. */
+const CTensor mean(const CTensor &t, int ndx) { return ::do_mean(t, ndx); }
 
-} // namespace tensor
+}  // namespace tensor

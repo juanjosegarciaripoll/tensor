@@ -21,17 +21,15 @@
 
 namespace tensor {
 
-  /**Complex conjugate of a tensor.*/
-  const Tensor<double>
-  real(const Tensor<cdouble> &t)
-  {
-    Tensor<double> output(t.dimensions());
-    Tensor<double>::iterator a = output.begin();
-    Tensor<cdouble>::const_iterator b = t.begin();
-    for (; b != t.end(); a++, b++) {
-      *a = real(*b);
-    }
-    return output;
+/**Complex conjugate of a tensor.*/
+const Tensor<double> real(const Tensor<cdouble> &t) {
+  Tensor<double> output(t.dimensions());
+  Tensor<double>::iterator a = output.begin();
+  Tensor<cdouble>::const_iterator b = t.begin();
+  for (; b != t.end(); a++, b++) {
+    *a = real(*b);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

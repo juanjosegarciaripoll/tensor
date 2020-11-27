@@ -22,19 +22,18 @@
 
 namespace tensor {
 
-  const Indices which(const Booleans &b)
-  {
-    index size = std::count(b.begin(), b.end(), true);
-    Indices output(size);
-    Indices::iterator oit = output.begin();
-    index i = 0;
-    for (Booleans::const_iterator it = b.begin(); it != b.end(); it++, i++) {
-      if (*it) {
-        *oit = i;
-        ++oit;
-      }
+const Indices which(const Booleans &b) {
+  index size = std::count(b.begin(), b.end(), true);
+  Indices output(size);
+  Indices::iterator oit = output.begin();
+  index i = 0;
+  for (Booleans::const_iterator it = b.begin(); it != b.end(); it++, i++) {
+    if (*it) {
+      *oit = i;
+      ++oit;
     }
-    return output;
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

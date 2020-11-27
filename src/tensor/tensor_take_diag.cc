@@ -20,16 +20,14 @@
 #include <algorithm>
 #include <tensor/tensor.h>
 
-template<typename elt_t>
-static void
-do_diag(elt_t *output, const elt_t *input, tensor::index a1, tensor::index a2,
-	tensor::index a2b, tensor::index a3, tensor::index a4, tensor::index a5,
-	tensor::index which)
-{
+template <typename elt_t>
+static void do_diag(elt_t *output, const elt_t *input, tensor::index a1,
+                    tensor::index a2, tensor::index a2b, tensor::index a3,
+                    tensor::index a4, tensor::index a5, tensor::index which) {
   // output(a1,a2b,a3,a5), input(a1,a2,a3,a4,a5)
   tensor::index o1, o2;
   if (which < 0) {
-    o2 = - which;
+    o2 = -which;
     o1 = 0;
   } else {
     o2 = 0;
@@ -38,27 +36,25 @@ do_diag(elt_t *output, const elt_t *input, tensor::index a1, tensor::index a2,
   for (tensor::index m = 0; m < a5; m++) {
     for (tensor::index l = 0; l < a2b; l++) {
       for (tensor::index k = 0; k < a3; k++) {
-	for (tensor::index i = 0; i < a1; i++) {
-	  output[i + a1 * (l + a2b * (k + a3 * m))] =
-	    input[i + a1 * ((o1+l) + a2 * (k + a3 * ((o2 + l) + a4 * m)))];
-	}
+        for (tensor::index i = 0; i < a1; i++) {
+          output[i + a1 * (l + a2b * (k + a3 * m))] =
+              input[i + a1 * ((o1 + l) + a2 * (k + a3 * ((o2 + l) + a4 * m)))];
+        }
       }
     }
   }
 }
 
 /* Extract a diagonal from a matrix. */
-template<typename elt_t>
-const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a, int which, int ndx1, int ndx2)
-{
-  if (ndx1 < 0)
-    ndx1 += a.rank();
+template <typename elt_t>
+const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
+                                         int which, int ndx1, int ndx2) {
+  if (ndx1 < 0) ndx1 += a.rank();
   assert((ndx1 < a.rank()) && (ndx1 >= 0));
-  if (ndx2 < 0)
-    ndx2 += a.rank();
+  if (ndx2 < 0) ndx2 += a.rank();
   assert((ndx2 < a.rank()) && (ndx2 >= 0));
 
-  tensor::Indices new_dims(std::max((int)a.rank()-1,(int)1));
+  tensor::Indices new_dims(std::max((int)a.rank() - 1, (int)1));
   size_t rank = 0;
   tensor::index i, a1, a2, a3, a4, a5, a2b;
   if (ndx1 > ndx2) {
@@ -84,7 +80,8 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a, int whi
     a5 *= di;
   }
   if (which <= -a2 || which >= a4) {
-    std::cerr << "In take_diag(M, which, ...), WHICH has a value " << which << " which exceeds the size of the tensor";
+    std::cerr << "In take_diag(M, which, ...), WHICH has a value " << which
+              << " which exceeds the size of the tensor";
     abort();
   }
   if (a2 == 1 && a4 == 1) {
@@ -99,7 +96,7 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a, int whi
   tensor::Tensor<elt_t> output(new_dims);
   which = -which;
   if (a2b) {
-    do_diag<elt_t>(output.begin(), a.begin(), a1,a2,a2b,a3,a3,a5,which);
+    do_diag<elt_t>(output.begin(), a.begin(), a1, a2, a2b, a3, a3, a5, which);
   }
   return output;
 }

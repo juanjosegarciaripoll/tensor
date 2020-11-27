@@ -20,45 +20,42 @@
 #include <tensor/linalg.h>
 #include <tensor/arpack.h>
 
-RTensor
-eigs_sym(const CSparse &A, RArpack::EigType t, size_t neig, CTensor *eigenvectors,
-	 const CTensor::elt_t *initial_guess)
-{
-    size_t n = A.columns();
+RTensor eigs_sym(const CSparse &A, RArpack::EigType t, size_t neig,
+                 CTensor *eigenvectors, const CTensor::elt_t *initial_guess) {
+  size_t n = A.columns();
 #ifdef COMPLEX
-    size_t ndouble = 2*n;
+  size_t ndouble = 2 * n;
 #else
-    size_t ndouble = n;
+  size_t ndouble = n;
 #endif
 
-    if (n <= 10) {
-	return eigs_sym(full(A), t, neig, eigenvectors, initial_guess);
-    }
+  if (n <= 10) {
+    return eigs_sym(full(A), t, neig, eigenvectors, initial_guess);
+  }
 
-    if (A.rows() != n) {
-	std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-	myabort();
-    }
+  if (A.rows() != n) {
+    std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
+    myabort();
+  }
 
-    RArpack data(ndouble, t, neig);
+  RArpack data(ndouble, t, neig);
 
-    if (initial_guess)
-	data.set_start_vector((const double *)initial_guess);
+  if (initial_guess) data.set_start_vector((const double *)initial_guess);
 
-    size_t bytes = ndouble * sizeof(double);
-    while (data.update() < RArpack::Finished) {
-	CTensor x(n, (CTensor::elt_t *)data.get_x_vector());
-	CTensor y = mmult(A, x);
-	memcpy(data.get_y_vector(), (const double *)x.pointer(), bytes);
+  size_t bytes = ndouble * sizeof(double);
+  while (data.update() < RArpack::Finished) {
+    CTensor x(n, (CTensor::elt_t *)data.get_x_vector());
+    CTensor y = mmult(A, x);
+    memcpy(data.get_y_vector(), (const double *)x.pointer(), bytes);
+  }
+  if (data.get_status() == RArpack::Finished) {
+    if (eigenvectors) {
+      *eigenvectors = CTensor(n, neig);
     }
-    if (data.get_status() == RArpack::Finished) {
-	if (eigenvectors) {
-	    *eigenvectors = CTensor(n, neig);
-	}
-	return data.get_data((double *)eigenvectors->pointer());
-    } else {
-	std::cerr << data.error_message() << '\n';
-	myabort();
-    }
-    return RTensor();
+    return data.get_data((double *)eigenvectors->pointer());
+  } else {
+    std::cerr << data.error_message() << '\n';
+    myabort();
+  }
+  return RTensor();
 }

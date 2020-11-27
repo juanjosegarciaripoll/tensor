@@ -21,34 +21,32 @@
 
 namespace linalg {
 
-  /**Right eigenvalue and eigenvector with the largest absolute
+/**Right eigenvalue and eigenvector with the largest absolute
      value, computed using the power method. 'iter' is the maximum
      number of iterations of the algorithm. 'tol' is the maximum
      absolute error in the elements of the eigenvector.
 
      \ingroup Linalg
   */
-  tensor::cdouble
-  eig_power_right(const CSparse &O, CTensor *vector, size_t iter, double tol)
-  {
-    assert(O.rows() == O.columns());
-    return do_eig_power(new tensor::MatrixMap<CSparse>(O), O.columns(),
-                        vector, iter, tol);
-  }
+tensor::cdouble eig_power_right(const CSparse &O, CTensor *vector, size_t iter,
+                                double tol) {
+  assert(O.rows() == O.columns());
+  return do_eig_power(new tensor::MatrixMap<CSparse>(O), O.columns(), vector,
+                      iter, tol);
+}
 
-  /**Left eigenvalue and eigenvector with the largest absolute
+/**Left eigenvalue and eigenvector with the largest absolute
      value, computed using the power method. 'iter' is the maximum
      number of iterations of the algorithm. 'tol' is the maximum
      absolute error in the elements of the eigenvector.
 
      \ingroup Linalg
   */
-  tensor::cdouble
-  eig_power_left(const CSparse &O, CTensor *vector, size_t iter, double tol)
-  {
-    assert(O.rows() == O.columns());
-    return do_eig_power(new tensor::MatrixMap<CSparse>(O, true), O.columns(),
-                        vector, iter, tol);
-  }
+tensor::cdouble eig_power_left(const CSparse &O, CTensor *vector, size_t iter,
+                               double tol) {
+  assert(O.rows() == O.columns());
+  return do_eig_power(new tensor::MatrixMap<CSparse>(O, true), O.columns(),
+                      vector, iter, tol);
+}
 
-} // namespace linalg
+}  // namespace linalg

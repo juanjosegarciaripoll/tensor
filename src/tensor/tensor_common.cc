@@ -25,7 +25,8 @@ namespace tensor {
 
 bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2) {
   if ((d1.size() != d2.size()) || some_unequal(d1, d2)) {
-    std::cerr << "A binary operation was attempted among two tensors" << std::endl
+    std::cerr << "A binary operation was attempted among two tensors"
+              << std::endl
               << "with different dimensions:" << std::endl
               << "d1 = " << d1 << std::endl
               << "d2 = " << d2 << std::endl;
@@ -34,4 +35,4 @@ bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2) {
   return true;
 }
 
-} // namespace
+}  // namespace tensor

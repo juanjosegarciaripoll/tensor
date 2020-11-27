@@ -22,14 +22,14 @@
 
 namespace tensor {
 
-  Tensor<cdouble> exp(const Tensor<cdouble> &t) {
-    Tensor<cdouble> output(t.dimensions());
-    Tensor<cdouble>::const_iterator src = t.begin();
-    Tensor<cdouble>::iterator dest = output.begin();
-    for (; src != t.end(); src++, dest++) {
-      *dest = std::exp(*src);
-    }
-    return output;
+Tensor<cdouble> exp(const Tensor<cdouble> &t) {
+  Tensor<cdouble> output(t.dimensions());
+  Tensor<cdouble>::const_iterator src = t.begin();
+  Tensor<cdouble>::iterator dest = output.begin();
+  for (; src != t.end(); src++, dest++) {
+    *dest = std::exp(*src);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

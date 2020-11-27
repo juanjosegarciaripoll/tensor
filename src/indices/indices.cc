@@ -24,48 +24,48 @@
 
 namespace tensor {
 
-  const ListGenerator<index> igen = {};
-  const ListGenerator<double> rgen = {};
-  const ListGenerator<cdouble> cgen = {};
+const ListGenerator<index> igen = {};
+const ListGenerator<double> rgen = {};
+const ListGenerator<cdouble> cgen = {};
 
-  template class Vector<index>;
+template class Vector<index>;
 
-  bool all_equal(const Indices &a, const Indices &b) {
-    return (a.size() == b.size()) &&
-      std::equal(a.begin_const(), a.end_const(), b.begin_const());
-  }
+bool all_equal(const Indices &a, const Indices &b) {
+  return (a.size() == b.size()) &&
+         std::equal(a.begin_const(), a.end_const(), b.begin_const());
+}
 
-  index Indices::total_size() const {
-    if (size()) {
-      index aux = 1;
-      for (const_iterator it = begin_const(); it != end_const(); ++it) {
-        if (*it < 0) {
-          std::cerr << "Negative dimension in tensor's dimension #"
-                    << (it - begin_const()) << std::endl
-                    << "All dimensions:" << std::endl
-                    << *this << std::endl;
-          return false;
-        }
-        aux *= *it;
+index Indices::total_size() const {
+  if (size()) {
+    index aux = 1;
+    for (const_iterator it = begin_const(); it != end_const(); ++it) {
+      if (*it < 0) {
+        std::cerr << "Negative dimension in tensor's dimension #"
+                  << (it - begin_const()) << std::endl
+                  << "All dimensions:" << std::endl
+                  << *this << std::endl;
+        return false;
       }
-      return aux;
-    } else {
-      return 0;
+      aux *= *it;
     }
+    return aux;
+  } else {
+    return 0;
   }
+}
 
-  const Indices Indices::range(index min, index max, index step) {
-    if (max < min) {
-      return Indices();
-    } else {
-      index size = (max - min) / step + 1;
-      Indices output(size);
-      for (Indices::iterator it = output.begin(); it != output.end(); it ++) {
-        *it = min;
-        min += step;
-      }
-      return output;
+const Indices Indices::range(index min, index max, index step) {
+  if (max < min) {
+    return Indices();
+  } else {
+    index size = (max - min) / step + 1;
+    Indices output(size);
+    for (Indices::iterator it = output.begin(); it != output.end(); it++) {
+      *it = min;
+      min += step;
     }
+    return output;
   }
+}
 
-} // namespace
+}  // namespace tensor

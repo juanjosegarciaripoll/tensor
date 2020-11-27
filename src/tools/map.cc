@@ -21,17 +21,17 @@
 
 namespace tensor {
 
-  template<class Matrix>
-  MatrixMap<Matrix>::MatrixMap(const Matrix &m, bool transpose)
-    : m_(m), transpose_(transpose)
-  {}
+template <class Matrix>
+MatrixMap<Matrix>::MatrixMap(const Matrix &m, bool transpose)
+    : m_(m), transpose_(transpose) {}
 
-  template<class Matrix>
-  MatrixMap<Matrix>::~MatrixMap() {}
+template <class Matrix>
+MatrixMap<Matrix>::~MatrixMap() {}
 
-  template<class Matrix>
-  const typename MatrixMap<Matrix>::tensor_t
-  MatrixMap<Matrix>::operator()(const tensor_t &arg) const
-  { return transpose_? mmult(arg, m_) : mmult(m_, arg); }
+template <class Matrix>
+const typename MatrixMap<Matrix>::tensor_t MatrixMap<Matrix>::operator()(
+    const tensor_t &arg) const {
+  return transpose_ ? mmult(arg, m_) : mmult(m_, arg);
+}
 
-} // namespace tensor
+}  // namespace tensor

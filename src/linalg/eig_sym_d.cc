@@ -23,9 +23,9 @@
 
 namespace linalg {
 
-  using namespace lapack;
+using namespace lapack;
 
-  /**Eigenvalue decomposition of a real matrix.
+/**Eigenvalue decomposition of a real matrix.
      Given a square matrix A, we find a diagonal matrix D and a set of vectors R
      or L such that
      A V = V D
@@ -40,43 +40,43 @@ namespace linalg {
 
      \ingroup Linalg
   */
-  RTensor
-  eig_sym(const RTensor &A, RTensor *V)
-  {
-    assert(A.rows() > 0);
-    assert(A.rank() == 2);
-    assert(A.rows() == A.columns());
+RTensor eig_sym(const RTensor &A, RTensor *V) {
+  assert(A.rows() > 0);
+  assert(A.rank() == 2);
+  assert(A.rows() == A.columns());
 
-    blas::integer n = A.rows();
-    if ((size_t)n != A.columns()) {
-      std::cerr << "Routine eig_sym() can only compute eigenvalues of square matrices, and you\n"
-                << "have passed a matrix that is " << A.rows() << " by " << A.columns();
-      abort();
-    }
-
-    RTensor aux(A);
-    double *a = tensor_pointer(aux);
-    blas::integer lda = n, info[1];
-    char jobz[2] = { (V == 0)? 'N' : 'V', 0 };
-    char uplo[2] = { 'U', 0 };
-    RTensor output(n);
-    double *w = tensor_pointer(output);
-
-#ifdef TENSOR_USE_ACML
-    dsyev(*jobz, *uplo, n, a, lda, w, info);
-#else
-    blas::integer lwork = -1;
-    double work0[1];
-    F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, info);
-    lwork = (int)work0[0];
-
-    RTensor work(lwork);
-    F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, tensor_pointer(work),
-                   &lwork, info);
-#endif
-
-    if (V) *V = aux;
-    return output;
+  blas::integer n = A.rows();
+  if ((size_t)n != A.columns()) {
+    std::cerr << "Routine eig_sym() can only compute eigenvalues of square "
+                 "matrices, and you\n"
+              << "have passed a matrix that is " << A.rows() << " by "
+              << A.columns();
+    abort();
   }
 
-} // namespace linalg
+  RTensor aux(A);
+  double *a = tensor_pointer(aux);
+  blas::integer lda = n, info[1];
+  char jobz[2] = {(V == 0) ? 'N' : 'V', 0};
+  char uplo[2] = {'U', 0};
+  RTensor output(n);
+  double *w = tensor_pointer(output);
+
+#ifdef TENSOR_USE_ACML
+  dsyev(*jobz, *uplo, n, a, lda, w, info);
+#else
+  blas::integer lwork = -1;
+  double work0[1];
+  F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, info);
+  lwork = (int)work0[0];
+
+  RTensor work(lwork);
+  F77NAME(dsyev)
+  (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork, info);
+#endif
+
+  if (V) *V = aux;
+  return output;
+}
+
+}  // namespace linalg

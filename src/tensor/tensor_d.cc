@@ -26,4 +26,3 @@
 // all required code.
 //
 template class tensor::Tensor<double>;
-

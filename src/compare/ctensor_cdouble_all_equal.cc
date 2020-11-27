@@ -22,12 +22,10 @@
 
 namespace tensor {
 
-  bool all_equal(const CTensor &a, const cdouble &b)
-  {
-    for (CTensor::const_iterator it = a.begin(); it != a.end(); it++)
-      if (!(*it == b))
-        return false;
-    return true;
-  }
+bool all_equal(const CTensor &a, const cdouble &b) {
+  for (CTensor::const_iterator it = a.begin(); it != a.end(); it++)
+    if (!(*it == b)) return false;
+  return true;
+}
 
-} // namespace tensor
+}  // namespace tensor

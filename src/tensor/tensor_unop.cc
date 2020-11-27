@@ -22,14 +22,14 @@
 
 namespace tensor {
 
-  TYPE2 OPERATOR1(const TYPE1 &t) {
-    TYPE2 output(t.dimensions());
-    TYPE1::const_iterator src = t.begin();
-    TYPE2::iterator dest = output.begin();
-    for (; src != t.end(); src++, dest++) {
-      *dest = OPERATOR2(*src);
-    }
-    return output;
+TYPE2 OPERATOR1(const TYPE1 &t) {
+  TYPE2 output(t.dimensions());
+  TYPE1::const_iterator src = t.begin();
+  TYPE2::iterator dest = output.begin();
+  for (; src != t.end(); src++, dest++) {
+    *dest = OPERATOR2(*src);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

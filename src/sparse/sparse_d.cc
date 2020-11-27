@@ -23,10 +23,10 @@
 
 namespace tensor {
 
-  //
-  // Explicitely instantiate an specialization of RSparse. This generates
-  // all required code.
-  //
-  template class Sparse<double>;
+//
+// Explicitely instantiate an specialization of RSparse. This generates
+// all required code.
+//
+template class Sparse<double>;
 
-} // namespace tensor
+}  // namespace tensor

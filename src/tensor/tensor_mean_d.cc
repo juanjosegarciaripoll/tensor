@@ -20,9 +20,6 @@
 
 namespace tensor {
 
-  double mean(const RTensor &r)
-  {
-    return sum(r) / r.size();
-  }
+double mean(const RTensor &r) { return sum(r) / r.size(); }
 
-} // namespace tensor
+}  // namespace tensor

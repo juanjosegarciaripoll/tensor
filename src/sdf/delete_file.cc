@@ -18,20 +18,17 @@
 */
 
 #ifdef _MSC_VER
-# include <stdio.h>
-# define unlink _unlink
+#include <stdio.h>
+#define unlink _unlink
 #else
-# include <unistd.h>
+#include <unistd.h>
 #endif
 #include <tensor/sdf.h>
 
 namespace sdf {
 
-  bool delete_file(const std::string &filename)
-  {
-    return unlink(filename.c_str()) == 0;
-  }
-
+bool delete_file(const std::string &filename) {
+  return unlink(filename.c_str()) == 0;
 }
 
-
+}  // namespace sdf

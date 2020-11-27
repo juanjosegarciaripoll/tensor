@@ -22,23 +22,21 @@
 
 namespace sdf {
 
-  bool rename_file(const std::string &orig, const std::string &dest, bool overwrite)
-  {
-    if (file_exists(dest)) {
-      if (!overwrite || !delete_file(dest)) {
-	std::cerr << "Unable to move file to destination " << dest
-		  << " because destination cannot be deleted." << std::endl;
-	abort();
-      }
-    }
-    if (!file_exists(orig)) {
-      std::cerr << "In rename_file(), original file " << dest
-		<< " does not exist" << std::endl;
+bool rename_file(const std::string &orig, const std::string &dest,
+                 bool overwrite) {
+  if (file_exists(dest)) {
+    if (!overwrite || !delete_file(dest)) {
+      std::cerr << "Unable to move file to destination " << dest
+                << " because destination cannot be deleted." << std::endl;
       abort();
     }
-    return rename(orig.c_str(), dest.c_str()) == 0;
   }
-
+  if (!file_exists(orig)) {
+    std::cerr << "In rename_file(), original file " << dest << " does not exist"
+              << std::endl;
+    abort();
+  }
+  return rename(orig.c_str(), dest.c_str()) == 0;
 }
 
-
+}  // namespace sdf

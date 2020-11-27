@@ -24,46 +24,39 @@
 
 namespace tensor {
 
-  const CTensor
-  fftw(const CTensor &in, int direction)
-  {
-    CTensor out(in.dimensions());
+const CTensor fftw(const CTensor &in, int direction) {
+  CTensor out(in.dimensions());
 
-    fftw_complex *pin =
-            const_cast<fftw_complex*>
-            (reinterpret_cast<const fftw_complex*> (in.begin()));
-    fftw_complex *pout = reinterpret_cast<fftw_complex*> (out.begin());
-    do_fftw(pin, pout, in.dimensions(), direction);
+  fftw_complex *pin = const_cast<fftw_complex *>(
+      reinterpret_cast<const fftw_complex *>(in.begin()));
+  fftw_complex *pout = reinterpret_cast<fftw_complex *>(out.begin());
+  do_fftw(pin, pout, in.dimensions(), direction);
 
-    return out;
-  }
+  return out;
+}
 
-  const CTensor
-  fftw(const CTensor& in, index dim, int direction) {
-    assert(dim >=0 && dim < in.rank());
-    CTensor out(in.dimensions());
+const CTensor fftw(const CTensor &in, index dim, int direction) {
+  assert(dim >= 0 && dim < in.rank());
+  CTensor out(in.dimensions());
 
-    fftw_complex *pin =
-            const_cast<fftw_complex*>
-            (reinterpret_cast<const fftw_complex*> (in.begin()));
-    fftw_complex *pout = reinterpret_cast<fftw_complex*> (out.begin());
-    do_fftw(pin, pout, dim, in.dimensions(), direction);
+  fftw_complex *pin = const_cast<fftw_complex *>(
+      reinterpret_cast<const fftw_complex *>(in.begin()));
+  fftw_complex *pout = reinterpret_cast<fftw_complex *>(out.begin());
+  do_fftw(pin, pout, dim, in.dimensions(), direction);
 
-    return out;
-  }
+  return out;
+}
 
-  const CTensor
-  fftw(const CTensor& in, const Booleans& convert, int direction) {
-    assert(convert.size() == in.rank());
-    CTensor out(in.dimensions());
+const CTensor fftw(const CTensor &in, const Booleans &convert, int direction) {
+  assert(convert.size() == in.rank());
+  CTensor out(in.dimensions());
 
-    fftw_complex *pin =
-      const_cast<fftw_complex*>
-      (reinterpret_cast<const fftw_complex*> (in.begin()));
-    fftw_complex *pout = reinterpret_cast<fftw_complex*> (out.begin());
-    do_fftw(pin, pout, convert, in.dimensions(), direction);
+  fftw_complex *pin = const_cast<fftw_complex *>(
+      reinterpret_cast<const fftw_complex *>(in.begin()));
+  fftw_complex *pout = reinterpret_cast<fftw_complex *>(out.begin());
+  do_fftw(pin, pout, convert, in.dimensions(), direction);
 
-    return out;
-  }
+  return out;
+}
 
-} // namespace tensor
+}  // namespace tensor

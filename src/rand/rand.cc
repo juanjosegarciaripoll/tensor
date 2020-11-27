@@ -30,9 +30,7 @@
 
 namespace tensor {
 
-static bool
-initialize_mt()
-{
+static bool initialize_mt() {
   rand_reseed();
   return true;
 }
@@ -41,14 +39,11 @@ initialize_mt()
 #define SEED_SIZE 1
 #endif
 
-void set_seed(unsigned long seed)
-{
-  init_genrand(seed);
-}
+void set_seed(unsigned long seed) { init_genrand(seed); }
 
 void rand_reseed() {
 #if defined(_MSC_VER) || defined(__MINGW32__)
-# if 1
+#if 1
   // The following code has a problem: it requires additional libraries
   HCRYPTPROV hCryptProv;
   union {
@@ -63,7 +58,7 @@ void rand_reseed() {
   if (!ok) {
     init_genrand((uint32_t)clock() ^ (uint32_t)time(0));
   }
-# else
+#else
   // Sleep one second at least to get a different value on each call.
   static int firsttime = 1;
   if (!firsttime) {
@@ -92,7 +87,7 @@ void rand_reseed() {
     }
   }
 #endif
-  for (size_t i = 0; i < 624*10; i++) {
+  for (size_t i = 0; i < 624 * 10; i++) {
     // Warm up
     rand<long>();
   }
@@ -101,27 +96,54 @@ void rand_reseed() {
 static bool mt_initialized = initialize_mt();
 
 #ifdef TENSOR_64BITS
-template<> int rand<int>() { return genrand_int63(); }
-template<> unsigned int rand<unsigned int>() { return genrand_int64(); }
-template<> long rand<long>() { return genrand_int63(); }
-template<> unsigned long rand<unsigned long>() { return genrand_int64(); }
+template <>
+int rand<int>() {
+  return genrand_int63();
+}
+template <>
+unsigned int rand<unsigned int>() {
+  return genrand_int64();
+}
+template <>
+long rand<long>() {
+  return genrand_int63();
+}
+template <>
+unsigned long rand<unsigned long>() {
+  return genrand_int64();
+}
 #else
-template<> int rand<int>() { return genrand_int31(); }
-template<> unsigned int rand<unsigned int>() { return genrand_int32(); }
-template<> long rand<long>() { return genrand_int31(); }
-template<> unsigned long rand<unsigned long>() { return genrand_int32(); }
+template <>
+int rand<int>() {
+  return genrand_int31();
+}
+template <>
+unsigned int rand<unsigned int>() {
+  return genrand_int32();
+}
+template <>
+long rand<long>() {
+  return genrand_int31();
+}
+template <>
+unsigned long rand<unsigned long>() {
+  return genrand_int32();
+}
 #endif
 
-template<> float rand<float>() {
+template <>
+float rand<float>() {
   return (float)genrand_res53();
 }
 
-template<> double rand<double>() {
+template <>
+double rand<double>() {
   return genrand_res53();
 }
 
-template<> cdouble rand<cdouble>() {
+template <>
+cdouble rand<cdouble>() {
   return to_complex(genrand_res53(), genrand_res53());
 }
 
-} // namespace rand
+}  // namespace tensor

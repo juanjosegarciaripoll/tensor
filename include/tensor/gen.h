@@ -27,7 +27,7 @@
 /*@{*/
 namespace tensor {
 
-  /** Compile-time generator of vectors, tensors and indices. This placeholder
+/** Compile-time generator of vectors, tensors and indices. This placeholder
       can be used to statically create arrays of data that can then be coerced
       to Vector, Tensor and Indices types. There are three generators tensor::igen,
       tensor::rgen and tensor::cgen of types ListGenerator<t> with t = tensor::index,
@@ -38,124 +38,118 @@ Indices d = igen << 1 << 2 << 3 << 5;
 \endcode
 
   */
-  template<typename elt_t> class ListGenerator {};
+template <typename elt_t>
+class ListGenerator {};
 
-  /** Placeholder for statically creating a vector of indices. For example
+/** Placeholder for statically creating a vector of indices. For example
 \code
 Indices d = igen << 2 << 2;
 RTensor a(igen << 1 << 3);
 \endcode
 \sa ListGenerator */
-  extern const ListGenerator<index> igen;
-  /** Placeholder for statically creating a vector of reals.
+extern const ListGenerator<index> igen;
+/** Placeholder for statically creating a vector of reals.
 \code
 RTensor a = rgen << 1 << 3;
 \endcode
 \sa ListGenerator */
-  extern const ListGenerator<double> rgen;
-  /** Placeholder for statically creating a vector of complex numbers.
+extern const ListGenerator<double> rgen;
+/** Placeholder for statically creating a vector of complex numbers.
 \code
 CTensor a = cgen << 1 << 3;
 \endcode
 \sa ListGenerator */
-  extern const ListGenerator<cdouble> cgen;
-  /** Placeholder for statically creating a vector of complex numbers.
+extern const ListGenerator<cdouble> cgen;
+/** Placeholder for statically creating a vector of complex numbers.
 \code
 Booleans a = bgen << true << false;
 \endcode
 \sa ListGenerator */
-  extern const ListGenerator<bool> bgen;
+extern const ListGenerator<bool> bgen;
 
-  /** Placeholder for statically creating a vector of elements, whose type
+/** Placeholder for statically creating a vector of elements, whose type
 is determined by the first element.
 \code
 RTensor a = gen << (double)1.0 << 3;
 \endcode
 \sa ListGenerator */
-  extern class FlexiListGenerator {} xgen;
+extern class FlexiListGenerator {
+} xgen;
 
-  template<typename elt_t, size_t n>
-  class StaticVector {
-  public:
-    StaticVector(const StaticVector<elt_t,n-1> &other, elt_t x) :
-      inner(other), extra(x)
-    {};
-    operator Vector<elt_t>() const {
-      Vector<elt_t> output(n);
-      push(output.begin());
-      return output;
-    }
-    void push(elt_t *v) const {
-      inner.push(v);
-      v[n-1] = extra;
-    }
-    index size() const {
-      return n;
-    }
-  protected:
-    StaticVector<elt_t,n-1> inner;
-    elt_t extra;
-  };
-
-  template<typename elt_t>
-  class StaticVector<elt_t,(size_t)1> {
-  public:
-    StaticVector(elt_t x) :
-      extra(x)
-    {};
-    operator Vector<elt_t>() const {
-      Vector<elt_t> output(1);
-      push(output.begin());
-      return output;
-    }
-    void push(elt_t *v) const {
-      v[0] = extra;
-    }
-    index size() const {
-      return 1;
-    }
-  private:
-    elt_t extra;
-  };
-
-  template<typename t1, typename t2>
-  StaticVector<t1,1> operator<<(const ListGenerator<t1> &g, const t2 x) {
-    return StaticVector<t1,1>(x);
+template <typename elt_t, size_t n>
+class StaticVector {
+ public:
+  StaticVector(const StaticVector<elt_t, n - 1> &other, elt_t x)
+      : inner(other), extra(x){};
+  operator Vector<elt_t>() const {
+    Vector<elt_t> output(n);
+    push(output.begin());
+    return output;
   }
-
-  template<typename t1>
-  StaticVector<t1,1> operator<<(const FlexiListGenerator &g, const t1 x) {
-    return StaticVector<t1,1>(x);
+  void push(elt_t *v) const {
+    inner.push(v);
+    v[n - 1] = extra;
   }
+  index size() const { return n; }
 
-  template<typename t1, typename t2, size_t n>
-  StaticVector<t1,n+1> operator<<(const StaticVector<t1,n> &g, const t2 x) {
-    return StaticVector<t1,n+1>(g,x);
+ protected:
+  StaticVector<elt_t, n - 1> inner;
+  elt_t extra;
+};
+
+template <typename elt_t>
+class StaticVector<elt_t, (size_t)1> {
+ public:
+  StaticVector(elt_t x) : extra(x){};
+  operator Vector<elt_t>() const {
+    Vector<elt_t> output(1);
+    push(output.begin());
+    return output;
   }
+  void push(elt_t *v) const { v[0] = extra; }
+  index size() const { return 1; }
 
-  template<typename t1> StaticVector<t1,1> gen(t1 r) {
-    return StaticVector<t1,1>(r);
-  }
+ private:
+  elt_t extra;
+};
 
-  template<typename elt_t, size_t n>
-  bool operator==(const tensor::StaticVector<elt_t,n> &v1,
-                  const tensor::Vector<elt_t> &v2)
-  {
-    tensor::Vector<elt_t> v0(v1);
-    if (v0.size() != v2.size()) return false;
-    return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
-  }
+template <typename t1, typename t2>
+StaticVector<t1, 1> operator<<(const ListGenerator<t1> &g, const t2 x) {
+  return StaticVector<t1, 1>(x);
+}
 
-  template<typename elt_t, size_t n>
-  bool operator==(const tensor::Vector<elt_t> &v2,
-                  const tensor::StaticVector<elt_t,n> &v1)
-  {
-    tensor::Vector<elt_t> v0(v1);
-    if (v0.size() != v2.size()) return false;
-    return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
-  }
+template <typename t1>
+StaticVector<t1, 1> operator<<(const FlexiListGenerator &g, const t1 x) {
+  return StaticVector<t1, 1>(x);
+}
 
-} // namespace tensor
+template <typename t1, typename t2, size_t n>
+StaticVector<t1, n + 1> operator<<(const StaticVector<t1, n> &g, const t2 x) {
+  return StaticVector<t1, n + 1>(g, x);
+}
+
+template <typename t1>
+StaticVector<t1, 1> gen(t1 r) {
+  return StaticVector<t1, 1>(r);
+}
+
+template <typename elt_t, size_t n>
+bool operator==(const tensor::StaticVector<elt_t, n> &v1,
+                const tensor::Vector<elt_t> &v2) {
+  tensor::Vector<elt_t> v0(v1);
+  if (v0.size() != v2.size()) return false;
+  return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
+}
+
+template <typename elt_t, size_t n>
+bool operator==(const tensor::Vector<elt_t> &v2,
+                const tensor::StaticVector<elt_t, n> &v1) {
+  tensor::Vector<elt_t> v0(v1);
+  if (v0.size() != v2.size()) return false;
+  return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
+}
+
+}  // namespace tensor
 /*@}*/
 
-#endif // TENSOR_GEN_H
+#endif  // TENSOR_GEN_H

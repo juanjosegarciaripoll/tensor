@@ -21,9 +21,8 @@
 
 namespace tensor {
 
-  cdouble sum(const CTensor &r)
-  {
-    return std::accumulate(r.begin(), r.end(), to_complex(0));
-  }
+cdouble sum(const CTensor &r) {
+  return std::accumulate(r.begin(), r.end(), to_complex(0));
+}
 
-} // namespace tensor
+}  // namespace tensor

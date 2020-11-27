@@ -24,35 +24,27 @@
 
 namespace tensor {
 
-  Flags FLAGS;
+Flags FLAGS;
 
-  Flags::Flags() :
-    _values(0)
-  {
+Flags::Flags() : _values(0) {}
+
+double Flags::get(unsigned int code) const { return _values[code]; }
+
+class Flags &Flags::set(unsigned int code, double value) {
+  if (code >= _values.size()) {
+    std::cerr << "Invalid flag code " << code << " into Flags array\n";
+    abort();
   }
-
-  double Flags::get(unsigned int code) const
-  {
-    return _values[code];  
-  }
-
-  class Flags &Flags::set(unsigned int code, double value)
-  {
-    if (code >= _values.size()) {
-      std::cerr << "Invalid flag code " << code << " into Flags array\n";
-      abort();
-    }
-    _values.at(code) = value;
-    return *this;
-  }
-
-  unsigned int Flags::create_key(double value)
-  {
-    int size = _values.size();
-    _values.resize(size+1, value);
-    return size;
-  }
-
-  const unsigned int TENSOR_DEBUG_BLOCK_SVD = FLAGS.create_key(0.0);
-
+  _values.at(code) = value;
+  return *this;
 }
+
+unsigned int Flags::create_key(double value) {
+  int size = _values.size();
+  _values.resize(size + 1, value);
+  return size;
+}
+
+const unsigned int TENSOR_DEBUG_BLOCK_SVD = FLAGS.create_key(0.0);
+
+}  // namespace tensor

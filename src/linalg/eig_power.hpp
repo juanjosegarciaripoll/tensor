@@ -24,47 +24,44 @@
 
 namespace linalg {
 
-  using namespace tensor;
+using namespace tensor;
 
-  template<typename elt_t>
-  elt_t eig_power_loop(const Map<Tensor<elt_t> > *A, size_t dims, Tensor<elt_t> *vector,
-                       size_t iter, double tol)
-  {
-    if (tol <= 0) {
-      tol = 1e-11;
-    }
-    assert(vector);
-    Tensor<elt_t> &v = *vector;
-    if (v.size() != dims) {
-      v = 0.5 - Tensor<elt_t>::random(dims);
-    }
-    if (iter == 0) {
-      iter = std::max<size_t>(20, v.size());
-    }
-    v /= norm2(v);
-    elt_t eig, old_eig;
-    //
-    // We apply repeatedly the map 'A' onto the same random initial
-    // vector, until (A^n)*v converges to the eigenstate with the largest
-    // eigenvalue (in absolute value) that has some support on 'v'.
-    // Sometimes degeneracy will slow convergence. In this case we stop
-    // when the algorithm slows downs too much.
-    //
-    for (size_t i = 0; i <= iter; i++) {
-      Tensor<elt_t> v_new = (*A)(v);
-      eig = scprod(v, v_new);
-      double err = norm0(v_new - eig * v);
-      v = (v_new /= norm2(v_new));
-      // Stop if the vector is sufficiently close to an eigenstate
-      if (err < tol * std::abs(eig))
-        break;
-      // Or if the eigenvalues stopped evolving
-      if (i && (std::abs(eig - old_eig) < tol * std::abs(eig)))
-        break;
-      old_eig = eig;
-    }
-    delete A;
-    return eig;
+template <typename elt_t>
+elt_t eig_power_loop(const Map<Tensor<elt_t> > *A, size_t dims,
+                     Tensor<elt_t> *vector, size_t iter, double tol) {
+  if (tol <= 0) {
+    tol = 1e-11;
   }
+  assert(vector);
+  Tensor<elt_t> &v = *vector;
+  if (v.size() != dims) {
+    v = 0.5 - Tensor<elt_t>::random(dims);
+  }
+  if (iter == 0) {
+    iter = std::max<size_t>(20, v.size());
+  }
+  v /= norm2(v);
+  elt_t eig, old_eig;
+  //
+  // We apply repeatedly the map 'A' onto the same random initial
+  // vector, until (A^n)*v converges to the eigenstate with the largest
+  // eigenvalue (in absolute value) that has some support on 'v'.
+  // Sometimes degeneracy will slow convergence. In this case we stop
+  // when the algorithm slows downs too much.
+  //
+  for (size_t i = 0; i <= iter; i++) {
+    Tensor<elt_t> v_new = (*A)(v);
+    eig = scprod(v, v_new);
+    double err = norm0(v_new - eig * v);
+    v = (v_new /= norm2(v_new));
+    // Stop if the vector is sufficiently close to an eigenstate
+    if (err < tol * std::abs(eig)) break;
+    // Or if the eigenvalues stopped evolving
+    if (i && (std::abs(eig - old_eig) < tol * std::abs(eig))) break;
+    old_eig = eig;
+  }
+  delete A;
+  return eig;
+}
 
-} // namespace linalg
+}  // namespace linalg

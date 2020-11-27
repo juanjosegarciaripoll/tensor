@@ -21,10 +21,9 @@
 
 using namespace jobs;
 
-void
-Job::dump_variables(sdf::OutDataFile &file) const
-{
-  for (var_list::const_iterator it = variables_.begin(); it != variables_.end(); it++) {
+void Job::dump_variables(sdf::OutDataFile &file) const {
+  for (var_list::const_iterator it = variables_.begin(); it != variables_.end();
+       it++) {
     file.dump(it->value(), it->name());
   }
 }

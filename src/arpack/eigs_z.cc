@@ -27,67 +27,65 @@
 
 namespace linalg {
 
-  using namespace tensor;
+using namespace tensor;
 
-  CTensor
-  eigs(const CTensor &A, int eig_type, size_t neig, CTensor *eigenvectors,
-       bool *converged)
-  {
-    EigType t = (EigType)eig_type;
-    size_t n = A.columns();
+CTensor eigs(const CTensor &A, int eig_type, size_t neig, CTensor *eigenvectors,
+             bool *converged) {
+  EigType t = (EigType)eig_type;
+  size_t n = A.columns();
 
-    if ((A.rank() != 2) || (A.rows() != n)) {
-      std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-      abort();
-    }
+  if ((A.rank() != 2) || (A.rows() != n)) {
+    std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
+    abort();
+  }
 
-    if (neig > n || neig == 0) {
-      std::cerr << "In eigs(): Can only compute up to " << n << " eigenvalues\n"
-                << "in a matrix that has " << n << " times " << n << " elements.";
-      abort();
-    }
+  if (neig > n || neig == 0) {
+    std::cerr << "In eigs(): Can only compute up to " << n << " eigenvalues\n"
+              << "in a matrix that has " << n << " times " << n << " elements.";
+    abort();
+  }
 
-    if (n <= 4) {
-      /* For small sizes, the ARPACK solver produces wrong results!
+  if (n <= 4) {
+    /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-      CTensor vectors;
-      CTensor values = eig(A, NULL, eigenvectors? &vectors : 0);
-      Indices ndx = CArpack::sort_values(values, t);
-      Indices ndx_out(neig);
-      std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
-      if (eigenvectors) {
-        *eigenvectors = vectors(range(), range(ndx_out));
-      }
-      if (converged) {
-        *converged = true;
-      }
-      return CTensor(values(range(ndx_out)));
+    CTensor vectors;
+    CTensor values = eig(A, NULL, eigenvectors ? &vectors : 0);
+    Indices ndx = CArpack::sort_values(values, t);
+    Indices ndx_out(neig);
+    std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
+    if (eigenvectors) {
+      *eigenvectors = vectors(range(), range(ndx_out));
     }
-
-    CArpack data(n, t, neig);
-
-    if (eigenvectors && eigenvectors->size() >= A.columns())
-      data.set_start_vector(eigenvectors->begin_const());
-
-    while (data.update() < CArpack::Finished) {
-      blas::gemv('N', n, n, number_one<cdouble>(), A.begin(), n, data.get_x_vector(), 1,
-                 number_zero<cdouble>(), data.get_y_vector(), 1);
+    if (converged) {
+      *converged = true;
     }
-    if (data.get_status() == CArpack::Finished) {
-      if (converged)
-        *converged = true;
-      return data.get_data(eigenvectors);
-    } else {
-      std::cerr << "eigs: " << data.error_message() << '\n';
-      if (converged) {
-        *converged = false;
-        return CTensor::zeros(igen << neig);
-      } else {
-	abort();
-      }
-    }
+    return CTensor(values(range(ndx_out)));
   }
 
-} //namespace linalg
+  CArpack data(n, t, neig);
+
+  if (eigenvectors && eigenvectors->size() >= A.columns())
+    data.set_start_vector(eigenvectors->begin_const());
+
+  while (data.update() < CArpack::Finished) {
+    blas::gemv('N', n, n, number_one<cdouble>(), A.begin(), n,
+               data.get_x_vector(), 1, number_zero<cdouble>(),
+               data.get_y_vector(), 1);
+  }
+  if (data.get_status() == CArpack::Finished) {
+    if (converged) *converged = true;
+    return data.get_data(eigenvectors);
+  } else {
+    std::cerr << "eigs: " << data.error_message() << '\n';
+    if (converged) {
+      *converged = false;
+      return CTensor::zeros(igen << neig);
+    } else {
+      abort();
+    }
+  }
+}
+
+}  //namespace linalg

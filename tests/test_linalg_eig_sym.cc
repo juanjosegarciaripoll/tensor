@@ -24,73 +24,73 @@
 
 namespace tensor_test {
 
-  using namespace tensor;
+using namespace tensor;
 
-  //////////////////////////////////////////////////////////////////////
-  // EIGENVALUE DECOMPOSITIONS
-  //
+//////////////////////////////////////////////////////////////////////
+// EIGENVALUE DECOMPOSITIONS
+//
 
-  template<typename elt_t>
-  void test_eye_eig_sym(int n) {
-    if (n == 0) {
+template <typename elt_t>
+void test_eye_eig_sym(int n) {
+  if (n == 0) {
 #ifndef NDEBUG
-      ASSERT_DEATH(linalg::eig_sym(Tensor<elt_t>::eye(n,n)), ".*");
+    ASSERT_DEATH(linalg::eig_sym(Tensor<elt_t>::eye(n, n)), ".*");
 #endif
-      return;
-    }
-    Tensor<elt_t> Inn = Tensor<elt_t>::eye(n,n);
-    Tensor<elt_t> U;
-    RTensor s = linalg::eig_sym(Inn, &U);
-    Tensor<elt_t> V = adjoint(U);
-    EXPECT_TRUE(all_equal(Inn, U));
-    EXPECT_TRUE(all_equal(Inn, V));
-    EXPECT_TRUE(all_equal(s, RTensor::ones(igen << n)));
+    return;
   }
+  Tensor<elt_t> Inn = Tensor<elt_t>::eye(n, n);
+  Tensor<elt_t> U;
+  RTensor s = linalg::eig_sym(Inn, &U);
+  Tensor<elt_t> V = adjoint(U);
+  EXPECT_TRUE(all_equal(Inn, U));
+  EXPECT_TRUE(all_equal(Inn, V));
+  EXPECT_TRUE(all_equal(s, RTensor::ones(igen << n)));
+}
 
-  template<typename elt_t>
-  void test_random_eig_sym(int n) {
-    if (n == 0) {
+template <typename elt_t>
+void test_random_eig_sym(int n) {
+  if (n == 0) {
 #ifndef NDEBUG
-      ASSERT_DEATH(linalg::eig_sym(Tensor<elt_t>::eye(n,n)), ".*");
+    ASSERT_DEATH(linalg::eig_sym(Tensor<elt_t>::eye(n, n)), ".*");
 #endif
-      return;
-    }
-    for (int times = 10; times; --times) {
-      Tensor<elt_t> R, A = Tensor<elt_t>::random(n,n);
-      A = mmult(A, adjoint(A)) / norm0(A);
-      RTensor s = linalg::eig_sym(A, &R);
-      Tensor<elt_t> L = adjoint(R);
-      RTensor dS = diag(s);
-      EXPECT_TRUE(norm0(abs(s) - s) < 1e-13);
-      EXPECT_TRUE(unitaryp(R, 1e-10));
-      EXPECT_TRUE(approx_eq(mmult(A, R), mmult(R, dS), 1e-12));
-      EXPECT_TRUE(approx_eq(mmult(L, A), mmult(dS, L), 1e-12));
-      EXPECT_TRUE(approx_eq(A, mmult(R, mmult(dS, L)), 1e-12));
-    }
+    return;
   }
-
-  //////////////////////////////////////////////////////////////////////
-  // REAL SPECIALIZATIONS
-  //
-
-  TEST(RMatrixTest, EyeEigTest) {
-    test_over_integers(0, 32, test_eye_eig_sym<double>);
+  for (int times = 10; times; --times) {
+    Tensor<elt_t> R, A = Tensor<elt_t>::random(n, n);
+    A = mmult(A, adjoint(A)) / norm0(A);
+    RTensor s = linalg::eig_sym(A, &R);
+    Tensor<elt_t> L = adjoint(R);
+    RTensor dS = diag(s);
+    EXPECT_TRUE(norm0(abs(s) - s) < 1e-13);
+    EXPECT_TRUE(unitaryp(R, 1e-10));
+    EXPECT_TRUE(approx_eq(mmult(A, R), mmult(R, dS), 1e-12));
+    EXPECT_TRUE(approx_eq(mmult(L, A), mmult(dS, L), 1e-12));
+    EXPECT_TRUE(approx_eq(A, mmult(R, mmult(dS, L)), 1e-12));
   }
+}
 
-  TEST(RMatrixTest, RandomEigTest) {
-    test_over_integers(0, 32, test_random_eig_sym<double>);
-  }
+//////////////////////////////////////////////////////////////////////
+// REAL SPECIALIZATIONS
+//
 
-  //////////////////////////////////////////////////////////////////////
-  // COMPLEX SPECIALIZATIONS
-  //
+TEST(RMatrixTest, EyeEigTest) {
+  test_over_integers(0, 32, test_eye_eig_sym<double>);
+}
 
-  TEST(CMatrixTest, EyeEigTest) {
-    test_over_integers(0, 32, test_eye_eig_sym<cdouble>);
-  }
+TEST(RMatrixTest, RandomEigTest) {
+  test_over_integers(0, 32, test_random_eig_sym<double>);
+}
 
-  TEST(CMatrixTest, RandomEigTest) {
-    test_over_integers(0, 32, test_random_eig_sym<cdouble>);
-  }
+//////////////////////////////////////////////////////////////////////
+// COMPLEX SPECIALIZATIONS
+//
 
-} // namespace linalg_test
+TEST(CMatrixTest, EyeEigTest) {
+  test_over_integers(0, 32, test_eye_eig_sym<cdouble>);
+}
+
+TEST(CMatrixTest, RandomEigTest) {
+  test_over_integers(0, 32, test_random_eig_sym<cdouble>);
+}
+
+}  // namespace tensor_test

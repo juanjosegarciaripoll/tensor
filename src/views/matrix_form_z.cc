@@ -21,17 +21,17 @@
 
 namespace tensor {
 
-  //
-  // Explicitely instantiate an specialization of MatrixForm. This generates
-  // all required code.
-  //
-  template class tensor::MatrixForm<cdouble>;
+//
+// Explicitely instantiate an specialization of MatrixForm. This generates
+// all required code.
+//
+template class tensor::MatrixForm<cdouble>;
 
-  const MatrixForm<cdouble> matrix_form(const Tensor<cdouble> &t)
-  {
-    return MatrixForm<cdouble>(t);
-  }
+const MatrixForm<cdouble> matrix_form(const Tensor<cdouble> &t) {
+  return MatrixForm<cdouble>(t);
+}
 
-  template std::ostream &operator<< <cdouble>(std::ostream &s, const MatrixForm<cdouble> &m);
+template std::ostream &operator<<<cdouble>(std::ostream &s,
+                                           const MatrixForm<cdouble> &m);
 
-} // namespace tensor
+}  // namespace tensor

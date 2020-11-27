@@ -21,16 +21,16 @@
 
 namespace tensor {
 
-  const TYPE3 OPERATOR1(const TYPE1 &a, const TYPE2 &b) {
-    assert(a.size() == b.size());
-    TYPE3 output(a.dimensions());
-    TYPE1::const_iterator ita = a.begin();
-    TYPE2::const_iterator itb = b.begin();
-    TYPE3::iterator dest = output.begin();
-    for (index i = a.size(); i; --i, ++dest, ++ita, ++itb) {
-      *dest = (*ita) OPERATOR2 (*itb);
-    }
-    return output;
+const TYPE3 OPERATOR1(const TYPE1 &a, const TYPE2 &b) {
+  assert(a.size() == b.size());
+  TYPE3 output(a.dimensions());
+  TYPE1::const_iterator ita = a.begin();
+  TYPE2::const_iterator itb = b.begin();
+  TYPE3::iterator dest = output.begin();
+  for (index i = a.size(); i; --i, ++dest, ++ita, ++itb) {
+    *dest = (*ita)OPERATOR2(*itb);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

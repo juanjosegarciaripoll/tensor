@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-  /**Contraction of two tensors. A contraction is a generalization of the matrix
+/**Contraction of two tensors. A contraction is a generalization of the matrix
      product that we all know. The code \c C=fold(A,1,B,0) contracts tensors A
      and B, according to the second and first index as given by the formula
      \f[
@@ -36,15 +36,14 @@ namespace tensor {
 
      \ingroup Tensors
   */
-  const Tensor<cdouble> fold(const Tensor<cdouble> &a, int ndx1,
-                             const Tensor<cdouble> &b, int ndx2)
-  {
-    Tensor<cdouble> output;
-    do_fold<cdouble, false>(output, a, ndx1, b, ndx2);
-    return output;
-  }
+const Tensor<cdouble> fold(const Tensor<cdouble> &a, int ndx1,
+                           const Tensor<cdouble> &b, int ndx2) {
+  Tensor<cdouble> output;
+  do_fold<cdouble, false>(output, a, ndx1, b, ndx2);
+  return output;
+}
 
-  /**Contraction of two tensors. A contraction is a generalization of the matrix
+/**Contraction of two tensors. A contraction is a generalization of the matrix
      product that we all know. The code \c C=foldc(A,1,B,0) contracts tensors A
      and B, according to the second and first index as given by the formula
      \f[
@@ -59,29 +58,27 @@ namespace tensor {
 
      \ingroup Tensors
   */
-  const Tensor<cdouble> foldc(const Tensor<cdouble> &a, int ndx1,
-                              const Tensor<cdouble> &b, int ndx2)
-  {
-    Tensor<cdouble> output;
-    do_fold<cdouble, true>(output, a, ndx1, b, ndx2);
-    return output;
-  }
+const Tensor<cdouble> foldc(const Tensor<cdouble> &a, int ndx1,
+                            const Tensor<cdouble> &b, int ndx2) {
+  Tensor<cdouble> output;
+  do_fold<cdouble, true>(output, a, ndx1, b, ndx2);
+  return output;
+}
 
-  void fold_into(Tensor<cdouble> &c, const Tensor<cdouble> &a, int ndx1,
-                 const Tensor<cdouble> &b, int ndx2)
-  {
-    do_fold<cdouble, false>(c, a, ndx1, b, ndx2);
-  }
+void fold_into(Tensor<cdouble> &c, const Tensor<cdouble> &a, int ndx1,
+               const Tensor<cdouble> &b, int ndx2) {
+  do_fold<cdouble, false>(c, a, ndx1, b, ndx2);
+}
 
-  /**Matrix multiplication. \c mmult(A,B) is equivalent to \c fold(A,-1,B,0). */
-  const Tensor<cdouble> mmult(const Tensor<cdouble> &m1, const Tensor<cdouble> &m2)
-  {
-    return fold(m1, -1, m2, 0);
-  }
+/**Matrix multiplication. \c mmult(A,B) is equivalent to \c fold(A,-1,B,0). */
+const Tensor<cdouble> mmult(const Tensor<cdouble> &m1,
+                            const Tensor<cdouble> &m2) {
+  return fold(m1, -1, m2, 0);
+}
 
-  void mmult_into(Tensor<cdouble> &c, const Tensor<cdouble> &m1, const Tensor<cdouble> &m2)
-  {
-    fold_into(c, m1, -1, m2, 0);
-  }
+void mmult_into(Tensor<cdouble> &c, const Tensor<cdouble> &m1,
+                const Tensor<cdouble> &m2) {
+  fold_into(c, m1, -1, m2, 0);
+}
 
-} // namespace tensor
+}  // namespace tensor

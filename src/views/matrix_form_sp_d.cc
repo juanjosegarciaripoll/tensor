@@ -21,9 +21,8 @@
 
 namespace tensor {
 
-  const MatrixForm<double> matrix_form(const Sparse<double> &t)
-  {
-    return matrix_form(full(t));
-  }
+const MatrixForm<double> matrix_form(const Sparse<double> &t) {
+  return matrix_form(full(t));
+}
 
-} // namespace tensor
+}  // namespace tensor

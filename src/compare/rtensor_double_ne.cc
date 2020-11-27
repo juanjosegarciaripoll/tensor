@@ -22,13 +22,12 @@
 
 namespace tensor {
 
-  const Booleans operator!=(const RTensor &a, double b)
-  {
-    Booleans c(a.size());
-    Booleans::iterator ic = c.begin();
-    for (RTensor::const_iterator ia = a.begin(); ia != a.end(); ia++, ic++)
-      *ic = (*ia) != b;
-    return c;
-  }
+const Booleans operator!=(const RTensor &a, double b) {
+  Booleans c(a.size());
+  Booleans::iterator ic = c.begin();
+  for (RTensor::const_iterator ia = a.begin(); ia != a.end(); ia++, ic++)
+    *ic = (*ia) != b;
+  return c;
+}
 
-} // namespace tensor
+}  // namespace tensor

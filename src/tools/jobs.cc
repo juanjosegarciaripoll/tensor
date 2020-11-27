@@ -22,27 +22,22 @@
 
 using namespace jobs;
 
-static inline
-bool is_separator(char c)
-{
+static inline bool is_separator(char c) {
   return (c == ' ') || (c == '\t') || (c == '\n') || (c == ',') || (c == ';');
 }
 
-std::vector<std::string>
-split_string(const std::string &s)
-{
+std::vector<std::string> split_string(const std::string &s) {
   std::vector<std::string> output;
   size_t i = 0, l = s.size();
   while (i != l) {
     while (is_separator(s[i])) {
-      if (++i == l)
-	return output;
+      if (++i == l) return output;
     }
     size_t j;
-    for (j = i+1; (j < l) && !is_separator(s[j]); j++) {
+    for (j = i + 1; (j < l) && !is_separator(s[j]); j++) {
       (void)0;
     }
-    output.push_back(s.substr(i, j-i));
+    output.push_back(s.substr(i, j - i));
     i = j;
   }
   return output;
@@ -50,9 +45,7 @@ split_string(const std::string &s)
 
 const Job::Variable Job::no_variable;
 
-const Job::Variable
-Job::parse_line(const std::string &s)
-{
+const Job::Variable Job::parse_line(const std::string &s) {
   std::vector<std::string> data = split_string(s);
   // Format:
   //  variable_name separator min_value separator max_value [separator n_steps]
@@ -61,8 +54,7 @@ Job::parse_line(const std::string &s)
   //  min_value, max_value are real
   //  n_steps is a non-negative integer, defaulting to 10
   //  separator is any number of spaces, tabs, newlines, commas or semicolons
-  if (data.size() == 0)
-    return no_variable;
+  if (data.size() == 0) return no_variable;
   if (data.size() == 1) {
     std::cerr << "Missing minimum value for variable " << data[0] << std::endl;
     return no_variable;
@@ -86,9 +78,7 @@ Job::parse_line(const std::string &s)
   return Variable(data[0], min, max, nsteps);
 }
 
-int
-Job::parse_file(std::istream &s, var_list &data)
-{
+int Job::parse_file(std::istream &s, var_list &data) {
   std::string buffer;
   int line;
   for (line = 0; 1; line++) {
@@ -97,13 +87,13 @@ Job::parse_file(std::istream &s, var_list &data)
       return line;
     else
       data.push_back(v);
-  } while(1);
+  }
+  while (1)
+    ;
   return 0;
 }
 
-Job::Job(int argc, const char **argv) :
-  filename_("no file")
-{
+Job::Job(int argc, const char **argv) : filename_("no file") {
   bool print_jobs = false;
   bool first_job_found = false;
   bool last_job_found = false;
@@ -115,41 +105,42 @@ Job::Job(int argc, const char **argv) :
   for (i = 0; i < argc; i++) {
     if (!strcmp(argv[i], "--job")) {
       if (++i == argc) {
-	std::cerr << "Missing argument after --job" << std::endl;
-	abort();
+        std::cerr << "Missing argument after --job" << std::endl;
+        abort();
       }
       filename_ = std::string(argv[i]);
       std::ifstream s(argv[i]);
       int line = parse_file(s, variables_);
       if (line) {
-	std::cerr << "Syntax error in line " << line << " of job file " << filename_
-		  << std::endl;
-	abort();
+        std::cerr << "Syntax error in line " << line << " of job file "
+                  << filename_ << std::endl;
+        abort();
       }
-    } else if (!strcmp(argv[i], "--print-jobs")) { 
+    } else if (!strcmp(argv[i], "--print-jobs")) {
       print_jobs = true;
     } else if (!strcmp(argv[i], "--this-job")) {
       if (++i == argc) {
-	std::cerr << "Missing argument to --this-job" << std::endl;
-	abort();
+        std::cerr << "Missing argument to --this-job" << std::endl;
+        abort();
       }
       current_job = atoi(argv[i]);
       this_job_found = true;
     } else if (!strcmp(argv[i], "--job-blocks")) {
       if (++i == argc) {
-	std::cerr << "Missing argument to --job-blocks" << std::endl;
-	abort();
+        std::cerr << "Missing argument to --job-blocks" << std::endl;
+        abort();
       }
       blocks = atoi(argv[i]);
       job_blocks_found = true;
     } else if (!strcmp(argv[i], "--first-job")) {
       if (this_job_found) {
-        std::cerr << "Cannot use --first-job and --this-job simultaneously." << std::endl;
+        std::cerr << "Cannot use --first-job and --this-job simultaneously."
+                  << std::endl;
         abort();
       }
       if (++i == argc) {
-	std::cerr << "Missing argument to --first-job" << std::endl;
-	abort();
+        std::cerr << "Missing argument to --first-job" << std::endl;
+        abort();
       }
       first_job_ = atoi(argv[i]);
       first_job_found = true;
@@ -159,48 +150,57 @@ Job::Job(int argc, const char **argv) :
         abort();
       }
       if (++i == argc) {
-	std::cerr << "Missing argument to --last-job" << std::endl;
-	abort();
+        std::cerr << "Missing argument to --last-job" << std::endl;
+        abort();
       }
       last_job_ = atoi(argv[i]);
       last_job_found = true;
     } else if (!strcmp(argv[i], "--variable")) {
       if (++i == argc) {
-	std::cerr << "Missing argument after --variable" << std::endl;
-	abort();
+        std::cerr << "Missing argument after --variable" << std::endl;
+        abort();
       }
       Variable v = parse_line(argv[i]);
       if (v.name().size() == 0) {
-	std::cerr << "Syntax error parsing --variable argument:" << std::endl
-		  << argv[i] << std::endl;
-	abort();
+        std::cerr << "Syntax error parsing --variable argument:" << std::endl
+                  << argv[i] << std::endl;
+        abort();
       }
       variables_.push_back(v);
     } else if (!strcmp(argv[i], "--help")) {
-      std::cout << "Arguments:\n"
-	"--help\n"
-	"\tShow this message and exit.\n"
-	"--print-jobs\n"
-	"\tShow number of jobs and exit.\n"
-        "--first-job / --last-job n\n"
-        "\tRun this program completing the selected interval of jobs.\n"
-	"--this-job n\n"
-	"\tSelect to run one job or one job block.\n"
-        "--jobs-blocks n\n"
-        "\tSplit the number of blocks into 'n' blocks and run the jobs in the\n"
-        "\tblock selected by --this-job.\n"
-	"--variable name,min[,max[,nsteps]]\n"
-	"\tDefine variable and the range it runs, including number of steps.\n"
-	"\t'min' and 'max' are floating point numbers; 'name' is a string\n"
-	"\twithout spaces; 'nsteps' is a positive (>0) integer denoting how\n"
-	"\tmany values in the interval [min,max] are used. There can be many\n"
-	"\t--variable arguments, as a substitute for a job file. If both 'max'\n"
-	"\tand 'nsteps' are missing, the variable takes a unique, constant\n"
-	"\tvalue, 'min'.\n"
-	"--job filename\n"
-	"\tParse file, loading variable ranges from them using the syntax above,\n"
-	"\tbut allowing spaces or tabs instead of commas as separators."
-		<< std::endl;
+      std::cout
+          << "Arguments:\n"
+             "--help\n"
+             "\tShow this message and exit.\n"
+             "--print-jobs\n"
+             "\tShow number of jobs and exit.\n"
+             "--first-job / --last-job n\n"
+             "\tRun this program completing the selected interval of jobs.\n"
+             "--this-job n\n"
+             "\tSelect to run one job or one job block.\n"
+             "--jobs-blocks n\n"
+             "\tSplit the number of blocks into 'n' blocks and run the jobs in "
+             "the\n"
+             "\tblock selected by --this-job.\n"
+             "--variable name,min[,max[,nsteps]]\n"
+             "\tDefine variable and the range it runs, including number of "
+             "steps.\n"
+             "\t'min' and 'max' are floating point numbers; 'name' is a "
+             "string\n"
+             "\twithout spaces; 'nsteps' is a positive (>0) integer denoting "
+             "how\n"
+             "\tmany values in the interval [min,max] are used. There can be "
+             "many\n"
+             "\t--variable arguments, as a substitute for a job file. If both "
+             "'max'\n"
+             "\tand 'nsteps' are missing, the variable takes a unique, "
+             "constant\n"
+             "\tvalue, 'min'.\n"
+             "--job filename\n"
+             "\tParse file, loading variable ranges from them using the syntax "
+             "above,\n"
+             "\tbut allowing spaces or tabs instead of commas as separators."
+          << std::endl;
       exit(0);
     }
   }
@@ -215,7 +215,8 @@ Job::Job(int argc, const char **argv) :
      * set indicated by --this-job (which defaults to 0)
      */
     if (first_job_found || last_job_found) {
-      std::cerr << "The options --job-blocks and --first/last-job cannot be used together."
+      std::cerr << "The options --job-blocks and --first/last-job cannot be "
+                   "used together."
                 << std::endl;
       abort();
     }
@@ -239,7 +240,8 @@ Job::Job(int argc, const char **argv) :
     }
     if (last_job_found) {
       if (last_job_ >= number_of_jobs_) {
-        std::cerr << "warning: --last-job exceeds the number of jobs" << std::endl;
+        std::cerr << "warning: --last-job exceeds the number of jobs"
+                  << std::endl;
         last_job_ = std::max<tensor::index>(0, number_of_jobs_ - 1);
       }
       if (last_job_ < first_job_) {
@@ -263,26 +265,20 @@ Job::Job(int argc, const char **argv) :
   select_job(current_job);
 }
 
-tensor::index
-Job::compute_number_of_jobs() const
-{
+tensor::index Job::compute_number_of_jobs() const {
   tensor::index n = 1;
-  for (var_list::const_iterator it = variables_.begin();
-       it != variables_.end();
+  for (var_list::const_iterator it = variables_.begin(); it != variables_.end();
        it++) {
     n *= it->size();
   }
   return n;
 }
 
-void
-Job::select_job(tensor::index which)
-{
+void Job::select_job(tensor::index which) {
   assert(which >= 0);
   tensor::index i = this_job_ = which;
   if (which <= number_of_jobs_) {
-    for (var_list::iterator it = variables_.begin();
-         it != variables_.end();
+    for (var_list::iterator it = variables_.begin(); it != variables_.end();
          it++) {
       tensor::index n = it->size();
       it->select(i % n);
@@ -291,25 +287,16 @@ Job::select_job(tensor::index which)
   }
 }
 
-void
-Job::operator++()
-{
-  select_job(this_job_ + 1);
+void Job::operator++() { select_job(this_job_ + 1); }
+
+bool Job::to_do() {
+  return (this_job_ >= 0) && (this_job_ < number_of_jobs_) &&
+         (this_job_ >= first_job_) && (this_job_ <= last_job_);
 }
 
-bool
-Job::to_do()
-{
-  return (this_job_ >= 0) &&
-    (this_job_ < number_of_jobs_) &&
-    (this_job_ >= first_job_) &&
-    (this_job_ <= last_job_);
-}
-
-const Job::Variable *
-Job::find_variable(const std::string &name) const
-{
-  for (var_list::const_iterator it = variables_.begin(); it != variables_.end(); it++) {
+const Job::Variable *Job::find_variable(const std::string &name) const {
+  for (var_list::const_iterator it = variables_.begin(); it != variables_.end();
+       it++) {
     if (it->name() == name) {
       return &(*it);
     }
@@ -317,22 +304,17 @@ Job::find_variable(const std::string &name) const
   return NULL;
 }
 
-double
-Job::get_value(const std::string &name) const
-{
+double Job::get_value(const std::string &name) const {
   const Variable *which = find_variable(name);
   if (!which) {
-    std::cerr << "Variable " << name << " not found in job file "
-              << filename_ << std::endl;
+    std::cerr << "Variable " << name << " not found in job file " << filename_
+              << std::endl;
     abort();
   }
   return which->value();
 }
 
-
-double
-Job::get_value_with_default(const std::string &name, double def) const
-{
+double Job::get_value_with_default(const std::string &name, double def) const {
   const Variable *which = find_variable(name);
-  return which? which->value() : def;
+  return which ? which->value() : def;
 }

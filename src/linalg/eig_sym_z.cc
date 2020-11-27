@@ -23,9 +23,9 @@
 
 namespace linalg {
 
-  using namespace lapack;
+using namespace lapack;
 
-  /**Eigenvalue decomposition of a complex matrix.
+/**Eigenvalue decomposition of a complex matrix.
      Given a square matrix A, we find a diagonal matrix D and a set of vectors R
      or L such that
      A V = V D
@@ -40,47 +40,49 @@ namespace linalg {
 
      \ingroup Linalg
   */
-  RTensor
-  eig_sym(const CTensor &A, CTensor *V)
-  {
-    assert(A.rows() > 0);
-    assert(A.rank() == 2);
-    assert(A.rows() == A.columns());
+RTensor eig_sym(const CTensor &A, CTensor *V) {
+  assert(A.rows() > 0);
+  assert(A.rank() == 2);
+  assert(A.rows() == A.columns());
 
-    //if (accurate_svd)
-    //  return block_eig_sym(A, V);
-    blas::integer n = A.rows();
-    if ((size_t)n != A.columns()) {
-      std::cerr << "Routine eig() can only compute eigenvalues of square matrices, and you\n"
-                << "have passed a matrix that is " << A.rows() << " by " << A.columns();
-      abort();
-    }
-
-    CTensor aux(A);
-    cdouble *a = tensor_pointer(aux);
-    blas::integer lda = n, info[1];
-    char jobz[2] = { (V == 0)? 'N' : 'V', 0 };
-    char uplo[2] = { 'U', 0 };
-    RTensor output(n);
-    double *w = tensor_pointer(output);
-    RTensor rwork(3*n);
-
-#ifdef TENSOR_USE_ACML
-    zheev(*jobz, *uplo, n, a, lda, w, info);
-#else
-    blas::integer lwork = -1;
-    CTensor work(1);
-    F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, tensor_pointer(work),
-                   &lwork, tensor_pointer(rwork), info);
-    lwork = (int)tensor::real(work[0]);
-
-    work = CTensor(lwork);
-    F77NAME(zheev)(jobz, uplo, &n, a, &lda, w, tensor_pointer(work),
-                   &lwork, tensor_pointer(rwork), info);
-#endif
-
-    if (V) *V = aux;
-    return output;
+  //if (accurate_svd)
+  //  return block_eig_sym(A, V);
+  blas::integer n = A.rows();
+  if ((size_t)n != A.columns()) {
+    std::cerr << "Routine eig() can only compute eigenvalues of square "
+                 "matrices, and you\n"
+              << "have passed a matrix that is " << A.rows() << " by "
+              << A.columns();
+    abort();
   }
 
-} // namespace linalg
+  CTensor aux(A);
+  cdouble *a = tensor_pointer(aux);
+  blas::integer lda = n, info[1];
+  char jobz[2] = {(V == 0) ? 'N' : 'V', 0};
+  char uplo[2] = {'U', 0};
+  RTensor output(n);
+  double *w = tensor_pointer(output);
+  RTensor rwork(3 * n);
+
+#ifdef TENSOR_USE_ACML
+  zheev(*jobz, *uplo, n, a, lda, w, info);
+#else
+  blas::integer lwork = -1;
+  CTensor work(1);
+  F77NAME(zheev)
+  (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork,
+   tensor_pointer(rwork), info);
+  lwork = (int)tensor::real(work[0]);
+
+  work = CTensor(lwork);
+  F77NAME(zheev)
+  (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork,
+   tensor_pointer(rwork), info);
+#endif
+
+  if (V) *V = aux;
+  return output;
+}
+
+}  // namespace linalg

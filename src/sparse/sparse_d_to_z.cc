@@ -22,11 +22,9 @@
 
 namespace tensor {
 
-  const CSparse
-  to_complex(const RSparse &s)
-  {
-    return CSparse(s.dimensions(), s.priv_row_start(), s.priv_column(),
-		   s.priv_data());
-  }
+const CSparse to_complex(const RSparse &s) {
+  return CSparse(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                 s.priv_data());
+}
 
-} // namespace tensor
+}  // namespace tensor

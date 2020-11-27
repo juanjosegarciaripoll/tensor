@@ -21,18 +21,17 @@
 
 namespace tensor {
 
-  template<typename n>
-  static const n do_trace(const Tensor<n> &matrix)
-  {
-    assert(matrix.rank() == 2);
-    n output = number_zero<n>();
-    const index r = matrix.rows();
-    const index c = matrix.columns();
-    typename Tensor<n>::const_iterator it = matrix.begin();
-    for (index j = std::min(r,c); j--; it += (r+1)) {
-      output += *it;
-    }
-    return output;
+template <typename n>
+static const n do_trace(const Tensor<n> &matrix) {
+  assert(matrix.rank() == 2);
+  n output = number_zero<n>();
+  const index r = matrix.rows();
+  const index c = matrix.columns();
+  typename Tensor<n>::const_iterator it = matrix.begin();
+  for (index j = std::min(r, c); j--; it += (r + 1)) {
+    output += *it;
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

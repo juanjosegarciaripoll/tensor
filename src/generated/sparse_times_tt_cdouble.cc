@@ -21,9 +21,9 @@
 
 namespace tensor {
 
-  const Sparse<cdouble> operator*(const Sparse<cdouble> &a, const Sparse<cdouble> &b)
-  {
-    return sparse_binop(a, b, std::multiplies<cdouble>());
-  }
-   
-} // namespace tensor
+const Sparse<cdouble> operator*(const Sparse<cdouble> &a,
+                                const Sparse<cdouble> &b) {
+  return sparse_binop(a, b, std::multiplies<cdouble>());
+}
+
+}  // namespace tensor

@@ -55,7 +55,7 @@ TEST(RandTest, DoubleBalanced) {
     average += rand<double>() - 0.5;
   }
   average = std::abs(average) / total;
-  EXPECT_GE(1/sqrt((double)total), average);
+  EXPECT_GE(1 / sqrt((double)total), average);
 }
 
 // Check that the distribution has the appropriate standard deviation
@@ -67,8 +67,8 @@ TEST(RandTest, DoubleSigma) {
     sigma += r * r;
   }
   sigma = sigma / total;
-  double expected = (0.5*0.5*0.5) * 2.0 / 3.0;
-  EXPECT_NEAR(expected, sigma, 1/sqrt((double)total));
+  double expected = (0.5 * 0.5 * 0.5) * 2.0 / 3.0;
+  EXPECT_NEAR(expected, sigma, 1 / sqrt((double)total));
 }
 
 // Check that the distribution is balanced
@@ -76,12 +76,12 @@ TEST(RandTest, ComplexBalanced) {
   int total = 10000;
   cdouble average = 0;
   for (int i = 1; i < total; ++i) {
-    average += rand<cdouble>() - to_complex(0.5,0.5);
+    average += rand<cdouble>() - to_complex(0.5, 0.5);
   }
   double re = std::abs(real(average)) / total;
   double im = std::abs(imag(average)) / total;
-  EXPECT_GE(1/sqrt((double)total), re);
-  EXPECT_GE(1/sqrt((double)total), im);
+  EXPECT_GE(1 / sqrt((double)total), re);
+  EXPECT_GE(1 / sqrt((double)total), im);
 }
 
 // Real and imaginary parts of the complex random number are uncorrelated
@@ -93,8 +93,8 @@ TEST(RandTest, ComplexUncorrelated) {
     corr += (real(z) - 0.5) * (imag(z) - 0.5);
   }
   corr = std::abs(corr) / total;
-  EXPECT_GE(1/sqrt((double)total), corr);
-  EXPECT_GE(1/sqrt((double)total), corr);
+  EXPECT_GE(1 / sqrt((double)total), corr);
+  EXPECT_GE(1 / sqrt((double)total), corr);
 }
 
 // Test random numbers in empty ranges
@@ -115,5 +115,4 @@ TEST(RandTest, ULongEmpty) {
   EXPECT_EQ(13, rand<unsigned long>(13, 13));
 }
 
-}
-
+}  // namespace

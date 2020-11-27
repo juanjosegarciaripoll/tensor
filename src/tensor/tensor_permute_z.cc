@@ -21,9 +21,8 @@
 
 namespace tensor {
 
-  const CTensor permute(const CTensor &a, index i1, index i2)
-  {
-    return do_permute(a, i1, i2);
-  }
+const CTensor permute(const CTensor &a, index i1, index i2) {
+  return do_permute(a, i1, i2);
+}
 
-} // namespace tensor
+}  // namespace tensor

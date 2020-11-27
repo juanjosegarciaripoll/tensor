@@ -29,31 +29,27 @@
 
 namespace tensor {
 
-  /** The direction of the Fourier transform.
+/** The direction of the Fourier transform.
    *
    * FORWARD refers to the fft, BACKWARD to the inverse Fourier transform.
    */
-  enum {
-    FFTW_FORWARD = -1,
-    FFTW_BACKWARD = 1
-  };
+enum { FFTW_FORWARD = -1, FFTW_BACKWARD = 1 };
 
-  /** Calculates and returns the (unnormalized!) DFT or IDFT of the input, depending on the direction */
-  const CTensor fftw(const CTensor& in, int direction);
-  /** Calculates and returns the unnormalized DFT/IDFT only along a single dimension. */
-  const CTensor fftw(const CTensor& in, index dim, int direction);
-  /** Calculates the (unnormalized) DFT/IDFT of the input for all dimension where convert is true. */
-  const CTensor fftw(const CTensor& in, const Booleans& convert, int direction);
+/** Calculates and returns the (unnormalized!) DFT or IDFT of the input, depending on the direction */
+const CTensor fftw(const CTensor& in, int direction);
+/** Calculates and returns the unnormalized DFT/IDFT only along a single dimension. */
+const CTensor fftw(const CTensor& in, index dim, int direction);
+/** Calculates the (unnormalized) DFT/IDFT of the input for all dimension where convert is true. */
+const CTensor fftw(const CTensor& in, const Booleans& convert, int direction);
 
+/** Like fftw, but overwrites the input. */
+void fftw_inplace(CTensor& in, int direction);
+/** Like fftw, but overwrites the input. */
+void fftw_inplace(CTensor& in, index dim, int direction);
+/** Like fftw, but overwrites the input. */
+void fftw_inplace(CTensor& in, const Booleans& convert, int direction);
 
-  /** Like fftw, but overwrites the input. */
-  void fftw_inplace(CTensor& in, int direction);
-  /** Like fftw, but overwrites the input. */
-  void fftw_inplace(CTensor& in, index dim, int direction);
-  /** Like fftw, but overwrites the input. */
-  void fftw_inplace(CTensor& in, const Booleans& convert, int direction);
-
-  /** Shifts the half-planes of the input tensor to reorder the frequencies.
+/** Shifts the half-planes of the input tensor to reorder the frequencies.
    * 
    * A direction of FFTW_FORWARD applied to the output of fftw() shifts the
    * half-planes such that the frequencies go from minimum to maximum. Setting
@@ -63,12 +59,13 @@ namespace tensor {
    * the implementation is not the fastest, either, so if possible you should
    * not use this inside time-critical sections of the code.
    */
-  const CTensor fftshift(const CTensor& in, int direction);
-  /** fftshift along only one diemnsion. */
-  const CTensor fftshift(const CTensor& in, index dim, int direction);
-  /** fftshift along the given dimensions. */
-  const CTensor fftshift(const CTensor& in, const Booleans& convert, int direction);
+const CTensor fftshift(const CTensor& in, int direction);
+/** fftshift along only one diemnsion. */
+const CTensor fftshift(const CTensor& in, index dim, int direction);
+/** fftshift along the given dimensions. */
+const CTensor fftshift(const CTensor& in, const Booleans& convert,
+                       int direction);
 
-} // namespace tensor
+}  // namespace tensor
 
-#endif // TENSOR_FFT_H
+#endif  // TENSOR_FFT_H

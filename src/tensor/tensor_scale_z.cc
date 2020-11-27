@@ -21,53 +21,49 @@
 
 namespace tensor {
 
-  /**Hadamard product of a tensor times a vector. A Hadamard product
+/**Hadamard product of a tensor times a vector. A Hadamard product
      consists on multiplying the element that have equal indices. For
      instance, if the tensor T has three indices, the call \c
      {scale(t, 1, v)} would be equivalent to \f$t_{i,j,k}v_j\f$.
 
      \ingroup Tensors
   */
-  const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
-			      const Tensor<cdouble> &v)
-  {
-    index d1, d2, d3;
-    Tensor<cdouble> output(t.dimensions());
-    ndx = normalize_index(ndx, t.rank());
-    surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
-    if (d2 != v.size()) {
-      std::cerr << "In scale() the dimension " << ndx <<
-	" of the tensor does not match the length " <<
-	v.size() << " of the scale vector" << std::endl;
-      abort();
-    }
-    doscale(output.begin(), t.begin_const(), v.begin_const(), d1, d2, d3);
-    return output;
+const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
+                            const Tensor<cdouble> &v) {
+  index d1, d2, d3;
+  Tensor<cdouble> output(t.dimensions());
+  ndx = normalize_index(ndx, t.rank());
+  surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
+  if (d2 != v.size()) {
+    std::cerr << "In scale() the dimension " << ndx
+              << " of the tensor does not match the length " << v.size()
+              << " of the scale vector" << std::endl;
+    abort();
   }
+  doscale(output.begin(), t.begin_const(), v.begin_const(), d1, d2, d3);
+  return output;
+}
 
-  void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<cdouble> &v)
-  {
-    index d1, d2, d3;
-    surrounding_dimensions(t.dimensions(), normalize_index(ndx, t.rank()),
-                           &d1, &d2, &d3);
-    if (d2 != v.size()) {
-      std::cerr << "In scale() the dimension " << ndx <<
-	" of the tensor does not match the length " <<
-	v.size() << " of the scale vector" << std::endl;
-      abort();
-    }
-    doscale(t.begin(), v.begin_const(), d1, d2, d3);
+void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<cdouble> &v) {
+  index d1, d2, d3;
+  surrounding_dimensions(t.dimensions(), normalize_index(ndx, t.rank()), &d1,
+                         &d2, &d3);
+  if (d2 != v.size()) {
+    std::cerr << "In scale() the dimension " << ndx
+              << " of the tensor does not match the length " << v.size()
+              << " of the scale vector" << std::endl;
+    abort();
   }
+  doscale(t.begin(), v.begin_const(), d1, d2, d3);
+}
 
-  const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
-			      const Tensor<double> &v)
-  {
-    return scale(t, ndx, to_complex(v));
-  }
+const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
+                            const Tensor<double> &v) {
+  return scale(t, ndx, to_complex(v));
+}
 
-  void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<double> &v)
-  {
-    scale_inplace(t, ndx, to_complex(v));
-  }
+void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<double> &v) {
+  scale_inplace(t, ndx, to_complex(v));
+}
 
-} // namespace tensor
+}  // namespace tensor

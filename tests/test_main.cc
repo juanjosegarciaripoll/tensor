@@ -20,9 +20,7 @@
 #include <gtest/gtest.h>
 #include <tensor/refcount.h>
 
-int
-main(int narg, char *argv[])
-{
+int main(int narg, char *argv[]) {
   ::testing::InitGoogleTest(&narg, argv);
 
   RUN_ALL_TESTS();

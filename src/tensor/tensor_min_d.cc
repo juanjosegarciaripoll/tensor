@@ -21,10 +21,9 @@
 
 namespace tensor {
 
-  double min(const RTensor &r)
-  {
-    assert(r.size());
-    return *(std::min_element(r.begin_const(), r.end_const()));
-  }
+double min(const RTensor &r) {
+  assert(r.size());
+  return *(std::min_element(r.begin_const(), r.end_const()));
+}
 
-} // namespace tensor
+}  // namespace tensor

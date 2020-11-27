@@ -21,9 +21,6 @@
 
 namespace tensor {
 
-  double trace(const RTensor &a)
-  {
-    return do_trace(a);
-  }
+double trace(const RTensor &a) { return do_trace(a); }
 
-} // namespace tensor
+}  // namespace tensor

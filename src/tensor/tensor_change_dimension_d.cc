@@ -21,9 +21,8 @@
 
 namespace tensor {
 
-  const RTensor change_dimension(const RTensor &a, int dim, index new_size)
-  {
-    return change_dimension_inner(a, dim, new_size);
-  }
+const RTensor change_dimension(const RTensor &a, int dim, index new_size) {
+  return change_dimension_inner(a, dim, new_size);
+}
 
-} // namespace tensor
+}  // namespace tensor

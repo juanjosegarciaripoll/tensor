@@ -25,8 +25,8 @@
 namespace linalg {
 
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
-  static double log2(double n) { return log(n) / log((double)2.0); }
-  static double exp2(double n) { return exp(log((double)2.0) * n); }
+static double log2(double n) { return log(n) / log((double)2.0); }
+static double exp2(double n) { return exp(log((double)2.0) * n); }
 #endif
 
 /**Compute the exponential of a real matrix.
@@ -43,40 +43,38 @@ namespace linalg {
 
    \ingroup Linalg
 */
-  const RTensor
-  expm(const RTensor &Aunorm, unsigned int order)
-  {
-    assert(Aunorm.rank() == 2);
-    assert(Aunorm.columns() == Aunorm.rows());
+const RTensor expm(const RTensor &Aunorm, unsigned int order) {
+  assert(Aunorm.rank() == 2);
+  assert(Aunorm.columns() == Aunorm.rows());
 
-    // Scale A until the norm is < 1/2
-    double val = log2(matrix_norminf(Aunorm));
-    int e = (int)floor(val);
-    size_t j = std::max((int)0, (int)(e+1));
+  // Scale A until the norm is < 1/2
+  double val = log2(matrix_norminf(Aunorm));
+  int e = (int)floor(val);
+  size_t j = std::max((int)0, (int)(e + 1));
 
-    // Pade approximation for exp(A)
-    double c = 1.0/2;
-    RTensor A = Aunorm / exp2(j);
-    RTensor N = RTensor::eye(A.rows()) + c * A;
-    RTensor D = RTensor::eye(A.rows()) - c * A;
-    RTensor X = A;
+  // Pade approximation for exp(A)
+  double c = 1.0 / 2;
+  RTensor A = Aunorm / exp2(j);
+  RTensor N = RTensor::eye(A.rows()) + c * A;
+  RTensor D = RTensor::eye(A.rows()) - c * A;
+  RTensor X = A;
 
-    for (size_t k = 2; k <= order; k++) {
-      c = (c * (order-k+1)) / (k*(2*order-k+1));
-      X = mmult(A, X);
-      RTensor cX = c * X;
-      N = N + cX;
-      if ((k & 1) == 0) {
-        D = D + cX;
-      } else {
-        D = D - cX;
-      }
+  for (size_t k = 2; k <= order; k++) {
+    c = (c * (order - k + 1)) / (k * (2 * order - k + 1));
+    X = mmult(A, X);
+    RTensor cX = c * X;
+    N = N + cX;
+    if ((k & 1) == 0) {
+      D = D + cX;
+    } else {
+      D = D - cX;
     }
-    X = solve(D, N);
-    for (size_t k = 1; k <= j; k++) {
-      X = mmult(X, X);
-    }
-    return X;
+  }
+  X = solve(D, N);
+  for (size_t k = 1; k <= j; k++) {
+    X = mmult(X, X);
+  }
+  return X;
 }
 
-}
+}  // namespace linalg

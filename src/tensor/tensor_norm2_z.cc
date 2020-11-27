@@ -21,18 +21,14 @@
 
 namespace tensor {
 
-  double norm2(const CTensor &r)
-  {
-    return ::sqrt(real(scprod(r, r)));
-  }
+double norm2(const CTensor &r) { return ::sqrt(real(scprod(r, r))); }
 
-  cdouble scprod(const CTensor &a, const CTensor &b)
-  {
-    cdouble output = 0;
-    for (CTensor::const_iterator ia = a.begin(), ib = b.begin();
-	 ia != a.end(); ia++, ib++)
-      output += (*ia) * tensor::conj(*ib);
-    return output;  
-  }
+cdouble scprod(const CTensor &a, const CTensor &b) {
+  cdouble output = 0;
+  for (CTensor::const_iterator ia = a.begin(), ib = b.begin(); ia != a.end();
+       ia++, ib++)
+    output += (*ia) * tensor::conj(*ib);
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

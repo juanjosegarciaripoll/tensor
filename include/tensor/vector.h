@@ -30,7 +30,7 @@ namespace tensor {
 
 typedef long index;
 
-template<typename elt>
+template <typename elt>
 class Vector {
  public:
   typedef tensor::index index;
@@ -44,25 +44,22 @@ class Vector {
 
   /* Copy constructor and copy operator */
   Vector(const Vector<elt_t> &v) : data_(v.data_) {}
-  Vector &operator=(const Vector<elt_t> &v) { data_ = v.data_; return *this; }
+  Vector &operator=(const Vector<elt_t> &v) {
+    data_ = v.data_;
+    return *this;
+  }
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */
   Vector(index size, elt_t *data) : data_(data, size, false) {}
 
-  index size() const {
-    return data_.size();
-  }
-  void resize(index new_size) {
-    data_.reallocate(new_size);
-  }
+  index size() const { return data_.size(); }
+  void resize(index new_size) { data_.reallocate(new_size); }
 
   const elt_t &operator[](index pos) const {
     return *(data_.begin_const() + pos);
   }
-  elt_t &at(index pos) {
-    return *(data_.begin() + pos);
-  }
+  elt_t &at(index pos) { return *(data_.begin() + pos); }
 
   iterator begin() { return data_.begin(); }
   const_iterator begin() const { return data_.begin_const(); }
@@ -78,14 +75,15 @@ class Vector {
   RefPointer<elt_t> data_;
 };
 
-  typedef Vector<double> RVector;
-  typedef Vector<cdouble> CVector;
+typedef Vector<double> RVector;
+typedef Vector<cdouble> CVector;
 
-template<typename t1, typename t2>
+template <typename t1, typename t2>
 bool operator==(const Vector<t1> &v1, const Vector<t2> &v2) {
-  return (v1.size() == v2.size()) && std::equal(v1.begin(), v1.end(), v2.begin());
+  return (v1.size() == v2.size()) &&
+         std::equal(v1.begin(), v1.end(), v2.begin());
 }
 
-}; // namespace
+};  // namespace tensor
 
-#endif // !TENSOR_VECTOR_H
+#endif  // !TENSOR_VECTOR_H

@@ -25,19 +25,20 @@
 
 namespace linalg {
 
-  template<class Tensor> class Arpack;
-  template<> class Arpack<RTensor> : public RArpack {
-  public:
-    Arpack(size_t n, enum EigType t, size_t neig) :
-      RArpack(n, t, neig) {}
-  };
+template <class Tensor>
+class Arpack;
+template <>
+class Arpack<RTensor> : public RArpack {
+ public:
+  Arpack(size_t n, enum EigType t, size_t neig) : RArpack(n, t, neig) {}
+};
 
-  template<> class Arpack<CTensor> : public CArpack {
-  public:
-    Arpack(size_t n, enum EigType t, size_t neig) :
-      CArpack(n, t, neig) {}
-  };
+template <>
+class Arpack<CTensor> : public CArpack {
+ public:
+  Arpack(size_t n, enum EigType t, size_t neig) : CArpack(n, t, neig) {}
+};
 
-} // namespace linalg
+}  // namespace linalg
 
-#endif // TENSOR_ARPACK_H
+#endif  // TENSOR_ARPACK_H

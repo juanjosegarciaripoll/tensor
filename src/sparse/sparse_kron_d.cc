@@ -22,21 +22,19 @@
 
 namespace tensor {
 
-  // Explicit instantiation
-  const Sparse<double> kron(const Sparse<double> &s1, const Sparse<double> &s2)
-  {
-    return do_kron(s1, s2);
-  }
+// Explicit instantiation
+const Sparse<double> kron(const Sparse<double> &s1, const Sparse<double> &s2) {
+  return do_kron(s1, s2);
+}
 
-  const Sparse<double> kron2(const Sparse<double> &s1, const Sparse<double> &s2)
-  {
-    return kron(s2, s1);
-  }
+const Sparse<double> kron2(const Sparse<double> &s1, const Sparse<double> &s2) {
+  return kron(s2, s1);
+}
 
-  const Sparse<double> kron2_sum(const Sparse<double> &s2, const Sparse<double> &s1)
-  {
-    return kron(s1, Sparse<double>::eye(s2.length())) +
-      kron(Sparse<double>::eye(s1.length()), s2);
-  }
+const Sparse<double> kron2_sum(const Sparse<double> &s2,
+                               const Sparse<double> &s1) {
+  return kron(s1, Sparse<double>::eye(s2.length())) +
+         kron(Sparse<double>::eye(s1.length()), s2);
+}
 
-} // namespace tensor
+}  // namespace tensor

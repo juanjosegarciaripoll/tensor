@@ -21,9 +21,6 @@
 
 namespace tensor {
 
-  cdouble trace(const CTensor &a)
-  {
-    return do_trace(a);
-  }
+cdouble trace(const CTensor &a) { return do_trace(a); }
 
-} // namespace tensor
+}  // namespace tensor

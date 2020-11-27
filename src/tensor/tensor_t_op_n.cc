@@ -21,24 +21,24 @@
 
 namespace tensor {
 
-  const TYPE3 OPERATOR1(const TYPE1 &a, TYPE2 b) {
-    TYPE3 output(a.dimensions());
-    TYPE1::const_iterator ita = a.begin();
-    TYPE3::iterator dest = output.begin();
-    for (index i = a.size(); i; --i, ++dest, ++ita) {
-      *dest = (*ita) OPERATOR2 (b);
-    }
-    return output;
+const TYPE3 OPERATOR1(const TYPE1 &a, TYPE2 b) {
+  TYPE3 output(a.dimensions());
+  TYPE1::const_iterator ita = a.begin();
+  TYPE3::iterator dest = output.begin();
+  for (index i = a.size(); i; --i, ++dest, ++ita) {
+    *dest = (*ita)OPERATOR2(b);
   }
+  return output;
+}
 
-  const TYPE3 OPERATOR1(TYPE2 a, const TYPE1 &b) {
-    TYPE3 output(b.dimensions());
-    TYPE1::const_iterator itb = b.begin();
-    TYPE3::iterator dest = output.begin();
-    for (index i = b.size(); i; --i, ++dest, ++itb) {
-      *dest = (a) OPERATOR2 (*itb);
-    }
-    return output;
+const TYPE3 OPERATOR1(TYPE2 a, const TYPE1 &b) {
+  TYPE3 output(b.dimensions());
+  TYPE1::const_iterator itb = b.begin();
+  TYPE3::iterator dest = output.begin();
+  for (index i = b.size(); i; --i, ++dest, ++itb) {
+    *dest = (a)OPERATOR2(*itb);
   }
+  return output;
+}
 
-} // namespace tensor
+}  // namespace tensor

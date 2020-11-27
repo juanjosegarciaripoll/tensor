@@ -26,21 +26,19 @@
 
 namespace tensor {
 
-  using namespace blas;
+using namespace blas;
 
-  template<typename elt_t, bool do_conj>
-  void
-  do_fold(Tensor<elt_t> &output,
-          const Tensor<elt_t> &a, int _ndx1, const Tensor<elt_t> &b, int _ndx2)
-  {
-    index i_len,j_len,k_len,l_len,m_len;
-    index rank, i;
-    const index ranka = a.rank();
-    const index rankb = b.rank();
-    index ndx1 = normalize_index(_ndx1, ranka);
-    index ndx2 = normalize_index(_ndx2, rankb);
-    Indices new_dims(std::max<index>(ranka + rankb - 2, 1));
-    /*
+template <typename elt_t, bool do_conj>
+void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
+             const Tensor<elt_t> &b, int _ndx2) {
+  index i_len, j_len, k_len, l_len, m_len;
+  index rank, i;
+  const index ranka = a.rank();
+  const index rankb = b.rank();
+  index ndx1 = normalize_index(_ndx1, ranka);
+  index ndx2 = normalize_index(_ndx2, rankb);
+  Indices new_dims(std::max<index>(ranka + rankb - 2, 1));
+  /*
      * Since we use row-major order, in which the first
      * index varies faster, we nest the loops beginning with the last index,
      * and the loop what does is
@@ -50,114 +48,111 @@ namespace tensor {
      * uncontracted (new_dims, i_len,j_len,k_len,m_len) dimensions of the
      * tensors.
      */
-    for (i = 0, rank = 0, i_len=1; i < ndx1; i++) {
-      index di = a.dimension(i);
-      new_dims.at(rank++) = di;
-      i_len *= di;
-    }
-    l_len = a.dimension(i++);
-    if (l_len == 0) {
-      std::cerr << "Unable to fold() tensors with dimensions" << std::endl
-                << "\t" << a.dimensions() << " and "
-                << b.dimensions() << std::endl
-                << "\tbecause indices " << ndx1 << " and " << ndx2
-                << " are empty" << std::endl;
-      abort();
-    }
-    for (j_len = 1; i < ranka; i++) {
-      index di = a.dimension(i);
-      new_dims.at(rank++) = di;
-      j_len *= di;
-    }
-    for (i = 0, k_len=1; i < ndx2; i++) {
-      index di = b.dimension(i);
-      new_dims.at(rank++) = di;
-      k_len *= di;
-    }
-    if (l_len != b.dimension(i++)) {
-      std::cerr << "Unable to fold() tensors with dimensions" << std::endl
-                << "\t" << a.dimensions() << " and "
-                << b.dimensions() << std::endl
-                << "\tbecause indices " << ndx1 << " and " << ndx2
-                << " have different sizes" << std::endl;
-      abort();
-    }
-    for (m_len = 1; i < rankb; i++) {
-      index di = b.dimension(i);
-      new_dims.at(rank++) = di;
-      m_len *= di;
-    }
-    /*
+  for (i = 0, rank = 0, i_len = 1; i < ndx1; i++) {
+    index di = a.dimension(i);
+    new_dims.at(rank++) = di;
+    i_len *= di;
+  }
+  l_len = a.dimension(i++);
+  if (l_len == 0) {
+    std::cerr << "Unable to fold() tensors with dimensions" << std::endl
+              << "\t" << a.dimensions() << " and " << b.dimensions()
+              << std::endl
+              << "\tbecause indices " << ndx1 << " and " << ndx2 << " are empty"
+              << std::endl;
+    abort();
+  }
+  for (j_len = 1; i < ranka; i++) {
+    index di = a.dimension(i);
+    new_dims.at(rank++) = di;
+    j_len *= di;
+  }
+  for (i = 0, k_len = 1; i < ndx2; i++) {
+    index di = b.dimension(i);
+    new_dims.at(rank++) = di;
+    k_len *= di;
+  }
+  if (l_len != b.dimension(i++)) {
+    std::cerr << "Unable to fold() tensors with dimensions" << std::endl
+              << "\t" << a.dimensions() << " and " << b.dimensions()
+              << std::endl
+              << "\tbecause indices " << ndx1 << " and " << ndx2
+              << " have different sizes" << std::endl;
+    abort();
+  }
+  for (m_len = 1; i < rankb; i++) {
+    index di = b.dimension(i);
+    new_dims.at(rank++) = di;
+    m_len *= di;
+  }
+  /*
      * Create the output tensor. Sometimes it is just a number.
      */
-    if (rank == 0) {
-      rank = 1;
-      new_dims.at(0) = 1;
-    }
-    output = Tensor<elt_t>(new_dims);
-    if (output.size() == 0)
-      return;
+  if (rank == 0) {
+    rank = 1;
+    new_dims.at(0) = 1;
+  }
+  output = Tensor<elt_t>(new_dims);
+  if (output.size() == 0) return;
 
-    elt_t *pC = output.begin();
-    const elt_t zero = number_zero<elt_t>();
-    const elt_t one = number_one<elt_t>();
-    const elt_t *pA = a.begin();
-    const elt_t *pB = b.begin();
-    if (i_len == 1) {
-      if (k_len == 1) {
-        // C(j_len,m_len) = A(l_len,j_len)*B(l_len,m_len);
-        char transa = do_conj? 'C' : 'T';
-        char transb = 'N';
-        gemm(transa, transb, j_len, m_len, l_len, one,
-             pA, l_len, pB, l_len, zero, pC, j_len);
-        return;
-      }
-      if (m_len == 1) {
-        // C(j_len,k_len) = A(l_len,j_len)*B(k_len,l_len);
-        char transa = do_conj? 'C' : 'T';
-        char transb = 'T';
-        gemm(transa, transb, j_len, k_len, l_len, one,
-             pA, l_len, pB, k_len, zero, pC, j_len);
-        return;
-      }
-    } else if (j_len == 1 && !do_conj) {
-      if (k_len == 1) {
-        // C(i_len,m_len) = A(i_len,l_len)*B(l_len,m_len);
-        char transa = 'N';
-        char transb = 'N';
-        gemm(transa, transb, i_len, m_len, l_len, one,
-             pA, i_len, pB, l_len, zero, pC, i_len);
-        return;
-      }
-      if (m_len == 1) {
-        // C(i_len,k_len) = A(i_len,l_len)*B(k_len,l_len);
-        char transa = 'N';
-        char transb = 'T';
-        gemm(transa, transb, i_len, k_len, l_len, one,
-             pA, i_len, pB, k_len, zero, pC, i_len);
-        return;
-      }
+  elt_t *pC = output.begin();
+  const elt_t zero = number_zero<elt_t>();
+  const elt_t one = number_one<elt_t>();
+  const elt_t *pA = a.begin();
+  const elt_t *pB = b.begin();
+  if (i_len == 1) {
+    if (k_len == 1) {
+      // C(j_len,m_len) = A(l_len,j_len)*B(l_len,m_len);
+      char transa = do_conj ? 'C' : 'T';
+      char transb = 'N';
+      gemm(transa, transb, j_len, m_len, l_len, one, pA, l_len, pB, l_len, zero,
+           pC, j_len);
+      return;
     }
-    const char op1 = 'N';
-    const char op2 = do_conj? 'C' : 'T';
-    const index ij_len = i_len*j_len;
-    const index il_len = i_len*l_len;
-    const index kl_len = k_len*l_len;
-    const index jk_len = j_len*k_len;
-    /*
-     * C(i,j,k,m) = A(i,l,j) * B(k,l,m)
-     */
-    for (index m = 0; m < m_len; m++) {
-      for (index j = 0; j < j_len; j++) {
-        gemm(op1, op2, i_len, k_len, l_len, one,
-             pA + il_len*j, i_len, pB + kl_len*m, k_len,
-             zero, pC + i_len*(j + jk_len*m), ij_len);
-      }
+    if (m_len == 1) {
+      // C(j_len,k_len) = A(l_len,j_len)*B(k_len,l_len);
+      char transa = do_conj ? 'C' : 'T';
+      char transb = 'T';
+      gemm(transa, transb, j_len, k_len, l_len, one, pA, l_len, pB, k_len, zero,
+           pC, j_len);
+      return;
     }
-    if (do_conj) {
-      for (index i = output.size(); i; i--, pC++)
-        *pC = tensor::conj(*pC);
+  } else if (j_len == 1 && !do_conj) {
+    if (k_len == 1) {
+      // C(i_len,m_len) = A(i_len,l_len)*B(l_len,m_len);
+      char transa = 'N';
+      char transb = 'N';
+      gemm(transa, transb, i_len, m_len, l_len, one, pA, i_len, pB, l_len, zero,
+           pC, i_len);
+      return;
+    }
+    if (m_len == 1) {
+      // C(i_len,k_len) = A(i_len,l_len)*B(k_len,l_len);
+      char transa = 'N';
+      char transb = 'T';
+      gemm(transa, transb, i_len, k_len, l_len, one, pA, i_len, pB, k_len, zero,
+           pC, i_len);
+      return;
     }
   }
+  const char op1 = 'N';
+  const char op2 = do_conj ? 'C' : 'T';
+  const index ij_len = i_len * j_len;
+  const index il_len = i_len * l_len;
+  const index kl_len = k_len * l_len;
+  const index jk_len = j_len * k_len;
+  /*
+     * C(i,j,k,m) = A(i,l,j) * B(k,l,m)
+     */
+  for (index m = 0; m < m_len; m++) {
+    for (index j = 0; j < j_len; j++) {
+      gemm(op1, op2, i_len, k_len, l_len, one, pA + il_len * j, i_len,
+           pB + kl_len * m, k_len, zero, pC + i_len * (j + jk_len * m), ij_len);
+    }
+  }
+  if (do_conj) {
+    for (index i = output.size(); i; i--, pC++) *pC = tensor::conj(*pC);
+  }
+}
 
-} // namespace tensor
+}  // namespace tensor

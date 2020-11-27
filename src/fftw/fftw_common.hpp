@@ -27,8 +27,11 @@
 
 namespace tensor {
 
-  void do_fftw(fftw_complex* pin, fftw_complex* pout, const Indices& dims, int direction);
-  void do_fftw(fftw_complex* pin, fftw_complex* pout, index dim, const Indices& dims, int direction);
-  void do_fftw(fftw_complex* pin, fftw_complex* pout, const Booleans& convert, const Indices& dims, int direction);
+void do_fftw(fftw_complex* pin, fftw_complex* pout, const Indices& dims,
+             int direction);
+void do_fftw(fftw_complex* pin, fftw_complex* pout, index dim,
+             const Indices& dims, int direction);
+void do_fftw(fftw_complex* pin, fftw_complex* pout, const Booleans& convert,
+             const Indices& dims, int direction);
 
-}
+}  // namespace tensor

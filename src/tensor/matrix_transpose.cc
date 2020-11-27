@@ -22,16 +22,14 @@
 
 namespace tensor {
 
-  template<typename n> inline
-  const Tensor<n> do_transpose(const Tensor<n> &a)
-  {
-    assert(a.rank() == 2);
-    index rows = a.rows();
-    index cols = a.columns();
-    Tensor<n> b(cols, rows);
-    if (cols && rows)
-      permute_12(b, a, rows, cols, 1);
-    return b;
-  }
+template <typename n>
+inline const Tensor<n> do_transpose(const Tensor<n> &a) {
+  assert(a.rank() == 2);
+  index rows = a.rows();
+  index cols = a.columns();
+  Tensor<n> b(cols, rows);
+  if (cols && rows) permute_12(b, a, rows, cols, 1);
+  return b;
+}
 
-} // namespace tensor
+}  // namespace tensor

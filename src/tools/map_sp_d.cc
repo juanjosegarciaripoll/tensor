@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-  // Explicitely instantiate an specialization of MatrixMap
-  template class tensor::MatrixMap<RSparse>;
+// Explicitely instantiate an specialization of MatrixMap
+template class tensor::MatrixMap<RSparse>;
 
-}
+}  // namespace tensor

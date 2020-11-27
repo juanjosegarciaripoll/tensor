@@ -27,47 +27,47 @@
 
 namespace blas {
 
-  inline void gemv(char trans, integer m, integer n, const double alpha,
-		   const double a[], integer lda, const double x[], integer incx,
-		   const double &beta, double y[], integer incy)
-  {
+inline void gemv(char trans, integer m, integer n, const double alpha,
+                 const double a[], integer lda, const double x[], integer incx,
+                 const double &beta, double y[], integer incy) {
 #ifdef TENSOR_USE_ESSL
-    dgemv(&trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
+  dgemv(&trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 #endif
 #ifdef TENSOR_USE_ACML
-    dgemv(trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
+  dgemv(trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 #endif
 #if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
-    cblas_dgemv(CblasColMajor, char_to_op(trans), m, n,
-		alpha, a, lda, x, incx, beta, y, incy);
+  cblas_dgemv(CblasColMajor, char_to_op(trans), m, n, alpha, a, lda, x, incx,
+              beta, y, incy);
 #endif
-  }
+}
 
-  inline void gemv(char trans, integer m, integer n, const tensor::cdouble &alpha,
-		   const tensor::cdouble *a, integer lda, const tensor::cdouble *x,
-		   integer incx, const tensor::cdouble &beta, tensor::cdouble *y,
-		   integer incy)
-  {
+inline void gemv(char trans, integer m, integer n, const tensor::cdouble &alpha,
+                 const tensor::cdouble *a, integer lda,
+                 const tensor::cdouble *x, integer incx,
+                 const tensor::cdouble &beta, tensor::cdouble *y,
+                 integer incy) {
 #ifdef TENSOR_USE_ESSL
-    zgemv(&trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
+  zgemv(&trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 #endif
 #ifdef TENSOR_USE_ACML
-    zgemv(trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
+  zgemv(trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 #endif
 #ifdef TENSOR_USE_OPENBLAS
-    cblas_zgemv(CblasColMajor, char_to_op(trans), m, n,
-		reinterpret_cast<const double*>(&alpha),
-                reinterpret_cast<const double*>(a), lda,
-                reinterpret_cast<const double*>(x), incx,
-                reinterpret_cast<const double*>(&beta),
-                reinterpret_cast<double*>(y), incy);
+  cblas_zgemv(CblasColMajor, char_to_op(trans), m, n,
+              reinterpret_cast<const double *>(&alpha),
+              reinterpret_cast<const double *>(a), lda,
+              reinterpret_cast<const double *>(x), incx,
+              reinterpret_cast<const double *>(&beta),
+              reinterpret_cast<double *>(y), incy);
 #endif
-#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML) && !defined(TENSOR_USE_OPENBLAS)
-    cblas_zgemv(CblasColMajor, char_to_op(trans), m, n,
-		&alpha, a, lda, x, incx, &beta, y, incy);
+#if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML) && \
+    !defined(TENSOR_USE_OPENBLAS)
+  cblas_zgemv(CblasColMajor, char_to_op(trans), m, n, &alpha, a, lda, x, incx,
+              &beta, y, incy);
 #endif
-  }
+}
 
-} // namespace blas
+}  // namespace blas
 
-#endif // TENSOR_GEMV_CC
+#endif  // TENSOR_GEMV_CC

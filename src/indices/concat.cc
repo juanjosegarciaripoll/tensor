@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-  /** Concatenate two sets of indices by appending those of the second argument
+/** Concatenate two sets of indices by appending those of the second argument
    * to those of the first.
    *
    * Example:
@@ -31,16 +31,12 @@ namespace tensor {
    * Indice itot = i1 << i2;        // vector with elements (1,2,3,4)
    * \endcode
    */
-  const Indices
-  operator<<(const Indices &a, const Indices &b)
-  {
-    Indices output(a.size() + b.size());
-    Indices::iterator j = output.begin();
-    for (Indices::const_iterator i = a.begin(); i != a.end(); i++, j++)
-      *j = *i;
-    for (Indices::const_iterator i = b.begin(); i != b.end(); i++, j++)
-      *j = *i;
-    return output;
-  }
-
+const Indices operator<<(const Indices &a, const Indices &b) {
+  Indices output(a.size() + b.size());
+  Indices::iterator j = output.begin();
+  for (Indices::const_iterator i = a.begin(); i != a.end(); i++, j++) *j = *i;
+  for (Indices::const_iterator i = b.begin(); i != b.end(); i++, j++) *j = *i;
+  return output;
 }
+
+}  // namespace tensor

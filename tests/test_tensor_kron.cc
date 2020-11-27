@@ -23,102 +23,93 @@
 
 namespace tensor_test {
 
-  //
-  // SIZES OF KRONECKER PRODUCTS
-  //
+//
+// SIZES OF KRONECKER PRODUCTS
+//
 
-  template<typename elt_t>
-  void do_test_kron_size(Tensor<elt_t> &a, Tensor<elt_t> &b) {
-    a.randomize();
-    b.randomize();
+template <typename elt_t>
+void do_test_kron_size(Tensor<elt_t> &a, Tensor<elt_t> &b) {
+  a.randomize();
+  b.randomize();
 
-    Tensor<elt_t> k = kron(a, b);
+  Tensor<elt_t> k = kron(a, b);
 
-    ASSERT_EQ(k.rows(), a.rows() * b.rows());
-    ASSERT_EQ(k.columns(), a.columns() * b.columns());
-    ASSERT_EQ(k.size(), a.size() * b.size());
+  ASSERT_EQ(k.rows(), a.rows() * b.rows());
+  ASSERT_EQ(k.columns(), a.columns() * b.columns());
+  ASSERT_EQ(k.size(), a.size() * b.size());
 
-    Tensor<elt_t> k2 = kron2(a, b);
-    ASSERT_EQ(k2.rows(), a.rows() * b.rows());
-    ASSERT_EQ(k2.columns(), a.columns() * b.columns());
-    ASSERT_EQ(k2.size(), a.size() * b.size());
+  Tensor<elt_t> k2 = kron2(a, b);
+  ASSERT_EQ(k2.rows(), a.rows() * b.rows());
+  ASSERT_EQ(k2.columns(), a.columns() * b.columns());
+  ASSERT_EQ(k2.size(), a.size() * b.size());
+}
+
+TEST(RTensorKronTest, KronSize) {
+  test_over_fixed_rank_pairs<double>(do_test_kron_size<double>, 2);
+}
+
+TEST(CTensorKronTest, KronSize) {
+  test_over_fixed_rank_pairs<cdouble>(do_test_kron_size<cdouble>, 2);
+}
+
+//
+// HAND-BUILT KRONECKER PRODUCTS
+//
+
+template <typename elt_t>
+void test_kron_small() {
+  kron_2d_fixture<elt_t> fixture;
+
+  for (typename kron_2d_fixture<elt_t>::const_iterator it = fixture.begin();
+       it != fixture.end();) {
+    Tensor<elt_t> a(*(it++));
+    Tensor<elt_t> b(*(it++));
+    Tensor<elt_t> k(*(it++));
+
+    ASSERT_TRUE(all_equal(k, kron(a, b)));
+    ASSERT_TRUE(all_equal(kron(b, a), kron2(a, b)));
   }
+}
 
-  TEST(RTensorKronTest, KronSize) {
-    test_over_fixed_rank_pairs<double>(do_test_kron_size<double>, 2);
-  }
+TEST(RTensorKronTest, KronSmall) { test_kron_small<double>(); }
 
-  TEST(CTensorKronTest, KronSize) {
-    test_over_fixed_rank_pairs<cdouble>(do_test_kron_size<cdouble>, 2);
-  }
+TEST(CTensorKronTest, KronSmall) { test_kron_small<cdouble>(); }
 
-  //
-  // HAND-BUILT KRONECKER PRODUCTS
-  //
+//
+// COMPARISON WITH SLOW FORMULAS
+//
 
-  template<typename elt_t>
-  void test_kron_small() {
-    kron_2d_fixture<elt_t> fixture;
+template <typename elt_t>
+const Tensor<elt_t> slow_kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b) {
+  tensor::index a1, a2, b1, b2;
+  a.get_dimensions(&a1, &a2);
+  b.get_dimensions(&b1, &b2);
 
-    for(typename kron_2d_fixture<elt_t>::const_iterator it = fixture.begin();
-        it != fixture.end();
-        )
-      {
-        Tensor<elt_t> a(*(it++));
-        Tensor<elt_t> b(*(it++));
-        Tensor<elt_t> k(*(it++));
+  if (a1 == 0 || a2 == 0 || b1 == 0 || b2 == 0)
+    return Tensor<elt_t>(a1 * b1, b2 * a2);
 
-        ASSERT_TRUE(all_equal(k, kron(a, b)));
-        ASSERT_TRUE(all_equal(kron(b, a), kron2(a, b)));
-      }
-  }
+  Tensor<elt_t> output(b1, a1, b2, a2);
+  for (tensor::index i = 0; i < b1; i++)
+    for (tensor::index j = 0; j < a1; j++)
+      for (tensor::index k = 0; k < b2; k++)
+        for (tensor::index l = 0; l < a2; l++)
+          output.at(i, j, k, l) = b(i, k) * a(j, l);
+  return reshape(output, b1 * a1, b2 * a2);
+}
 
-  TEST(RTensorKronTest, KronSmall) {
-    test_kron_small<double>();
-  }
+template <typename elt_t>
+void test_slow_kron(Tensor<elt_t> &a, Tensor<elt_t> &b) {
+  a.randomize();
+  b.randomize();
+  ASSERT_TRUE(all_equal(slow_kron(a, b), kron(a, b)));
+}
 
-  TEST(CTensorKronTest, KronSmall) {
-    test_kron_small<cdouble>();
-  }
+TEST(RTensorKronTest, CompareWithSlowKron) {
+  test_over_fixed_rank_pairs<double>(test_slow_kron<double>, 2);
+}
 
-  //
-  // COMPARISON WITH SLOW FORMULAS
-  //
+TEST(CTensorKronTest, CompareWithSlowKron) {
+  test_over_fixed_rank_pairs<cdouble>(test_slow_kron<cdouble>, 2);
+}
 
-  template<typename elt_t>
-  const Tensor<elt_t> slow_kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b)
-  {
-    tensor::index a1, a2, b1, b2;
-    a.get_dimensions(&a1, &a2);
-    b.get_dimensions(&b1, &b2);
-
-    if (a1 == 0 || a2 == 0 || b1 == 0 || b2 == 0)
-      return Tensor<elt_t>(a1*b1, b2*a2);
-
-    Tensor<elt_t> output(b1,a1,b2,a2);
-    for (tensor::index i = 0; i < b1; i++)
-      for (tensor::index j = 0; j < a1; j++)
-        for (tensor::index k = 0; k < b2; k++)
-          for (tensor::index l = 0; l < a2; l++)
-            output.at(i,j,k,l) = b(i,k) * a(j,l);
-    return reshape(output, b1*a1,b2*a2);
-  }
-
-  template<typename elt_t>
-  void test_slow_kron(Tensor<elt_t> &a, Tensor<elt_t> &b)
-  {
-    a.randomize();
-    b.randomize();
-    ASSERT_TRUE(all_equal(slow_kron(a,b), kron(a,b)));
-  }
-
-  TEST(RTensorKronTest, CompareWithSlowKron) {
-    test_over_fixed_rank_pairs<double>(test_slow_kron<double>, 2);
-  }
-
-  TEST(CTensorKronTest, CompareWithSlowKron) {
-    test_over_fixed_rank_pairs<cdouble>(test_slow_kron<cdouble>, 2);
-  }
-
-
-} // namespace tensor_test
+}  // namespace tensor_test
