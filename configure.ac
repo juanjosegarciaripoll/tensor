@@ -17,7 +17,7 @@ AC_CONFIG_FILES([Makefile src/Makefile include/Makefile
                  scripts/Makefile tests/Makefile www/Makefile
                  essl_lapack/Makefile])
 AC_CONFIG_FILES([scripts/tensor-config], [chmod +x scripts/tensor-config])
-AC_CONFIG_HEADERS([include/tensor/config.h:include/tensor/config.h.in])
+AC_CONFIG_HEADERS([include/tensor/config.h:include/config.h.in])
 
 #
 # Initialize Automake, minimal version 1.9, with options to make it less

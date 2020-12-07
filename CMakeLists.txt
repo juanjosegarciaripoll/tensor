@@ -123,7 +123,7 @@ else()
 endif()
 
 # Export configuration file
-configure_file(include/tensor/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/config.h)
+configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/config.h)
 
 ############################################################
 # LIBRARY
