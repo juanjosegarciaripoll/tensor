@@ -123,6 +123,9 @@ else()
 endif()
 
 # Export configuration file
+if(TENSOR_FFTW)
+  set(TENSOR_USE_FFTW3 TRUE)
+endif()
 configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/config.h)
 
 ############################################################

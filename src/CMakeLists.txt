@@ -9,12 +9,14 @@ add_subdirectory(linalg)
 add_subdirectory(views)
 add_subdirectory(sdf)
 
-if(${TENSOR_USE_FFTW3})
-  find_package(FFTW OPTIONAL)
-  if(${FFTW_FOUND})
-    target_link_libraries(tensor fftw)
-    add_subdirectory(fftw)
-  endif()
+if(${TENSOR_FFTW})
+  find_library(FFTW_LIBRARIES
+    NAMES fftw3
+    REQUIRED
+    DOC "FFTW3 library")
+  message(STATUS ${FFTW_LIBRARIES})
+  target_link_libraries(tensor PUBLIC ${FFTW_LIBRARIES})
+  add_subdirectory(fftw)
 endif()
 
 if(${TENSOR_ARPACK})
