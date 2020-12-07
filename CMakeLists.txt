@@ -172,8 +172,8 @@ write_basic_package_version_file(
   COMPATIBILITY SameMajorVersion
   )
 install(EXPORT tensorConfig
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/tensor"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/tensor"
   )
 install(FILES ${PROJECT_BINARY_DIR}/tensorConfigVersion.cmake
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/tensor"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/tensor"
   )
