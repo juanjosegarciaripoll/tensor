@@ -9,7 +9,7 @@ add_subdirectory(linalg)
 add_subdirectory(views)
 add_subdirectory(sdf)
 
-if(${TENSOR_FFTW})
+if(TENSOR_FFTW)
   find_library(FFTW_LIBRARIES
     NAMES fftw3
     REQUIRED
@@ -19,6 +19,6 @@ if(${TENSOR_FFTW})
   add_subdirectory(fftw)
 endif()
 
-if(${TENSOR_ARPACK})
+if(TENSOR_ARPACK)
   add_subdirectory(arpack)
 endif()

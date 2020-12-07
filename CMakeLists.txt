@@ -35,7 +35,7 @@ option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 # Fortran and Fortran-like libraries
 find_package(BLAS)
 find_package(LAPACK)
-if(${TENSOR_ARPACK})
+if(TENSOR_ARPACK)
   find_library(ARPACK_LIBRARIES NAMES arpack libarpack libARPACK ARPACK)
   if(NOT ARPACK_LIBRARIES)
     message(FATAL_ERROR "Could not find ARPACK libraries")
@@ -74,7 +74,7 @@ endif()
 #
 # Fortran name mangling
 #
-if(${TENSOR_ARPACK})
+if(TENSOR_ARPACK)
   enable_language(Fortran)
   include(FortranCInterface)
   FortranCInterface_HEADER(dummy.h)
@@ -145,7 +145,7 @@ target_link_options(tensor
   PUBLIC ${LAPACK_LINKER_FLAGS} ${BLAS_LINKER_FLAGS})
 target_link_libraries(tensor
   PUBLIC ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
-if(${TENSOR_ARPACK})
+if(TENSOR_ARPACK)
   target_link_libraries(tensor PUBLIC ${ARPACK_LIBRARIES})
 endif()
 add_subdirectory(include)
@@ -154,7 +154,7 @@ add_subdirectory(src)
 ############################################################
 # TESTING
 #
-if(${TENSOR_TEST})
+if(TENSOR_TEST)
   add_subdirectory(tests)
 endif()
 
