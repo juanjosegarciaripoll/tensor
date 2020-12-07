@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 # Find our extra modules
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 
 # Source files are named relative but transformed into absolute paths
 cmake_policy(SET CMP0076 NEW)
@@ -123,7 +123,7 @@ else()
 endif()
 
 # Export configuration file
-configure_file(include/tensor/config.h.cmake.in ${CMAKE_BINARY_DIR}/include/tensor/config.h)
+configure_file(include/tensor/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/config.h)
 
 ############################################################
 # LIBRARY
@@ -133,10 +133,10 @@ add_library(tensor STATIC "")
 target_include_directories(tensor
   PUBLIC
     $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   PRIVATE lib
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/config_aux>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/config_aux>
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   )
 target_link_options(tensor
   PUBLIC ${LAPACK_LINKER_FLAGS} ${BLAS_LINKER_FLAGS})
@@ -167,13 +167,13 @@ install(TARGETS tensor
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-  ${CMAKE_BINARY_DIR}/tensorConfigVersion.cmake
+  ${PROJECT_BINARY_DIR}/tensorConfigVersion.cmake
   VERSION ${PACKAGE_VERSION}
   COMPATIBILITY SameMajorVersion
   )
 install(EXPORT tensorConfig
   DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/tensor"
   )
-install(FILES ${CMAKE_BINARY_DIR}/tensorConfigVersion.cmake
+install(FILES ${PROJECT_BINARY_DIR}/tensorConfigVersion.cmake
   DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/tensor"
   )

@@ -36,9 +36,9 @@ package_add_test(test_booleans test_booleans.cc)
 package_add_test(test_rand test_rand.cc)
 target_include_directories(test_rand
   PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
 )
 package_add_test(test_tensor_base test_tensor_base.cc)
 package_add_test(test_tensor_getset test_tensor_getset.cc)
