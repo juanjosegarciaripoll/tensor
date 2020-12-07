@@ -132,11 +132,11 @@ configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/co
 add_library(tensor "")
 target_include_directories(tensor
   PUBLIC
-    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  PRIVATE lib
-    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/config_aux>
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+  PRIVATE
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/config_aux>
   )
 target_link_options(tensor
   PUBLIC ${LAPACK_LINKER_FLAGS} ${BLAS_LINKER_FLAGS})
