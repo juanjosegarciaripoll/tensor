@@ -129,7 +129,7 @@ configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/co
 # LIBRARY
 #
 
-add_library(tensor STATIC "")
+add_library(tensor "")
 target_include_directories(tensor
   PUBLIC
     $<INSTALL_INTERFACE:include>
