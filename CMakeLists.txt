@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-
-# Find our extra modules
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
+message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
 
 # Source files are named relative but transformed into absolute paths
 cmake_policy(SET CMP0076 NEW)
@@ -23,6 +21,9 @@ include(CheckTypeSize)
 include(GNUInstallDirs)
 include(TestBigEndian)
 
+# Find our extra modules
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
+
 ############################################################
 # SYTEM CHECKS AND CONFIGURATION
 #
@@ -33,7 +34,8 @@ option(TENSOR_ARPACK "Enable support for Arpack" ON)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 
 # Fortran and Fortran-like libraries
-find_package(BLAS)
+message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
+find_package(TensorBLAS REQUIRED)
 find_package(LAPACK)
 if(TENSOR_ARPACK)
   find_library(ARPACK_LIBRARIES NAMES arpack libarpack libARPACK ARPACK)
@@ -43,31 +45,32 @@ if(TENSOR_ARPACK)
 endif()
 
 # Search for a C/C++ interface for those libraries
+message(STATUS "BLAS Library is ${BLA_VENDOR}")
 set(CBLAS_FOUND FALSE)
-if(${BLAS_LIBRARIES} MATCHES mkl)
+if(BLA_VENDOR MATCHES Intel)
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_MKL)
 endif()
-if(${BLAS_LIBRARIES} MATCHES acml)
+if(BLA_VENDOR MATCHES ACML)
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_ACML)
 endif()
-if(${BLAS_LIBRARIES} MATCHES atlas)
+if(BLA_VENDOR MATCHES ATLAS)
   check_include_file("atlas/cblas.h" HAVE_ATLAS_CBLAS_H)
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_ATLAS TRUE)
 endif()
-if(${BLAS_LIBRARIES} MATCHES openblas)
+if(BLA_VENDOR MATCHES OpenBLAS)
   check_include_file("OpenBLAS/cblas.h" HAVE_OPENBLAS_CBLAS_H)
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_OPENBLAS TRUE)
 endif()
-if(${BLAS_LIBRARIES} MATCHES veclib)
+if(BLA_VENDOR MATCHES Apple)
   check_include_file("accelerate/accelerate.h" HAVE_ACCELERATE_ACCELERATE_H)
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_VECLIB TRUE)
 endif()
-if(NOT ${CBLAS_FOUND})
+if(NOT CBLAS_FOUND)
   check_include_file("cblas.h" HAVE_CBLAS_H)
 endif()
 
