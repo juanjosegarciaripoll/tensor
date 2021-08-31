@@ -26,13 +26,15 @@
 namespace tensor {
 
 template <class Tensor>
-struct Map {
+class Map {
+ public:
   virtual ~Map(){};
   virtual const Tensor operator()(const Tensor &arg) const { return arg; };
 };
 
 template <class Matrix>
-struct MatrixMap : public Map<Tensor<typename Matrix::elt_t> > {
+class MatrixMap : public Map<Tensor<typename Matrix::elt_t> > {
+ public:
   typedef Tensor<typename Matrix::elt_t> tensor_t;
   MatrixMap(const Matrix &m, bool transpose = false);
   virtual ~MatrixMap();
@@ -44,7 +46,8 @@ struct MatrixMap : public Map<Tensor<typename Matrix::elt_t> > {
 };
 
 template <class Func, class Tensor>
-struct FunctionMap : public Map<Tensor> {
+class FunctionMap : public Map<Tensor> {
+ public:
   FunctionMap(const Func &f) : f_(f) {}
   virtual ~FunctionMap(){};
   virtual const Tensor operator()(const Tensor &arg) const { return f_(arg); }

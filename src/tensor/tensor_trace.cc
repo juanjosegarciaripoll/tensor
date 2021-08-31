@@ -50,8 +50,7 @@ static void trace_loop(n *C, const n *D, index a1, index a2, index a3, index a4,
 }
 
 template <typename elt_t>
-static const Tensor<elt_t> do_trace(const Tensor<elt_t> &D, index i1,
-                                    index i2) {
+static const Tensor<elt_t> do_trace(const Tensor<elt_t> &D, int i1, int i2) {
   assert(i1 < D.rank() && i1 > -D.rank());
   assert(i2 < D.rank() && i2 > -D.rank());
   if (i1 < 0) i1 = i1 + D.rank();
@@ -64,7 +63,8 @@ static const Tensor<elt_t> do_trace(const Tensor<elt_t> &D, index i1,
     abort();
   }
 
-  index a1, a2, a3, a4, a5, i, rank;
+  int i, rank;
+  index a1, a2, a3, a4, a5;
   Indices dimensions(std::max(D.rank() - 2, 1));
   dimensions.at(rank = 0) = 1;
   for (a1 = 1, i = 0; i < i1;) {

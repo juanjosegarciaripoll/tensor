@@ -23,8 +23,8 @@
 namespace tensor {
 
 template <typename n>
-inline const Tensor<n> do_diag(const Tensor<n> &a, int which, int rows,
-                               int cols) {
+inline const Tensor<n> do_diag(const Tensor<n> &a, int which, index rows,
+                               index cols) {
   Tensor<n> output(rows, cols);
   output.fill_with_zeros();
   index r0, c0;
@@ -47,7 +47,7 @@ inline const Tensor<n> do_diag(const Tensor<n> &a, int which, int rows,
               << std::endl;
     abort();
   }
-  for (size_t i = 0; i < (size_t)l; i++) {
+  for (index i = 0; i < l; i++) {
     output.at(r0 + i, c0 + i) = a[i];
   }
   return output;

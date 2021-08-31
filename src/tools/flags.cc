@@ -40,7 +40,7 @@ class Flags &Flags::set(unsigned int code, double value) {
 }
 
 unsigned int Flags::create_key(double value) {
-  int size = _values.size();
+  int size = (int)_values.size();
   _values.resize(size + 1, value);
   return size;
 }

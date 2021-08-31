@@ -32,7 +32,7 @@ const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
                             const Tensor<cdouble> &v) {
   index d1, d2, d3;
   Tensor<cdouble> output(t.dimensions());
-  ndx = normalize_index(ndx, t.rank());
+  ndx = (int)normalize_index(ndx, t.rank());
   surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
   if (d2 != v.size()) {
     std::cerr << "In scale() the dimension " << ndx

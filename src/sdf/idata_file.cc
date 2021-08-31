@@ -98,7 +98,7 @@ void InDataFile::read_raw(int *data, size_t n) {
   read_raw_with_endian(_stream, data, n);
 }
 
-void InDataFile::read_raw(long *data, size_t n) {
+void InDataFile::read_raw(index *data, size_t n) {
   assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
@@ -234,12 +234,12 @@ void InDataFile::read_header() {
     abort();
   }
   int file_int_size = var_name[3] - '0';
-  int file_long_size = var_name[4] - '0';
+  int file_index_size = var_name[4] - '0';
   int file_endianness = var_name[5] - '0';
-  if (file_int_size != sizeof(int) || file_long_size != sizeof(long) ||
+  if (file_int_size != sizeof(int) || file_index_size != sizeof(index) ||
       file_endianness != endian) {
     std::cerr << "File " << _filename << " has word sizes (" << file_int_size
-              << ',' << file_long_size
+              << ',' << file_index_size
               << ") and cannot be read by this computer";
     abort();
   }

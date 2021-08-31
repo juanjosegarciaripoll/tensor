@@ -32,7 +32,7 @@ template <typename elt_t, bool do_conj>
 void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
              const Tensor<elt_t> &b, int _ndx2) {
   index i_len, j_len, k_len, l_len, m_len;
-  index rank, i;
+  int rank, i;
   const index ranka = a.rank();
   const index rankb = b.rank();
   index ndx1 = normalize_index(_ndx1, ranka);

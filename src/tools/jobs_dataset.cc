@@ -40,7 +40,7 @@ std::string NumberToString(T Number) {
   return ss.str();
 }
 
-static std::string dataset_name(const std::string &base, int jobid) {
+static std::string dataset_name(const std::string &base, size_t jobid) {
   return base + "/" + NumberToString(jobid);
 }
 

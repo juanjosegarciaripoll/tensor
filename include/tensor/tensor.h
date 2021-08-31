@@ -118,7 +118,7 @@ class Tensor {
   bool is_empty() const { return size() == 0; }
 
   /**Number of Tensor indices.*/
-  int rank() const { return dims_.size(); }
+  int rank() const { return (int)dims_.size(); }
   /**Return Tensor dimensions.*/
   const Indices &dimensions() const { return dims_; }
   /**Length of a given Tensor index.*/
@@ -288,7 +288,7 @@ class Tensor {
   iterator end() { return data_.end(); }
 
   // Only for testing purposes
-  int ref_count() const { return data_.ref_count(); }
+  size_t ref_count() const { return data_.ref_count(); }
 
   /**Take a diagonal from a tensor.*/
   const Tensor<elt_t> diag(int which = 0, int ndx1 = 0, int ndx2 = -1) {
@@ -419,12 +419,11 @@ RTensor log(const RTensor &t);
 
 RTensor round(const RTensor &t);
 
-const RTensor diag(const RTensor &d, int which, int rows, int cols);
+const RTensor diag(const RTensor &d, int which, index rows, index cols);
 const RTensor diag(const RTensor &d, int which = 0);
-const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0,
-                        int ndx2 = -1);
+const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
 double trace(const RTensor &d);
-const RTensor trace(const RTensor &A, index i1, index i2);
+const RTensor trace(const RTensor &A, int i1, int i2);
 
 /**Convert a tensor to a 1D vector with the same elements.*/
 const RTensor flatten(const RTensor &t);
@@ -556,10 +555,9 @@ CTensor log(const CTensor &t);
 
 const CTensor diag(const CTensor &d, int which, int rows, int cols);
 const CTensor diag(const CTensor &d, int which = 0);
-const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0,
-                        int ndx2 = -1);
+const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
 cdouble trace(const CTensor &d);
-const CTensor trace(const CTensor &A, index i1, index i2);
+const CTensor trace(const CTensor &A, int i1, int i2);
 
 /**Convert a tensor to a 1D vector with the same elements.*/
 const CTensor flatten(const CTensor &t);

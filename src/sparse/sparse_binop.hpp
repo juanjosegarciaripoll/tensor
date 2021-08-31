@@ -84,7 +84,7 @@ const Sparse<typename Binop<T1, T2>::type> sparse_binop(const Sparse<T1> &m1,
       l2--;
       m2_column++;
       m2_data++;
-    } else if (c2 < cols) {
+    } else if (c2 < (index)cols) {
       // Both elements in m1 and m2 are nonzero.
       value = op(*m1_data, *m2_data);
       c = c1;

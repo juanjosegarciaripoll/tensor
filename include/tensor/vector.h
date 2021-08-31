@@ -69,7 +69,7 @@ class Vector {
   iterator end() { return data_.end(); }
 
   // Only for testing purposes
-  int ref_count() const { return data_.ref_count(); }
+  size_t ref_count() const { return data_.ref_count(); }
 
  private:
   RefPointer<elt_t> data_;

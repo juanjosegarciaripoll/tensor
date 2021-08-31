@@ -79,7 +79,7 @@ static inline const Tensor<elt_t> do_mmult(const Sparse<elt_t> &m1,
                                            const Tensor<elt_t> &m2) {
   Indices dims(m2.rank());
   index l_len = 1;
-  for (index k = 1, N = m2.rank(); k < N; k++) {
+  for (int k = 1, N = m2.rank(); k < N; k++) {
     dims.at(k) = m2.dimension(k);
     l_len *= dims[k];
   }

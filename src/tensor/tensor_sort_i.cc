@@ -26,9 +26,9 @@ namespace tensor {
 const Indices sort(const Indices &v, bool reverse) {
   Indices output(v);
   if (reverse) {
-    std::sort(output.begin(), output.end(), std::greater<double>());
+    std::sort(output.begin(), output.end(), std::greater<Indices::elt_t>());
   } else {
-    std::sort(output.begin(), output.end(), std::less<double>());
+    std::sort(output.begin(), output.end(), std::less<Indices::elt_t>());
   }
   return output;
 }
@@ -38,7 +38,7 @@ struct Compare {
   const elt_t *p;
 
   Compare(const elt_t *newp) : p(newp){};
-  int operator()(size_t i1, size_t i2) { return p[i1] < p[i2]; }
+  int operator()(index i1, index i2) { return p[i1] < p[i2]; }
 };
 
 template <typename elt_t>
@@ -46,7 +46,7 @@ struct CompareInv {
   const elt_t *p;
 
   CompareInv(const elt_t *newp) : p(newp){};
-  int operator()(size_t i1, size_t i2) { return p[i1] > p[i2]; }
+  int operator()(index i1, index i2) { return p[i1] > p[i2]; }
 };
 
 const Indices sort_indices(const Indices &v, bool reverse) {

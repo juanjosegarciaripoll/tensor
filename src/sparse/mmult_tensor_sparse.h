@@ -55,7 +55,7 @@ static inline const Tensor<elt_t> do_mmult(const Tensor<elt_t> &m1,
   index N = m1.rank();
   index i_len = 1;
   Indices dims(N);
-  for (index k = 0; k < N - 1; k++) {
+  for (int k = 0; k < N - 1; k++) {
     dims.at(k) = m1.dimension(k);
     i_len *= dims[k];
   }

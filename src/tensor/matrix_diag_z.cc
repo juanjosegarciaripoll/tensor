@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-const CTensor diag(const CTensor &a, int which, int rows, int cols) {
+const CTensor diag(const CTensor &a, int which, index rows, index cols) {
   return do_diag(a, which, rows, cols);
 }
 

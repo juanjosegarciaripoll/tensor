@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-const RTensor trace(const RTensor &a, index i1, index i2) {
+const RTensor trace(const RTensor &a, int i1, int i2) {
   return do_trace(a, i1, i2);
 }
 

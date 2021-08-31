@@ -55,8 +55,8 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
   assert((ndx2 < a.rank()) && (ndx2 >= 0));
 
   tensor::Indices new_dims(std::max((int)a.rank() - 1, (int)1));
-  size_t rank = 0;
-  tensor::index i, a1, a2, a3, a4, a5, a2b;
+  int i, rank = 0;
+  tensor::index a1, a2, a3, a4, a5, a2b;
   if (ndx1 > ndx2) {
     std::swap(ndx1, ndx2);
     which = -which;
@@ -74,7 +74,7 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
     a3 *= di;
   }
   a4 = a.dimension(i++);
-  for (a5 = 1; i < (tensor::index)a.rank(); i++) {
+  for (a5 = 1; i < (int)a.rank(); i++) {
     size_t di = a.dimension(i);
     new_dims.at(rank++) = di;
     a5 *= di;
