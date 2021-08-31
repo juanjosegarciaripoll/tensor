@@ -28,7 +28,7 @@ namespace tensor {
 // VECTOR CLASS
 //
 
-typedef long index;
+typedef std::ptrdiff_t index;
 
 template <typename elt>
 class Vector {
