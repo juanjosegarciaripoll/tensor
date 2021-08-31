@@ -135,7 +135,7 @@ void test_dims(Tensor<elt_t> &P) {
 template <typename elt_t>
 void test_get_dimensions_errors() {
 #if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
-  for (size_t i = 0; i <= 6; i++) {
+  for (int i = 0; i <= 6; i++) {
     Indices dimensions(i);
     std::fill(dimensions.begin(), dimensions.end(), (Indices::elt_t)2);
 

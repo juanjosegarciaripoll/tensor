@@ -30,7 +30,7 @@ namespace tensor_test {
 //
 
 template <typename n1, typename n2>
-void test_fold(index max_dim) {
+void test_fold(int max_dim) {
   index count = 0;
   for (int rankA = 1; rankA <= 3; rankA++) {
     for (int rankB = 1; rankB <= 3; rankB++) {

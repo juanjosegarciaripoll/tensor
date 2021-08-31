@@ -553,7 +553,7 @@ CTensor exp(const CTensor &t);
 CTensor sqrt(const CTensor &t);
 CTensor log(const CTensor &t);
 
-const CTensor diag(const CTensor &d, int which, int rows, int cols);
+const CTensor diag(const CTensor &d, int which, index rows, index cols);
 const CTensor diag(const CTensor &d, int which = 0);
 const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
 cdouble trace(const CTensor &d);

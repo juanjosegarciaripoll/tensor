@@ -35,7 +35,7 @@ Booleans randomBoolean(int size) {
 }
 
 TEST(BooleansTest, checkNegation) {
-  Booleans input = randomBoolean(1e5);
+  Booleans input = randomBoolean(10000);
   Booleans output = !input;
   ASSERT_EQ(input.size(), output.size());
 
@@ -47,8 +47,8 @@ TEST(BooleansTest, checkNegation) {
 }
 
 TEST(BooleansTest, checkLogicalAnd) {
-  Booleans input1 = randomBoolean(1e5);
-  Booleans input2 = randomBoolean(1e5);
+  Booleans input1 = randomBoolean(10000);
+  Booleans input2 = randomBoolean(10000);
   Booleans output = input1 && input2;
   ASSERT_EQ(input1.size(), output.size());
 
@@ -61,8 +61,8 @@ TEST(BooleansTest, checkLogicalAnd) {
 }
 
 TEST(BooleansTest, checkLogicalOr) {
-  Booleans input1 = randomBoolean(1e5);
-  Booleans input2 = randomBoolean(1e5);
+  Booleans input1 = randomBoolean(10000);
+  Booleans input2 = randomBoolean(10000);
   Booleans output = input1 || input2;
   ASSERT_EQ(input1.size(), output.size());
 
@@ -80,7 +80,7 @@ TEST(BooleansTest, deathOnWrongSizes) {
 }
 
 TEST(BooleansTest, checkFindingOfIndices) {
-  Booleans input = randomBoolean(1e5);
+  Booleans input = randomBoolean(10000);
   Indices output = which(input);
 
   Indices::iterator it = output.begin();
@@ -93,7 +93,7 @@ TEST(BooleansTest, checkFindingOfIndices) {
 }
 
 TEST(BooleansTest, checkAllOf) {
-  Booleans input = Booleans(1e5);
+  Booleans input = Booleans(10000);
 
   std::fill(input.begin(), input.end(), true);
   ASSERT_TRUE(all_of(input));
@@ -103,7 +103,7 @@ TEST(BooleansTest, checkAllOf) {
 }
 
 TEST(BooleansTest, checkAnyAndNoneOf) {
-  Booleans input = Booleans(1e5);
+  Booleans input = Booleans(10000);
 
   std::fill(input.begin(), input.end(), false);
   ASSERT_FALSE(any_of(input));

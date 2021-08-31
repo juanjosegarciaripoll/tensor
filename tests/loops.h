@@ -7,6 +7,7 @@
 #define TENSOR_TEST_LOOPS_H
 
 #include <algorithm>
+#include <strstream>
 #include <iostream>
 #include <string>
 #include <gtest/gtest.h>
@@ -224,7 +225,8 @@ void test_over_fixed_rank_tensors(unop test, int rank, int max_dimension = 10) {
   for (fixed_rank_iterator it(rank, max_dimension); !it.finished(); it.next()) {
     Tensor<elt_t> data(it.dimensions());
     // Make all elements different to make accurate comparisons
-    for (tensor::index i = 0; i < data.size(); i++) data.at(i) = i;
+    elt_t accum = 0;
+    for (tensor::index i = 0; i < data.size(); i++, accum+=1) data.at(i) = accum;
     test(data);
   }
 }
@@ -234,13 +236,15 @@ void test_over_fixed_rank_pairs(binop test, int rank, int max_dimension = 6) {
   for (fixed_rank_iterator it1(rank, max_dimension); !it1.finished();
        it1.next()) {
     Tensor<elt_t> data1(it1.dimensions());
+    elt_t accum = 0;
     // Make all elements different to make accurate comparisons
-    for (tensor::index i = 0; i < data1.size(); i++) data1.at(i) = i;
+    for (tensor::index i = 0; i < data1.size(); i++, accum+=1) data1.at(i) = accum;
     for (fixed_rank_iterator it2(rank, max_dimension); !it2.finished();
          it2.next()) {
       Tensor<elt_t> data2(it2.dimensions());
+      elt_t accum = 0;
       // Make all elements different to make accurate comparisons
-      for (tensor::index i = 0; i < data2.size(); i++) data2.at(i) = i;
+      for (tensor::index i = 0; i < data2.size(); i++, accum+=1) data2.at(i) = accum;
       test(data1, data2);
     }
   }
@@ -253,9 +257,9 @@ template <typename elt_t>
 void test_over_all_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
                            int max_dimension = 10) {
   for (int rank = 0; rank <= max_rank; rank++) {
-    char rank_string[] = "rank:      ";
-    sprintf(rank_string, "rank: %d", rank);
-    SCOPED_TRACE(rank_string);
+    std::ostringstream rank_string;
+    rank_string << "rank: " << rank;
+    SCOPED_TRACE(rank_string.str());
     test_over_fixed_rank_tensors(test, rank, max_dimension);
   }
 }
@@ -264,9 +268,9 @@ template <typename elt_t>
 void test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
                        int max_dimension = 10, int max_times = 15) {
   for (int rank = 0; rank <= max_rank; rank++) {
-    char rank_string[] = "rank:      ";
-    sprintf(rank_string, "rank: %d", (int)rank);
-    SCOPED_TRACE(rank_string);
+    std::ostringstream rank_string;
+    rank_string << "rank: " << rank;
+    SCOPED_TRACE(rank_string.str());
     //
     // Test over random dimensions
     //
