@@ -1,3 +1,6 @@
+# TODO: Use FetchContent as in https://sourceforge.net/p/wavepacket/cpp/git/ci/master/tree/dependencies/CMakeLists.txt
+# for sites where GTest might not be available, and to fix a certain version.
+
 include(GoogleTest)
 enable_testing()
 
@@ -12,14 +15,14 @@ add_library(testmain
   random_unitary_d.cc random_unitary_z.cc
   random_permutation.cc)
 target_link_libraries(testmain
-  PUBLIC tensor)
+  PUBLIC tensor GTest::gtest)
 
 macro(package_add_test TESTNAME)
     # create an exectuable in which the tests will be stored
     add_executable(${TESTNAME} ${ARGN})
     # link the Google test infrastructure, mocking library, and a default main fuction to
     # the test executable.  Remove g_test_main if writing your own main function.
-    target_link_libraries(${TESTNAME} testmain gtest gmock gtest_main)
+    target_link_libraries(${TESTNAME} testmain GTest::gmock GTest::gtest GTest::gmock_main GTest::gtest_main)
     # gtest_discover_tests replaces gtest_add_tests,
     # see https://cmake.org/cmake/help/v3.10/module/GoogleTest.html for more options to pass to it
     gtest_discover_tests(${TESTNAME}
