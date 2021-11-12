@@ -7,7 +7,6 @@
 #define TENSOR_TEST_LOOPS_H
 
 #include <algorithm>
-#include <strstream>
 #include <iostream>
 #include <string>
 #include <gtest/gtest.h>
