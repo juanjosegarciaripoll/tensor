@@ -26,7 +26,7 @@ using namespace tensor;
 
 template <class Map, class Tensor>
 static const Tensor solve(const Map *A, const Tensor &b, const Tensor *x_start,
-                          index maxiter, double tol) {
+                          tensor::index maxiter, double tol) {
   typedef typename Tensor::elt_t number;
   if (maxiter == 0) {
     maxiter = b.rows();

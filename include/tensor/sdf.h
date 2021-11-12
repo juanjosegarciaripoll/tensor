@@ -94,7 +94,7 @@ class OutDataFile : public DataFile {
 
   void write_raw(const char *data, size_t n);
   void write_raw(const int *data, size_t n);
-  void write_raw(const index *data, size_t n);
+  void write_raw(const tensor::index *data, size_t n);
   void write_raw(const size_t *data, size_t n);
   void write_raw(const double *data, size_t n);
   void write_raw(const cdouble *data, size_t n);
@@ -133,7 +133,7 @@ class InDataFile : public DataFile {
   void read_raw(char *data, size_t n);
   void read_raw(int *data, size_t n);
   void read_raw(size_t *data, size_t n);
-  void read_raw(index *data, size_t n);
+  void read_raw(tensor::index *data, size_t n);
   void read_raw(double *data, size_t n);
   void read_raw(cdouble *data, size_t n);
 
