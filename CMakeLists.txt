@@ -71,7 +71,7 @@ endif()
 # Fortran name mangling
 #
 if(TENSOR_ARPACK)
-  find_package(ARPACK REQUIRED)
+  find_package(arpack-ng REQUIRED)
   enable_language(Fortran)
   include(FortranCInterface)
   FortranCInterface_HEADER(dummy.h)
