@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.14)
 message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
 
 # Source files are named relative but transformed into absolute paths
@@ -11,7 +11,8 @@ project(tensor
   HOMEPAGE_URL https://github.com/juanjosegarciaripoll/tensor)
 
 # specify the C++ standard
-#set(CMAKE_CXX_STANDARD 11)
+# GoogleTest requiers C++11 or better
+set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Used modules
@@ -29,8 +30,8 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 #
 
 # Configuration options
-option(TENSOR_FFTW "Enable support for FFTW" ON)
-option(TENSOR_ARPACK "Enable support for Arpack" ON)
+option(TENSOR_FFTW "Enable support for FFTW" OFF)
+option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 
 # Fortran and Fortran-like libraries
@@ -160,7 +161,19 @@ add_subdirectory(src)
 # TESTING
 #
 if(TENSOR_TEST)
-  find_package(GTest CONFIG REQUIRED)
+  find_package(GTest)
+  set(GTEST_PREFIX GTest::)
+  if(NOT GTest_FOUND)
+	include(FetchContent)
+	FetchContent_Declare(
+	  googletest
+	  URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+	  )
+	# For Windows: Prevent overriding the parent project's compiler/linker settings
+	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+	FetchContent_MakeAvailable(googletest)
+	set(GTEST_PREFIX "")
+  endif()
   add_subdirectory(tests)
 endif()
 
