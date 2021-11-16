@@ -51,17 +51,23 @@ conda config --add channels conda-forge
 conda create -n cpp-dev cxx-compiler cmake openblas arpack fftw gtest
 ```
 
-3. Build the library
+3. Build the library. Here `build-conda` is the name of the subdirectory where the library will be compiled and linked.
 ```cmd
-cmake -S . -B build-conda -G "Nmake Makefiles"
+cmake -S . -B build-conda -G "NMake Makefiles"
 cmake --build build-conda
 ```
 
 4. Optionally test
 ```cmd
-cd build-conda\test
-ctest
+ctest --test-dir build-conda/tests
 ```
+
+If you want to speed up development and build time:
+
+a. Install Ninja using `conda install ninja`
+b. Instead of using `-G "NMake Makefiles"` use `-G "Ninja"`
+c. Invoke `cmake --build -j N` where `N` is the number of parallel jobs for building Tensor.
+d. Tell OpenBLAS the number of threads to use by defining the environment variable `OPENBLAS_NUM_THREADS`.
 
 ## Microsoft Visual Build Tools
 
