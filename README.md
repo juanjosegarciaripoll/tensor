@@ -47,7 +47,7 @@ dependencies:
 ```
 Alternatively, you can achieve the same with the command line interface
 ```cmd
-conda config --add conda-forge
+conda config --add channels conda-forge
 conda create -n cpp-dev cxx-compiler cmake openblas arpack fftw gtest
 ```
 
