@@ -123,7 +123,7 @@ void OutDataFile::write_raw(const int *data, size_t n) {
   write_raw_with_endian(_stream, data, n);
 }
 
-void OutDataFile::write_raw(const index *data, size_t n) {
+void OutDataFile::write_raw(const tensor::index *data, size_t n) {
   assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
@@ -216,7 +216,7 @@ void OutDataFile::dump(int v, const std::string &name) {
 void OutDataFile::write_header() {
   char tag[7] = "sdf  ";
   tag[3] = sizeof(int) + '0';
-  tag[4] = sizeof(index) + '0';
+  tag[4] = sizeof(tensor::index) + '0';
   tag[5] = endian + '0';
 
   write_variable_name(tag);
