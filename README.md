@@ -98,6 +98,34 @@ cmake --build build-msvc
 
 4. Optionally run the tests
 ```cmd
-cd build-msvc\test
+cd build-msvc\tests
 ctest
+```
+
+## Unix platforms
+
+1. Install required dependencies. On Debian you need
+  a. Some version of the OpenBLAS library, such as `libopenblas64-openmp-dev` for parallelized operations.
+  b. The optional libraries `libfftw3-3`, `libarpack2-dev`, and `libgtest-dev`
+  c. Tools to build the library, including `cmake`, `g++` (or other c++ compiler) and `pkg-config`. This last one is needed because of a bug in the installation of OpenBLAS.
+
+3. Clone the repository. We assume the repo will end up in `~/tensor`
+```cmd
+git clone https://github.com/juanjosegarciaripoll/tensor ~/tensor
+```
+
+3. Configure and build
+```sh
+cmake -B build-debian -S . -G "Unix Makefiles" -DTENSOR_ARPACK=ON -DTENSOR_FFTW=ON -DTENSOR_TEST=ON
+cmake --build
+```
+
+4. Optionally test the library
+```cmd
+(cd build-debian/tests && ctest)
+```
+
+5. Install. We assume that you want to place the library the `/usr/local/lib` directory tree
+```sh
+cmake --install PREFIX=/usr/local/lib
 ```
