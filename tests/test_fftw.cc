@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#define _USE_MATH_DEFINES
 #include "loops.h"
 #include <gtest/gtest.h>
 #include <tensor/tensor.h>
@@ -25,8 +26,8 @@
 namespace tensor_test {
 
 // Creates the matrix to do the DFT in the slow way.
-CTensor build_dft_transform(int N, int sign) {
-  RTensor vector = linspace(0, N - 1, N);
+CTensor build_dft_transform(tensor::index N, int sign) {
+  RTensor vector = linspace(0, (double)(N - 1), N);
   vector = reshape(vector, N, 1);
 
   return exp(sign * (2 * M_PI / N) * cdouble(0, 1) *
@@ -63,7 +64,7 @@ CTensor full_dft(const CTensor& input, int sign) {
 
 // Sets up the permutation matrix to use for fft shifts.
 // Slow, but rather transparent and simple.
-RTensor build_permutation_matrix(int N, int direction) {
+RTensor build_permutation_matrix(tensor::index N, int direction) {
   RTensor permute = RTensor::zeros(N, N);
 
   // even N is trivial, just swap the two half-spaces; both permutations are identical.
@@ -77,9 +78,9 @@ RTensor build_permutation_matrix(int N, int direction) {
   }
 
   // odd N is a bit more complicated
-  int center = (N - 1) / 2;
+  tensor::index center = (N - 1) / 2;
   permute.at(center, 0) = 1;
-  for (int i = 0; i < center; i++) {
+  for (tensor::index i = 0; i < center; i++) {
     permute.at(i, center + 1 + i) = 1;
     permute.at(center + 1 + i, i + 1) = 1;
   }
@@ -94,7 +95,7 @@ RTensor build_permutation_matrix(int N, int direction) {
 // fftshift along a single dimension
 CTensor single_fft_shift(const CTensor& input, int dim, int direction) {
   CTensor permutation =
-      build_permutation_matrix(input.dimension(dim), direction);
+    build_permutation_matrix(input.dimension(dim), direction);
 
   return foldin(permutation, 1, input, dim);
 }
@@ -137,7 +138,7 @@ TEST(FFTWTest, OutOfPlaceFFTTest) {
       EXPECT_TRUE(approx_eq(ref_fft, fftw(input, FFTW_FORWARD), 1e-10));
       EXPECT_TRUE(approx_eq(ref_ifft, fftw(input, FFTW_BACKWARD), 1e-10));
 
-      for (tensor::index dim = 0; dim < rank; dim++) {
+      for (int dim = 0; dim < rank; dim++) {
         // test the fftw along only a single dimension
         ref_fft = partial_dft(input, dim, -1);
         ref_ifft = partial_dft(input, dim, +1);
@@ -192,7 +193,7 @@ TEST(FFTWTest, InPlaceFFTTest) {
       fftw_inplace(inplace, FFTW_BACKWARD);
       EXPECT_TRUE(approx_eq(ref_ifft, inplace, 1e-10));
 
-      for (tensor::index dim = 0; dim < rank; dim++) {
+      for (int dim = 0; dim < rank; dim++) {
         // test the fftw along only a single dimension
         ref_fft = partial_dft(input, dim, -1);
         ref_ifft = partial_dft(input, dim, +1);
@@ -247,7 +248,7 @@ TEST(FFTWTest, fftShiftTest) {
       EXPECT_TRUE(approx_eq(all_fft_shift(input, FFTW_BACKWARD),
                             fftshift(input, FFTW_BACKWARD)));
 
-      for (tensor::index dim = 0; dim < rank; dim++) {
+      for (int dim = 0; dim < rank; dim++) {
         EXPECT_TRUE(approx_eq(single_fft_shift(input, dim, FFTW_FORWARD),
                               fftshift(input, dim, FFTW_FORWARD)));
         EXPECT_TRUE(approx_eq(single_fft_shift(input, dim, FFTW_BACKWARD),
