@@ -42,7 +42,7 @@ const CTensor fftw(const CTensor &in, index dim, int direction) {
   fftw_complex *pin = const_cast<fftw_complex *>(
       reinterpret_cast<const fftw_complex *>(in.begin()));
   fftw_complex *pout = reinterpret_cast<fftw_complex *>(out.begin());
-  do_fftw(pin, pout, dim, in.dimensions(), direction);
+  do_fftw(pin, pout, (int)dim, in.dimensions(), direction);
 
   return out;
 }
