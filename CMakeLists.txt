@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.18)
 message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
 
 # Source files are named relative but transformed into absolute paths
