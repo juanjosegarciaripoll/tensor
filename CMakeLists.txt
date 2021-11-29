@@ -57,7 +57,7 @@ if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT CBLAS_FOUND))
   if((NOT OpenBLAS_FOUND) AND PkgConfig_FOUND)
 	message(STATUS "Searching for OpenBLAS with pkgconfig")
   	pkg_search_module(OpenBLAS REQUIRED IMPORTED_TARGET
-	  openblas)
+	  openblas openblas64)
 	if(OpenBLAS_FOUND)
 	  set(OpenBLAS_TARGET PkgConfig::OpenBLAS)
 	endif()
