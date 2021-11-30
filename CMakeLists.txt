@@ -35,11 +35,12 @@ option(TENSOR_FFTW "Enable support for FFTW" OFF)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 
-# Fortran and Fortran-like libraries
-message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
-# find_package(TensorBLAS REQUIRED)
+# If not set by the user, make a release build.
+if (NOT CMAKE_BUILD_TYPE)
+     set (CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+endif()
 
-# Search for a C/C++ interface for those libraries
+# Search for dependencies
 set(CBLAS_FOUND FALSE)
 if(TENSOR_BLAS MATCHES MKL)
   find_package(MKL)
