@@ -32,7 +32,7 @@ function(tensor_find_dependency)
 
   # 1. If there are variables for the target, create an interface target
   if (${cxx_var_name} OR ${ld_var_name})
-    message(STATUS "Dependency ${ARGP_NAME} set up from supplied variables.")
+    message(STATUS "Dependency '${ARGP_NAME}' set up from supplied variables.")
     add_library("${target_name}" INTERFACE)
     target_compile_options(${target_name} "${${cxx_var_name}}")
     target_link_options(${target_name} "${${ld_var_name}}")
@@ -41,10 +41,10 @@ function(tensor_find_dependency)
 
   # 2. Try to find the package with CMake find_package() and create a unified alias target
   if (ARGP_CONFIG_NAME AND ARGP_IMPORT_TARGET)
-    find_package(${ARGP_CONFIG_NAME} CONFIG)
+    find_package(${ARGP_CONFIG_NAME} CONFIG QUIET)
 
     if (${ARGP_CONFIG_NAME}_FOUND AND (TARGET "${ARGP_IMPORT_TARGET}"))
-      message(STATUS "Dependency ${ARGP_NAME} found with CMake")
+      message(STATUS "Dependency '${ARGP_NAME}' found with CMake")
       add_library(${target_name} ALIAS ${ARGP_IMPORT_TARGET)
       return()
     endif()
@@ -52,12 +52,12 @@ function(tensor_find_dependency)
 
   # 3. Try to find the dependency with pkgconfig
   if (PkgConfig_FOUND AND ARGP_PKGCONFIG_NAMES)
-    pkg_search_module(${ARGP_NAME} REQUIRED
+    pkg_search_module(${ARGP_NAME} REQUIRED QUIET
       IMPORTED_TARGET ${ARGP_PKGCONFIG_NAMES}
     )
 
     if (${ARGP_NAME}_FOUND)
-      message(STATUS "Dependency ${ARGP_NAME} found with pkgconfig")
+      message(STATUS "Dependency '${ARGP_NAME}' found with pkgconfig")
       add_library(${target_name} ALIAS PkgConfig::${ARGP_NAME})
       return()
     endif()
