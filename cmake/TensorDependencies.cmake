@@ -27,12 +27,13 @@ function(tensor_find_dependency)
 
   # convenience definitions for later
   set(target_name Dependency::${ARGP_NAME})
-  set(cxx_var_name "${ARGP_NAME}_CXXFLAGS")
-  set(ld_var_name "${ARGP_NAME}_LDFLAGS")
+  set(cxx_var_name "TENSOR_${ARGP_NAME}_CXXFLAGS")
+  set(ld_var_name "TENSOR_${ARGP_NAME}_LDFLAGS")
 
   # 1. If there are variables for the target, create an interface target
   if (${cxx_var_name} OR ${ld_var_name})
     message(STATUS "Dependency '${ARGP_NAME}' set up from supplied variables.")
+message(STATUS "Values are CXX=${${cxx_var_name}}, LD=${${ld_var_name}}")
     add_library("${target_name}" INTERFACE)
     target_compile_options(${target_name} "${${cxx_var_name}}")
     target_link_options(${target_name} "${${ld_var_name}}")
