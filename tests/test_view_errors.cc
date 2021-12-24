@@ -54,7 +54,12 @@ void test_view_error(const Tensor<elt_t> &P) {
 // REAL SPECIALIZATIONS
 //
 
-TEST(SliceTestError, SliceRTensorError0D) { test_view_error(RTensor()); }
+#ifndef NDEBUG
+// death by assert
+
+TEST(SliceTestError, SliceRTensorError0D) {
+  test_view_error(RTensor());
+}
 
 TEST(SliceTestError, SliceRTensorError1D) {
   test_view_error(RTensor(rgen << 3));
@@ -84,7 +89,9 @@ TEST(SliceTestError, SliceRTensorError6D) {
 // COMPLEX SPECIALIZATIONS
 //
 
-TEST(SliceTestError, SliceCTensorError0D) { test_view_error(CTensor()); }
+TEST(SliceTestError, SliceCTensorError0D) {
+  test_view_error(CTensor());
+}
 
 TEST(SliceTestError, SliceCTensorError1D) {
   test_view_error(CTensor(cgen << 3));
@@ -109,5 +116,7 @@ TEST(SliceTestError, SliceCTensorError5D) {
 TEST(SliceTestError, SliceCTensorError6D) {
   test_view_error(CTensor(cgen << 5 << 3 << 1 << 4 << 2 << 5));
 }
+
+#endif
 
 }  // namespace tensor_test

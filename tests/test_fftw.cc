@@ -160,6 +160,9 @@ TEST(FFTWTest, OutOfPlaceFFTTest) {
   }
 }
 
+#ifndef NDEBUG
+// death by assert
+
 TEST(FFTWTest, OutOfPlaceDeathTest) {
   for (int rank = 1; rank < 3; rank++) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
@@ -172,6 +175,7 @@ TEST(FFTWTest, OutOfPlaceDeathTest) {
     }
   }
 }
+#endif
 
 TEST(FFTWTest, InPlaceFFTTest) {
   for (int rank = 1; rank <= 3; rank++) {
@@ -222,6 +226,8 @@ TEST(FFTWTest, InPlaceFFTTest) {
   }
 }
 
+#ifndef NDEBUG
+// death by assert
 TEST(FFTWTest, InPlaceDeathTest) {
   for (int rank = 1; rank < 3; rank++) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
@@ -234,6 +240,7 @@ TEST(FFTWTest, InPlaceDeathTest) {
     }
   }
 }
+#endif
 
 TEST(FFTWTest, fftShiftTest) {
   for (int rank = 1; rank < 4; rank++) {
@@ -264,6 +271,8 @@ TEST(FFTWTest, fftShiftTest) {
   }
 }
 
+#ifndef NDEBUG
+// death by assert
 TEST(FFTWTest, fftShiftDeathTest) {
   for (int rank = 1; rank < 3; rank++) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
@@ -276,4 +285,5 @@ TEST(FFTWTest, fftShiftDeathTest) {
     }
   }
 }
+#endif
 }  // namespace tensor_test
