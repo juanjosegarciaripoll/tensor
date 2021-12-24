@@ -24,7 +24,8 @@ include(TestBigEndian)
 find_package(PkgConfig QUIET)
 
 # Find our extra modules
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(TensorDependencies)
 
 ############################################################
 # SYTEM CHECKS AND CONFIGURATION
@@ -50,22 +51,14 @@ if(TENSOR_BLAS STREQUAL MKL)
   endif()
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_MKL TRUE)
-elseif(TENSOR_BLAS STREQUAL OpenBLAS)
-  find_package(OpenBLAS QUIET)
-  if(OpenBLAS_FOUND)
-	set(OpenBLAS_TARGET OpenBLAS::OpenBLAS)
-  endif()
-  if((NOT OpenBLAS_FOUND) AND PkgConfig_FOUND)
-	message(STATUS "Searching for OpenBLAS with pkgconfig")
-  	pkg_search_module(OpenBLAS REQUIRED IMPORTED_TARGET
-	  openblas openblas64)
-	if(OpenBLAS_FOUND)
-	  set(OpenBLAS_TARGET PkgConfig::OpenBLAS)
-	endif()
-  endif()
-  if(NOT OpenBLAS_FOUND)
-	message(FATAL_ERROR "OpenBLAS component not found")
-  endif()
+endif()
+if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT CBLAS_FOUND))
+  tensor_find_dependency(
+    NAME OpenBLAS
+    CONFIG_NAME OpenBLAS
+    IMPORT_TARGET OpenBLAS::OpenBLAS
+    PKGCONFIG_NAMES openblas openblas64
+  )
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_OPENBLAS TRUE)
   set(HAVE_CBLAS_H TRUE)
@@ -89,23 +82,21 @@ if(TENSOR_ARPACK)
   find_package(ARPACK QUIET)
   set(ARPACK_TARGET ARPACK::ARPACK)
   if(NOT ARPACK_FOUND)
-	message(STATUS "ARPACK not found through CMAKE")
-	find_package(arpack-ng QUIET)
-	if(NOT arpack-ng_FOUND)
-	  message(STATUS "arpack-ng not found through CMAKE")
-	else()
-	  set(ARPACK_FOUND TRUE)
-	endif()
+     tensor_find_dependency(
+       NAME arpack
+       CONFIG_NAME arpack-ng
+       IMPORT_TARGET ARPACK::ARPACK
+       PKGCONFIG_NAMES arpack-ng arpack
+     )
+
+     set(ARPACK_TARGET Dependency::arpack)
+	set(ARPACK_FOUND TRUE)
   endif()
-  if(NOT ARPACK_FOUND AND PkgConfig_FOUND)
-  	pkg_search_module(ARPACK REQUIRED IMPORTED_TARGET arpack-ng arpack)
-  	if(ARPACK_FOUND)
-	  set(ARPACK_TARGET PkgConfig::ARPACK)
-   	endif()
-  endif()
+
   if(NOT ARPACK_FOUND)
 	message(FATAL_ERROR "Unable to build with ARPACK though requested")
   endif()
+
   enable_language(Fortran)
   include(FortranCInterface)
   FortranCInterface_HEADER(dummy.h)
@@ -155,20 +146,13 @@ endif()
 
 # Export configuration file
 if(TENSOR_FFTW)
-  set(FFTW_TARGET FFTW3::fftw3)
-  find_package(FFTW3 QUIET)
-  if(NOT FFTW3_FOUND AND PkgConfig_FOUND)
-    message(STATUS "Unable to locate FFTW3 library via find_package")
-	pkg_search_module(FFTW3 QUIET IMPORTED_TARGET fftw3)
-	if(FFTW3_FOUND)
-	  set(FFTW_TARGET PkgConfig::FFTW3)
-	else()
-      message(STATUS "Unable to locate FFTW3 library via pkg-config")
-	endif()
-  endif()
-  if(NOT FFTW3_FOUND)
-    message(FATAL_ERROR "Unable to locate FFTW3 library")
-  endif()
+  tensor_find_dependency(
+    NAME fftw3
+    CONFIG_NAME FFTW3
+    IMPORT_TARGET FFTW3::fftw3
+    PKGCONFIG_NAMES fftw3
+  )
+
   set(TENSOR_USE_FFTW3 TRUE)
 endif()
 configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/config.h)
@@ -190,7 +174,7 @@ if(TENSOR_ARPACK AND ARPACK_FOUND)
   target_link_libraries(tensor PUBLIC ${ARPACK_TARGET})
 endif()
 if(TENSOR_USE_OPENBLAS)
-  target_link_libraries(tensor PRIVATE ${OpenBLAS_TARGET})
+  target_link_libraries(tensor PRIVATE Dependency::OpenBLAS)
 endif()
 if(TENSOR_USE_LAPACK)
   target_link_libraries(tensor PRIVATE LAPACK::LAPACK)
@@ -199,7 +183,7 @@ if(TENSOR_USE_MKL)
   target_link_libraries(tensor PRIVATE MKL::MKL)
 endif()
 if(TENSOR_FFTW)
-  target_link_libraries(tensor PRIVATE ${FFTW_TARGET})
+  target_link_libraries(tensor PRIVATE Dependency::fftw3)
 endif()
 add_subdirectory(include)
 add_subdirectory(src)
