@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.18)
 message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
 
 # Source files are named relative but transformed into absolute paths
@@ -35,14 +35,16 @@ include(TensorDependencies)
 option(TENSOR_FFTW "Enable support for FFTW" OFF)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
+set(TENSOR_BLAS "OpenBLAS" CACHE STRING "BLAS backend to use. Values are OpenBLAS (default) or MKL (also brings LAPACK backend)")
 
-# Fortran and Fortran-like libraries
-message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
-# find_package(TensorBLAS REQUIRED)
+# If not set by the user, make a release build.
+if (NOT CMAKE_BUILD_TYPE)
+     set (CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+endif()
 
-# Search for a C/C++ interface for those libraries
+# Search for dependencies
 set(CBLAS_FOUND FALSE)
-if(TENSOR_BLAS MATCHES MKL)
+if(TENSOR_BLAS STREQUAL MKL)
   find_package(MKL)
   if(NOT MKL_FOUND)
 	message(FATAL_ERROR "MKL library not found")
@@ -57,10 +59,11 @@ if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT CBLAS_FOUND))
     IMPORT_TARGET OpenBLAS::OpenBLAS
     PKGCONFIG_NAMES openblas openblas64
   )
-
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_OPENBLAS TRUE)
   set(HAVE_CBLAS_H TRUE)
+else()
+  message(FATAL_ERROR "TENSOR_BLAS must be one of MKL or OpenBLAS. Current value is \"${TENSOR_BLAS}\"")
 endif()
 if(NOT CBLAS_FOUND)
   message(FATAL_ERROR "Cannot build Tensor library")

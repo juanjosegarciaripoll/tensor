@@ -74,10 +74,13 @@ TEST(BooleansTest, checkLogicalOr) {
   }
 }
 
+#ifndef NDEBUG
+// death by assert
 TEST(BooleansTest, deathOnWrongSizes) {
   ASSERT_DEATH(randomBoolean(10) && randomBoolean(11), ".*");
   ASSERT_DEATH(randomBoolean(10) || randomBoolean(11), ".*");
 }
+#endif
 
 TEST(BooleansTest, checkFindingOfIndices) {
   Booleans input = randomBoolean(10000);
