@@ -46,7 +46,7 @@ message(STATUS "Values are CXX=${${cxx_var_name}}, LD=${${ld_var_name}}")
 
     if (${ARGP_CONFIG_NAME}_FOUND AND (TARGET "${ARGP_IMPORT_TARGET}"))
       message(STATUS "Dependency '${ARGP_NAME}' found with CMake")
-      add_library(${target_name} ALIAS ${ARGP_IMPORT_TARGET)
+      add_library(${target_name} ALIAS ${ARGP_IMPORT_TARGET})
       return()
     endif()
   endif()
