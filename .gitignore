@@ -11,3 +11,7 @@ configure
 test/google*
 config_aux
 __pycache__
+build
+build-*
+Testing
+.vs
