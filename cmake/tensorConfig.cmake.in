@@ -1,0 +1,8 @@
+include(CMakeFindDependencyMacro)
+
+# This is a list of find_dependency() search statements created
+# during configuration
+@TENSOR_DEPENDENCIES@
+
+# Add the targets file
+include("${CMAKE_CURRENT_LIST_DIR}/tensorTargets.cmake")

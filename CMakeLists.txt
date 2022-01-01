@@ -43,21 +43,27 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Search for dependencies
+set(TENSOR_DEPENDENCIES)
 set(CBLAS_FOUND FALSE)
 if(TENSOR_BLAS STREQUAL MKL)
-  find_package(MKL)
-  if(NOT MKL_FOUND)
-    message(FATAL_ERROR "MKL library not found")
-  endif()
+  tensor_find_dependency(
+    NAME MKL
+    CONFIG_NAMES MKL
+    IMPORT_TARGET MKL::MKL
+    DEPENDENCIES TENSOR_DEPENDENCIES
+    REQUIRED
+  )
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_MKL TRUE)
 endif()
 if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT CBLAS_FOUND))
   tensor_find_dependency(
     NAME OpenBLAS
-    CONFIG_NAME OpenBLAS
+    CONFIG_NAMES OpenBLAS
     IMPORT_TARGET OpenBLAS::OpenBLAS
+    DEPENDENCIES TENSOR_DEPENDENCIES
     PKGCONFIG_NAMES openblas openblas64
+    REQUIRED
   )
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_OPENBLAS TRUE)
@@ -65,37 +71,26 @@ if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT CBLAS_FOUND))
 else()
   message(FATAL_ERROR "TENSOR_BLAS must be one of MKL or OpenBLAS. Current value is \"${TENSOR_BLAS}\"")
 endif()
-if(NOT CBLAS_FOUND)
-  message(FATAL_ERROR "Cannot build Tensor library")
-endif()
 if(NOT TENSOR_USE_MKL)
-  find_package(LAPACK)
-  if(NOT LAPACK_FOUND)
-	  message(FATAL_ERROR "LAPACK library not found")
-  endif()
+  tensor_find_dependency(
+    NAME lapack
+    CONFIG_NAMES LAPACK
+    IMPORT_TARGET LAPACK::LAPACK
+    DEPENDENCIES TENSOR_DEPENDENCIES
+    REQUIRED)
   set(TENSOR_USE_LAPACK TRUE)
 endif()
 #
 # Fortran name mangling
 #
 if(TENSOR_ARPACK)
-  find_package(ARPACK QUIET)
-  set(ARPACK_TARGET ARPACK::ARPACK)
-  if(NOT ARPACK_FOUND)
-    tensor_find_dependency(
-      NAME arpack
-      CONFIG_NAME arpack-ng
-      IMPORT_TARGET ARPACK::ARPACK
-      PKGCONFIG_NAMES arpack-ng arpack
-    )
-    set(ARPACK_TARGET Dependency::arpack)
-	  set(ARPACK_FOUND TRUE)
-  endif()
-
-  if(NOT ARPACK_FOUND)
-	  message(FATAL_ERROR "Unable to build with ARPACK though requested")
-  endif()
-
+  tensor_find_dependency(
+    NAME arpack
+    CONFIG_NAMES ARPACK arpack-ng
+    IMPORT_TARGET ARPACK::ARPACK
+    DEPENDENCIES TENSOR_DEPENDENCIES
+    PKGCONFIG_NAMES arpack-ng arpack
+    REQUIRED)
   enable_language(Fortran)
   include(FortranCInterface)
   FortranCInterface_HEADER(dummy.h)
@@ -147,11 +142,11 @@ endif()
 if(TENSOR_FFTW)
   tensor_find_dependency(
     NAME fftw3
-    CONFIG_NAME FFTW3
+    CONFIG_NAMES FFTW3
+    DEPENDENCIES TENSOR_DEPENDENCIES
     IMPORT_TARGET FFTW3::fftw3
     PKGCONFIG_NAMES fftw3
   )
-
   set(TENSOR_USE_FFTW3 TRUE)
 endif()
 configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/config.h)
@@ -169,17 +164,17 @@ target_include_directories(tensor
   PRIVATE
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/config_aux>
   )
-if(TENSOR_ARPACK AND ARPACK_FOUND)
-  target_link_libraries(tensor PUBLIC ${ARPACK_TARGET})
-endif()
 if(TENSOR_USE_OPENBLAS)
   target_link_libraries(tensor PRIVATE Dependency::OpenBLAS)
 endif()
 if(TENSOR_USE_LAPACK)
-  target_link_libraries(tensor PRIVATE LAPACK::LAPACK)
+  target_link_libraries(tensor PRIVATE Dependency::lapack)
 endif()
 if(TENSOR_USE_MKL)
-  target_link_libraries(tensor PRIVATE MKL::MKL)
+  target_link_libraries(tensor PRIVATE Dependency::MKL)
+endif()
+if(TENSOR_ARPACK)
+  target_link_libraries(tensor PUBLIC Dependency::arpack)
 endif()
 if(TENSOR_FFTW)
   target_link_libraries(tensor PRIVATE Dependency::fftw3)
@@ -211,22 +206,25 @@ endif()
 # INSTALLATION
 #
 install(TARGETS tensor
-  EXPORT tensorConfig
+  EXPORT tensorTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 
 include(CMakePackageConfigHelpers)
+message(STATUS "Tensor installed dependencies:\n${TENSOR_DEPENDENCIES}")
 write_basic_package_version_file(
   ${PROJECT_BINARY_DIR}/tensorConfigVersion.cmake
   VERSION ${PACKAGE_VERSION}
   COMPATIBILITY SameMajorVersion
   )
-install(EXPORT tensorConfig
+install(EXPORT tensorTargets
   NAMESPACE tensor::
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/tensor"
   )
-install(FILES ${PROJECT_BINARY_DIR}/tensorConfigVersion.cmake
+configure_file(cmake/tensorConfig.cmake.in tensorConfig.cmake @ONLY)
+install(FILES "${PROJECT_BINARY_DIR}/tensorConfigVersion.cmake"
+              "${PROJECT_BINARY_DIR}/tensorConfig.cmake"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/tensor"
   )
