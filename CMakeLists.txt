@@ -26,6 +26,7 @@ find_package(PkgConfig QUIET)
 # Find our extra modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(TensorDependencies)
+include(TensorOpenBLAS)
 
 ############################################################
 # SYTEM CHECKS AND CONFIGURATION
@@ -45,9 +46,11 @@ endif()
 # Search for dependencies
 set(TENSOR_DEPENDENCIES)
 set(CBLAS_FOUND FALSE)
+set(TENSOR_USE_LAPACK TRUE)
 if(TENSOR_BLAS STREQUAL MKL)
   tensor_find_dependency(
     NAME MKL
+    VAR TENSOR_BLAS_TARGET
     CONFIG_NAMES MKL
     IMPORT_TARGET MKL::MKL
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -55,10 +58,12 @@ if(TENSOR_BLAS STREQUAL MKL)
   )
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_MKL TRUE)
+  set(TENSOR_USE_LAPACK FALSE)
 endif()
 if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT CBLAS_FOUND))
   tensor_find_dependency(
     NAME OpenBLAS
+    VAR TENSOR_BLAS_TARGET
     CONFIG_NAMES OpenBLAS
     IMPORT_TARGET OpenBLAS::OpenBLAS
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -68,12 +73,15 @@ if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT CBLAS_FOUND))
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_OPENBLAS TRUE)
   set(HAVE_CBLAS_H TRUE)
+  tensor_openblas_requires_lapack(TARGET ${TENSOR_BLAS_TARGET})
+  set(TENSOR_USE_LAPACK ${OPENBLAS_REQUIRES_LAPACK})
 else()
   message(FATAL_ERROR "TENSOR_BLAS must be one of MKL or OpenBLAS. Current value is \"${TENSOR_BLAS}\"")
 endif()
-if(NOT TENSOR_USE_MKL)
+if(TENSOR_USE_LAPACK)
   tensor_find_dependency(
     NAME lapack
+    VAR TENSOR_LAPACK_TARGET
     CONFIG_NAMES LAPACK
     IMPORT_TARGET LAPACK::LAPACK
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -86,6 +94,7 @@ endif()
 if(TENSOR_ARPACK)
   tensor_find_dependency(
     NAME arpack
+    VAR TENSOR_ARPACK_TARGET
     CONFIG_NAMES ARPACK arpack-ng
     IMPORT_TARGET ARPACK::ARPACK
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -142,6 +151,7 @@ endif()
 if(TENSOR_FFTW)
   tensor_find_dependency(
     NAME fftw3
+    VAR TENSOR_FFTW_TARGET
     CONFIG_NAMES FFTW3
     DEPENDENCIES TENSOR_DEPENDENCIES
     IMPORT_TARGET FFTW3::fftw3
@@ -164,20 +174,18 @@ target_include_directories(tensor
   PRIVATE
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/config_aux>
   )
-if(TENSOR_USE_OPENBLAS)
-  target_link_libraries(tensor PRIVATE Dependency::OpenBLAS)
-endif()
+target_link_libraries(tensor PRIVATE ${TENSOR_BLAS_TARGET})
 if(TENSOR_USE_LAPACK)
-  target_link_libraries(tensor PRIVATE Dependency::lapack)
+  target_link_libraries(tensor PRIVATE ${TENSOR_LAPACK_TARGET})
 endif()
 if(TENSOR_USE_MKL)
-  target_link_libraries(tensor PRIVATE Dependency::MKL)
+  target_link_libraries(tensor PRIVATE ${TENSOR_BLAS_TARGET})
 endif()
 if(TENSOR_ARPACK)
-  target_link_libraries(tensor PUBLIC Dependency::arpack)
+  target_link_libraries(tensor PUBLIC ${TENSOR_ARPACK_TARGET})
 endif()
 if(TENSOR_FFTW)
-  target_link_libraries(tensor PRIVATE Dependency::fftw3)
+  target_link_libraries(tensor PRIVATE ${TENSOR_FFTW_TARGET})
 endif()
 add_subdirectory(include)
 add_subdirectory(src)
