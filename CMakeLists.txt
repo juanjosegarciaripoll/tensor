@@ -39,7 +39,7 @@ set(TENSOR_BLAS "OpenBLAS" CACHE STRING "BLAS backend to use. Values are OpenBLA
 
 # If not set by the user, make a release build.
 if (NOT CMAKE_BUILD_TYPE)
-     set (CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+  set (CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 endif()
 
 # Search for dependencies
@@ -47,7 +47,7 @@ set(CBLAS_FOUND FALSE)
 if(TENSOR_BLAS STREQUAL MKL)
   find_package(MKL)
   if(NOT MKL_FOUND)
-	message(FATAL_ERROR "MKL library not found")
+    message(FATAL_ERROR "MKL library not found")
   endif()
   set(CBLAS_FOUND TRUE)
   set(TENSOR_USE_MKL TRUE)
@@ -71,7 +71,7 @@ endif()
 if(NOT TENSOR_USE_MKL)
   find_package(LAPACK)
   if(NOT LAPACK_FOUND)
-	message(FATAL_ERROR "LAPACK library not found")
+	  message(FATAL_ERROR "LAPACK library not found")
   endif()
   set(TENSOR_USE_LAPACK TRUE)
 endif()
@@ -82,19 +82,18 @@ if(TENSOR_ARPACK)
   find_package(ARPACK QUIET)
   set(ARPACK_TARGET ARPACK::ARPACK)
   if(NOT ARPACK_FOUND)
-     tensor_find_dependency(
-       NAME arpack
-       CONFIG_NAME arpack-ng
-       IMPORT_TARGET ARPACK::ARPACK
-       PKGCONFIG_NAMES arpack-ng arpack
-     )
-
-     set(ARPACK_TARGET Dependency::arpack)
-	set(ARPACK_FOUND TRUE)
+    tensor_find_dependency(
+      NAME arpack
+      CONFIG_NAME arpack-ng
+      IMPORT_TARGET ARPACK::ARPACK
+      PKGCONFIG_NAMES arpack-ng arpack
+    )
+    set(ARPACK_TARGET Dependency::arpack)
+	  set(ARPACK_FOUND TRUE)
   endif()
 
   if(NOT ARPACK_FOUND)
-	message(FATAL_ERROR "Unable to build with ARPACK though requested")
+	  message(FATAL_ERROR "Unable to build with ARPACK though requested")
   endif()
 
   enable_language(Fortran)
