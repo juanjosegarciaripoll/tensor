@@ -36,6 +36,7 @@ include(TensorOpenBLAS)
 option(TENSOR_FFTW "Enable support for FFTW" OFF)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
+option(TENSOR_BENCHMARK "Enable benchmarking code after building" OFF)
 set(TENSOR_BLAS "OpenBLAS" CACHE STRING "BLAS backend to use. Values are OpenBLAS (default) or MKL (also brings LAPACK backend)")
 
 # If not set by the user, make a release build.
@@ -189,6 +190,13 @@ if(TENSOR_FFTW)
 endif()
 add_subdirectory(include)
 add_subdirectory(src)
+
+############################################################
+# PROFILING
+#
+if(TENSOR_BENCHMARK)
+  add_subdirectory("profile")
+endif()
 
 ############################################################
 # TESTING

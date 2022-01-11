@@ -29,28 +29,28 @@ namespace profile {
     typedef A argument_type;
     const B value;
     plusN(const B n) : value (n) {}
-    A operator()(const A &v) { return v + value; }
+    A operator()(const A &v) const { return v + value; }
   };
 
   template<class A, class B> struct minusN {
     typedef A argument_type;
     const B value;
     minusN(const B n) : value (n) {}
-    A operator()(const A &v) { return v - value; }
+    A operator()(const A &v) const { return v - value; }
   };
 
   template<class A, class B> struct multipliesN {
     typedef A argument_type;
     const B value;
     multipliesN(const B n) : value (n) {}
-    A operator()(const A &v) { return v * value; }
+    A operator()(const A &v)  const { return v * value; }
   };
 
   template<class A, class B> struct dividesN {
     typedef A argument_type;
     const B value;
     dividesN(const B n) : value (n) {}
-    A operator()(const A &v) { return v / value; }
+    A operator()(const A &v) const { return v / value; }
   };
 
 }

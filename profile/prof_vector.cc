@@ -19,13 +19,15 @@
 
 #include <tensor/tensor.h>
 #include <functional>
+#include <iostream>
+#include <fstream>
 #include "profile.h"
 
 using namespace tensor;
 using namespace profile;
 
 template<class binop>
-void prof_binop(const char *name, binop &f,
+void prof_binop(const char *name, const binop &f,
 		const int repeats=2*1024,
 		const int maxsize=0x10000)
 {
@@ -37,7 +39,7 @@ void prof_binop(const char *name, binop &f,
     for (int size = 2; size < maxsize; size <<= 2) {
       *a = A::random(maxsize);
       *b = B::random(maxsize);
-      PROF_ENTRY(size, f(*a,*b), repeats);
+      PROF_ENTRY(size, (void)f(*a,*b), repeats);
     }
     delete a;
     delete b;
@@ -45,7 +47,7 @@ void prof_binop(const char *name, binop &f,
 }
 
 template<class binop>
-void prof_unop(const char *name, binop &f, const int repeats=2*1024,
+void prof_unop(const char *name, const binop &f, const int repeats=2*1024,
 	       const int maxsize=0x10000)
 {
   typedef typename binop::argument_type A;
@@ -53,15 +55,18 @@ void prof_unop(const char *name, binop &f, const int repeats=2*1024,
     A *a = new A();
     for (int size = 2; size < maxsize; size <<= 2) {
       *a = A::random(maxsize);
-      PROF_ENTRY(size, f(*a), repeats);
+      PROF_ENTRY(size, (void)f(*a), repeats);
     }
     delete a;
   } PROF_END_SET;
 }
 
-int main()
+int main(int argn, char **argv)
 {
-
+  if (argn) {
+     std::ofstream mycout(argv[1]);
+     std::cout.rdbuf(mycout.rdbuf());
+  }
   //
   // VECTOR - VECTOR OPERATIONS
   //
