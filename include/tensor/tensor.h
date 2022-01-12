@@ -421,7 +421,8 @@ RTensor round(const RTensor &t);
 
 const RTensor diag(const RTensor &d, int which, index rows, index cols);
 const RTensor diag(const RTensor &d, int which = 0);
-const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
+const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0,
+                        int ndx2 = -1);
 double trace(const RTensor &d);
 const RTensor trace(const RTensor &A, int i1, int i2);
 
@@ -555,7 +556,8 @@ CTensor log(const CTensor &t);
 
 const CTensor diag(const CTensor &d, int which, index rows, index cols);
 const CTensor diag(const CTensor &d, int which = 0);
-const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
+const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0,
+                        int ndx2 = -1);
 cdouble trace(const CTensor &d);
 const CTensor trace(const CTensor &A, int i1, int i2);
 
