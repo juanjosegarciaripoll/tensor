@@ -21,90 +21,97 @@
 #include <functional>
 #include <iostream>
 #include <fstream>
+#include <tuple>
 #include "profile.h"
 
 using namespace tensor;
-using namespace profile;
+using namespace benchmark;
 
-template<class binop>
-void prof_binop(const char *name, const binop &f,
-		const int repeats=2*1024,
-		const int maxsize=0x10000)
-{
-  typedef typename binop::first_argument_type A;
-  typedef typename binop::second_argument_type B;
-  PROF_BEGIN_SET(name) {
-    A *a = new A();
-    B *b = new B();
-    for (int size = 2; size < maxsize; size <<= 2) {
-      *a = A::random(maxsize);
-      *b = B::random(maxsize);
-      PROF_ENTRY(size, (void)f(*a,*b), repeats);
-    }
-    delete a;
-    delete b;
-  } PROF_END_SET;
+template <class T1, class T2>
+void add(std::tuple<T1, T2> &args) {
+  force(std::get<0>(args) + std::get<1>(args));
 }
 
-template<class binop>
-void prof_unop(const char *name, const binop &f, const int repeats=2*1024,
-	       const int maxsize=0x10000)
-{
-  typedef typename binop::argument_type A;
-  PROF_BEGIN_SET(name) {
-    A *a = new A();
-    for (int size = 2; size < maxsize; size <<= 2) {
-      *a = A::random(maxsize);
-      PROF_ENTRY(size, (void)f(*a), repeats);
-    }
-    delete a;
-  } PROF_END_SET;
+template <class T1, class T2>
+void subtract(std::tuple<T1, T2> &args) {
+  force(std::get<0>(args) - std::get<1>(args));
 }
 
-int main(int argn, char **argv)
-{
-  if (argn) {
-     std::ofstream mycout(argv[1]);
-     std::cout.rdbuf(mycout.rdbuf());
-  }
+template <class T1, class T2>
+void multiply(std::tuple<T1, T2> &args) {
+  force(std::get<0>(args) * std::get<1>(args));
+}
+
+template <class T1, class T2>
+void divide(std::tuple<T1, T2> &args) {
+  force(std::get<0>(args) / std::get<1>(args));
+}
+
+template <class T>
+std::tuple<T, typename T::elt_t> make_vector_and_number(size_t size) {
+  return typename std::tuple<T, typename T::elt_t>(T::random(size),
+                                                   T::random(1)[0] + 1.0);
+}
+template <class T>
+std::tuple<T, T> make_two_vectors(size_t size) {
+  return std::tuple<T, T>(T::random(size), T::random(size) + 1.0);
+}
+
+void run_all(std::ostream &out) {
   //
   // VECTOR - VECTOR OPERATIONS
   //
+  std::vector<size_t> sizes{1,    4,     16,    64,     256,     1024,
+                            4096, 16384, 65536, 262144, 1048576, 4194304};
 
-  PROF_BEGIN_GROUP("RTensor") {
-    prof_binop("plus", std::plus<RTensor>());
-    prof_binop("minus", std::minus<RTensor>());
-    prof_binop("multiplies", std::multiplies<RTensor>());
-    prof_binop("divides", std::divides<RTensor>());
-  } PROF_END_GROUP;
+  auto set = BenchmarkSet("tensor library");
 
+  set << (BenchmarkGroup("RTensor")
+          << BenchmarkItem("plus", add<RTensor, RTensor>,
+                           make_two_vectors<RTensor>, sizes)
+          << BenchmarkItem("minus", subtract<RTensor, RTensor>,
+                           make_two_vectors<RTensor>, sizes)
+          << BenchmarkItem("multiplies", multiply<RTensor, RTensor>,
+                           make_two_vectors<RTensor>, sizes)
+          << BenchmarkItem("divides", multiply<RTensor, RTensor>,
+                           make_two_vectors<RTensor>, sizes))
+      << (BenchmarkGroup("CTensor")
+          << BenchmarkItem("plus", add<CTensor, CTensor>,
+                           make_two_vectors<CTensor>, sizes)
+          << BenchmarkItem("minus", subtract<CTensor, CTensor>,
+                           make_two_vectors<CTensor>, sizes)
+          << BenchmarkItem("multiplies", multiply<CTensor, CTensor>,
+                           make_two_vectors<CTensor>, sizes)
+          << BenchmarkItem("divides", multiply<CTensor, CTensor>,
+                           make_two_vectors<CTensor>, sizes))
+      << (BenchmarkGroup("RTensor")
+          << BenchmarkItem("plusN", add<RTensor, double>,
+                           make_vector_and_number<RTensor>, sizes)
+          << BenchmarkItem("minusN", subtract<RTensor, double>,
+                           make_vector_and_number<RTensor>, sizes)
+          << BenchmarkItem("multipliesN", multiply<RTensor, double>,
+                           make_vector_and_number<RTensor>, sizes)
+          << BenchmarkItem("dividesN", multiply<RTensor, double>,
+                           make_vector_and_number<RTensor>, sizes))
+      << (BenchmarkGroup("CTensor")
+          << BenchmarkItem("plusN", add<CTensor, cdouble>,
+                           make_vector_and_number<CTensor>, sizes)
+          << BenchmarkItem("minusN", subtract<CTensor, cdouble>,
+                           make_vector_and_number<CTensor>, sizes)
+          << BenchmarkItem("multipliesN", multiply<CTensor, cdouble>,
+                           make_vector_and_number<CTensor>, sizes)
+          << BenchmarkItem("dividesN", multiply<CTensor, cdouble>,
+                           make_vector_and_number<CTensor>, sizes));
 
-  PROF_BEGIN_GROUP("CTensor") {
-    prof_binop("plus", std::plus<CTensor>());
-    prof_binop("minus", std::minus<CTensor>());
-    prof_binop("multiplies", std::multiplies<CTensor>());
-    prof_binop("divides", std::divides<CTensor>());
-  } PROF_END_GROUP;
+  out << set << std::endl;
+}
 
-  //
-  // VECTOR - NUMBER OPERATIONS
-  //
-
-  PROF_BEGIN_GROUP("RTensor") {
-    double value = 3;
-    prof_unop("plus3", plusN<RTensor,double>(value));
-    prof_unop("minus3", minusN<RTensor,double>(value));
-    prof_unop("multiplies3", multipliesN<RTensor,double>(value));
-    prof_unop("divides3", dividesN<RTensor,double>(value));
-  } PROF_END_GROUP;
-
-
-  PROF_BEGIN_GROUP("CTensor") {
-    cdouble value = to_complex(0,3);
-    prof_unop("plus3", plusN<CTensor,cdouble>(value));
-    prof_unop("minus3", minusN<CTensor,cdouble>(value));
-    prof_unop("multiplies3", multipliesN<CTensor,cdouble>(value));
-    prof_unop("divides3", dividesN<CTensor,cdouble>(value));
-  } PROF_END_GROUP;
-
+int main(int argn, char **argv) {
+  if (argn > 1) {
+    std::cerr << "Writing output to file " << argv[1] << std::endl;
+    std::ofstream mycout(argv[1]);
+    run_all(mycout);
+  } else {
+    run_all(std::cout);
+  }
 }

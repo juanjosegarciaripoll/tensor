@@ -21,34 +21,131 @@
 #define TENSOR_PROFILE_PROFILE_H
 
 #include <iostream>
+#include <string>
+#include <vector>
+#include <array>
+#include <tuple>
+#include <optional>
 #include <tensor/tools.h>
-#include "operators.h"
 
-namespace profile {
+namespace benchmark {
 
-#define PROF_BEGIN_GROUP(name) \
-  std::cout << "<group name='" << name << "'>\n";
+static size_t __count_executions = 0;
 
-#define PROF_BEGIN_SET(name) \
-  std::cout << "  <set name='" << name << "'>\n";
-
-#define PROF_ENTRY(set, stmt, repeats)		\
-  { double time;				\
-  tic();					\
-  for (int i = repeats; i; --i) {		\
-  stmt;						\
-  }						\
-  time = toc() / repeats;			\
-  std::cout << "   <entry id='" << set << "' time='" << time << "'/>\n"; \
-  }
-
-#define PROF_END_SET \
-  std::cout << "  </set>\n";
-
-
-#define PROF_END_GROUP \
-  std::cout << "</group>\n";
-
+template <typename T>
+void force(const T &t) {
+  __count_executions += t.size() != 0;
 }
 
-#endif // TENSOR_PROFILE_PROFILE_H
+struct BenchmarkSet;
+struct BenchmarkGroup;
+struct BenchmarkItem;
+
+struct BenchmarkSet {
+  std::string name{};
+  std::vector<BenchmarkGroup> groups{};
+
+  BenchmarkSet(const std::string &aname) : name(aname), groups{} {
+    std::cerr << "===================\nStarting set " << name << '\n';
+  }
+
+  BenchmarkSet &operator<<(const BenchmarkGroup &group) {
+    groups.push_back(group);
+    return *this;
+  }
+};
+
+struct BenchmarkGroup {
+  std::string name{};
+  std::vector<BenchmarkItem> items{};
+
+  BenchmarkGroup(const std::string &aname) : name(aname), items{} {
+    std::cerr << "------------------\nStarting group " << name << '\n';
+  }
+
+  BenchmarkGroup(const std::string &aname,
+                 const std::vector<BenchmarkItem> &aitems)
+      : name(aname), items(aitems) {
+    std::cerr << "------------------\nStarting group " << name << '\n';
+  }
+
+  BenchmarkGroup &operator<<(const BenchmarkItem &item) {
+    items.push_back(item);
+    return *this;
+  }
+};
+
+struct BenchmarkItem {
+  std::string name{};
+  std::vector<size_t> sizes{};
+  std::vector<double> times{};
+
+  template <typename Functor>
+  static double timeit(Functor f, size_t repeats) {
+    tensor::tic();
+    for (size_t j = 0; j < repeats; ++j) {
+      f();
+    }
+    return tensor::toc();
+  }
+
+  template <typename Functor>
+  static double autorange(Functor f, double limit = 0.2) {
+    std::array<size_t, 3> multiples{1, 2, 5};
+    size_t i = 1;
+    while (true) {
+      for (auto j : multiples) {
+        auto repeats = i * j;
+        double time = timeit(f, repeats);
+        if (time >= limit) {
+          return time / repeats;
+        }
+      }
+      i *= 10;
+    }
+  }
+
+  template <class args_tuple>
+  BenchmarkItem(const std::string &name, void (*f)(args_tuple &),
+                args_tuple (*s)(size_t), const std::vector<size_t> &sizes)
+      : name(name), sizes(sizes), times(sizes.size()) {
+    for (size_t i = 0; i < sizes.size(); i++) {
+      args_tuple args = s(sizes[i]);
+      times[i] = autorange([&]() { f(args); });
+      std::cerr << "Executing item " << name << " at size " << sizes[i]
+                << " took " << times[i] << " seconds per iteration\n";
+    }
+  }
+};
+
+template <typename T>
+std::ostream &operator<<(std::ostream &out, const std::vector<T> &v) {
+  const char *comma = "";
+  out << "[";
+  for (auto &item : v) {
+    out << comma << item;
+    comma = ",";
+  }
+  out << "]";
+  return out;
+}
+
+std::ostream &operator<<(std::ostream &out, const BenchmarkSet &set) {
+  out << "{'name': \"" << set.name << "\", 'groups': " << set.groups << "}";
+  return out;
+}
+
+std::ostream &operator<<(std::ostream &out, const BenchmarkGroup &group) {
+  out << "{'name': \"" << group.name << "\", 'groups': " << group.items << "}";
+  return out;
+}
+
+std::ostream &operator<<(std::ostream &out, const BenchmarkItem &item) {
+  out << "{'name': \"" << item.name << "\", 'sizes': " << item.sizes
+      << ", 'times': " << item.times << "}";
+  return out;
+}
+
+}  // namespace benchmark
+
+#endif  // TENSOR_PROFILE_PROFILE_H
