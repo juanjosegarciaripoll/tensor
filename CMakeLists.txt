@@ -17,7 +17,7 @@ project(tensor
 
 # specify the C++ standard
 # GoogleTest requiers C++11 or better
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Used modules
