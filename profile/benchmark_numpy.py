@@ -25,12 +25,20 @@ def make_two_real_ndarrays(size: int) -> np.ndarray:
     return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
 
 
+def make_real_ndarray_and_number(size: int) -> np.ndarray:
+    return (GENERATOR.normal(size=size), GENERATOR.normal(size=1)[0] + 1.0)
+
+
 def make_two_complex_ndarrays(size: int) -> np.ndarray:
-    return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
+    a1, b1 = make_two_real_ndarrays(size)
+    a2, b2 = make_two_real_ndarrays(size)
+    return (a1 + 1j * a2, b1 + 1j * b2)
 
 
-def make_real_ndarrays_and_number(size: int) -> np.ndarray:
-    return (GENERATOR.normal(size=size), GENERATOR.normal(size=1)[0])
+def make_complex_ndarray_and_number(size: int) -> np.ndarray:
+    a1, b1 = make_real_ndarray_and_number(size)
+    a2, b2 = make_real_ndarray_and_number(size)
+    return (a1 + 1j * a2, b1 + 1j * b2)
 
 
 def system_version():
@@ -64,19 +72,19 @@ def run_all():
             BenchmarkGroup.run(
                 name="RTensor with number",
                 items=[
-                    ("plusN", plus, make_two_real_ndarrays),
-                    ("minusN", minus, make_two_real_ndarrays),
-                    ("multipliesN", multiplies, make_two_real_ndarrays),
-                    ("dividesN", divides, make_two_real_ndarrays),
+                    ("plusN", plus, make_real_ndarray_and_number),
+                    ("minusN", minus, make_real_ndarray_and_number),
+                    ("multipliesN", multiplies, make_real_ndarray_and_number),
+                    ("dividesN", divides, make_real_ndarray_and_number),
                 ],
             ),
             BenchmarkGroup.run(
                 name="CTensor with number",
                 items=[
-                    ("plusN", plus, make_two_real_ndarrays),
-                    ("minusN", minus, make_two_real_ndarrays),
-                    ("multipliesN", multiplies, make_two_real_ndarrays),
-                    ("dividesN", divides, make_two_real_ndarrays),
+                    ("plusN", plus, make_complex_ndarray_and_number),
+                    ("minusN", minus, make_complex_ndarray_and_number),
+                    ("multipliesN", multiplies, make_complex_ndarray_and_number),
+                    ("dividesN", divides, make_complex_ndarray_and_number),
                 ],
             ),
         ],

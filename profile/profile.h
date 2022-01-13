@@ -90,7 +90,8 @@ struct BenchmarkSet {
   std::vector<BenchmarkGroup> groups{};
 
   BenchmarkSet(const std::string &aname) : name(aname), groups{} {
-    std::cerr << "===================\nStarting set " << name << '\n';
+    std::cerr << "===================\nStarting set " << name << '\n'
+              << "Environment: " << environment << '\n';
   }
 
   BenchmarkSet &operator<<(const BenchmarkGroup &group) {
@@ -175,9 +176,8 @@ std::ostream &operator<<(std::ostream &out, const std::vector<T> &v) {
 }
 
 std::ostream &operator<<(std::ostream &out, const BenchmarkSet &set) {
-  out << "{\"name\": \"" << set.name
-      << "\", \"environment\": " << set.environment
-      << "\", \"groups\": " << set.groups << "}";
+  out << "{\"name\": \"" << set.name << "\", \"environment\": \""
+      << set.environment << "\", \"groups\": " << set.groups << "}";
   return out;
 }
 

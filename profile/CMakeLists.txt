@@ -1,5 +1,5 @@
 add_executable(profile prof_vector.cc)
-target_link_libraries(profile PUBLIC tensor)
+target_link_libraries(profile PUBLIC tensor PRIVATE tensor_options)
 
 if(TENSOR_BENCHMARK)
   add_custom_command(

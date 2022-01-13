@@ -165,3 +165,10 @@ class BenchmarkItemAggregate:
                     f"Benchmark set {set.name} has differring sizes for group {group_name} and item {item_name}"
                 )
         self.times = np.array([i.times for i in items])
+        if group_name == "RTensor" and item_name == "plus":
+            for set in benchmarks:
+                print(set.name)
+                item = set.find_group(group_name).find_item(item_name)
+                print(item.times)
+            print(self.columns)
+            print(self.times)
