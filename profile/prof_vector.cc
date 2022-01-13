@@ -22,6 +22,10 @@
 #include <iostream>
 #include <fstream>
 #include <tuple>
+#include <iomanip>
+#include <chrono>
+#include <sstream>
+
 #include "profile.h"
 
 using namespace tensor;
@@ -57,14 +61,19 @@ std::tuple<T, T> make_two_vectors(size_t size) {
   return std::tuple<T, T>(T::random(size), T::random(size) + 1.0);
 }
 
-void run_all(std::ostream &out) {
+void run_all(std::ostream &out, const std::string &version = "") {
   //
   // VECTOR - VECTOR OPERATIONS
   //
   std::vector<size_t> sizes{1,    4,     16,    64,     256,     1024,
                             4096, 16384, 65536, 262144, 1048576, 4194304};
 
-  auto set = BenchmarkSet("tensor library");
+  std::string name = "tensor library";
+  if (version.size()) {
+    name = name + " " + version;
+  }
+
+  auto set = BenchmarkSet(name);
 
   set << (BenchmarkGroup("RTensor")
           << BenchmarkItem("plus", add<RTensor, RTensor>,
@@ -84,7 +93,7 @@ void run_all(std::ostream &out) {
                            make_two_vectors<CTensor>, sizes)
           << BenchmarkItem("divides", multiply<CTensor, CTensor>,
                            make_two_vectors<CTensor>, sizes))
-      << (BenchmarkGroup("RTensor")
+      << (BenchmarkGroup("RTensor with number")
           << BenchmarkItem("plusN", add<RTensor, double>,
                            make_vector_and_number<RTensor>, sizes)
           << BenchmarkItem("minusN", subtract<RTensor, double>,
@@ -93,7 +102,7 @@ void run_all(std::ostream &out) {
                            make_vector_and_number<RTensor>, sizes)
           << BenchmarkItem("dividesN", multiply<RTensor, double>,
                            make_vector_and_number<RTensor>, sizes))
-      << (BenchmarkGroup("CTensor")
+      << (BenchmarkGroup("CTensor with number")
           << BenchmarkItem("plusN", add<CTensor, cdouble>,
                            make_vector_and_number<CTensor>, sizes)
           << BenchmarkItem("minusN", subtract<CTensor, cdouble>,
@@ -106,12 +115,33 @@ void run_all(std::ostream &out) {
   out << set << std::endl;
 }
 
+/**
+ * Generate a UTC ISO8601-formatted timestamp
+ * and return as std::string
+ */
+std::string currentISO8601TimeUTC() {
+  auto now = std::chrono::system_clock::now();
+  auto itt = std::chrono::system_clock::to_time_t(now);
+  std::ostringstream ss;
+  ss << std::put_time(gmtime(&itt), "%FT%H.%MZ");
+  return ss.str();
+}
+
 int main(int argn, char **argv) {
-  if (argn > 1) {
-    std::cerr << "Writing output to file " << argv[1] << std::endl;
-    std::ofstream mycout(argv[1]);
-    run_all(mycout);
+  std::string filename;
+  std::string time = currentISO8601TimeUTC();
+  std::string tag = "Tensor library";
+  if (argn > 2) {
+    tag = std::string(argv[2]);
   } else {
-    run_all(std::cout);
+    tag = time;
   }
+  if (argn > 1) {
+    filename = argv[1];
+  } else {
+    filename = "benchmark_tensor_" + time + ".json";
+  }
+  std::cerr << "Writing output to file " << filename << std::endl;
+  std::ofstream mycout(filename);
+  run_all(mycout, tag);
 }

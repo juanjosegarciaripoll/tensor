@@ -27,6 +27,7 @@
 #include <tuple>
 #include <optional>
 #include <tensor/tools.h>
+#include <tensor/config.h>
 
 namespace benchmark {
 
@@ -41,8 +42,51 @@ struct BenchmarkSet;
 struct BenchmarkGroup;
 struct BenchmarkItem;
 
+std::string tensor_environment() {
+  std::string compiler =
+#if defined(_MSC_VER)
+      "Microsoft C++";
+#elif defined(__GNUC__)
+      "Gnu C++";
+#elif defined(__clang__)
+      "Clang C++";
+#else
+      "Unknown C++ compiler";
+#endif
+  std::string platform =
+#if defined(_WIN64)
+      "Windows AMD64";
+#elif defined(__linux__)
+      "Linux";
+#elif defined(__APPLE__)
+      "Darwin";
+#else
+      "Unknown OS";
+#endif
+  std::string blas_library =
+#if defined(TENSOR_USE_ATLAS)
+      "Atlas";
+#elif defined(TENSOR_USE_OPENBLAS)
+      "OpenBLAS";
+#elif defined(TENSOR_USE_VECLIB)
+      "Apple Veclib";
+#elif defined(TENSOR_USE_MKL)
+      "Intel MKL";
+#elif defined(TENSOR_USE_ACML)
+              "ACML";
+#elif defined(TENSOR_USE_ESSL)
+              "IBM ESSL";
+#elif defined(TENSOR_USE_CBLAPACK)
+              "CBLAPACK";
+#else
+#error "Unknown BLAS library"
+#endif
+  return compiler + "/" + platform + "/" + blas_library;
+}
+
 struct BenchmarkSet {
   std::string name{};
+  std::string environment = tensor_environment();
   std::vector<BenchmarkGroup> groups{};
 
   BenchmarkSet(const std::string &aname) : name(aname), groups{} {
@@ -131,18 +175,21 @@ std::ostream &operator<<(std::ostream &out, const std::vector<T> &v) {
 }
 
 std::ostream &operator<<(std::ostream &out, const BenchmarkSet &set) {
-  out << "{'name': \"" << set.name << "\", 'groups': " << set.groups << "}";
+  out << "{\"name\": \"" << set.name
+      << "\", \"environment\": " << set.environment
+      << "\", \"groups\": " << set.groups << "}";
   return out;
 }
 
 std::ostream &operator<<(std::ostream &out, const BenchmarkGroup &group) {
-  out << "{'name': \"" << group.name << "\", 'groups': " << group.items << "}";
+  out << "{\"name\": \"" << group.name << "\", \"items\": " << group.items
+      << "}";
   return out;
 }
 
 std::ostream &operator<<(std::ostream &out, const BenchmarkItem &item) {
-  out << "{'name': \"" << item.name << "\", 'sizes': " << item.sizes
-      << ", 'times': " << item.times << "}";
+  out << "{\"name\": \"" << item.name << "\", \"sizes\": " << item.sizes
+      << ", \"times\": " << item.times << "}";
   return out;
 }
 

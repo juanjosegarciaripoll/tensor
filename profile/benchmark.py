@@ -3,6 +3,7 @@ from typing import Callable, Optional, Tuple
 import json
 import time
 import gc
+import numpy as np
 
 
 @dataclass
@@ -25,8 +26,6 @@ class BenchmarkItem:
 
     @classmethod
     def fromjson(self, data):
-        name = data["name"]
-        items = [BenchmarkItem(item) for item in data["items"]]
         return BenchmarkItem(
             name=data["name"], sizes=data["sizes"], times=data["times"]
         )
@@ -79,7 +78,7 @@ class BenchmarkItem:
 @dataclass
 class BenchmarkGroup:
     name: str
-    items: BenchmarkItem
+    items: list[BenchmarkItem]
 
     @staticmethod
     def run(name: str, items: list[Tuple[str, Callable, Callable]]) -> "BenchmarkGroup":
@@ -88,6 +87,12 @@ class BenchmarkGroup:
         return BenchmarkGroup(
             name=name, items=[BenchmarkItem.run(*item) for item in items]
         )
+
+    def find_item(self, name: str):
+        for it in self.items:
+            if it.name == name:
+                return it
+        raise Exception(f"Item {name} missing from group {self.name}")
 
     def tojson(self):
         return {
@@ -98,7 +103,7 @@ class BenchmarkGroup:
     @classmethod
     def fromjson(self, data):
         name = data["name"]
-        items = [BenchmarkItem(item) for item in data["items"]]
+        items = [BenchmarkItem.fromjson(item) for item in data["items"]]
         return BenchmarkGroup(name=name, items=items)
 
 
@@ -106,6 +111,7 @@ class BenchmarkGroup:
 class BenchmarkSet:
     name: str
     groups: list[BenchmarkGroup]
+    environment: str
 
     def write(self, filename: Optional[str] = None):
         if not filename:
@@ -114,12 +120,23 @@ class BenchmarkSet:
             json.dump(self.tojson(), f)
 
     def tojson(self):
-        return {"name": self.name, "groups": [item.tojson() for item in self.groups]}
+        return {
+            "name": self.name,
+            "environment": self.environment,
+            "groups": [item.tojson() for item in self.groups],
+        }
+
+    def find_group(self, name: str):
+        for g in self.groups:
+            if g.name == name:
+                return g
+        raise Exception(f"Group {name} missing from benchmark {self.name}")
 
     @classmethod
     def fromjson(cls, data) -> "BenchmarkSet":
         return BenchmarkSet(
             name=data["name"],
+            environment=data["environment"],
             groups=[BenchmarkGroup.fromjson(item) for item in data["groups"]],
         )
 
@@ -127,3 +144,24 @@ class BenchmarkSet:
     def fromjson_file(filename: str) -> "BenchmarkSet":
         with open(filename, "r") as f:
             return BenchmarkSet.fromjson(json.load(f))
+
+
+@dataclass
+class BenchmarkItemAggregate:
+
+    columns: list[str]
+    sizes: list[int]
+    times: np.ndarray = np.zeros((0, 0))
+
+    def __init__(self, benchmarks: list[BenchmarkSet], group_name: str, item_name: str):
+        if not benchmarks:
+            return
+        items = [set.find_group(group_name).find_item(item_name) for set in benchmarks]
+        self.columns = [set.name for set in benchmarks]
+        self.sizes = items[0].sizes
+        for n, set in enumerate(benchmarks):
+            if not np.all(items[n].sizes == self.sizes):
+                raise Exception(
+                    f"Benchmark set {set.name} has differring sizes for group {group_name} and item {item_name}"
+                )
+        self.times = np.array([i.times for i in items])

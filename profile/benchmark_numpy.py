@@ -1,5 +1,6 @@
 from benchmark import BenchmarkSet, BenchmarkGroup
 import numpy as np
+import sys
 
 GENERATOR = np.random.default_rng(13221231)
 
@@ -32,9 +33,15 @@ def make_real_ndarrays_and_number(size: int) -> np.ndarray:
     return (GENERATOR.normal(size=size), GENERATOR.normal(size=1)[0])
 
 
+def system_version():
+    v = sys.version_info
+    return f"Python {v.major}.{v.minor}.{v.micro} NumPy {np.version.full_version}"
+
+
 def run_all():
     data = BenchmarkSet(
         name="Numpy",
+        environment=system_version(),
         groups=[
             BenchmarkGroup.run(
                 name="RTensor",
@@ -55,7 +62,7 @@ def run_all():
                 ],
             ),
             BenchmarkGroup.run(
-                name="RTensor",
+                name="RTensor with number",
                 items=[
                     ("plusN", plus, make_two_real_ndarrays),
                     ("minusN", minus, make_two_real_ndarrays),
@@ -64,7 +71,7 @@ def run_all():
                 ],
             ),
             BenchmarkGroup.run(
-                name="CTensor",
+                name="CTensor with number",
                 items=[
                     ("plusN", plus, make_two_real_ndarrays),
                     ("minusN", minus, make_two_real_ndarrays),
@@ -74,23 +81,12 @@ def run_all():
             ),
         ],
     )
-    data.write("Benchmark_python.json")
-
-
-def run_all2():
-    data = BenchmarkSet(
-        name="Numpy",
-        groups=[
-            BenchmarkGroup.run(
-                name="RTensor",
-                items=[
-                    ("plus", plus, make_two_real_ndarrays),
-                ],
-            ),
-        ],
-    )
-    data.write("benchmark_python.json")
+    if len(sys.argv) > 1:
+        data.write(sys.argv[1])
+    else:
+        data.write("/benchmark_numpy.json")
 
 
 if __name__ == "__main__":
+    print(sys.argv)
     run_all()
