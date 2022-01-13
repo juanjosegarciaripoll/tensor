@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.18)
-message(STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
+
+# If not set by the user, make a release build.
+if (NOT CMAKE_BUILD_TYPE)
+  set (CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+endif()
+message(STATUS "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
 
 # Source files are named relative but transformed into absolute paths
 cmake_policy(SET CMP0076 NEW)
@@ -25,6 +30,7 @@ find_package(PkgConfig QUIET)
 
 # Find our extra modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(TensorOptions)
 include(TensorDependencies)
 include(TensorOpenBLAS)
 
@@ -39,10 +45,8 @@ option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 option(TENSOR_BENCHMARK "Enable benchmarking code after building" OFF)
 set(TENSOR_BLAS "OpenBLAS" CACHE STRING "BLAS backend to use. Values are OpenBLAS (default) or MKL (also brings LAPACK backend)")
 
-# If not set by the user, make a release build.
-if (NOT CMAKE_BUILD_TYPE)
-  set (CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
-endif()
+# Compiler settings and other tooling
+make_tensor_options()
 
 # Search for dependencies
 set(TENSOR_DEPENDENCIES)
@@ -167,6 +171,7 @@ configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/co
 #
 
 add_library(tensor "")
+target_link_libraries(tensor PRIVATE tensor_options)
 target_include_directories(tensor
   PUBLIC
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -219,7 +224,7 @@ endif()
 ############################################################
 # INSTALLATION
 #
-install(TARGETS tensor
+install(TARGETS tensor tensor_options
   EXPORT tensorTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
