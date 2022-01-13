@@ -4,17 +4,17 @@ include(CheckCSourceCompiles)
 
 function(tensor_openblas_requires_lapack)
   cmake_parse_arguments(ARGP "" "TARGET" "" ${ARGN})
-  set(CMAKE_REQUIRED_LIBRARIES ${TARGET})
+  set(CMAKE_REQUIRED_LIBRARIES ${ARGP_TARGET})
   check_c_source_compiles(
-    "int main() { extern void *dsgevd; if (dsgevd != 0) return 0; return 1; }"
-    OPENBLAS_HAS_LAPACK
+    "int main() { extern void dgesvd(); dgesvd(); }"
+    OPENBLAS_HAS_DGESVD
   )
-  if (NOT OPENBLAS_HAS_LAPACK)
+  if (NOT OPENBLAS_HAS_DGESVD)
     check_c_source_compiles(
-        "int main() { extern void *dsgevd_; if (dsgevd_ != 0) return 0; return 1; }"
-        OPENBLAS_HAS_LAPACK
+        "int main() { extern void dgesvd_(); dgesvd_(); }"
+        OPENBLAS_HAS_DGESVD_
     )
-    if (NOT OPENBLAS_HAS_LAPACK)
+    if (NOT OPENBLAS_HAS_DGESVD_)
       message(STATUS "OpenBLAS requires separate LAPACK library")
       set(OPENBLAS_REQUIRES_LAPACK TRUE PARENT_SCOPE)
       return()
