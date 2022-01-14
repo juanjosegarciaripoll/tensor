@@ -25,7 +25,6 @@
 #include <vector>
 #include <array>
 #include <tuple>
-#include <optional>
 #include <tensor/tools.h>
 #include <tensor/config.h>
 
@@ -108,14 +107,15 @@ struct BenchmarkGroup {
     std::cerr << "------------------\nStarting group " << name << '\n';
   }
 
-  BenchmarkGroup(const std::string &aname,
-                 const std::vector<BenchmarkItem> &aitems)
-      : name(aname), items(aitems) {
-    std::cerr << "------------------\nStarting group " << name << '\n';
-  }
-
   BenchmarkGroup &operator<<(const BenchmarkItem &item) {
     items.push_back(item);
+    return *this;
+  }
+
+  template <typename run, typename setup>
+  BenchmarkGroup &add(const char *name, run f, setup s,
+                      const std::vector<size_t> &sizes) {
+    items.push_back(BenchmarkItem(name, f, s, sizes));
     return *this;
   }
 };

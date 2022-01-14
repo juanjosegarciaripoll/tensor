@@ -75,42 +75,42 @@ void run_all(std::ostream &out, const std::string &version = "") {
 
   auto set = BenchmarkSet(name);
 
-  set << (BenchmarkGroup("RTensor")
-          << BenchmarkItem("plus", add<RTensor, RTensor>,
-                           make_two_vectors<RTensor>, sizes)
-          << BenchmarkItem("minus", subtract<RTensor, RTensor>,
-                           make_two_vectors<RTensor>, sizes)
-          << BenchmarkItem("multiplies", multiply<RTensor, RTensor>,
-                           make_two_vectors<RTensor>, sizes)
-          << BenchmarkItem("divides", multiply<RTensor, RTensor>,
-                           make_two_vectors<RTensor>, sizes))
-      << (BenchmarkGroup("CTensor")
-          << BenchmarkItem("plus", add<CTensor, CTensor>,
-                           make_two_vectors<CTensor>, sizes)
-          << BenchmarkItem("minus", subtract<CTensor, CTensor>,
-                           make_two_vectors<CTensor>, sizes)
-          << BenchmarkItem("multiplies", multiply<CTensor, CTensor>,
-                           make_two_vectors<CTensor>, sizes)
-          << BenchmarkItem("divides", multiply<CTensor, CTensor>,
-                           make_two_vectors<CTensor>, sizes))
-      << (BenchmarkGroup("RTensor with number")
-          << BenchmarkItem("plusN", add<RTensor, double>,
-                           make_vector_and_number<RTensor>, sizes)
-          << BenchmarkItem("minusN", subtract<RTensor, double>,
-                           make_vector_and_number<RTensor>, sizes)
-          << BenchmarkItem("multipliesN", multiply<RTensor, double>,
-                           make_vector_and_number<RTensor>, sizes)
-          << BenchmarkItem("dividesN", multiply<RTensor, double>,
-                           make_vector_and_number<RTensor>, sizes))
-      << (BenchmarkGroup("CTensor with number")
-          << BenchmarkItem("plusN", add<CTensor, cdouble>,
-                           make_vector_and_number<CTensor>, sizes)
-          << BenchmarkItem("minusN", subtract<CTensor, cdouble>,
-                           make_vector_and_number<CTensor>, sizes)
-          << BenchmarkItem("multipliesN", multiply<CTensor, cdouble>,
-                           make_vector_and_number<CTensor>, sizes)
-          << BenchmarkItem("dividesN", multiply<CTensor, cdouble>,
-                           make_vector_and_number<CTensor>, sizes));
+  set << BenchmarkGroup("RTensor")
+             .add("plus", add<RTensor, RTensor>, make_two_vectors<RTensor>,
+                  sizes)
+             .add("minus", subtract<RTensor, RTensor>,
+                  make_two_vectors<RTensor>, sizes)
+             .add("multiplies", multiply<RTensor, RTensor>,
+                  make_two_vectors<RTensor>, sizes)
+             .add("divides", divide<RTensor, RTensor>,
+                  make_two_vectors<RTensor>, sizes);
+  set << BenchmarkGroup("CTensor")
+             .add("plus", add<CTensor, CTensor>, make_two_vectors<CTensor>,
+                  sizes)
+             .add("minus", subtract<CTensor, CTensor>,
+                  make_two_vectors<CTensor>, sizes)
+             .add("multiplies", multiply<CTensor, CTensor>,
+                  make_two_vectors<CTensor>, sizes)
+             .add("divides", divide<CTensor, CTensor>,
+                  make_two_vectors<CTensor>, sizes);
+  set << BenchmarkGroup("RTensor with number")
+             .add("plus", add<RTensor, double>, make_vector_and_number<RTensor>,
+                  sizes)
+             .add("minus", subtract<RTensor, double>,
+                  make_vector_and_number<RTensor>, sizes)
+             .add("multiplies", multiply<RTensor, double>,
+                  make_vector_and_number<RTensor>, sizes)
+             .add("divides", divide<RTensor, double>,
+                  make_vector_and_number<RTensor>, sizes);
+  set << BenchmarkGroup("CTensor with number")
+             .add("plus", add<CTensor, cdouble>,
+                  make_vector_and_number<CTensor>, sizes)
+             .add("minus", subtract<CTensor, cdouble>,
+                  make_vector_and_number<CTensor>, sizes)
+             .add("multiplies", multiply<CTensor, cdouble>,
+                  make_vector_and_number<CTensor>, sizes)
+             .add("divides", divide<CTensor, cdouble>,
+                  make_vector_and_number<CTensor>, sizes);
 
   out << set << std::endl;
 }
