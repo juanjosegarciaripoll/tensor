@@ -15,3 +15,6 @@ build
 build-*
 Testing
 .vs
+profile/*.json
+profile/report.html
+profile/report
