@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#pragma once
 #ifndef TENSOR_SPARSE_H
 #define TENSOR_SPARSE_H
 

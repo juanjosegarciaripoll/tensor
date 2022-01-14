@@ -17,9 +17,11 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#if !defined(TENSOR_TENSOR_H) || defined(TENSOR_DETAIL_TENSOR_MATRIX_HPP)
+#pragma once
+#if !defined(TENSOR_TENSOR_H)
 #error "This header cannot be included manually"
-#else
+#endif
+#ifndef TENSOR_DETAIL_TENSOR_MATRIX_HPP
 #define TENSOR_DETAIL_TENSOR_MATRIX_HPP
 
 namespace tensor {
