@@ -114,12 +114,12 @@ class StaticVector<elt_t, (size_t)1> {
 };
 
 template <typename t1, typename t2>
-StaticVector<t1, 1> operator<<(const ListGenerator<t1> &g, const t2 x) {
+StaticVector<t1, 1> operator<<(const ListGenerator<t1> &, const t2 x) {
   return StaticVector<t1, 1>(x);
 }
 
 template <typename t1>
-StaticVector<t1, 1> operator<<(const FlexiListGenerator &g, const t1 x) {
+StaticVector<t1, 1> operator<<(const FlexiListGenerator &, const t1 x) {
   return StaticVector<t1, 1>(x);
 }
 

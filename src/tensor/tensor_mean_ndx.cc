@@ -33,7 +33,7 @@ Tensor do_mean(const Tensor &t, int ndx) {
   } else {
     ndx = (int)normalize_index(ndx, rank);
     Indices dimensions(rank - 1);
-    tensor::index left = 1, middle, right = 1;
+    tensor::index left = 1, middle = 1, right = 1;
     for (int i = 0, j = 0; i < rank; i++) {
       tensor::index d = t.dimension(i);
       dimensions.at(j++) = d;
@@ -52,7 +52,8 @@ Tensor do_mean(const Tensor &t, int ndx) {
       for (tensor::index m = 0; m < middle; m++)
         for (tensor::index l = 0; l < left; l++)
           output.at(l, r) += aux(l, m, r);
-    return reshape(output, dimensions) / typename Tensor::elt_t(middle);
+    return reshape(output, dimensions) /
+           static_cast<typename Tensor::elt_t>(middle);
   }
 }
 

@@ -20,6 +20,9 @@
 #ifndef TENSOR_MMULT_TENSOR_SPARSE_H
 #define TENSOR_MMULT_TENSOR_SPARSE_H
 
+#include <tensor/sparse.h>
+namespace tensor {
+
 //////////////////////////////////////////////////////////////////////
 // RAW ROUTINE FOR THE TENSOR-SPARSE PRODUCT
 //
@@ -77,5 +80,5 @@ static inline const Tensor<elt_t> do_mmult(const Tensor<elt_t> &m1,
 
   return output;
 }
-
+}  // namespace tensor
 #endif /* TENSOR_MMULT_TENSOR_SPARSE_H */

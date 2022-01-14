@@ -93,7 +93,8 @@ const CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
   F77NAME(zgeev)
   (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work0, &lwork, rwork,
    &info);
-  lwork = lapack::real(work0[0]);
+  // On exit, work0 contains the optimal amount of work to be done
+  lwork = static_cast<blas::integer>(lapack::real(work0[0]));
 
   cdouble *work = new cdouble[lwork];
   F77NAME(zgeev)

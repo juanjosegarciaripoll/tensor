@@ -17,11 +17,9 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/sparse.h>
+#include "mmult_tensor_sparse.h"
 
 namespace tensor {
-
-#include "mmult_tensor_sparse.h"
 
 /** Multiply a tensor with a sparse matrix. mmult(m1,m2) is equivalent to fold(m1,-1,m2,0) even if m1 or m2 are sparse matrices. */
 const Tensor<cdouble> mmult(const Tensor<cdouble> &m1,

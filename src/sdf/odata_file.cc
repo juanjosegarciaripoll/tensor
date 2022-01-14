@@ -217,7 +217,7 @@ void OutDataFile::write_header() {
   char tag[7] = "sdf  ";
   tag[3] = sizeof(int) + '0';
   tag[4] = sizeof(tensor::index) + '0';
-  tag[5] = endian + '0';
+  tag[5] = (endian == BIG_ENDIAN_FILE) ? '0' : '1';
 
   write_variable_name(tag);
 }

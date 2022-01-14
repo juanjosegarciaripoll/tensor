@@ -62,7 +62,6 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
   Tensor *pVtemp = pVT ? &Vtemp : 0;
   for (index b = 0, sndx = 0; b < nblocks; b++) {
     Tensor m = A(range(block_rows[b]), range(block_cols[b]));
-    index n = m.size();
     if (m.size() > 1) {
       stemp = svd(m, pUtemp, pVtemp, economic);
       index slast = sndx + stemp.size() - 1;

@@ -44,7 +44,7 @@ inline number number_one() {
 
 /* Already in C++11 but they return complex */
 inline double real(double r) { return r; }
-inline double imag(double r) { return 0.0; }
+inline double imag(double) { return 0.0; }
 inline double conj(double r) { return r; }
 inline double abs2(double r) { return r * r; }
 

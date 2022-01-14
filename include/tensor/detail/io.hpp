@@ -27,7 +27,6 @@ namespace tensor {
 template <class ForwardIterator>
 void write_to_stream(std::ostream &s, ForwardIterator begin,
                      ForwardIterator end) {
-  bool first = true;
   for (bool first = true; begin != end; ++begin, first = false) {
     if (!first) s << ", ";
     s << *begin;

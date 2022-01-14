@@ -151,7 +151,7 @@ static void dump_backtrace(int size) {
 
 #undef abort
 
-static void tensor_abort(int signal) {
+static void tensor_abort(int /*signal*/) {
   dump_backtrace(32);
   exit(-1);
 }

@@ -89,7 +89,8 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   rwork = (double *)&foo;
   F77NAME(zgesvd)
   (jobu, jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work, &lwork, rwork, &info);
-  lwork = lapack::real(work[0]);
+  // work[0] contains the optimal amount of space required
+  lwork = static_cast<blas::integer>(lapack::real(work[0]));
   work = new cdouble[lwork];
   rwork = new double[5 * k];
   F77NAME(zgesvd)

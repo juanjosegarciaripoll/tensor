@@ -41,7 +41,7 @@ elt_t eig_power_loop(const Map<Tensor<elt_t> > *A, size_t dims,
     iter = std::max<size_t>(20, v.size());
   }
   v /= norm2(v);
-  elt_t eig, old_eig;
+  elt_t eig = 0, old_eig;
   //
   // We apply repeatedly the map 'A' onto the same random initial
   // vector, until (A^n)*v converges to the eigenstate with the largest
