@@ -1,5 +1,7 @@
 option(TENSOR_DEFAULT_WARNINGS "Add known default compiler warnings" ON)
 option(TENSOR_OPTIMIZED_BUILD "Add well known optimization arguments" ON)
+option(TENSOR_CLANG_TIDY "Enable running clang-tidy if found" OFF)
+option(WARNINGS_AS_ERRORS "Compilation and analysis warnings become errors" OFF)
 
 function(make_tensor_options)
     add_library(tensor_options INTERFACE)
@@ -10,6 +12,10 @@ function(make_tensor_options)
 
     if (TENSOR_DEFAULT_WARNINGS)
         tensor_add_warnings()
+    endif()
+
+    if (TENSOR_CLANG_TIDY)
+        tensor_enable_clang_tidy()
     endif()
 endfunction()
 
@@ -87,7 +93,7 @@ function(tensor_add_warnings)
         -Wuseless-cast # warn if you perform a cast to the same type
     )
 
-    if(WARNINGS_AS_ERRORS STREQUAL TRUE)
+    if(WARNINGS_AS_ERRORS)
         message(AUTHOR_WARNING "NOTE: ${WARNINGS_AS_ERRORS}")
         list(APPEND CLANG_WARNINGS -Werror)
         list(APPEND GCC_WARNINGS -Werror)
@@ -107,4 +113,20 @@ function(tensor_add_warnings)
     message(STATUS "Compiler warnings ${PROJECT_WARNINGS}")
     target_compile_options(tensor_options INTERFACE ${PROJECT_WARNINGS})
 
+endfunction()
+
+function(tensor_enable_clang_tidy)
+    find_program(CLANGTIDY clang-tidy)
+    if(CLANGTIDY)
+        set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY})
+        if(${CMAKE_CXX_STANDARD})
+            set(CMAKE_CXX_CLANG_TIDY ${CMAKE_CXX_CLANG_TIDY} -extra-arg=-std=c++${CMAKE_CXX_STANDARD})
+        endif()
+        if(WARNINGS_AS_ERRORS)
+            list(APPEND CMAKE_CXX_CLANG_TIDY -warnings-as-errors=*)
+        endif()
+        message(STATUS "clang-tidy enabled with options CMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
+    else()
+        message(WARNING "clang-tidy requested but not found")
+    endif()
 endfunction()
