@@ -53,11 +53,9 @@ elt_t eig_power_loop(const Map<Tensor<elt_t> > *A, size_t dims,
     Tensor<elt_t> v_new = (*A)(v);
     eig = scprod(v, v_new);
     double err = norm0(v_new - eig * v);
-    v = (v_new /= norm2(v_new));
     // Stop if the vector is sufficiently close to an eigenstate
     if (err < tol * std::abs(eig)) break;
-    // Or if the eigenvalues stopped evolving
-    if (i && (std::abs(eig - old_eig) < tol * std::abs(eig))) break;
+    v = (v_new /= norm2(v_new));
     old_eig = eig;
   }
   delete A;

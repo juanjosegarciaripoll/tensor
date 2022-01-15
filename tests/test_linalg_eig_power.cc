@@ -59,12 +59,12 @@ void test_eye_eig_power_left(int n) {
 }
 
 template <typename elt_t>
-Tensor<elt_t> random_Hermitian_with_gap(int n) {
+Tensor<elt_t> random_Hermitian_with_gap(int n, double largest = 10.0) {
   // Build a random Hermitian matrix
   Tensor<elt_t> U = tensor_test::random_unitary<elt_t>(n);
   Tensor<elt_t> lambda(n);
   lambda.randomize();
-  lambda.at(0) = 5.0;  // Larger than other eigenvalues
+  lambda.at(0) = largest;  // Larger than other eigenvalues
   return mmult(U, mmult(diag(lambda), adjoint(U)));
 }
 
@@ -77,9 +77,9 @@ void test_random_eig_power_right(int n) {
     return;
   }
   for (int times = 10; times; --times) {
-    Tensor<elt_t> R, A = random_Hermitian_with_gap<elt_t>(n);
+    Tensor<elt_t> R, A = random_Hermitian_with_gap<elt_t>(n, 10.0);
     elt_t l = linalg::eig_power_right(A, &R, 30, 1e-13);
-    EXPECT_TRUE(tensor::abs(l - 5.0) < 1e-12);
+    EXPECT_TRUE(tensor::abs(l - 10.0) < 1e-12);
     EXPECT_TRUE(norm0(mmult(A, R) - l * R) < 1e-10);
   }
 }
@@ -93,9 +93,9 @@ void test_random_eig_power_left(int n) {
     return;
   }
   for (int times = 10; times; --times) {
-    Tensor<elt_t> L, A = random_Hermitian_with_gap<elt_t>(n);
+    Tensor<elt_t> L, A = random_Hermitian_with_gap<elt_t>(n, 10.0);
     elt_t l = linalg::eig_power_left(A, &L, 30, 1e-13);
-    EXPECT_TRUE(tensor::abs(l - 5.0) < 1e-12);
+    EXPECT_TRUE(tensor::abs(l - 10.0) < 1e-12);
     EXPECT_TRUE(norm0(mmult(L, A) - l * L) < 1e-10);
   }
 }
