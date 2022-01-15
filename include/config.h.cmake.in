@@ -2,7 +2,7 @@
 //
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
-
+#pragma once
 #ifndef TENSOR_CONFIG_H
 #define TENSOR_CONFIG_H
 
