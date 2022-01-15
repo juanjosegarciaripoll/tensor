@@ -76,6 +76,7 @@ def html_report(filename: str, benchmarks: list[BenchmarkSet], browse: bool = Tr
                     agg, doprint=(group.name == "RTensor" and item.name == "plus")
                 )
                 fig.savefig(imagefile)
+                plt.close(fig)
                 f.write(f'<img src="{imageuri}">')
                 n = n + 1
         f.write(HTML_REPORT_FOOTER)
