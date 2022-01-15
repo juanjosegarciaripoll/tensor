@@ -46,9 +46,7 @@ void test_fold(int max_dim) {
                 B.randomize();
                 index expected_size =
                     A.size() * B.size() / A.dimension(i) / B.dimension(j);
-                Tensor<typename Binop<n1, n2>::type> AB = fold(A, i, B, j),
-                                                     sAB =
-                                                         slow_fold(A, i, B, j);
+                auto AB = fold(A, i, B, j), sAB = slow_fold(A, i, B, j);
                 // Compare optimized routine with safer, slow ones
                 EXPECT_TRUE(all_equal(AB.dimensions(), sAB.dimensions()));
                 EXPECT_EQ(expected_size, AB.size());

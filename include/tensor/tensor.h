@@ -26,11 +26,11 @@
 
 #include <cassert>
 #include <vector>
+#include <type_traits>
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
 #include <tensor/gen.h>
 #include <tensor/indices.h>
-#include <tensor/detail/functional.h>
 
 namespace tensor {
 
@@ -314,43 +314,43 @@ Tensor<t> operator-(const Tensor<t> &);
 // Binary operations
 //
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator+(const Tensor<t1> &a,
-                                               const Tensor<t2> &b);
+Tensor<typename std::common_type<t1, t2>::type> operator+(const Tensor<t1> &a,
+                                                          const Tensor<t2> &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator-(const Tensor<t1> &a,
-                                               const Tensor<t2> &b);
+Tensor<typename std::common_type<t1, t2>::type> operator-(const Tensor<t1> &a,
+                                                          const Tensor<t2> &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator*(const Tensor<t1> &a,
-                                               const Tensor<t2> &b);
+Tensor<typename std::common_type<t1, t2>::type> operator*(const Tensor<t1> &a,
+                                                          const Tensor<t2> &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator/(const Tensor<t1> &a,
-                                               const Tensor<t2> &b);
+Tensor<typename std::common_type<t1, t2>::type> operator/(const Tensor<t1> &a,
+                                                          const Tensor<t2> &b);
 
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator+(const Tensor<t1> &a,
-                                               const t2 &b);
+Tensor<typename std::common_type<t1, t2>::type> operator+(const Tensor<t1> &a,
+                                                          const t2 &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator-(const Tensor<t1> &a,
-                                               const t2 &b);
+Tensor<typename std::common_type<t1, t2>::type> operator-(const Tensor<t1> &a,
+                                                          const t2 &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator*(const Tensor<t1> &a,
-                                               const t2 &b);
+Tensor<typename std::common_type<t1, t2>::type> operator*(const Tensor<t1> &a,
+                                                          const t2 &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator/(const Tensor<t1> &a,
-                                               const t2 &b);
+Tensor<typename std::common_type<t1, t2>::type> operator/(const Tensor<t1> &a,
+                                                          const t2 &b);
 
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator+(const t1 &a,
-                                               const Tensor<t2> &b);
+Tensor<typename std::common_type<t1, t2>::type> operator+(const t1 &a,
+                                                          const Tensor<t2> &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator-(const t1 &a,
-                                               const Tensor<t2> &b);
+Tensor<typename std::common_type<t1, t2>::type> operator-(const t1 &a,
+                                                          const Tensor<t2> &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator*(const t1 &a,
-                                               const Tensor<t2> &b);
+Tensor<typename std::common_type<t1, t2>::type> operator*(const t1 &a,
+                                                          const Tensor<t2> &b);
 template <typename t1, typename t2>
-Tensor<typename Binop<t1, t2>::type> operator/(const t1 &a,
-                                               const Tensor<t2> &b);
+Tensor<typename std::common_type<t1, t2>::type> operator/(const t1 &a,
+                                                          const Tensor<t2> &b);
 
 template <typename t1, typename t2>
 Tensor<t1> &operator+=(Tensor<t1> &a, const Tensor<t1> &b);

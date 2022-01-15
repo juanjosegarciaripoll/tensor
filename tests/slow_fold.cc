@@ -27,9 +27,9 @@ using namespace tensor;
 using tensor::index;
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_11_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_11_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, b1;
   A.get_dimensions(&a1);
   B.get_dimensions(&b1);
@@ -45,9 +45,9 @@ Tensor<typename Binop<n1, n2>::type> fold_11_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_12_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_12_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, b1, b2;
   A.get_dimensions(&a1);
   B.get_dimensions(&b1, &b2);
@@ -65,9 +65,9 @@ Tensor<typename Binop<n1, n2>::type> fold_12_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_13_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_13_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, b1, b2, b3;
   A.get_dimensions(&a1);
   B.get_dimensions(&b1, &b2, &b3);
@@ -87,9 +87,9 @@ Tensor<typename Binop<n1, n2>::type> fold_13_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_21_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_21_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, a2, b1;
   A.get_dimensions(&a1, &a2);
   B.get_dimensions(&b1);
@@ -108,9 +108,9 @@ Tensor<typename Binop<n1, n2>::type> fold_21_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_22_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_22_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, a2, b1, b2;
   A.get_dimensions(&a1, &a2);
   B.get_dimensions(&b1, &b2);
@@ -131,9 +131,9 @@ Tensor<typename Binop<n1, n2>::type> fold_22_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_23_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_23_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, a2, b1, b2, b3;
   A.get_dimensions(&a1, &a2);
   B.get_dimensions(&b1, &b2, &b3);
@@ -156,9 +156,9 @@ Tensor<typename Binop<n1, n2>::type> fold_23_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_31_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_31_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, a2, a3, b1;
   A.get_dimensions(&a1, &a2, &a3);
   B.get_dimensions(&b1);
@@ -179,9 +179,9 @@ Tensor<typename Binop<n1, n2>::type> fold_31_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_32_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_32_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, a2, a3, b1, b2;
   A.get_dimensions(&a1, &a2, &a3);
   B.get_dimensions(&b1, &b2);
@@ -204,9 +204,9 @@ Tensor<typename Binop<n1, n2>::type> fold_32_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_33_11(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_33_11(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, a2, a3, b1, b2, b3;
   A.get_dimensions(&a1, &a2, &a3);
   B.get_dimensions(&b1, &b2, &b3);
@@ -231,8 +231,10 @@ Tensor<typename Binop<n1, n2>::type> fold_33_11(const Tensor<n1> &A,
 }
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> slow_fold(Tensor<n1> A, int ndx1,
-                                               Tensor<n2> B, int ndx2) {
+Tensor<typename std::common_type<n1, n2>::type> slow_fold(Tensor<n1> A,
+                                                          int ndx1,
+                                                          Tensor<n2> B,
+                                                          int ndx2) {
   if (ndx1 > A.rank()) {
     ndx1 = A.rank() + ndx1;
   }
@@ -270,7 +272,7 @@ Tensor<typename Binop<n1, n2>::type> slow_fold(Tensor<n1> A, int ndx1,
       return fold_33_11(A, B);
       // Unsupported case;
     default:
-      return Tensor<typename Binop<n1, n2>::type>();
+      return Tensor<typename std::common_type<n1, n2>::type>();
   }
 }
 

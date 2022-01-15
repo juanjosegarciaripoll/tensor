@@ -27,9 +27,9 @@ using namespace tensor;
 using tensor::index;
 
 template <typename n1, typename n2>
-Tensor<typename Binop<n1, n2>::type> fold_22_12(const Tensor<n1> &A,
-                                                const Tensor<n2> &B) {
-  typedef typename Binop<n1, n2>::type n3;
+Tensor<typename std::common_type<n1, n2>::type> fold_22_12(
+    const Tensor<n1> &A, const Tensor<n2> &B) {
+  typedef typename std::common_type<n1, n2>::type n3;
   index a1, a2, b1, b2;
   A.get_dimensions(&a1, &a2);
   B.get_dimensions(&b1, &b2);

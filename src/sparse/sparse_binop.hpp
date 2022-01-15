@@ -20,15 +20,15 @@
 #include <algorithm>
 #include <cassert>
 #include <functional>
+#include <type_traits>
 #include <tensor/sparse.h>
 
 namespace tensor {
 
 template <typename T1, typename T2, class binop>
-const Sparse<typename Binop<T1, T2>::type> sparse_binop(const Sparse<T1> &m1,
-                                                        const Sparse<T2> &m2,
-                                                        binop op) {
-  typedef typename Binop<T1, T2>::type T3;
+const Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
+    const Sparse<T1> &m1, const Sparse<T2> &m2, binop op) {
+  typedef typename std::common_type<T1, T2>::type T3;
 
   size_t rows = m1.rows();
   size_t cols = m1.columns();

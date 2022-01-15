@@ -27,7 +27,7 @@
 #include <cassert>
 #include <functional>
 #include <algorithm>
-#include <tensor/detail/functional.h>
+#include <type_traits>
 #include <tensor/io.h>
 
 namespace tensor {
@@ -39,7 +39,8 @@ template <typename T>
 const Sparse<T> operator-(const Sparse<T> &s) {
   Tensor<T> data(s.priv_data().size());
   std::transform(s.priv_data().begin(), s.priv_data().end(), data.begin(),
-                 std::negate<T>());
+                 [](const T &a) {
+    return -a; }]);
   return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(), data);
 }
 
@@ -48,28 +49,28 @@ const Sparse<T> operator-(const Sparse<T> &s) {
 //
 
 template <typename T1, typename T2>
-const Sparse<typename Binop<T1, T2>::type> operator*(const Sparse<T1> &s,
-                                                     T2 b) {
-  typedef typename Binop<T1, T2>::type T3;
+const Sparse<typename std::common_type<T1, T2>::type> operator*(
+    const Sparse<T1> &s, T2 b) {
+  typedef typename std::common_type<T1, T2>::type T3;
   Tensor<T3> data(s.priv_data().size());
   std::transform(s.priv_data().begin(), s.priv_data().end(), data.begin(),
-                 times_constant<T1, T2>(b));
+                 [&](const T1 &a) { return a * b; });
   return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(), data);
 }
 
 template <typename T1, typename T2>
-const Sparse<typename Binop<T1, T2>::type> operator/(const Sparse<T1> &s,
-                                                     T2 b) {
-  typedef typename Binop<T1, T2>::type T3;
+const Sparse<typename std::common_type<T1, T2>::type> operator/(
+    const Sparse<T1> &s, T2 b) {
+  typedef typename std::common_type<T1, T2>::type T3;
   Tensor<T3> data(s.priv_data().size());
   std::transform(s.priv_data().begin(), s.priv_data().end(), data.begin(),
-                 divided_constant<T1, T2>(b));
+                 [&](const T1 &a) { return a / b; });
   return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(), data);
 }
 
 template <typename T1, typename T2>
-const Sparse<typename Binop<T1, T2>::type> operator*(T1 b,
-                                                     const Sparse<T2> &s) {
+const Sparse<typename std::common_type<T1, T2>::type> operator*(
+    T1 b, const Sparse<T2> &s) {
   return s * b;
 }
 
@@ -78,10 +79,9 @@ const Sparse<typename Binop<T1, T2>::type> operator*(T1 b,
 //
 
 template <typename T1, typename T2, class binop>
-const Sparse<typename Binop<T1, T2>::type> sparse_binop(const Sparse<T1> &m1,
-                                                        const Sparse<T2> &m2,
-                                                        binop op) {
-  typedef typename Binop<T1, T2>::type T3;
+const Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
+    const Sparse<T1> &m1, const Sparse<T2> &m2, binop op) {
+  typedef typename std::common_type<T1, T2>::type T3;
 
   size_t rows = m1.rows();
   size_t cols = m1.columns();
@@ -176,23 +176,23 @@ const Sparse<typename Binop<T1, T2>::type> sparse_binop(const Sparse<T1> &m1,
 }
 
 template <typename T1, typename T2>
-const Sparse<typename Binop<T1, T2>::type> operator+(const Sparse<T1> &m1,
-                                                     const Sparse<T2> &m2) {
-  typedef typename Binop<T1, T2>::type T3;
+const Sparse<typename std::common_type<T1, T2>::type> operator+(
+    const Sparse<T1> &m1, const Sparse<T2> &m2) {
+  typedef typename std::common_type<T1, T2>::type T3;
   return sparse_binop(m1, m2, std::plus<T3>());
 }
 
 template <typename T1, typename T2>
-const Sparse<typename Binop<T1, T2>::type> operator-(const Sparse<T1> &m1,
-                                                     const Sparse<T2> &m2) {
-  typedef typename Binop<T1, T2>::type T3;
+const Sparse<typename std::common_type<T1, T2>::type> operator-(
+    const Sparse<T1> &m1, const Sparse<T2> &m2) {
+  typedef typename std::common_type<T1, T2>::type T3;
   return sparse_binop(m1, m2, std::minus<T3>());
 }
 
 template <typename T1, typename T2>
-const Sparse<typename Binop<T1, T2>::type> operator*(const Sparse<T1> &m1,
-                                                     const Sparse<T2> &m2) {
-  typedef typename Binop<T1, T2>::type T3;
+const Sparse<typename std::common_type<T1, T2>::type> operator*(
+    const Sparse<T1> &m1, const Sparse<T2> &m2) {
+  typedef typename std::common_type<T1, T2>::type T3;
   return sparse_binop(m1, m2, std::multiplies<T3>());
 }
 
