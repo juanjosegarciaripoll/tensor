@@ -25,6 +25,7 @@
 #include <vector>
 #include <array>
 #include <tuple>
+#include <functional>
 #include <tensor/tools.h>
 #include <tensor/config.h>
 

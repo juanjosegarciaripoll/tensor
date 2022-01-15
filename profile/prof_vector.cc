@@ -52,6 +52,26 @@ void divide(std::tuple<T1, T2> &args) {
   force(std::get<0>(args) / std::get<1>(args));
 }
 
+template <class T1, class T2>
+void add_inplace(std::tuple<T1, T2> &args) {
+  force(std::get<0>(args) += std::get<1>(args));
+}
+
+template <class T1, class T2>
+void subtract_inplace(std::tuple<T1, T2> &args) {
+  force(std::get<0>(args) -= std::get<1>(args));
+}
+
+template <class T1, class T2>
+void multiply_inplace(std::tuple<T1, T2> &args) {
+  force(std::get<0>(args) *= std::get<1>(args));
+}
+
+template <class T1, class T2>
+void divide_inplace(std::tuple<T1, T2> &args) {
+  force(std::get<0>(args) /= std::get<1>(args));
+}
+
 template <class T>
 void warmup(size_t size) {
   for (int i = 0; i < 10; ++i) {
@@ -61,23 +81,62 @@ void warmup(size_t size) {
 
 template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_number(size_t size) {
-  typedef typename T::elt_t Number;
-  auto number = static_cast<Number>(3.0);
+  auto number = static_cast<typename T::elt_t>(3.0);
   warmup<T>(size);
-  return typename std::tuple<T, Number>(T::random(size), number);
-}
+  return typename std::tuple<T, typename T::elt_t>(T::random(size), number);
+};
+
 template <class T>
 std::tuple<T, T> make_two_vectors(size_t size) {
   warmup<T>(size);
   return std::tuple<T, T>(T::random(size), T::random(size) + 1.0);
+};
+
+template <class T>
+std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
+  auto number = static_cast<typename T::elt_t>(1.0);
+  warmup<T>(size);
+  return typename std::tuple<T, typename T::elt_t>(T::random(size), number);
+};
+
+template <typename T>
+void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
+  std::vector<size_t> sizes{1,    4,     16,    64,     256,     1024,
+                            4096, 16384, 65536, 262144, 1048576, 4194304};
+
+  typedef typename T::elt_t elt_t;
+
+  {
+    BenchmarkGroup group(name);
+    group.add("plus", add<T, T>, make_two_vectors<T>, sizes);
+    group.add("minus", subtract<T, T>, make_two_vectors<T>, sizes);
+    group.add("multiplies", multiply<T, T>, make_two_vectors<T>, sizes);
+    group.add("divides", divide<T, T>, make_two_vectors<T>, sizes);
+    set << group;
+  }
+  {
+    BenchmarkGroup group(name + " with number");
+    group.add("plusN", add<T, elt_t>, make_vector_and_number<T>, sizes);
+    group.add("minusN", subtract<T, elt_t>, make_vector_and_number<T>, sizes);
+    group.add("multipliesN", multiply<T, elt_t>, make_vector_and_number<T>,
+              sizes);
+    group.add("dividesN", divide<T, elt_t>, make_vector_and_number<T>, sizes);
+    group.add("plusNinplace", add_inplace<T, elt_t>, make_vector_and_one<T>,
+              sizes);
+    group.add("minusNinplace", subtract_inplace<T, elt_t>,
+              make_vector_and_one<T>, sizes);
+    group.add("multipliesNinplace", multiply_inplace<T, elt_t>,
+              make_vector_and_one<T>, sizes);
+    group.add("dividesNinplace", divide_inplace<T, elt_t>,
+              make_vector_and_number<T>, sizes);
+    set << group;
+  }
 }
 
 void run_all(std::ostream &out, const std::string &version = "") {
   //
   // VECTOR - VECTOR OPERATIONS
   //
-  std::vector<size_t> sizes{1,    4,     16,    64,     256,     1024,
-                            4096, 16384, 65536, 262144, 1048576, 4194304};
 
   std::string name = "tensor library";
   if (version.size()) {
@@ -86,42 +145,8 @@ void run_all(std::ostream &out, const std::string &version = "") {
 
   auto set = BenchmarkSet(name);
 
-  set << BenchmarkGroup("RTensor")
-             .add("plus", add<RTensor, RTensor>, make_two_vectors<RTensor>,
-                  sizes)
-             .add("minus", subtract<RTensor, RTensor>,
-                  make_two_vectors<RTensor>, sizes)
-             .add("multiplies", multiply<RTensor, RTensor>,
-                  make_two_vectors<RTensor>, sizes)
-             .add("divides", divide<RTensor, RTensor>,
-                  make_two_vectors<RTensor>, sizes);
-  set << BenchmarkGroup("CTensor")
-             .add("plus", add<CTensor, CTensor>, make_two_vectors<CTensor>,
-                  sizes)
-             .add("minus", subtract<CTensor, CTensor>,
-                  make_two_vectors<CTensor>, sizes)
-             .add("multiplies", multiply<CTensor, CTensor>,
-                  make_two_vectors<CTensor>, sizes)
-             .add("divides", divide<CTensor, CTensor>,
-                  make_two_vectors<CTensor>, sizes);
-  set << BenchmarkGroup("RTensor with number")
-             .add("plusN", add<RTensor, double>,
-                  make_vector_and_number<RTensor>, sizes)
-             .add("minusN", subtract<RTensor, double>,
-                  make_vector_and_number<RTensor>, sizes)
-             .add("multipliesN", multiply<RTensor, double>,
-                  make_vector_and_number<RTensor>, sizes)
-             .add("dividesN", divide<RTensor, double>,
-                  make_vector_and_number<RTensor>, sizes);
-  set << BenchmarkGroup("CTensor with number")
-             .add("plusN", add<CTensor, cdouble>,
-                  make_vector_and_number<CTensor>, sizes)
-             .add("minusN", subtract<CTensor, cdouble>,
-                  make_vector_and_number<CTensor>, sizes)
-             .add("multipliesN", multiply<CTensor, cdouble>,
-                  make_vector_and_number<CTensor>, sizes)
-             .add("dividesN", divide<CTensor, cdouble>,
-                  make_vector_and_number<CTensor>, sizes);
+  tensor_benchmarks<RTensor>(set, "RTensor");
+  tensor_benchmarks<CTensor>(set, "CTensor");
 
   out << set << std::endl;
 }

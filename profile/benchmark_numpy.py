@@ -14,11 +14,31 @@ def minus(A, B):
 
 
 def multiplies(A, B):
-    return A + B
+    return A * B
 
 
 def divides(A, B):
-    return A + B
+    return A / B
+
+
+def plus_inplace(A, B):
+    A += B
+    return A
+
+
+def minus_inplace(A, B):
+    A -= B
+    return A
+
+
+def multiplies_inplace(A, B):
+    A *= B
+    return A
+
+
+def divides_inplace(A, B):
+    A /= B
+    return A
 
 
 def make_two_real_ndarrays(size: int) -> np.ndarray:
@@ -31,6 +51,12 @@ def make_real_ndarray_and_number(size: int) -> np.ndarray:
     for _ in range(10):
         a2 = np.empty(size, dtype=np.double)
     return (GENERATOR.normal(size=size), 3.0)
+
+
+def make_real_ndarray_and_one(size: int) -> np.ndarray:
+    for _ in range(10):
+        a2 = np.empty(size, dtype=np.double)
+    return (GENERATOR.normal(size=size), 1.0)
 
 
 def make_two_complex_ndarrays(size: int) -> np.ndarray:
@@ -46,6 +72,13 @@ def make_complex_ndarray_and_number(size: int) -> np.ndarray:
     for _ in range(10):
         a2 = np.empty(size, dtype=np.complex128)
     return (a1 + 1j * a2, 3.0 + 0.0j)
+
+
+def make_complex_ndarray_and_one(size: int) -> np.ndarray:
+    a1, b1 = make_real_ndarray_and_number(size)
+    for _ in range(10):
+        a2 = np.empty(size, dtype=np.complex128)
+    return (a1 + 1j * a2, 1.0 + 0.0j)
 
 
 def system_version():
@@ -83,6 +116,14 @@ def run_all():
                     ("minusN", minus, make_real_ndarray_and_number),
                     ("multipliesN", multiplies, make_real_ndarray_and_number),
                     ("dividesN", divides, make_real_ndarray_and_number),
+                    ("plusNinplace", plus_inplace, make_real_ndarray_and_one),
+                    ("minusNinplace", minus_inplace, make_real_ndarray_and_one),
+                    (
+                        "multipliesNinplace",
+                        multiplies_inplace,
+                        make_real_ndarray_and_one,
+                    ),
+                    ("dividesNinplace", divides_inplace, make_real_ndarray_and_one),
                 ],
             ),
             BenchmarkGroup.run(
@@ -92,6 +133,14 @@ def run_all():
                     ("minusN", minus, make_complex_ndarray_and_number),
                     ("multipliesN", multiplies, make_complex_ndarray_and_number),
                     ("dividesN", divides, make_complex_ndarray_and_number),
+                    ("plusNinplace", plus_inplace, make_complex_ndarray_and_one),
+                    ("minusNinplace", minus_inplace, make_complex_ndarray_and_one),
+                    (
+                        "multipliesNinplace",
+                        multiplies_inplace,
+                        make_complex_ndarray_and_one,
+                    ),
+                    ("dividesNinplace", divides_inplace, make_complex_ndarray_and_one),
                 ],
             ),
         ],
