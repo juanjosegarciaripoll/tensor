@@ -25,6 +25,7 @@
 #include <iomanip>
 #include <chrono>
 #include <sstream>
+#include <memory>
 
 #include "profile.h"
 
@@ -52,12 +53,22 @@ void divide(std::tuple<T1, T2> &args) {
 }
 
 template <class T>
+void warmup(size_t size) {
+  for (int i = 0; i < 10; ++i) {
+    std::unique_ptr<T> p{new T(size)};
+  }
+}
+
+template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_number(size_t size) {
-  return typename std::tuple<T, typename T::elt_t>(T::random(size),
-                                                   T::random(1)[0] + 1.0);
+  typedef typename T::elt_t Number;
+  auto number = static_cast<Number>(3.0);
+  warmup<T>(size);
+  return typename std::tuple<T, Number>(T::random(size), number);
 }
 template <class T>
 std::tuple<T, T> make_two_vectors(size_t size) {
+  warmup<T>(size);
   return std::tuple<T, T>(T::random(size), T::random(size) + 1.0);
 }
 
@@ -94,22 +105,22 @@ void run_all(std::ostream &out, const std::string &version = "") {
              .add("divides", divide<CTensor, CTensor>,
                   make_two_vectors<CTensor>, sizes);
   set << BenchmarkGroup("RTensor with number")
-             .add("plus", add<RTensor, double>, make_vector_and_number<RTensor>,
-                  sizes)
-             .add("minus", subtract<RTensor, double>,
+             .add("plusN", add<RTensor, double>,
                   make_vector_and_number<RTensor>, sizes)
-             .add("multiplies", multiply<RTensor, double>,
+             .add("minusN", subtract<RTensor, double>,
                   make_vector_and_number<RTensor>, sizes)
-             .add("divides", divide<RTensor, double>,
+             .add("multipliesN", multiply<RTensor, double>,
+                  make_vector_and_number<RTensor>, sizes)
+             .add("dividesN", divide<RTensor, double>,
                   make_vector_and_number<RTensor>, sizes);
   set << BenchmarkGroup("CTensor with number")
-             .add("plus", add<CTensor, cdouble>,
+             .add("plusN", add<CTensor, cdouble>,
                   make_vector_and_number<CTensor>, sizes)
-             .add("minus", subtract<CTensor, cdouble>,
+             .add("minusN", subtract<CTensor, cdouble>,
                   make_vector_and_number<CTensor>, sizes)
-             .add("multiplies", multiply<CTensor, cdouble>,
+             .add("multipliesN", multiply<CTensor, cdouble>,
                   make_vector_and_number<CTensor>, sizes)
-             .add("divides", divide<CTensor, cdouble>,
+             .add("dividesN", divide<CTensor, cdouble>,
                   make_vector_and_number<CTensor>, sizes);
 
   out << set << std::endl;

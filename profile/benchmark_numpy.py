@@ -22,23 +22,30 @@ def divides(A, B):
 
 
 def make_two_real_ndarrays(size: int) -> np.ndarray:
+    for _ in range(10):
+        a2 = np.empty(size, dtype=np.double)
     return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
 
 
 def make_real_ndarray_and_number(size: int) -> np.ndarray:
-    return (GENERATOR.normal(size=size), GENERATOR.normal(size=1)[0] + 1.0)
+    for _ in range(10):
+        a2 = np.empty(size, dtype=np.double)
+    return (GENERATOR.normal(size=size), 3.0)
 
 
 def make_two_complex_ndarrays(size: int) -> np.ndarray:
     a1, b1 = make_two_real_ndarrays(size)
     a2, b2 = make_two_real_ndarrays(size)
+    for _ in range(10):
+        a2 = np.empty(size, dtype=np.complex128)
     return (a1 + 1j * a2, b1 + 1j * b2)
 
 
 def make_complex_ndarray_and_number(size: int) -> np.ndarray:
     a1, b1 = make_real_ndarray_and_number(size)
-    a2, b2 = make_real_ndarray_and_number(size)
-    return (a1 + 1j * a2, b1 + 1j * b2)
+    for _ in range(10):
+        a2 = np.empty(size, dtype=np.complex128)
+    return (a1 + 1j * a2, 3.0 + 0.0j)
 
 
 def system_version():
@@ -92,7 +99,7 @@ def run_all():
     if len(sys.argv) > 1:
         data.write(sys.argv[1])
     else:
-        data.write("/benchmark_numpy.json")
+        data.write("./benchmark_numpy.json")
 
 
 if __name__ == "__main__":
