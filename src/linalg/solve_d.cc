@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <memory>
 #include <tensor/tensor.h>
 #include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
@@ -73,14 +74,13 @@ const RTensor solve(const RTensor &A, const RTensor &B) {
   RTensor aux(A);
   RTensor::elt_t *a = tensor_pointer(aux);
 
-  blas::integer *ipiv = new blas::integer[n];
+  auto ipiv = std::make_unique<blas::integer[]>(n);
   blas::integer info;
 #ifdef TENSOR_USE_ACML
   dgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
 #else
-  F77NAME(dgesv)(&n, &nrhs, a, &lda, ipiv, b, &ldb, &info);
+  F77NAME(dgesv)(&n, &nrhs, a, &lda, ipiv.get(), b, &ldb, &info);
 #endif
-  delete[] ipiv;
 
   if (info) {
     std::cerr << "In solve()\n"

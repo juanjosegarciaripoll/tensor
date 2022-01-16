@@ -35,12 +35,14 @@
 #ifndef SEUPP_H
 #define SEUPP_H
 
+#include <memory>
 #include "arpackf.h"
 
 inline void seupp(bool rvec, char HowMny, double d[], double Z[],
                   blas::integer ldz, double sigma, char bmat, blas::integer n,
-                  const char* which, blas::integer nev, double tol, double resid[],
-                  blas::integer ncv, double V[], blas::integer ldv, blas::integer iparam[],
+                  const char* which, blas::integer nev, double tol,
+                  double resid[], blas::integer ncv, double V[],
+                  blas::integer ldv, blas::integer iparam[],
                   blas::integer ipntr[], double workd[], double workl[],
                   blas::integer lworkl, blas::integer& info)
 
@@ -152,21 +154,14 @@ inline void seupp(bool rvec, char HowMny, double d[], double Z[],
 */
 
 {
+  blas::integer irvec = (int)rvec;
+  auto iselect = std::make_unique<logical[]>(ncv);
+  double* iZ = (Z == NULL) ? &V[0] : Z;
 
-  blas::integer irvec;
-  logical* iselect;
-  double* iZ;
+  F77_FUNC(dseupd, DSEUPD)
+  (&irvec, &HowMny, iselect, d, iZ, &ldz, &sigma, &bmat, &n, which, &nev, &tol,
+   resid, &ncv, &V[0], &ldv, &iparam[0], &ipntr[0], &workd[0], &workl[0],
+   &lworkl, &info);
+}  // seupp (double).
 
-  irvec   = (int) rvec;
-  iselect = new logical[ncv];
-  iZ = (Z == NULL) ? &V[0] : Z;
-
-  F77_FUNC(dseupd,DSEUPD)(&irvec, &HowMny, iselect, d, iZ, &ldz, &sigma, &bmat,
-                          &n, which, &nev, &tol, resid, &ncv, &V[0], &ldv, &iparam[0],
-                          &ipntr[0], &workd[0], &workl[0], &lworkl, &info );
-
-  delete[] iselect;
-
-} // seupp (double).
-
-#endif // SEUPP_H
+#endif  // SEUPP_H

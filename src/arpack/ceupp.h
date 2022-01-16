@@ -35,13 +35,16 @@
 #ifndef CEUPP_H
 #define CEUPP_H
 
+#include <memory>
 #include "arpackf.h"
 
 inline void ceupp(blas::integer rvec, char HowMny, tensor::cdouble d[],
                   tensor::cdouble Z[], blas::integer ldz, tensor::cdouble sigma,
-                  tensor::cdouble workev[], char bmat, blas::integer n, const char* which,
-                  blas::integer nev, double tol, tensor::cdouble resid[], blas::integer ncv,
-                  tensor::cdouble V[], blas::integer ldv, blas::integer iparam[], blas::integer ipntr[],
+                  tensor::cdouble workev[], char bmat, blas::integer n,
+                  const char* which, blas::integer nev, double tol,
+                  tensor::cdouble resid[], blas::integer ncv,
+                  tensor::cdouble V[], blas::integer ldv,
+                  blas::integer iparam[], blas::integer ipntr[],
                   tensor::cdouble workd[], tensor::cdouble workl[],
                   blas::integer lworkl, double rwork[], blas::integer& info)
 
@@ -182,26 +185,20 @@ inline void ceupp(blas::integer rvec, char HowMny, tensor::cdouble d[],
 */
 
 {
-  logical* iselect = new logical[ncv];
+  auto iselect = std::make_unique<logical[]>(ncv);
   blas::cdouble* iZ = reinterpret_cast<blas::cdouble*>((Z == NULL) ? V : Z);
 
-  F77_FUNC(zneupd,ZNEUPD)(&rvec, &HowMny, iselect,
-                          reinterpret_cast<blas::cdouble*>(d), iZ, &ldz,
-                          reinterpret_cast<blas::cdouble*>(&sigma),
-                          reinterpret_cast<blas::cdouble*>(workev),
-                          &bmat, &n, which, &nev, &tol,
-                          reinterpret_cast<blas::cdouble*>(resid),
-                          &ncv, reinterpret_cast<blas::cdouble*>(V),
-                          &ldv, &iparam[0], &ipntr[0],
-                          reinterpret_cast<blas::cdouble*>(workd),
-                          reinterpret_cast<blas::cdouble*>(workl),
-                          &lworkl, &rwork[0], &info);
+  F77_FUNC(zneupd, ZNEUPD)
+  (&rvec, &HowMny, iselect.get(), reinterpret_cast<blas::cdouble*>(d), iZ, &ldz,
+   reinterpret_cast<blas::cdouble*>(&sigma),
+   reinterpret_cast<blas::cdouble*>(workev), &bmat, &n, which, &nev, &tol,
+   reinterpret_cast<blas::cdouble*>(resid), &ncv,
+   reinterpret_cast<blas::cdouble*>(V), &ldv, &iparam[0], &ipntr[0],
+   reinterpret_cast<blas::cdouble*>(workd),
+   reinterpret_cast<blas::cdouble*>(workl), &lworkl, &rwork[0], &info);
+}  // ceupp (cdouble).
 
-  delete[] iselect;
-
-} // ceupp (cdouble).
-
-#endif // CEUPP_H
+#endif  // CEUPP_H
 // Local variables:
 // mode: c++
 // fill-column: 80

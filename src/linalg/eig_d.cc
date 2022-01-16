@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <memory>
 #include <tensor/tensor.h>
 #include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
@@ -49,11 +50,11 @@ const CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   char jobvl[2] = "N";
   char jobvr[2] = "N";
   blas::integer lda, ldvl, ldvr, lwork, info;
-  double *vl, *vr, *wr, *wi;
+  double *vl = NULL, *vr = NULL, *wr, *wi;
   RTensor aux(A);
   double *a = tensor_pointer(aux);
   blas::integer n = A.rows();
-  RTensor *realL, *realR;
+  std::unique_ptr<RTensor> realL, realR;
 
   if ((size_t)n != A.columns()) {
     std::cerr << "Routine eig() can only compute eigenvalues of square "
@@ -64,20 +65,14 @@ const CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   }
 
   if (L) {
-    realL = new RTensor(n, n);
+    realL = std::make_unique<RTensor>(n, n);
     vl = tensor_pointer(*realL);
     jobvl[0] = 'V';
-  } else {
-    realL = NULL;
-    vl = NULL;
   }
   if (R) {
-    realR = new RTensor(n, n);
+    realR = std::make_unique<RTensor>(n, n);
     vr = tensor_pointer(*realR);
     jobvr[0] = 'V';
-  } else {
-    realR = NULL;
-    vr = NULL;
   }
   ldvl = ldvr = n;
   lda = n;
@@ -94,11 +89,10 @@ const CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   (jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work0, &lwork,
    &info);
   lwork = (int)work0[0];
-  double *work = new double[lwork];
+  auto work = std::make_unique<double[]>(lwork);
   F77NAME(dgeev)
-  (jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work, &lwork,
+  (jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work.get(), &lwork,
    &info);
-  delete[] work;
 #endif
 
   CTensor output(to_complex(real));
@@ -129,8 +123,6 @@ const CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
       i++;
     }
   }
-  delete realL;
-  delete realR;
   return output;
 }
 

@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <memory>
 #include <tensor/tensor.h>
 #include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
@@ -56,8 +57,8 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   blas::integer k = std::min(m, n);
   blas::integer lwork, ldu, lda, ldv, info;
   RTensor output(k);
-  cdouble *work, *u, *v, *a = tensor_pointer(A), foo;
-  double *rwork, *s = tensor_pointer(output);
+  cdouble *u, *v, *a = tensor_pointer(A);
+  double *s = tensor_pointer(output);
   char jobv[1], jobu[1];
 
   if (U) {
@@ -67,7 +68,7 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
     ldu = m;
   } else {
     jobu[0] = 'N';
-    u = &foo;
+    u = NULL;
     ldu = 1;
   }
   if (VT) {
@@ -77,7 +78,7 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
     ldv = economic ? k : n;
   } else {
     jobv[0] = 'N';
-    v = &foo;
+    v = NULL;
     ldv = 1;
   }
   lda = m;
@@ -85,18 +86,18 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   zgesvd(*jobu, *jobv, m, n, a, m, s, u, ldu, v, ldv, &info);
 #else
   lwork = -1;
-  work = &foo;
-  rwork = (double *)&foo;
+  cdouble work0[1];
+  double rwork0[1];
   F77NAME(zgesvd)
-  (jobu, jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work, &lwork, rwork, &info);
+  (jobu, jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work0, &lwork, rwork0,
+   &info);
   // work[0] contains the optimal amount of space required
-  lwork = static_cast<blas::integer>(lapack::real(work[0]));
-  work = new cdouble[lwork];
-  rwork = new double[5 * k];
+  lwork = static_cast<blas::integer>(lapack::real(work0[0]));
+  auto work = std::make_unique<cdouble[]>(lwork);
+  auto rwork = std::make_unique<double[]>(5 * k);
   F77NAME(zgesvd)
-  (jobu, jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work, &lwork, rwork, &info);
-  delete[] work;
-  delete[] rwork;
+  (jobu, jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work.get(), &lwork,
+   rwork.get(), &info);
 #endif
   return output;
 }

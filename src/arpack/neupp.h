@@ -35,15 +35,15 @@
 #ifndef NEUPP_H
 #define NEUPP_H
 
+#include <memory>
 #include "arpackf.h"
 
-inline void neupp(bool rvec, char HowMny, double dr[],
-                  double di[], double Z[], int ldz, double sigmar,
-                  double sigmai, double workv[], char bmat, int n,
-                  char* which, int nev, double tol, double resid[],
-                  int ncv, double V[], int ldv, int iparam[],
-                  int ipntr[], double workd[], double workl[],
-                  int lworkl, int& info)
+inline void neupp(bool rvec, char HowMny, double dr[], double di[], double Z[],
+                  int ldz, double sigmar, double sigmai, double workv[],
+                  char bmat, int n, char* which, int nev, double tol,
+                  double resid[], int ncv, double V[], int ldv, int iparam[],
+                  int ipntr[], double workd[], double workl[], int lworkl,
+                  int& info)
 
 /*
   c++ version of ARPACK routine dneupd.
@@ -229,25 +229,17 @@ inline void neupp(bool rvec, char HowMny, double dr[],
 */
 
 {
+  int irvec = (int)rvec;
+  auto iselect = std::make_unique<logical[]>(ncv);
+  double* iZ = (Z == NULL) ? &V[0] : Z;
 
-  int      irvec;
-  logical* iselect;
-  double*  iZ;
+  F77NAME(dneupd)
+  (&irvec, &HowMny, iselect.get(), dr, di, iZ, &ldz, &sigmar, &sigmai,
+   &workv[0], &bmat, &n, which, &nev, &tol, resid, &ncv, &V[0], &ldv,
+   &iparam[0], &ipntr[0], &workd[0], &workl[0], &lworkl, &info);
+}  // neupp (double).
 
-  irvec   = (int) rvec;
-  iselect = new_atomic logical[ncv];
-  iZ = (Z == NULL) ? &V[0] : Z;
-
-  F77NAME(dneupd)(&irvec, &HowMny, iselect, dr, di, iZ, &ldz, &sigmar,
-                  &sigmai, &workv[0], &bmat, &n, which, &nev, &tol,
-                  resid, &ncv, &V[0], &ldv, &iparam[0], &ipntr[0],
-                  &workd[0], &workl[0], &lworkl, &info);
-
-  delete[] iselect;
-
-} // neupp (double).
-
-#endif // NEUPP_H
+#endif  // NEUPP_H
 
 // Local variables:
 // mode: c++

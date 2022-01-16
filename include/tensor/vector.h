@@ -34,14 +34,13 @@ typedef std::ptrdiff_t index;
 template <typename elt>
 class Vector {
  public:
-  typedef tensor::index index;
   typedef elt elt_t;
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
   Vector() : data_() {}
 
-  explicit Vector(index size) : data_(size) {}
+  explicit Vector(size_t size) : data_(size) {}
 
   /* Copy constructor and copy operator */
   Vector(const Vector<elt_t> &v) : data_(v.data_) {}
@@ -52,15 +51,15 @@ class Vector {
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */
-  Vector(index size, elt_t *data) : data_(data, size, false) {}
+  Vector(size_t size, elt_t *data) : data_(data, size, false) {}
 
-  index size() const { return data_.size(); }
-  void resize(index new_size) { data_.reallocate(new_size); }
+  size_t size() const { return data_.size(); }
+  void resize(size_t new_size) { data_.reallocate(new_size); }
 
-  const elt_t &operator[](index pos) const {
+  const elt_t &operator[](size_t pos) const {
     return *(data_.begin_const() + pos);
   }
-  elt_t &at(index pos) { return *(data_.begin() + pos); }
+  elt_t &at(size_t pos) { return *(data_.begin() + pos); }
 
   iterator begin() { return data_.begin(); }
   const_iterator begin() const { return data_.begin_const(); }

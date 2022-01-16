@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <memory>
 #include <tensor/tensor.h>
 #include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
@@ -62,8 +63,8 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
   blas::integer k = std::min(m, n);
   blas::integer lwork, ldu, lda, ldv, info;
   RTensor output(k);
-  double *work, *u, *v;
-  double *a = tensor_pointer(A), *s = tensor_pointer(output), foo;
+  double *u, *v;
+  double *a = tensor_pointer(A), *s = tensor_pointer(output);
   char jobv[1], jobu[1];
 
   if (U) {
@@ -73,7 +74,7 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
     ldu = m;
   } else {
     jobu[0] = 'N';
-    u = &foo;
+    u = NULL;
     ldu = 1;
   }
   if (VT) {
@@ -83,7 +84,7 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
     ldv = economic ? k : n;
   } else {
     jobv[0] = 'N';
-    v = &foo;
+    v = NULL;
     ldv = 1;
   }
   lda = m;
@@ -91,14 +92,18 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
   dgesvd(*jobu, *jobv, m, n, a, lda, s, u, ldu, v, ldv, &info);
 #else
   lwork = -1;
-  work = &foo;
-  F77NAME(dgesvd)
-  (jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work, &lwork, &info);
-  lwork = (int)work[0];
-  work = new double[lwork];
-  F77NAME(dgesvd)
-  (jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work, &lwork, &info);
-  delete[] work;
+  {
+    double work0[1];
+    F77NAME(dgesvd)
+    (jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work0, &lwork, &info);
+    lwork = (int)work0[0];
+  }
+  {
+    auto work = std::make_unique<double[]>(lwork);
+    F77NAME(dgesvd)
+    (jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work.get(), &lwork,
+     &info);
+  }
 #endif
   return output;
 }

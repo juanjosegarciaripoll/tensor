@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <memory>
 #include <tensor/tensor.h>
 #include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
@@ -52,7 +53,6 @@ const CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
   char jobvr[2] = "N";
   blas::integer lda, ldvl, ldvr, lwork, info;
   cdouble *vl, *vr, *w;
-  double *rwork;
   CTensor aux(A);
   cdouble *a = tensor_pointer(aux);
   blas::integer n = A.rows();
@@ -89,19 +89,17 @@ const CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
 #else
   cdouble work0[1];
   lwork = -1;
-  rwork = new double[2 * n];
+  auto rwork = std::make_unique<double[]>(2 * n);
   F77NAME(zgeev)
-  (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work0, &lwork, rwork,
-   &info);
+  (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work0, &lwork,
+   rwork.get(), &info);
   // On exit, work0 contains the optimal amount of work to be done
   lwork = static_cast<blas::integer>(lapack::real(work0[0]));
 
-  cdouble *work = new cdouble[lwork];
+  auto work = std::make_unique<cdouble[]>(lwork);
   F77NAME(zgeev)
-  (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work, &lwork, rwork,
-   &info);
-  delete[] rwork;
-  delete[] work;
+  (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work.get(), &lwork,
+   rwork.get(), &info);
 #endif
   return output;
 }

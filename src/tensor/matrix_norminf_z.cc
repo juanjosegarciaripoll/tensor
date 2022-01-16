@@ -16,6 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <memory>
 #include <tensor/tensor.h>
 
 namespace tensor {
@@ -28,7 +29,7 @@ double matrix_norminf(const CTensor &m) {
 
   // aux[i] = sum_j abs(A(i,j))
 
-  double *aux = new double[r];
+  auto aux = std::make_unique<double[]>(r);
   CTensor::const_iterator p = m.begin_const();
   for (size_t i = 0; i < r; i++, p++) {
     aux[i] = abs(*p);
@@ -45,7 +46,6 @@ double matrix_norminf(const CTensor &m) {
   for (size_t i = 0; i < r; i++) {
     if (output < aux[i]) output = aux[i];
   }
-  delete[] aux;
 
   return output;
 }
