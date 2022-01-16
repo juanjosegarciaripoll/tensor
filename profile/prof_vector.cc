@@ -73,6 +73,37 @@ void divide_inplace(std::tuple<T1, T2> &args) {
 }
 
 template <class T>
+void vector_const_indexed_read(std::tuple<T, typename T::elt_t> &args) {
+  const T &v = std::get<0>(args);
+  auto n = std::get<1>(args);
+  auto x = n;
+  for (tensor::index i = 0; i < v.size(); ++i) {
+    x += v[i];
+  }
+  force_nonzero(x);
+}
+
+template <class T>
+void vector_indexed_read(std::tuple<T, typename T::elt_t> &args) {
+  T &v = std::get<0>(args);
+  auto n = std::get<1>(args);
+  auto x = n;
+  for (tensor::index i = 0; i < v.size(); ++i) {
+    x += v[i];
+  }
+  force_nonzero(x);
+}
+
+template <class T>
+void vector_indexed_write(std::tuple<T, typename T::elt_t> &args) {
+  T &v = std::get<0>(args);
+  auto n = std::get<1>(args);
+  for (tensor::index i = 0; i < v.size(); ++i) {
+    v.at(i) = n;
+  }
+}
+
+template <class T>
 void warmup(size_t size) {
   for (int i = 0; i < 10; ++i) {
     std::unique_ptr<T> p{new T(size)};
@@ -101,34 +132,39 @@ std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
 
 template <typename T>
 void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
-  std::vector<size_t> sizes{1,    4,     16,    64,     256,     1024,
-                            4096, 16384, 65536, 262144, 1048576, 4194304};
-
   typedef typename T::elt_t elt_t;
 
   {
+    BenchmarkGroup group(name + " access");
+    group.add("const_indexed_read", vector_const_indexed_read<T>,
+              make_vector_and_number<T>);
+    group.add("indexed_read", vector_indexed_read<T>,
+              make_vector_and_number<T>);
+    group.add("indexed_write", vector_indexed_write<T>,
+              make_vector_and_number<T>);
+    set << group;
+  }
+  {
     BenchmarkGroup group(name);
-    group.add("plus", add<T, T>, make_two_vectors<T>, sizes);
-    group.add("minus", subtract<T, T>, make_two_vectors<T>, sizes);
-    group.add("multiplies", multiply<T, T>, make_two_vectors<T>, sizes);
-    group.add("divides", divide<T, T>, make_two_vectors<T>, sizes);
+    group.add("plus", add<T, T>, make_two_vectors<T>);
+    group.add("minus", subtract<T, T>, make_two_vectors<T>);
+    group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
+    group.add("divides", divide<T, T>, make_two_vectors<T>);
     set << group;
   }
   {
     BenchmarkGroup group(name + " with number");
-    group.add("plusN", add<T, elt_t>, make_vector_and_number<T>, sizes);
-    group.add("minusN", subtract<T, elt_t>, make_vector_and_number<T>, sizes);
-    group.add("multipliesN", multiply<T, elt_t>, make_vector_and_number<T>,
-              sizes);
-    group.add("dividesN", divide<T, elt_t>, make_vector_and_number<T>, sizes);
-    group.add("plusNinplace", add_inplace<T, elt_t>, make_vector_and_one<T>,
-              sizes);
+    group.add("plusN", add<T, elt_t>, make_vector_and_number<T>);
+    group.add("minusN", subtract<T, elt_t>, make_vector_and_number<T>);
+    group.add("multipliesN", multiply<T, elt_t>, make_vector_and_number<T>);
+    group.add("dividesN", divide<T, elt_t>, make_vector_and_number<T>);
+    group.add("plusNinplace", add_inplace<T, elt_t>, make_vector_and_one<T>);
     group.add("minusNinplace", subtract_inplace<T, elt_t>,
-              make_vector_and_one<T>, sizes);
+              make_vector_and_one<T>);
     group.add("multipliesNinplace", multiply_inplace<T, elt_t>,
-              make_vector_and_one<T>, sizes);
+              make_vector_and_one<T>);
     group.add("dividesNinplace", divide_inplace<T, elt_t>,
-              make_vector_and_number<T>, sizes);
+              make_vector_and_number<T>);
     set << group;
   }
 }

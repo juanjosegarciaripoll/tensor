@@ -38,6 +38,11 @@ void force(const T &t) {
   __count_executions += t.size() != 0;
 }
 
+template <typename T>
+void force_nonzero(const T &t) {
+  __count_executions += (t != static_cast<T>(0));
+}
+
 struct BenchmarkSet;
 struct BenchmarkGroup;
 struct BenchmarkItem;
@@ -115,7 +120,7 @@ struct BenchmarkGroup {
 
   template <typename run, typename setup>
   BenchmarkGroup &add(const char *name, run f, setup s,
-                      const std::vector<size_t> &sizes) {
+                      const std::vector<size_t> &sizes = {}) {
     items.push_back(BenchmarkItem(name, f, s, sizes));
     return *this;
   }
@@ -125,6 +130,11 @@ struct BenchmarkItem {
   std::string name{};
   std::vector<size_t> sizes{};
   std::vector<double> times{};
+
+  static std::vector<size_t> default_sizes() {
+    return {1,    4,     16,    64,     256,     1024,
+            4096, 16384, 65536, 262144, 1048576, 4194304};
+  };
 
   template <typename Functor>
   static double timeit(Functor f, size_t repeats) {
@@ -153,8 +163,10 @@ struct BenchmarkItem {
 
   template <class args_tuple>
   BenchmarkItem(const std::string &name, void (*f)(args_tuple &),
-                args_tuple (*s)(size_t), const std::vector<size_t> &sizes)
-      : name(name), sizes(sizes), times(sizes.size()) {
+                args_tuple (*s)(size_t), const std::vector<size_t> &asizes = {})
+      : name(name),
+        sizes(asizes.size() ? asizes : default_sizes()),
+        times(sizes.size()) {
     for (size_t i = 0; i < sizes.size(); i++) {
       args_tuple args = s(sizes[i]);
       times[i] = autorange([&]() { f(args); });
