@@ -137,7 +137,7 @@ void StepRange::reset() { ndx_ = start_; }
 IndexRange::IndexRange(const Indices &i) : Range(), indices_(i), counter_(0) {}
 
 index IndexRange::pop() {
-  if (counter_ >= indices_.size()) return nomore();
+  if (counter_ >= static_cast<index>(indices_.size())) return nomore();
   return indices_[counter_++];
 }
 
@@ -198,7 +198,7 @@ void ProductRange::set_factor(index factor) {
   r2_->set_factor(factor * r1_->get_limit());
 }
 
-void ProductRange::set_limit(index limit) { assert(0); }
+void ProductRange::set_limit(index) { assert(0); }
 
 index ProductRange::size() const { return r1_->size() * r2_->size(); }
 
