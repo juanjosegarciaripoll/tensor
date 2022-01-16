@@ -151,7 +151,7 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
     }
   }
   if (do_conj) {
-    for (index i = output.size(); i; i--, pC++) *pC = tensor::conj(*pC);
+    for (index j = output.size(); j; j--, pC++) *pC = tensor::conj(*pC);
   }
 }
 
