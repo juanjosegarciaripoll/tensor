@@ -57,7 +57,7 @@ const CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
   cdouble *a = tensor_pointer(aux);
   blas::integer n = A.rows();
 
-  if ((size_t)n != A.columns()) {
+  if (n != A.columns()) {
     std::cerr << "Routine eig() can only compute eigenvalues of square "
                  "matrices, and you\n"
               << "have passed a matrix that is " << A.rows() << " by "

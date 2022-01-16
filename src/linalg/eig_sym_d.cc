@@ -46,7 +46,7 @@ RTensor eig_sym(const RTensor &A, RTensor *V) {
   assert(A.rows() == A.columns());
 
   blas::integer n = A.rows();
-  if ((size_t)n != A.columns()) {
+  if (n != A.columns()) {
     std::cerr << "Routine eig_sym() can only compute eigenvalues of square "
                  "matrices, and you\n"
               << "have passed a matrix that is " << A.rows() << " by "

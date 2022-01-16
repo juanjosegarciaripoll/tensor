@@ -56,7 +56,7 @@ const CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   blas::integer n = A.rows();
   std::unique_ptr<RTensor> realL, realR;
 
-  if ((size_t)n != A.columns()) {
+  if (n != A.columns()) {
     std::cerr << "Routine eig() can only compute eigenvalues of square "
                  "matrices, and you\n"
               << "have passed a matrix that is " << A.rows() << " by "

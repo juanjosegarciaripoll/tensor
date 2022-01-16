@@ -48,7 +48,7 @@ RTensor eig_sym(const CTensor &A, CTensor *V) {
   //if (accurate_svd)
   //  return block_eig_sym(A, V);
   blas::integer n = A.rows();
-  if ((size_t)n != A.columns()) {
+  if (n != A.columns()) {
     std::cerr << "Routine eig() can only compute eigenvalues of square "
                  "matrices, and you\n"
               << "have passed a matrix that is " << A.rows() << " by "

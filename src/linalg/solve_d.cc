@@ -43,7 +43,7 @@ const RTensor solve(const RTensor &A, const RTensor &B) {
   blas::integer nrhs;
 
   // Currently, we only solve square systems
-  if ((size_t)n != A.columns()) {
+  if (n != A.columns()) {
     std::cerr
         << "Routine solve() can only operate on square systems of equations, "
            "i.e\n"
