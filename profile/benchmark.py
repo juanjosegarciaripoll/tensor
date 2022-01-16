@@ -1,8 +1,9 @@
 from dataclasses import dataclass
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional, Tuple, List
 import json
 import time
 import gc
+import warnings
 import numpy as np
 
 
@@ -88,11 +89,14 @@ class BenchmarkGroup:
             name=name, items=[BenchmarkItem.run(*item) for item in items]
         )
 
-    def find_item(self, name: str):
+    def find_item(self, name: str, error: bool = False):
         for it in self.items:
             if it.name == name:
                 return it
-        raise Exception(f"Item {name} missing from group {self.name}")
+        message = f"Item {name} missing from group {self.name}"
+        if error:
+            raise Exception(message)
+        return None
 
     def tojson(self):
         return {
@@ -126,11 +130,14 @@ class BenchmarkSet:
             "groups": [item.tojson() for item in self.groups],
         }
 
-    def find_group(self, name: str):
+    def find_group(self, name: str, error: bool = False):
         for g in self.groups:
             if g.name == name:
                 return g
-        raise Exception(f"Group {name} missing from benchmark {self.name}")
+        message = f"Group {name} missing from benchmark {self.name}"
+        if error:
+            raise Exception(message)
+        return None
 
     @classmethod
     def fromjson(cls, data) -> "BenchmarkSet":
@@ -145,6 +152,17 @@ class BenchmarkSet:
         with open(filename, "r") as f:
             return BenchmarkSet.fromjson(json.load(f))
 
+    @staticmethod
+    def find_all_pairs(benchmarks: List["BenchmarkSet"]) -> List[Tuple[str, str]]:
+        output = set()
+        for b in benchmarks:
+            for g in b.groups:
+                for i in g.items:
+                    output.add((g.name, i.name))
+        output = list(output)
+        output.sort(key=lambda p: ".".join(p))
+        return output
+
 
 @dataclass
 class BenchmarkItemAggregate:
@@ -156,10 +174,23 @@ class BenchmarkItemAggregate:
     def __init__(self, benchmarks: list[BenchmarkSet], group_name: str, item_name: str):
         if not benchmarks:
             return
-        items = [set.find_group(group_name).find_item(item_name) for set in benchmarks]
-        self.columns = [set.name for set in benchmarks]
+        items = []
+        valid = []
+        for set in benchmarks:
+            item = None
+            group = set.find_group(group_name, None)
+            if group:
+                item = group.find_item(item_name, None)
+            if item:
+                items.append(item)
+                valid.append(set)
+            else:
+                warnings.warn(
+                    f"Benchmark set {set.name} lacks group {group_name} or item {item_name}"
+                )
+        self.columns = [b.name for b in valid]
         self.sizes = items[0].sizes
-        for n, set in enumerate(benchmarks):
+        for n, set in enumerate(valid):
             if not np.all(items[n].sizes == self.sizes):
                 raise Exception(
                     f"Benchmark set {set.name} has differring sizes for group {group_name} and item {item_name}"

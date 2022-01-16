@@ -65,20 +65,19 @@ def html_report(filename: str, benchmarks: list[BenchmarkSet], browse: bool = Tr
         for b in benchmarks:
             f.write(f"<li>{b.name} - {b.environment}</li>")
         f.write("</ul>")
-        for group in benchmarks[0].groups:
-            for item in group.items:
-                agg = BenchmarkItemAggregate(benchmarks, group.name, item.name)
-                f.write(f"<h2>Benchmark {group.name}.{item.name}</h2>\n")
+        for group_name, item_name in BenchmarkSet.find_all_pairs(benchmarks):
+            agg = BenchmarkItemAggregate(benchmarks, group_name, item_name)
+            f.write(f"<h2>Benchmark {group_name}.{item_name}</h2>\n")
 
-                imagefile = f"{imagedir}/figure-{n}.svg"
-                imageuri = f"{os.path.basename(filename[:-5])}/figure-{n}.svg"
-                fig = plot_aggregate(
-                    agg, doprint=(group.name == "RTensor" and item.name == "plus")
-                )
-                fig.savefig(imagefile)
-                plt.close(fig)
-                f.write(f'<img src="{imageuri}">')
-                n = n + 1
+            imagefile = f"{imagedir}/figure-{n}.svg"
+            imageuri = f"{os.path.basename(filename[:-5])}/figure-{n}.svg"
+            fig = plot_aggregate(
+                agg, doprint=(group_name == "RTensor" and item_name == "plus")
+            )
+            fig.savefig(imagefile)
+            plt.close(fig)
+            f.write(f'<img src="{imageuri}">')
+            n = n + 1
         f.write(HTML_REPORT_FOOTER)
     if browse:
         filename = os.path.abspath(filename)
