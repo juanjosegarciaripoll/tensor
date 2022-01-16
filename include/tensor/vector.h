@@ -47,19 +47,11 @@ class Vector {
 
   /* Copy constructor and copy operator */
   Vector(const Vector<elt_t> &v) = default;
-  Vector &operator=(const Vector<elt_t> &v) {
-    size_ = v.size_;
-    data_ = v.data_;
-    return *this;
-  }
+  Vector &operator=(const Vector<elt_t> &v) = default;
 
   /* Move semantics. */
   Vector(Vector<elt_t> &&v) = default;
-  Vector &operator=(Vector<elt_t> &&v) {
-    std::swap(size_, v.size_);
-    std::swap(data_, v.data_);
-    return *this;
-  }
+  Vector &operator=(Vector<elt_t> &&v) = default;
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */

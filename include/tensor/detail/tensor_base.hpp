@@ -24,6 +24,7 @@
 #ifndef TENSOR_DETAIL_TENSOR_BASE_HPP
 #define TENSOR_DETAIL_TENSOR_BASE_HPP
 
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <tensor/rand.h>
@@ -47,9 +48,6 @@ Tensor<elt_t>::Tensor(const Indices &new_dims, const Tensor<elt_t> &other)
     : dims_(new_dims), data_(other.data_) {
   assert(dims_.total_size() == size());
 }
-
-template <typename elt_t>
-Tensor<elt_t>::~Tensor() {}
 
 //
 // Integer dimensions
@@ -106,19 +104,8 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
 }
 
 template <typename elt_t>
-Tensor<elt_t>::Tensor(const Tensor<elt_t> &other)
-    : dims_(other.dims_), data_(other.data_) {}
-
-template <typename elt_t>
 Tensor<elt_t>::Tensor(const Vector<elt_t> &data) : dims_(1), data_(data) {
   dims_.at(0) = data.size();
-}
-
-template <typename elt_t>
-const Tensor<elt_t> &Tensor<elt_t>::operator=(const Tensor<elt_t> &other) {
-  data_ = other.data_;
-  dims_ = other.dims_;
-  return *this;
 }
 
 //

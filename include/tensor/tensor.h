@@ -71,11 +71,11 @@ class Tensor {
     std::copy(data.begin(), data.end(), begin());
   }
 
-  /**Destruct a Tensor.*/
-  ~Tensor();
-
   /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
-  Tensor(const Tensor &other);
+  Tensor(const Tensor &other) = default;
+
+  /**Optimized move constructor. */
+  Tensor(Tensor &&other) = default;
 
   /**Implicit coercion. */
   template <typename e2>
@@ -111,7 +111,10 @@ class Tensor {
   operator Vector<elt_t>() const { return data_; }
 
   /**Assignment operator.*/
-  const Tensor &operator=(const Tensor<elt_t> &other);
+  Tensor &operator=(const Tensor<elt_t> &other) = default;
+
+  /**Assignment move operator.*/
+  Tensor &operator=(Tensor<elt_t> &&other) = default;
 
   /**Returns total number of elements in Tensor.*/
   index size() const { return data_.size(); }
