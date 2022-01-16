@@ -91,7 +91,7 @@ def main(argv: list[str]):
     else:
         root = argv[1]
     if len(argv) < 3:
-        html_file = "./profile/report.html"
+        html_file = root + "/report.html"
     else:
         html_file = argv[2]
     files = glob.glob(root + "/*.json")
