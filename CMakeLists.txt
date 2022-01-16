@@ -16,9 +16,9 @@ project(tensor
   HOMEPAGE_URL https://github.com/juanjosegarciaripoll/tensor)
 
 # specify the C++ standard
-# GoogleTest requiers C++11 or better
-set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_STANDARD_REQUIRED True)
+# GoogleTest requiers C++14 or better
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Used modules
 include(CheckIncludeFile)
