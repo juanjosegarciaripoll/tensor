@@ -21,7 +21,9 @@
 #ifndef TENSOR_VECTOR_H
 #define TENSOR_VECTOR_H
 
-#include <tensor/refcount.h>
+#include <memory>
+#include <cstring>
+#include <tensor/numbers.h>
 
 namespace tensor {
 
@@ -38,41 +40,59 @@ class Vector {
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
-  Vector() : data_() {}
+  Vector() : size_{0}, data_{} {}
 
-  explicit Vector(size_t size) : data_(size) {}
+  explicit Vector(size_t size)
+      : size_{size}, data_(new elt_t[size], std::default_delete<elt_t[]>()) {}
 
   /* Copy constructor and copy operator */
-  Vector(const Vector<elt_t> &v) : data_(v.data_) {}
+  Vector(const Vector<elt_t> &v) = default;
   Vector &operator=(const Vector<elt_t> &v) {
+    size_ = v.size_;
     data_ = v.data_;
+    return *this;
+  }
+
+  /* Move semantics. */
+  Vector(Vector<elt_t> &&v) = default;
+  Vector &operator=(Vector<elt_t> &&v) {
+    std::swap(size_, v.size_);
+    std::swap(data_, v.data_);
     return *this;
   }
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */
-  Vector(size_t size, elt_t *data) : data_(data, size, false) {}
+  //Vector(size_t size, elt_t *data) : size_{size}, data_{data} {}
 
-  size_t size() const { return data_.size(); }
-  void resize(size_t new_size) { data_.reallocate(new_size); }
+  constexpr size_t size() const { return size_; }
 
-  const elt_t &operator[](size_t pos) const {
-    return *(data_.begin_const() + pos);
-  }
-  elt_t &at(size_t pos) { return *(data_.begin() + pos); }
+  const elt_t &operator[](size_t pos) const { return *(begin() + pos); }
+  elt_t &at(size_t pos) { return *(begin() + pos); }
 
-  iterator begin() { return data_.begin(); }
-  const_iterator begin() const { return data_.begin_const(); }
-  const_iterator begin_const() const { return data_.begin_const(); }
-  const_iterator end_const() const { return data_.end_const(); }
-  const_iterator end() const { return data_.end_const(); }
-  iterator end() { return data_.end(); }
+  iterator begin() { return appropriate(); }
+  const_iterator begin() const { return data_.get(); }
+  const_iterator begin_const() const { return data_.get(); }
+  const_iterator end_const() const { return data_.get() + size_; }
+  const_iterator end() const { return data_.get() + size_; }
+  iterator end() { return begin() + size_; }
 
   // Only for testing purposes
-  size_t ref_count() const { return data_.ref_count(); }
+  size_t ref_count() const { return data_.use_count(); }
 
  private:
-  RefPointer<elt_t> data_;
+  size_t size_;
+  std::shared_ptr<elt_t> data_;
+
+  elt_t *appropriate() {
+    if (data_.use_count() > 1) {
+      std::shared_ptr<elt_t> tmp(new elt_t[size_],
+                                 std::default_delete<elt_t[]>());
+      memcpy(tmp.get(), data_.get(), size_ * sizeof(elt_t));
+      std::swap(data_, tmp);
+    }
+    return data_.get();
+  }
 };
 
 typedef Vector<double> RVector;
