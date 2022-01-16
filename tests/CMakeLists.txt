@@ -53,7 +53,7 @@ target_include_directories(test_rand
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
 )
-package_add_test(test_refcount test_refcount.cc)
+#package_add_test(test_refcount test_refcount.cc)
 package_add_test(test_sdf test_sdf.cc)
 package_add_test(test_sparse_base test_sparse_base.cc)
 package_add_test(test_sparse_indices test_sparse_indices.cc)
@@ -70,6 +70,7 @@ package_add_test(test_tensor_scale test_tensor_scale.cc)
 package_add_test(test_tensor_take_diag test_tensor_take_diag.cc)
 package_add_test(test_tensor_trace test_tensor_trace.cc)
 package_add_test(test_tensor_unop test_tensor_unop.cc)
+package_add_test(test_vector test_vector.cc)
 package_add_test(test_view_read test_view_read.cc)
 package_add_test(test_view_errors test_view_errors.cc)
 package_add_test(test_view_set test_view_set.cc)
