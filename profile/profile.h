@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 #include <array>
-#include <tuple>
 #include <functional>
 #include <tensor/tools.h>
 #include <tensor/config.h>
@@ -46,6 +45,50 @@ void force_nonzero(const T &t) {
 struct BenchmarkSet;
 struct BenchmarkGroup;
 struct BenchmarkItem;
+
+std::string tensor_acronym() {
+  std::string compiler =
+#if defined(_MSC_VER)
+      "MSVC-";
+#elif defined(__GNUC__)
+      "GCC-";
+#elif defined(__clang__)
+      "Clang-";
+#else
+      "";
+#endif
+  std::string platform =
+#if defined(_WIN64)
+      "W64-";
+#elif defined(_WIN32)
+      "W32-";
+#elif defined(__linux__)
+      "Linux-";
+#elif defined(__APPLE__)
+      "Darwin-";
+#else
+          "";
+#endif
+  std::string blas_library =
+#if defined(TENSOR_USE_ATLAS)
+      "Atlas";
+#elif defined(TENSOR_USE_OPENBLAS)
+      "OpenBLAS";
+#elif defined(TENSOR_USE_VECLIB)
+      "Veclib";
+#elif defined(TENSOR_USE_MKL)
+      "MKL";
+#elif defined(TENSOR_USE_ACML)
+      "ACML";
+#elif defined(TENSOR_USE_ESSL)
+              "ESSL";
+#elif defined(TENSOR_USE_CBLAPACK)
+              "CBLAPACK";
+#else
+              "BLAS";
+#endif
+  return std::string("tensor ") + compiler + platform + blas_library;
+}
 
 std::string tensor_environment() {
   std::string compiler =
@@ -86,11 +129,11 @@ std::string tensor_environment() {
 #else
 #error "Unknown BLAS library"
 #endif
-  return compiler + "/" + platform + "/" + blas_library;
+  return compiler + ", " + platform + ", " + blas_library;
 }
 
 struct BenchmarkSet {
-  std::string name{};
+  std::string name = tensor_acronym();
   std::string environment = tensor_environment();
   std::vector<BenchmarkGroup> groups{};
 

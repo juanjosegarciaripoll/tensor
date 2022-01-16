@@ -18,14 +18,12 @@
 */
 
 #include <tensor/tensor.h>
-#include <functional>
 #include <iostream>
 #include <fstream>
 #include <tuple>
 #include <iomanip>
 #include <chrono>
-#include <sstream>
-#include <memory>
+#include <ctime>
 
 #include "profile.h"
 
@@ -174,7 +172,7 @@ void run_all(std::ostream &out, const std::string &version = "") {
   // VECTOR - VECTOR OPERATIONS
   //
 
-  std::string name = "tensor library";
+  std::string name = tensor_acronym();
   if (version.size()) {
     name = name + " " + version;
   }
