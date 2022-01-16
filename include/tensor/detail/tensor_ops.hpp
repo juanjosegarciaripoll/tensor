@@ -37,7 +37,7 @@ template <typename t>
 Tensor<t> operator-(const Tensor<t> &a) {
   Tensor<t> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [](const t &a) { return -a; });
+                 [](const t &x) { return -x; });
   return output;
 }
 
@@ -56,7 +56,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator+(const Tensor<t1> &a,
   assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 [](const t1 &a, const t2 &b) { return a + b; });
+                 [](const t1 &x, const t2 &y) { return x + y; });
   return output;
 }
 
@@ -66,7 +66,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator-(const Tensor<t1> &a,
   assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 [](const t1 &a, const t2 &b) { return a - b; });
+                 [](const t1 &x, const t2 &y) { return x - y; });
   return output;
 }
 
@@ -76,7 +76,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator*(const Tensor<t1> &a,
   assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 [](const t1 &a, const t2 &b) { return a * b; });
+                 [](const t1 &x, const t2 &y) { return x * y; });
   return output;
 }
 
@@ -86,7 +86,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator/(const Tensor<t1> &a,
   assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 [](const t1 &a, const t2 &b) { return a / b; });
+                 [](const t1 &x, const t2 &y) { return x / y; });
   return output;
 }
 
@@ -98,7 +98,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator+(const Tensor<t1> &a,
                                                           const t2 &b) {
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](const t1 &a) { return a + b; });
+                 [&](const t1 &x) { return x + b; });
   return output;
 }
 template <typename t1, typename t2>
@@ -106,7 +106,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator-(const Tensor<t1> &a,
                                                           const t2 &b) {
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](const t1 &a) { return a - b; });
+                 [&](const t1 &x) { return x - b; });
   return output;
 }
 template <typename t1, typename t2>
@@ -114,7 +114,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator*(const Tensor<t1> &a,
                                                           const t2 &b) {
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](const t1 &a) { return a * b; });
+                 [&](const t1 &x) { return x * b; });
   return output;
 }
 template <typename t1, typename t2>
@@ -122,7 +122,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator/(const Tensor<t1> &a,
                                                           const t2 &b) {
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](const t1 &a) { return a / b; });
+                 [&](const t1 &x) { return x / b; });
   return output;
 }
 
@@ -134,7 +134,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator+(const t1 &a,
                                                           const Tensor<t2> &b) {
   Tensor<typename std::common_type<t1, t2>::type> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](const t2 &b) { return a + b; });
+                 [&](const t2 &x) { return a + x; });
   return output;
 }
 template <typename t1, typename t2>
@@ -142,7 +142,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator-(const t1 &a,
                                                           const Tensor<t2> &b) {
   Tensor<typename std::common_type<t1, t2>::type> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](const t2 &b) { return a - b; });
+                 [&](const t2 &x) { return a - x; });
   return output;
 }
 template <typename t1, typename t2>
@@ -150,7 +150,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator*(const t1 &a,
                                                           const Tensor<t2> &b) {
   Tensor<typename std::common_type<t1, t2>::type> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](const t2 &b) { return a * b; });
+                 [&](const t2 &x) { return a * x; });
   return output;
 }
 template <typename t1, typename t2>
@@ -158,7 +158,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator/(const t1 &a,
                                                           const Tensor<t2> &b) {
   Tensor<typename std::common_type<t1, t2>::type> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](const t2 &b) { return a / b; });
+                 [&](const t2 &x) { return a / x; });
   return output;
 }
 
@@ -169,7 +169,7 @@ template <typename t1, typename t2>
 Tensor<t1> &operator+=(Tensor<t1> &a, const Tensor<t2> &b) {
   assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   std::transform(a.begin(), a.end(), b.begin(), a.begin(),
-                 [](t1 &a, const t2 &b) { return a + b; });
+                 [](t1 &x, const t2 &y) { return x + y; });
   return a;
 }
 
@@ -177,7 +177,7 @@ template <typename t1, typename t2>
 Tensor<t1> &operator-=(Tensor<t1> &a, const Tensor<t2> &b) {
   assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   std::transform(a.begin(), a.end(), b.begin(), a.begin(),
-                 [](t1 &a, const t2 &b) { return a - b; });
+                 [](t1 &x, const t2 &y) { return x - y; });
   return a;
 }
 
@@ -185,7 +185,7 @@ template <typename t1, typename t2>
 Tensor<t1> &operator*=(Tensor<t1> &a, const Tensor<t2> &b) {
   assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   std::transform(a.begin(), a.end(), b.begin(), a.begin(),
-                 [](t1 &a, const t2 &b) { return a * b; });
+                 [](t1 &x, const t2 &y) { return x * y; });
   return a;
 }
 
@@ -193,7 +193,7 @@ template <typename t1, typename t2>
 Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t2> &b) {
   assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   std::transform(a.begin(), a.end(), b.begin(), a.begin(),
-                 [](t1 &a, const t2 &b) { return a / b; });
+                 [](t1 &x, const t2 &y) { return x / y; });
   return a;
 }
 

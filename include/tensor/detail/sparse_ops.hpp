@@ -37,11 +37,8 @@ namespace tensor {
 //
 template <typename T>
 const Sparse<T> operator-(const Sparse<T> &s) {
-  Tensor<T> data(s.priv_data().size());
-  std::transform(s.priv_data().begin(), s.priv_data().end(), data.begin(),
-                 [](const T &a) {
-    return -a; }]);
-  return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(), data);
+  return Sparse<T>(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                   -s.priv_data());
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -51,21 +48,15 @@ const Sparse<T> operator-(const Sparse<T> &s) {
 template <typename T1, typename T2>
 const Sparse<typename std::common_type<T1, T2>::type> operator*(
     const Sparse<T1> &s, T2 b) {
-  typedef typename std::common_type<T1, T2>::type T3;
-  Tensor<T3> data(s.priv_data().size());
-  std::transform(s.priv_data().begin(), s.priv_data().end(), data.begin(),
-                 [&](const T1 &a) { return a * b; });
-  return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(), data);
+  return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                    s.priv_data() * b);
 }
 
 template <typename T1, typename T2>
 const Sparse<typename std::common_type<T1, T2>::type> operator/(
     const Sparse<T1> &s, T2 b) {
-  typedef typename std::common_type<T1, T2>::type T3;
-  Tensor<T3> data(s.priv_data().size());
-  std::transform(s.priv_data().begin(), s.priv_data().end(), data.begin(),
-                 [&](const T1 &a) { return a / b; });
-  return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(), data);
+  return Sparse<T3>(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                    s.priv_data() / a);
 }
 
 template <typename T1, typename T2>
