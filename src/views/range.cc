@@ -57,7 +57,6 @@ index FullRange::pop() {
 }
 
 void FullRange::set_factor(index factor) {
-  index old = get_factor();
   counter_ = 0;
   counter_end_ = get_limit() * factor;
   Range::set_factor(factor);
