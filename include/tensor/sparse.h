@@ -146,13 +146,13 @@ const CSparse adjoint(const CSparse &s);
 const CSparse transpose(const CSparse &s);
 
 /* Matrix multiplication between tensor and sparse matrix. */
-const RTensor mmult(const RTensor &m1, const RSparse &m2);
+RTensor mmult(const RTensor &m1, const RSparse &m2);
 /* Matrix multiplication between tensor and sparse matrix. */
-const CTensor mmult(const CTensor &m1, const CSparse &m2);
+CTensor mmult(const CTensor &m1, const CSparse &m2);
 /* Matrix multiplication between tensor and sparse matrix. */
-const RTensor mmult(const RSparse &m1, const RTensor &m2);
+RTensor mmult(const RSparse &m1, const RTensor &m2);
 /* Matrix multiplication between tensor and sparse matrix. */
-const CTensor mmult(const CSparse &m1, const CTensor &m2);
+CTensor mmult(const CSparse &m1, const CTensor &m2);
 
 /* Real part of a sparse matrix.*/
 inline const RSparse &real(const RSparse &A) { return A; }

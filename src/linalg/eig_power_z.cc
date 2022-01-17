@@ -31,8 +31,8 @@ namespace linalg {
 tensor::cdouble eig_power_right(const CTensor &O, CTensor *vector, size_t iter,
                                 double tol) {
   assert(O.rows() == O.columns());
-  return do_eig_power(new tensor::MatrixMap<CTensor>(O), O.columns(), vector,
-                      iter, tol);
+  return eig_power([&O](const CTensor &x) -> CTensor { return mmult(O, x); },
+                   O.columns(), vector, iter, tol);
 }
 
 /**Left eigenvalue and eigenvector with the largest absolute
@@ -45,8 +45,9 @@ tensor::cdouble eig_power_right(const CTensor &O, CTensor *vector, size_t iter,
 tensor::cdouble eig_power_left(const CTensor &O, CTensor *vector, size_t iter,
                                double tol) {
   assert(O.rows() == O.columns());
-  return do_eig_power(new tensor::MatrixMap<CTensor>(O, true), O.columns(),
-                      vector, iter, tol);
+  auto OT = transpose(O);
+  return eig_power([&OT](const CTensor &x) -> CTensor { return mmult(OT, x); },
+                   O.columns(), vector, iter, tol);
 }
 
 }  // namespace linalg

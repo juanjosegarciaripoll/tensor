@@ -29,9 +29,10 @@ namespace linalg {
      using the iterative conjugate gradient method.
      \ingroup Linalg
   */
-const RTensor cgs(const RSparse &A, const RTensor &b, const RTensor *x_start,
-                  int maxiter, double tol) {
-  return do_cgs(new tensor::MatrixMap<RSparse>(A), b, x_start, maxiter, tol);
+RTensor cgs(const RSparse &A, const RTensor &b, const RTensor *x_start,
+            int maxiter, double tol) {
+  return cgs([&](const RTensor &x) { return mmult(A, x); }, b, x_start, maxiter,
+             tol);
 }
 
 }  // namespace linalg

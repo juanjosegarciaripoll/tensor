@@ -33,7 +33,7 @@ using namespace tensor;
      
      \ingroup Linalg
   */
-const CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol) {
+CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol) {
   CTensor U, VT;
   RTensor s = svd(A, &U, &VT, SVD_ECONOMIC);
   if (tol <= 0) {

@@ -448,10 +448,10 @@ const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
 const RTensor transpose(const RTensor &a);
 inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
 
-const RTensor fold(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
-const RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+RTensor fold(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
 const RTensor foldin(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
-const RTensor mmult(const RTensor &a, const RTensor &b);
+RTensor mmult(const RTensor &a, const RTensor &b);
 
 void fold_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b,
                int ndx2);
@@ -583,17 +583,17 @@ const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
 const CTensor transpose(const CTensor &a);
 const CTensor adjoint(const CTensor &a);
 
-const CTensor fold(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
-const CTensor fold(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
-const CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
+CTensor fold(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
+CTensor fold(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
+CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
 
 const CTensor foldc(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 const CTensor foldc(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
 const CTensor foldc(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
 
-const CTensor mmult(const CTensor &a, const CTensor &b);
-const CTensor mmult(const RTensor &a, const CTensor &b);
-const CTensor mmult(const CTensor &a, const RTensor &b);
+CTensor mmult(const CTensor &a, const CTensor &b);
+CTensor mmult(const RTensor &a, const CTensor &b);
+CTensor mmult(const CTensor &a, const RTensor &b);
 
 const RTensor scale(const RTensor &t, int ndx1, const RTensor &v);
 const CTensor scale(const CTensor &t, int ndx1, const CTensor &v);

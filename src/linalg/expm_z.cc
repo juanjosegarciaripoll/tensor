@@ -42,7 +42,7 @@ static double exp2(double n) { return exp(log((double)2.0) * n); }
 
    \ingroup Linalg
 */
-const CTensor expm(const CTensor &Aunorm, unsigned int order) {
+CTensor expm(const CTensor &Aunorm, unsigned int order) {
   assert(Aunorm.rank() == 2);
   assert(Aunorm.columns() == Aunorm.rows());
 

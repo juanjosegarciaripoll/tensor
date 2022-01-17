@@ -21,8 +21,9 @@
 
 namespace tensor {
 
-/** Multiply a tensor with a sparse matrix. mmult(m1,m2) is equivalent to fold(m1,-1,m2,0) even if m1 or m2 are sparse matrices. */
-const Tensor<double> mmult(const Tensor<double> &m1, const Sparse<double> &m2) {
+/** Multiply a tensor with a sparse matrix. mmult(m1,m2) is equivalent to
+ *  fold(m1,-1,m2,0) even if m1 or m2 are sparse matrices. */
+Tensor<double> mmult(const Tensor<double> &m1, const Sparse<double> &m2) {
   return do_mmult(m1, m2);
 }
 

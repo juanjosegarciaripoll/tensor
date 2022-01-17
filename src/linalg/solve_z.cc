@@ -30,7 +30,7 @@ using namespace lapack;
 
      \ingroup Linalg
   */
-const CTensor solve(const CTensor &A, const CTensor &B) {
+CTensor solve(const CTensor &A, const CTensor &B) {
   blas::integer n = A.rows();
   blas::integer lda = n;
   blas::integer ldb = B.dimension(0);

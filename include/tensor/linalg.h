@@ -21,9 +21,9 @@
 #ifndef TENSOR_LINALG_H
 #define TENSOR_LINALG_H
 
+#include <functional>
 #include <tensor/tensor.h>
 #include <tensor/sparse.h>
-#include <tensor/map.h>
 
 /*!\addtogroup Linalg*/
 /** Namespace for Linear Algebra functions based on BLAS, LAPACK, Lanczos and related algorithms. */
@@ -31,48 +31,42 @@ namespace linalg {
 
 using tensor::CSparse;
 using tensor::CTensor;
-using tensor::Map;
 using tensor::RSparse;
 using tensor::RTensor;
 
-const RTensor solve(const RTensor &A, const RTensor &B);
-const CTensor solve(const CTensor &A, const CTensor &B);
+/** Template for functions that transform tensors into tensors linearly. */
+template <typename Tensor>
+using LinearMap = std::function<Tensor(const Tensor &)>;
 
-const RTensor solve_with_svd(const RTensor &A, const RTensor &B,
-                             double tol = 0.0);
-const CTensor solve_with_svd(const CTensor &A, const CTensor &B,
-                             double tol = 0.0);
+RTensor solve(const RTensor &A, const RTensor &B);
+CTensor solve(const CTensor &A, const CTensor &B);
 
-const RTensor do_cgs(const Map<RTensor> *A, const RTensor &b,
-                     const RTensor *x_start = 0, int maxiter = 0,
-                     double tol = 0);
-const CTensor do_cgs(const Map<CTensor> *A, const CTensor &b,
-                     const CTensor *x_start = 0, int maxiter = 0,
-                     double tol = 0);
+RTensor solve_with_svd(const RTensor &A, const RTensor &B, double tol = 0.0);
+CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol = 0.0);
 
-/**Solve a real linear system of equations by the conjugate gradient method.*/
-const RTensor cgs(const RTensor &A, const RTensor &b,
-                  const RTensor *x_start = 0, int maxiter = 0, double tol = 0);
-/**Solve a real linear system of equations by the conjugate gradient method.*/
-const CTensor cgs(const CTensor &A, const CTensor &b,
-                  const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
+/**Solve a real linear system of equations by the conjugate gradient method. 'f'
+ * is a linear map between tensors, acting similar to multiplication by a matrix.*/
+RTensor cgs(const LinearMap<RTensor> &f, const RTensor &b,
+            const RTensor *x_start = 0, int maxiter = 0, double tol = 0);
+
+/**Solve a real linear system of equations by the conjugate gradient method.  'f'
+ * is a linear map between tensors, acting similar to multiplication by a matrix.*/
+CTensor cgs(const LinearMap<CTensor> &f, const CTensor &b,
+            const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
 
 /**Solve a real linear system of equations by the conjugate gradient method.*/
-const RTensor cgs(const RSparse &A, const RTensor &b,
-                  const RTensor *x_start = 0, int maxiter = 0, double tol = 0);
+RTensor cgs(const RTensor &A, const RTensor &b, const RTensor *x_start = 0,
+            int maxiter = 0, double tol = 0);
 /**Solve a real linear system of equations by the conjugate gradient method.*/
-const CTensor cgs(const RSparse &A, const CTensor &b,
-                  const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
+CTensor cgs(const CTensor &A, const CTensor &b, const CTensor *x_start = 0,
+            int maxiter = 0, double tol = 0);
 
-/**Solve a real linear system of equations by the conjugate gradient
-     method. 'f' is a function that takes in a Tensor and returns also a Tensor
-     of the same class and dimension. */
-template <class func, class Tensor>
-const Tensor cgs(const func &f, const Tensor &b, const Tensor *x_start = 0,
-                 int maxiter = 0, double tol = 0) {
-  return do_cgs(new tensor::FunctionMap<func, Tensor>(f), b, x_start, maxiter,
-                tol);
-}
+/**Solve a real linear system of equations by the conjugate gradient method.*/
+RTensor cgs(const RSparse &A, const RTensor &b, const RTensor *x_start = 0,
+            int maxiter = 0, double tol = 0);
+/**Solve a real linear system of equations by the conjugate gradient method.*/
+CTensor cgs(const RSparse &A, const CTensor &b, const CTensor *x_start = 0,
+            int maxiter = 0, double tol = 0);
 
 extern bool accurate_svd;
 
@@ -86,10 +80,10 @@ RTensor block_svd(CTensor A, CTensor *pU = 0, CTensor *pVT = 0,
                   bool economic = 0);
 
 /**Eigenvalue decomposition of a real matrix.*/
-const CTensor eig(const RTensor &A, CTensor *R = 0, CTensor *L = 0);
+CTensor eig(const RTensor &A, CTensor *R = 0, CTensor *L = 0);
 
 /**Eigenvalue decomposition of a complex matrix.*/
-const CTensor eig(const CTensor &A, CTensor *R = 0, CTensor *L = 0);
+CTensor eig(const CTensor &A, CTensor *R = 0, CTensor *L = 0);
 
 /**Compute the right eigenvector with the largest absolute eigenvalue using the
      power method.*/
@@ -124,27 +118,23 @@ tensor::cdouble eig_power_right(const CSparse &A, CTensor *vector,
 tensor::cdouble eig_power_left(const CSparse &A, CTensor *vector,
                                size_t iter = 0, double tol = 1e-11);
 
-double do_eig_power(const Map<RTensor> *A, size_t dim, RTensor *vector,
-                    size_t iter = 0, double tol = 1e-11);
-tensor::cdouble do_eig_power(const Map<CTensor> *A, size_t dim, CTensor *vector,
-                             size_t iter = 0, double tol = 1e-11);
-
-/**Compute the eigenvector with the largest absolute eigenvalue using the
+/**Compute the right eigenvector with the largest absolute eigenvalue using the
      power method. 'f' is a function that takes in a Tensor and returns also a
      Tensor of the same class and dimension. */
-template <class func, class Tensor>
-const typename Tensor::elt_t eig_power(const func &f, size_t dim,
-                                       Tensor *vector, size_t iter = 0,
-                                       double tol = 1e-11) {
-  return do_eig_power(new tensor::FunctionMap<func, Tensor>(f), dim, vector,
-                      iter, tol);
-}
+double eig_power(const LinearMap<RTensor> &f, size_t dim, RTensor *vector,
+                 size_t iter = 0, double tol = 1e-11);
+
+/**Compute the right eigenvector with the largest absolute eigenvalue using the
+     power method. 'f' is a function that takes in a Tensor and returns also a
+     Tensor of the same class and dimension. */
+tensor::cdouble eig_power(const LinearMap<CTensor> &f, size_t dim,
+                          CTensor *vector, size_t iter = 0, double tol = 1e-11);
 
 RTensor eig_sym(const RTensor &A, RTensor *pR = 0);
 RTensor eig_sym(const CTensor &A, CTensor *pR = 0);
 
-const RTensor expm(const RTensor &A, unsigned int order = 7);
-const CTensor expm(const CTensor &A, unsigned int order = 7);
+RTensor expm(const RTensor &A, unsigned int order = 7);
+CTensor expm(const CTensor &A, unsigned int order = 7);
 
 /**Type of eigenvalues that eigs and Arpack compute.*/
 enum EigType {
@@ -186,10 +176,14 @@ RTensor eigs(const RTensor &A, int eig_type, size_t neig,
 RTensor eigs(const RSparse &A, int eig_type, size_t neig,
              RTensor *vectors = NULL, bool *converged = NULL);
 
-RTensor do_eigs(const Map<RTensor> *A, size_t dim, int eig_type, size_t neig,
-                RTensor *vectors, bool *converged);
-CTensor do_eigs(const Map<CTensor> *A, size_t dim, int eig_type, size_t neig,
-                CTensor *vectors, bool *converged);
+/**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
+     matrix. 'f' is a function that takes in a Tensor and returns also a Tensor
+     of the same class and dimension. Because we do not know the dimensions of
+     'f', this has to be provided in 'dim'. 'vectors' is used to output the
+     eigenvectors, but it can also contain a good estimate of them. 'converged'
+     is true when the algorithm finished properly. */
+RTensor eigs(const LinearMap<RTensor> &f, size_t dim, int eig_type, size_t neig,
+             RTensor *vectors = NULL, bool *converged = NULL);
 
 /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
      matrix. 'f' is a function that takes in a Tensor and returns also a Tensor
@@ -197,12 +191,8 @@ CTensor do_eigs(const Map<CTensor> *A, size_t dim, int eig_type, size_t neig,
      'f', this has to be provided in 'dim'. 'vectors' is used to output the
      eigenvectors, but it can also contain a good estimate of them. 'converged'
      is true when the algorithm finished properly. */
-template <class func, class Tensor>
-Tensor eigs(const func &f, size_t dim, int eig_type, size_t neig,
-            Tensor *vectors = NULL, bool *converged = NULL) {
-  return do_eigs(new tensor::FunctionMap<func, Tensor>(f), dim, eig_type, neig,
-                 vectors, converged);
-}
+CTensor eigs(const LinearMap<CTensor> &f, size_t dim, int eig_type, size_t neig,
+             CTensor *vectors = NULL, bool *converged = NULL);
 
 /**Find out a few eigenvalues and eigenvectors of a symmetric real matrix.*/
 RTensor eigs_sym(const RTensor &A, int eig_type, size_t neig,

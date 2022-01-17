@@ -31,8 +31,8 @@ namespace linalg {
 double eig_power_right(const RTensor &O, RTensor *vector, size_t iter,
                        double tol) {
   assert(O.rows() == O.columns());
-  return do_eig_power(new tensor::MatrixMap<RTensor>(O), O.columns(), vector,
-                      iter, tol);
+  return eig_power([&O](const RTensor &x) -> RTensor { return mmult(O, x); },
+                   O.columns(), vector, iter, tol);
 }
 
 /**Left eigenvalue and eigenvector with the largest absolute
@@ -45,8 +45,9 @@ double eig_power_right(const RTensor &O, RTensor *vector, size_t iter,
 double eig_power_left(const RTensor &O, RTensor *vector, size_t iter,
                       double tol) {
   assert(O.rows() == O.columns());
-  return do_eig_power(new tensor::MatrixMap<RTensor>(O, true), O.columns(),
-                      vector, iter, tol);
+  auto OT = transpose(O);
+  return eig_power([&OT](const RTensor &x) -> RTensor { return mmult(OT, x); },
+                   O.columns(), vector, iter, tol);
 }
 
 }  // namespace linalg

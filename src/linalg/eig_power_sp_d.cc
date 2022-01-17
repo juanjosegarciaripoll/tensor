@@ -18,6 +18,7 @@
 */
 
 #include <tensor/linalg.h>
+#include <tensor/sparse.h>
 
 namespace linalg {
 
@@ -31,8 +32,8 @@ namespace linalg {
 double eig_power_right(const RSparse &O, RTensor *vector, size_t iter,
                        double tol) {
   assert(O.rows() == O.columns());
-  return do_eig_power(new tensor::MatrixMap<RSparse>(O), O.columns(), vector,
-                      iter, tol);
+  return eig_power([&O](const RTensor &x) { return mmult(O, x); }, O.columns(),
+                   vector, iter, tol);
 }
 
 /**Left eigenvalue and eigenvector with the largest absolute
@@ -45,8 +46,9 @@ double eig_power_right(const RSparse &O, RTensor *vector, size_t iter,
 double eig_power_left(const RSparse &O, RTensor *vector, size_t iter,
                       double tol) {
   assert(O.rows() == O.columns());
-  return do_eig_power(new tensor::MatrixMap<RSparse>(O, true), O.columns(),
-                      vector, iter, tol);
+  auto OT = transpose(O);
+  return eig_power([&OT](const RTensor &x) { return mmult(OT, x); },
+                   O.columns(), vector, iter, tol);
 }
 
 }  // namespace linalg

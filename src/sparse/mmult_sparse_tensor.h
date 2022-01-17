@@ -75,8 +75,8 @@ static void mult_sp_t(elt_t *dest, const index *row_start, const index *column,
 //
 
 template <typename elt_t>
-static inline const Tensor<elt_t> do_mmult(const Sparse<elt_t> &m1,
-                                           const Tensor<elt_t> &m2) {
+static inline Tensor<elt_t> do_mmult(const Sparse<elt_t> &m1,
+                                     const Tensor<elt_t> &m2) {
   Indices dims(m2.rank());
   index l_len = 1;
   for (int k = 1, N = m2.rank(); k < N; k++) {

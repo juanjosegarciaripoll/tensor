@@ -31,9 +31,9 @@ namespace linalg {
      using the iterative conjugate gradient method.
      \ingroup Linalg
   */
-const CTensor do_cgs(const tensor::Map<CTensor> *A, const CTensor &b,
-                     const CTensor *x_start, int maxiter, double tol) {
-  return solve(A, b, x_start, maxiter, tol);
+CTensor cgs(const LinearMap<CTensor> &f, const CTensor &b,
+            const CTensor *x_start, int maxiter, double tol) {
+  return solve_cgs(f, b, x_start, maxiter, tol);
 }
 
 }  // namespace linalg

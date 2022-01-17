@@ -44,7 +44,7 @@ using namespace lapack;
 
      \ingroup Linalg
   */
-const CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
+CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
   assert(A.rows() > 0);
   assert(A.rank() == 2);
   assert(A.rows() == A.columns());

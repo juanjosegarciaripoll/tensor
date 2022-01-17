@@ -36,7 +36,7 @@ using namespace lapack;
      The solution is computed using the DGESV/ZGESV routines from LAPACK.
      \ingroup Linalg
   */
-const RTensor solve(const RTensor &A, const RTensor &B) {
+RTensor solve(const RTensor &A, const RTensor &B) {
   blas::integer n = A.rows();
   blas::integer lda = n;
   blas::integer ldb = B.dimension(0);

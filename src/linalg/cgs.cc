@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <functional>
 #include <tensor/tensor.h>
 #include <tensor/linalg.h>
 
@@ -24,9 +25,10 @@ namespace linalg {
 
 using namespace tensor;
 
-template <class Map, class Tensor>
-static const Tensor solve(const Map *A, const Tensor &b, const Tensor *x_start,
-                          tensor::index maxiter, double tol) {
+template <class Tensor>
+static Tensor solve_cgs(const LinearMap<Tensor> &A, const Tensor &b,
+                        const Tensor *x_start, tensor::index maxiter,
+                        double tol) {
   typedef typename Tensor::elt_t number;
   if (maxiter == 0) {
     maxiter = b.rows();
@@ -35,12 +37,12 @@ static const Tensor solve(const Map *A, const Tensor &b, const Tensor *x_start,
     tol = 1e-10;
   }
   Tensor x = x_start ? *x_start : (b + 0.05 * Tensor::random(b.dimensions()));
-  Tensor r = b - (*A)(x);
+  Tensor r = b - A(x);
   Tensor p = r;
   number rsold = scprod(r, r);
   if (sqrt(abs(rsold)) > tol) {
     while (maxiter-- >= 0) {
-      Tensor Ap = (*A)(p);
+      Tensor Ap = A(p);
       number beta = scprod(p, Ap);
       if (abs(beta) < 1e-15 * abs(rsold)) {
         // We have hit a zero
@@ -56,7 +58,6 @@ static const Tensor solve(const Map *A, const Tensor &b, const Tensor *x_start,
       rsold = rsnew;
     }
   }
-  delete A;
   return x;
 }
 

@@ -110,11 +110,6 @@ void test_cgs_functor(int n) {
 }
 
 template <class Tensor>
-const Tensor f1(const Tensor &t, const Tensor &A) {
-  return mmult(A, t);
-}
-
-template <class Tensor>
 void test_cgs_functor_1arg(int n) {
   for (int cols = 1; cols < n; cols++) {
     Tensor B =
@@ -124,12 +119,14 @@ void test_cgs_functor_1arg(int n) {
     Tensor y = mmult(A, x);
 
     // If the initial state is a solution, this should be ok
-    Tensor x0 = cgs(with_args(f1<Tensor>, A), y, &x, 0, 2 * EPSILON);
+    Tensor x0 = cgs([&A](const Tensor &x) -> Tensor { return mmult(A, x); }, y,
+                    &x, 0, 2 * EPSILON);
     EXPECT_CEQ(x, x0);
 
     // Otherwise check a randomize initial state
     Tensor x_start = x + Tensor::random(n, cols) * 0.02;
-    x0 = cgs(with_args(f1<Tensor>, A), y, &x_start, 0, 2 * EPSILON);
+    x0 = cgs([&A](const Tensor &x) -> Tensor { return mmult(A, x); }, y,
+             &x_start, 0, 2 * EPSILON);
     EXPECT_CEQ(x, x0);
   }
 }
@@ -148,12 +145,16 @@ void test_cgs_functor_2arg(int n) {
     Tensor y = mmult(Bd, mmult(B, x));
 
     // If the initial state is a solution, this should be ok
-    Tensor x0 = cgs(with_args(f2<Tensor>, Bd, B), y, &x, 0, 2 * EPSILON);
+    Tensor x0 = cgs(
+        [&Bd, &B](const Tensor &x) -> Tensor { return mmult(Bd, mmult(B, x)); },
+        y, &x, 0, 2 * EPSILON);
     EXPECT_CEQ(x, x0);
 
     // Otherwise check a randomize initial state
     Tensor x_start = x + Tensor::random(n, cols) * 0.02;
-    x0 = cgs(with_args(f2<Tensor>, Bd, B), y, &x_start, 0, 2 * EPSILON);
+    x0 = cgs(
+        [&Bd, &B](const Tensor &x) -> Tensor { return mmult(Bd, mmult(B, x)); },
+        y, &x_start, 0, 2 * EPSILON);
     EXPECT_CEQ(x, x0);
   }
 }
