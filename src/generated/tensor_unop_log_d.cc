@@ -22,10 +22,10 @@
 
 namespace tensor {
 
-Tensor<double> log(const Tensor<double> &t) {
-  Tensor<double> output(t.dimensions());
-  Tensor<double>::const_iterator src = t.begin();
-  Tensor<double>::iterator dest = output.begin();
+RTensor log(const RTensor &t) {
+  RTensor output(t.dimensions());
+  RTensor::const_iterator src = t.begin();
+  RTensor::iterator dest = output.begin();
   for (; src != t.end(); src++, dest++) {
     *dest = std::log(*src);
   }

@@ -22,10 +22,10 @@
 
 namespace tensor {
 
-Tensor<double> abs(const Tensor<cdouble> &t) {
-  Tensor<double> output(t.dimensions());
-  Tensor<cdouble>::const_iterator src = t.begin();
-  Tensor<double>::iterator dest = output.begin();
+RTensor abs(const CTensor &t) {
+  RTensor output(t.dimensions());
+  CTensor::const_iterator src = t.begin();
+  RTensor::iterator dest = output.begin();
   for (; src != t.end(); src++, dest++) {
     *dest = std::abs(*src);
   }

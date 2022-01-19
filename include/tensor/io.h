@@ -71,10 +71,10 @@ inline std::ostream &operator<<(std::ostream &s, const MatrixForm<elt_t> &m) {
 }
 
 /**Matrix form representation of a tensor.*/
-const MatrixForm<double> matrix_form(const Tensor<double> &t);
+const MatrixForm<double> matrix_form(const RTensor &t);
 
 /**Matrix form representation of a tensor.*/
-const MatrixForm<cdouble> matrix_form(const Tensor<cdouble> &t);
+const MatrixForm<cdouble> matrix_form(const CTensor &t);
 
 /**Matrix form representation of a tensor.*/
 const MatrixForm<double> matrix_form(const RSparse &t);

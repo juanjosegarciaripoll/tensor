@@ -36,9 +36,8 @@ namespace tensor {
 
      \ingroup Tensors
   */
-Tensor<double> fold(const Tensor<double> &a, int ndx1, const Tensor<double> &b,
-                    int ndx2) {
-  Tensor<double> output;
+RTensor fold(const RTensor &a, int ndx1, const RTensor &b, int ndx2) {
+  RTensor output;
   do_fold<double, false>(output, a, ndx1, b, ndx2);
   return output;
 }
@@ -48,26 +47,24 @@ Tensor<double> fold(const Tensor<double> &a, int ndx1, const Tensor<double> &b,
 
      \ingroup Tensors
   */
-Tensor<double> foldc(const Tensor<double> &a, int ndx1, const Tensor<double> &b,
-                     int ndx2) {
-  Tensor<double> output;
+RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2) {
+  RTensor output;
   do_fold<double, false>(output, a, ndx1, b, ndx2);
   return output;
 }
 
-void fold_into(Tensor<double> &c, const Tensor<double> &a, int ndx1,
-               const Tensor<double> &b, int ndx2) {
+void fold_into(RTensor &c, const RTensor &a, int ndx1, const RTensor &b,
+               int ndx2) {
   do_fold<double, false>(c, a, ndx1, b, ndx2);
 }
 
 /**Matrix multiplication. \c mmult(A,B) is equivalent to \c fold(A,-1,B,0). */
 
-Tensor<double> mmult(const Tensor<double> &m1, const Tensor<double> &m2) {
+RTensor mmult(const RTensor &m1, const RTensor &m2) {
   return fold(m1, -1, m2, 0);
 }
 
-void mmult_into(Tensor<double> &c, const Tensor<double> &m1,
-                const Tensor<double> &m2) {
+void mmult_into(RTensor &c, const RTensor &m1, const RTensor &m2) {
   fold_into(c, m1, -1, m2, 0);
 }
 

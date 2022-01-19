@@ -225,7 +225,8 @@ void test_over_fixed_rank_tensors(unop test, int rank, int max_dimension = 10) {
     Tensor<elt_t> data(it.dimensions());
     // Make all elements different to make accurate comparisons
     elt_t accum = 0;
-    for (tensor::index i = 0; i < data.size(); i++, accum+=1) data.at(i) = accum;
+    for (tensor::index i = 0; i < data.size(); i++, accum += 1)
+      data.at(i) = accum;
     test(data);
   }
 }
@@ -237,13 +238,15 @@ void test_over_fixed_rank_pairs(binop test, int rank, int max_dimension = 6) {
     Tensor<elt_t> data1(it1.dimensions());
     elt_t accum = 0;
     // Make all elements different to make accurate comparisons
-    for (tensor::index i = 0; i < data1.size(); i++, accum+=1) data1.at(i) = accum;
+    for (tensor::index i = 0; i < data1.size(); i++, accum += 1)
+      data1.at(i) = accum;
     for (fixed_rank_iterator it2(rank, max_dimension); !it2.finished();
          it2.next()) {
       Tensor<elt_t> data2(it2.dimensions());
       elt_t accum = 0;
       // Make all elements different to make accurate comparisons
-      for (tensor::index i = 0; i < data2.size(); i++, accum+=1) data2.at(i) = accum;
+      for (tensor::index i = 0; i < data2.size(); i++, accum += 1)
+        data2.at(i) = accum;
       test(data1, data2);
     }
   }
@@ -296,50 +299,50 @@ class DimensionsProducer {
   int operator++() { return counter++; }
 
   Indices operator*() const {
-    Tensor<double> P;
+    RTensor P;
     switch (counter) {
         // 1D Tensor<elt_t>
       case 1:
-        P = Tensor<double>(d(0) * d(1) * d(2) * d(3));
+        P = RTensor(d(0) * d(1) * d(2) * d(3));
         break;
         // 2D Tensor<elt_t>
       case 2:
-        P = Tensor<double>(d(0), d(1) * d(2) * d(3));
+        P = RTensor(d(0), d(1) * d(2) * d(3));
         break;
       case 3:
-        P = Tensor<double>(d(0) * d(1), d(2) * d(3));
+        P = RTensor(d(0) * d(1), d(2) * d(3));
         break;
       case 4:
-        P = Tensor<double>(d(0) * d(1) * d(2), d(3));
+        P = RTensor(d(0) * d(1) * d(2), d(3));
         break;
       case 5:
-        P = Tensor<double>(d(3), d(0) * d(1) * d(2));
+        P = RTensor(d(3), d(0) * d(1) * d(2));
         break;
       case 6:
-        P = Tensor<double>(d(2) * d(3), d(0) * d(1));
+        P = RTensor(d(2) * d(3), d(0) * d(1));
         break;
         // 3D Tensor<elt_t>
       case 7:
-        P = Tensor<double>(d(0), d(1), d(2) * d(3));
+        P = RTensor(d(0), d(1), d(2) * d(3));
         break;
       case 8:
-        P = Tensor<double>(d(0) * d(1), d(2), d(3));
+        P = RTensor(d(0) * d(1), d(2), d(3));
         break;
       case 9:
-        P = Tensor<double>(d(3) * d(2), d(0), d(1));
+        P = RTensor(d(3) * d(2), d(0), d(1));
         break;
         // 4D Tensor<elt_t>
       case 10:
-        P = Tensor<double>(d(0), d(1), d(2), d(3));
+        P = RTensor(d(0), d(1), d(2), d(3));
         break;
       case 11:
-        P = Tensor<double>(d(3), d(1), d(2), d(0));
+        P = RTensor(d(3), d(1), d(2), d(0));
         break;
       case 12:
-        P = Tensor<double>(d(1), d(0), d(3), d(2));
+        P = RTensor(d(1), d(0), d(3), d(2));
         break;
       case 13:
-        P = Tensor<double>(d(2), d(0), d(3), d(1));
+        P = RTensor(d(2), d(0), d(3), d(1));
         break;
     }
     return P.dimensions();
@@ -361,10 +364,10 @@ class DimensionsProducer {
 template <typename elt_t>
 Tensor<elt_t> random_unitary(int n, int iterations = -1);
 template <>
-Tensor<double> random_unitary(int n, int iterations);
+RTensor random_unitary(int n, int iterations);
 template <>
-Tensor<cdouble> random_unitary(int n, int iterations);
-Tensor<double> random_permutation(int n, int iterations = -1);
+CTensor random_unitary(int n, int iterations);
+RTensor random_permutation(int n, int iterations = -1);
 
 static struct Foo {
   Foo() { ::tensor::tensor_abort_handler(); }

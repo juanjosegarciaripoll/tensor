@@ -25,12 +25,12 @@ namespace tensor_test {
 
 using namespace tensor;
 
-Tensor<double> random_permutation(int n, int iterations) {
+RTensor random_permutation(int n, int iterations) {
   RTensor output = RTensor::eye(n);
   if (n > 1) {
     if (iterations <= 0) iterations = 2 * n;
     Indices rows = iota(0, n - 1);
-    Tensor<double> diagonal = RTensor::ones(igen << n);
+    RTensor diagonal = RTensor::ones(igen << n);
     while (iterations--) {
       Indices columns = rows;
       int i = rand<int>(0, n);

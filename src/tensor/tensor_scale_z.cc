@@ -28,10 +28,9 @@ namespace tensor {
 
      \ingroup Tensors
   */
-Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
-                      const Tensor<cdouble> &v) {
+CTensor scale(const CTensor &t, int ndx, const CTensor &v) {
   index d1, d2, d3;
-  Tensor<cdouble> output(t.dimensions());
+  CTensor output(t.dimensions());
   ndx = (int)normalize_index(ndx, t.rank());
   surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
   if (d2 != v.size()) {
@@ -44,7 +43,7 @@ Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
   return output;
 }
 
-void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<cdouble> &v) {
+void scale_inplace(CTensor &t, int ndx, const CTensor &v) {
   index d1, d2, d3;
   surrounding_dimensions(t.dimensions(), normalize_index(ndx, t.rank()), &d1,
                          &d2, &d3);
@@ -57,12 +56,11 @@ void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<cdouble> &v) {
   doscale(t.begin(), v.begin_const(), d1, d2, d3);
 }
 
-Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
-                      const Tensor<double> &v) {
+CTensor scale(const CTensor &t, int ndx, const RTensor &v) {
   return scale(t, ndx, to_complex(v));
 }
 
-void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<double> &v) {
+void scale_inplace(CTensor &t, int ndx, const RTensor &v) {
   scale_inplace(t, ndx, to_complex(v));
 }
 

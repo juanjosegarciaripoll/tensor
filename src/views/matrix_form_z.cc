@@ -27,7 +27,7 @@ namespace tensor {
 //
 template class tensor::MatrixForm<cdouble>;
 
-const MatrixForm<cdouble> matrix_form(const Tensor<cdouble> &t) {
+const MatrixForm<cdouble> matrix_form(const CTensor &t) {
   return MatrixForm<cdouble>(t);
 }
 

@@ -21,12 +21,12 @@
 
 namespace tensor {
 
-Tensor<cdouble> operator/(const Tensor<cdouble> &a, const Tensor<cdouble> &b) {
+CTensor operator/(const CTensor &a, const CTensor &b) {
   assert(a.size() == b.size());
-  Tensor<cdouble> output(a.dimensions());
-  Tensor<cdouble>::const_iterator ita = a.begin();
-  Tensor<cdouble>::const_iterator itb = b.begin();
-  Tensor<cdouble>::iterator dest = output.begin();
+  CTensor output(a.dimensions());
+  CTensor::const_iterator ita = a.begin();
+  CTensor::const_iterator itb = b.begin();
+  CTensor::iterator dest = output.begin();
   for (index i = a.size(); i; --i, ++dest, ++ita, ++itb) {
     *dest = (*ita) / (*itb);
   }

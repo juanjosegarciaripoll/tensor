@@ -27,17 +27,17 @@
 namespace tensor_test {
 
 template <>
-Tensor<double> random_unitary(int n, int iterations) {
-  Tensor<double> id = Tensor<double>::eye(n, n);
+RTensor random_unitary(int n, int iterations) {
+  RTensor id = RTensor::eye(n, n);
   if (n == 1) return id;
-  Tensor<double> output = id;
+  RTensor output = id;
   if (iterations <= 0) iterations = 2 * n;
   while (iterations--) {
     int i = rand<int>(0, n), j;
     do {
       j = rand<int>(0, n);
     } while (i == j);
-    Tensor<double> U = id;
+    RTensor U = id;
     double theta = rand(0.0, M_PI);
     double c = cos(theta);
     double s = sin(theta);

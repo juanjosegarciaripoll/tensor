@@ -28,10 +28,9 @@ namespace tensor {
 
      \ingroup Tensors
   */
-Tensor<double> scale(const Tensor<double> &t, int ndx,
-                     const Tensor<double> &v) {
+RTensor scale(const RTensor &t, int ndx, const RTensor &v) {
   index d1, d2, d3;
-  Tensor<double> output(t.dimensions());
+  RTensor output(t.dimensions());
   ndx = (int)normalize_index(ndx, t.rank());
   surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
   if (d2 != v.size()) {
@@ -44,7 +43,7 @@ Tensor<double> scale(const Tensor<double> &t, int ndx,
   return output;
 }
 
-void scale_inplace(Tensor<double> &t, int ndx, const Tensor<double> &v) {
+void scale_inplace(RTensor &t, int ndx, const RTensor &v) {
   index d1, d2, d3;
   surrounding_dimensions(t.dimensions(), normalize_index(ndx, t.rank()), &d1,
                          &d2, &d3);

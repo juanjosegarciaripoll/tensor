@@ -21,31 +21,27 @@
 
 namespace tensor {
 
-Tensor<cdouble> fold(const Tensor<double> &a, int ndx1,
-                     const Tensor<cdouble> &b, int ndx2) {
+CTensor fold(const RTensor &a, int ndx1, const CTensor &b, int ndx2) {
   return fold(to_complex(a), ndx1, b, ndx2);
 }
 
-Tensor<cdouble> foldc(const Tensor<double> &a, int ndx1,
-                      const Tensor<cdouble> &b, int ndx2) {
+CTensor foldc(const RTensor &a, int ndx1, const CTensor &b, int ndx2) {
   return fold(to_complex(a), ndx1, b, ndx2);
 }
 
-Tensor<cdouble> mmult(const Tensor<double> &m1, const Tensor<cdouble> &m2) {
+CTensor mmult(const RTensor &m1, const CTensor &m2) {
   return fold(to_complex(m1), -1, m2, 0);
 }
 
-Tensor<cdouble> fold(const Tensor<cdouble> &a, int ndx1,
-                     const Tensor<double> &b, int ndx2) {
+CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2) {
   return fold(a, ndx1, to_complex(b), ndx2);
 }
 
-Tensor<cdouble> foldc(const Tensor<cdouble> &a, int ndx1,
-                      const Tensor<double> &b, int ndx2) {
+CTensor foldc(const CTensor &a, int ndx1, const RTensor &b, int ndx2) {
   return foldc(a, ndx1, to_complex(b), ndx2);
 }
 
-Tensor<cdouble> mmult(const Tensor<cdouble> &m1, const Tensor<double> &m2) {
+CTensor mmult(const CTensor &m1, const RTensor &m2) {
   return fold(m1, -1, to_complex(m2), 0);
 }
 

@@ -22,12 +22,12 @@
 
 namespace tensor {
 
-Tensor<double> &operator-=(Tensor<double> &a, const Tensor<double> &b) {
+RTensor &operator-=(RTensor &a, const RTensor &b) {
   assert(a.size() == b.size());
 #if 1
-  Tensor<double>::iterator ita = a.begin();
-  Tensor<double>::iterator itae = a.end();
-  Tensor<double>::const_iterator itb = b.begin();
+  RTensor::iterator ita = a.begin();
+  RTensor::iterator itae = a.end();
+  RTensor::const_iterator itb = b.begin();
   while (ita != itae) {
     (*ita) -= (*itb);
     ++ita;

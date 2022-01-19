@@ -21,20 +21,20 @@
 
 namespace tensor {
 
-Tensor<double> operator-(const Tensor<double> &a, double b) {
-  Tensor<double> output(a.dimensions());
-  Tensor<double>::const_iterator ita = a.begin();
-  Tensor<double>::iterator dest = output.begin();
+RTensor operator-(const RTensor &a, double b) {
+  RTensor output(a.dimensions());
+  RTensor::const_iterator ita = a.begin();
+  RTensor::iterator dest = output.begin();
   for (index i = a.size(); i; --i, ++dest, ++ita) {
     *dest = (*ita) - (b);
   }
   return output;
 }
 
-Tensor<double> operator-(double a, const Tensor<double> &b) {
-  Tensor<double> output(b.dimensions());
-  Tensor<double>::const_iterator itb = b.begin();
-  Tensor<double>::iterator dest = output.begin();
+RTensor operator-(double a, const RTensor &b) {
+  RTensor output(b.dimensions());
+  RTensor::const_iterator itb = b.begin();
+  RTensor::iterator dest = output.begin();
   for (index i = b.size(); i; --i, ++dest, ++itb) {
     *dest = (a) - (*itb);
   }

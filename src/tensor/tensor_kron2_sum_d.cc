@@ -22,7 +22,7 @@
 
 namespace tensor {
 
-Tensor<double> kron2_sum(const Tensor<double> &s1, const Tensor<double> &s2) {
+RTensor kron2_sum(const RTensor &s1, const RTensor &s2) {
   return do_kron2_sum(s2, s1);
 }
 

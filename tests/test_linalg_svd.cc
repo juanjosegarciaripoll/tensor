@@ -29,7 +29,7 @@ namespace tensor_test {
 using namespace tensor;
 
 template <typename elt_t>
-Tensor<elt_t> random_svd_matrix(int n, int m, Tensor<double> &s) {
+Tensor<elt_t> random_svd_matrix(int n, int m, RTensor &s) {
   if (n == 0 || m == 0) {
     return Tensor<elt_t>::zeros(n, m);
   } else {
@@ -37,7 +37,7 @@ Tensor<elt_t> random_svd_matrix(int n, int m, Tensor<double> &s) {
     Tensor<elt_t> V = random_unitary<elt_t>(m);
     EXPECT_TRUE(unitaryp(U));
     EXPECT_TRUE(unitaryp(V));
-    s = Tensor<double>(igen << std::min(n, m));
+    s = RTensor(igen << std::min(n, m));
     s.randomize();
     s = abs(s);  // Just in case we change our mind and make rand < 0
     return mmult(U, mmult(diag(s, 0, n, m), V));
@@ -91,7 +91,7 @@ void test_random_svd(int n) {
         Tensor<elt_t> A(m,n);
         A.randomize();
 #else
-      Tensor<double> true_s;
+      RTensor true_s;
       Tensor<elt_t> A = random_svd_matrix<elt_t>(m, n, true_s);
       std::sort(true_s.begin(), true_s.end(), std::greater<double>());
 #endif

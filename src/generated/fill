@@ -13,12 +13,12 @@ for op in plus times; do
 done
 
 for k in sqrt cos sin tan cosh sinh tanh exp; do
-    sed -e "s,TYPE[12],Tensor<double>,g;s,OPERATOR1,$k,;s,OPERATOR2,std::$k,g" ../tensor/tensor_unop.cc > tensor_unop_${k}_d.cc
-    sed -e "s,TYPE[12],Tensor<cdouble>,g;s,OPERATOR1,$k,;s,OPERATOR2,std::$k,g" ../tensor/tensor_unop.cc > tensor_unop_${k}_z.cc
+    sed -e "s,TYPE[12],RTensor,g;s,OPERATOR1,$k,;s,OPERATOR2,std::$k,g" ../tensor/tensor_unop.cc > tensor_unop_${k}_d.cc
+    sed -e "s,TYPE[12],CTensor,g;s,OPERATOR1,$k,;s,OPERATOR2,std::$k,g" ../tensor/tensor_unop.cc > tensor_unop_${k}_z.cc
 done
 
-sed -e "s,TYPE[12],Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" ../tensor/tensor_unop.cc > tensor_unop_abs_d.cc
-sed -e "s,TYPE1,Tensor<cdouble>,g;s,TYPE2,Tensor<double>,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" ../tensor/tensor_unop.cc > tensor_unop_abs_z.cc
+sed -e "s,TYPE[12],RTensor,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" ../tensor/tensor_unop.cc > tensor_unop_abs_d.cc
+sed -e "s,TYPE1,CTensor,g;s,TYPE2,RTensor,g;s,OPERATOR1,abs,;s,OPERATOR2,std::abs,g" ../tensor/tensor_unop.cc > tensor_unop_abs_z.cc
 
 for k in double cdouble; do
   for op in plus times divide minus; do

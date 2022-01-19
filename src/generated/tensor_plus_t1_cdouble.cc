@@ -22,11 +22,11 @@
 
 namespace tensor {
 
-Tensor<cdouble> &operator+=(Tensor<cdouble> &a, const Tensor<cdouble> &b) {
+CTensor &operator+=(CTensor &a, const CTensor &b) {
   assert(a.size() == b.size());
-  Tensor<cdouble>::iterator ita = a.begin();
-  Tensor<cdouble>::iterator itae = a.end();
-  Tensor<cdouble>::const_iterator itb = b.begin();
+  CTensor::iterator ita = a.begin();
+  CTensor::iterator itae = a.end();
+  CTensor::const_iterator itb = b.begin();
   while (ita != itae) {
     (*ita) += (*itb);
     ++ita;

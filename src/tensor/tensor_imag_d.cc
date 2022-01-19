@@ -22,8 +22,8 @@
 namespace tensor {
 
 /**Complex conjugate of a tensor.*/
-Tensor<double> imag(const Tensor<double> &t) {
-  Tensor<double> output(t.dimensions());
+RTensor imag(const RTensor &t) {
+  RTensor output(t.dimensions());
   output.fill_with_zeros();
   return output;
 }
