@@ -31,8 +31,8 @@ namespace tensor {
 
      \ingroup Tensors
   */
-const Tensor<double> foldin(const Tensor<double> &a, int _ndx1,
-                            const Tensor<double> &b, int _ndx2) {
+Tensor<double> foldin(const Tensor<double> &a, int _ndx1,
+                      const Tensor<double> &b, int _ndx2) {
   Tensor<double> output;
   do_foldin_into(output, a, _ndx1, b, _ndx2);
   return output;

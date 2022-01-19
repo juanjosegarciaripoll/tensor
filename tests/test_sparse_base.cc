@@ -306,7 +306,8 @@ TEST(CSparseTest, CSparseRandom) {
 //
 template <typename elt_t>
 void test_full(Tensor<elt_t> &t) {
-  for (int times = 0; times <= (int)std::min<tensor::index>(100, t.size()); times++) {
+  for (int times = 0; times <= (int)std::min<tensor::index>(100, t.size());
+       times++) {
     tensor::index zeros = std::count(t.begin(), t.end(), number_zero<elt_t>());
     tensor::index nonzeros = t.size() - zeros;
     Tensor<elt_t> tcopy = t;
@@ -343,7 +344,7 @@ TEST(CSparseTest, CSparseFull) {
 template <typename elt_t>
 void test_to_complex(Tensor<elt_t> &t) {
   Sparse<elt_t> s = Sparse<elt_t>::random(t.rows(), t.columns());
-  Sparse<cdouble> sc = to_complex(s);
+  CSparse sc = to_complex(s);
   EXPECT_EQ(t.rows(), sc.rows());
   EXPECT_EQ(t.columns(), sc.columns());
   EXPECT_TRUE(all_equal(to_complex(full(s)), full(sc)));
@@ -366,7 +367,7 @@ TEST(CSparseTest, CSparseToComplex) {
 template <typename elt_t>
 void test_real(Tensor<elt_t> &t) {
   Sparse<elt_t> s = Sparse<elt_t>::random(t.rows(), t.columns());
-  Sparse<double> r = real(s);
+  RSparse r = real(s);
   EXPECT_EQ(t.rows(), r.rows());
   EXPECT_EQ(t.columns(), r.columns());
   EXPECT_TRUE(all_equal(real(full(s)), full(r)));
@@ -387,7 +388,7 @@ TEST(CSparseTest, CSparseReal) {
 template <typename elt_t>
 void test_imag(Tensor<elt_t> &t) {
   Sparse<elt_t> s = Sparse<elt_t>::random(t.rows(), t.columns());
-  Sparse<double> i = imag(s);
+  RSparse i = imag(s);
   EXPECT_EQ(t.rows(), i.rows());
   EXPECT_EQ(t.columns(), i.columns());
   EXPECT_TRUE(all_equal(imag(full(s)), full(i)));

@@ -28,8 +28,8 @@ namespace tensor {
 
      \ingroup Tensors
   */
-const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
-                            const Tensor<cdouble> &v) {
+Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
+                      const Tensor<cdouble> &v) {
   index d1, d2, d3;
   Tensor<cdouble> output(t.dimensions());
   ndx = (int)normalize_index(ndx, t.rank());
@@ -57,8 +57,8 @@ void scale_inplace(Tensor<cdouble> &t, int ndx, const Tensor<cdouble> &v) {
   doscale(t.begin(), v.begin_const(), d1, d2, d3);
 }
 
-const Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
-                            const Tensor<double> &v) {
+Tensor<cdouble> scale(const Tensor<cdouble> &t, int ndx,
+                      const Tensor<double> &v) {
   return scale(t, ndx, to_complex(v));
 }
 

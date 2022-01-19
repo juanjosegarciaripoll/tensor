@@ -26,7 +26,7 @@ namespace tensor {
       $A(i,i+which)$. For a tensor, we do a similar operation but
       acting on the indices 'ndx1' and 'ndx2'.
    */
-const CTensor take_diag(const CTensor &a, int which, int ndx1, int ndx2) {
+CTensor take_diag(const CTensor &a, int which, int ndx1, int ndx2) {
   return do_take_diag(a, which, ndx1, ndx2);
 }
 

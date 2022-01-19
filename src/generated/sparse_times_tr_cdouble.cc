@@ -21,14 +21,8 @@
 
 namespace tensor {
 
-const Sparse<cdouble> operator*(const Sparse<cdouble> &a,
-                                const Sparse<double> &b) {
-  return a * Sparse<cdouble>(b);
-}
+CSparse operator*(const CSparse &a, const RSparse &b) { return a * CSparse(b); }
 
-const Sparse<cdouble> operator*(const Sparse<double> &a,
-                                const Sparse<cdouble> &b) {
-  return Sparse<cdouble>(a) * b;
-}
+CSparse operator*(const RSparse &a, const CSparse &b) { return CSparse(a) * b; }
 
 }  // namespace tensor

@@ -22,8 +22,8 @@
 
 namespace tensor {
 
-const Tensor<cdouble> kron2_sum(const Tensor<cdouble> &s1,
-                                const Tensor<cdouble> &s2) {
+Tensor<cdouble> kron2_sum(const Tensor<cdouble> &s1,
+                          const Tensor<cdouble> &s2) {
   return do_kron2_sum(s2, s1);
 }
 

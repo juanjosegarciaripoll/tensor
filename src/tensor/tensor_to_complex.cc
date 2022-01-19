@@ -22,7 +22,7 @@
 
 namespace tensor {
 
-const CTensor to_complex(const RTensor &r) {
+CTensor to_complex(const RTensor &r) {
   CTensor output(r.dimensions());
   RTensor::const_iterator ir = r.begin();
   for (CTensor::iterator io = output.begin(); io != output.end(); ++io, ++ir) {
@@ -31,7 +31,7 @@ const CTensor to_complex(const RTensor &r) {
   return output;
 }
 
-const CTensor to_complex(const RTensor &r, const RTensor &i) {
+CTensor to_complex(const RTensor &r, const RTensor &i) {
   CTensor output(r.dimensions());
   RTensor::const_iterator ir = r.begin();
   RTensor::const_iterator ii = i.begin();

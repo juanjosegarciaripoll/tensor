@@ -26,8 +26,8 @@ Tensor<cdouble> fold(const Tensor<double> &a, int ndx1,
   return fold(to_complex(a), ndx1, b, ndx2);
 }
 
-const Tensor<cdouble> foldc(const Tensor<double> &a, int ndx1,
-                            const Tensor<cdouble> &b, int ndx2) {
+Tensor<cdouble> foldc(const Tensor<double> &a, int ndx1,
+                      const Tensor<cdouble> &b, int ndx2) {
   return fold(to_complex(a), ndx1, b, ndx2);
 }
 
@@ -40,8 +40,8 @@ Tensor<cdouble> fold(const Tensor<cdouble> &a, int ndx1,
   return fold(a, ndx1, to_complex(b), ndx2);
 }
 
-const Tensor<cdouble> foldc(const Tensor<cdouble> &a, int ndx1,
-                            const Tensor<double> &b, int ndx2) {
+Tensor<cdouble> foldc(const Tensor<cdouble> &a, int ndx1,
+                      const Tensor<double> &b, int ndx2) {
   return foldc(a, ndx1, to_complex(b), ndx2);
 }
 

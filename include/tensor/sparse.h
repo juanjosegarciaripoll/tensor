@@ -111,8 +111,8 @@ class Sparse {
 
 typedef Sparse<double> RSparse;
 typedef Sparse<cdouble> CSparse;
-const CSparse to_complex(const RSparse &s);
-inline const CSparse to_complex(const CSparse &c) { return c; }
+CSparse to_complex(const RSparse &s);
+inline const CSparse &to_complex(const CSparse &c) { return c; }
 
 //
 // Comparison
@@ -136,14 +136,14 @@ inline bool all_equal(const Tensor<t1> &s1, const Sparse<t2> &s2) {
 }
 
 /* Adjoint of a sparse matrix. */
-const RSparse adjoint(const RSparse &s);
+RSparse adjoint(const RSparse &s);
 /* Transpose of a sparse matrix. */
-const RSparse transpose(const RSparse &s);
+RSparse transpose(const RSparse &s);
 
 /* Adjoint of a sparse matrix. */
-const CSparse adjoint(const CSparse &s);
+CSparse adjoint(const CSparse &s);
 /* Transpose of a sparse matrix. */
-const CSparse transpose(const CSparse &s);
+CSparse transpose(const CSparse &s);
 
 /* Matrix multiplication between tensor and sparse matrix. */
 RTensor mmult(const RTensor &m1, const RSparse &m2);
@@ -159,61 +159,59 @@ inline const RSparse &real(const RSparse &A) { return A; }
 /* Conjugate of a sparse matrix.*/
 inline const RSparse &conj(const RSparse &A) { return A; }
 /* Imaginary part of a sparse matrix.*/
-inline const RSparse imag(const RSparse &A) {
-  return RSparse(A.rows(), A.columns());
-}
+inline RSparse imag(const RSparse &A) { return RSparse(A.rows(), A.columns()); }
 
 /* Real part of a sparse matrix.*/
-const RSparse real(const CSparse &A);
+RSparse real(const CSparse &A);
 /* Conjugate of a sparse matrix.*/
-const CSparse conj(const CSparse &A);
+CSparse conj(const CSparse &A);
 /* Imaginary part of a sparse matrix.*/
-const RSparse imag(const CSparse &A);
+RSparse imag(const CSparse &A);
 
-const RSparse operator-(const RSparse &a);
-const RSparse operator+(const RSparse &a, const RSparse &b);
-const RSparse operator-(const RSparse &a, const RSparse &b);
-const RSparse operator*(const RSparse &a, const RSparse &b);
-const RSparse operator*(const RSparse &a, double b);
-const RSparse operator/(const RSparse &a, double b);
-const RSparse operator*(double a, const RSparse &b);
+RSparse operator-(const RSparse &a);
+RSparse operator+(const RSparse &a, const RSparse &b);
+RSparse operator-(const RSparse &a, const RSparse &b);
+RSparse operator*(const RSparse &a, const RSparse &b);
+RSparse operator*(const RSparse &a, double b);
+RSparse operator/(const RSparse &a, double b);
+RSparse operator*(double a, const RSparse &b);
 
-const CSparse operator-(const CSparse &a);
-const CSparse operator+(const CSparse &a, const CSparse &b);
-const CSparse operator-(const CSparse &a, const CSparse &b);
-const CSparse operator*(const CSparse &a, const CSparse &b);
-const CSparse operator*(const CSparse &a, cdouble b);
-const CSparse operator/(const CSparse &a, cdouble b);
-const CSparse operator*(cdouble a, const CSparse &b);
+CSparse operator-(const CSparse &a);
+CSparse operator+(const CSparse &a, const CSparse &b);
+CSparse operator-(const CSparse &a, const CSparse &b);
+CSparse operator*(const CSparse &a, const CSparse &b);
+CSparse operator*(const CSparse &a, cdouble b);
+CSparse operator/(const CSparse &a, cdouble b);
+CSparse operator*(cdouble a, const CSparse &b);
 
-const CSparse operator+(const CSparse &a, const RSparse &b);
-const CSparse operator-(const CSparse &a, const RSparse &b);
-const CSparse operator*(const CSparse &a, const RSparse &b);
-const CSparse operator+(const RSparse &a, const CSparse &b);
-const CSparse operator-(const RSparse &a, const CSparse &b);
-const CSparse operator*(const RSparse &a, const CSparse &b);
+CSparse operator+(const CSparse &a, const RSparse &b);
+CSparse operator-(const CSparse &a, const RSparse &b);
+CSparse operator*(const CSparse &a, const RSparse &b);
+CSparse operator+(const RSparse &a, const CSparse &b);
+CSparse operator-(const RSparse &a, const CSparse &b);
+CSparse operator*(const RSparse &a, const CSparse &b);
 
-const CSparse operator*(const CSparse &a, double b);
-const CSparse operator/(const CSparse &a, double b);
-const CSparse operator*(double a, const CSparse &b);
+CSparse operator*(const CSparse &a, double b);
+CSparse operator/(const CSparse &a, double b);
+CSparse operator*(double a, const CSparse &b);
 
-const CSparse operator*(const RSparse &a, cdouble b);
-const CSparse operator/(const RSparse &a, cdouble b);
-const CSparse operator*(cdouble a, const RSparse &b);
-
-/**Kronecker product between matrices, in Matlab order.*/
-const RSparse kron(const RSparse &s1, const RSparse &s2);
-/**Kronecker product between matrices, opposite to Matlab order.*/
-const RSparse kron2(const RSparse &s1, const RSparse &s2);
-/**Implements A+B where A and B act on different spaces of a tensor product.*/
-const RSparse kron2_sum(const RSparse &s1, const RSparse &s2);
+CSparse operator*(const RSparse &a, cdouble b);
+CSparse operator/(const RSparse &a, cdouble b);
+CSparse operator*(cdouble a, const RSparse &b);
 
 /**Kronecker product between matrices, in Matlab order.*/
-const CSparse kron(const CSparse &s1, const CSparse &s2);
+RSparse kron(const RSparse &s1, const RSparse &s2);
 /**Kronecker product between matrices, opposite to Matlab order.*/
-const CSparse kron2(const CSparse &s1, const CSparse &s2);
+RSparse kron2(const RSparse &s1, const RSparse &s2);
 /**Implements A+B where A and B act on different spaces of a tensor product.*/
-const CSparse kron2_sum(const CSparse &s1, const CSparse &s2);
+RSparse kron2_sum(const RSparse &s1, const RSparse &s2);
+
+/**Kronecker product between matrices, in Matlab order.*/
+CSparse kron(const CSparse &s1, const CSparse &s2);
+/**Kronecker product between matrices, opposite to Matlab order.*/
+CSparse kron2(const CSparse &s1, const CSparse &s2);
+/**Implements A+B where A and B act on different spaces of a tensor product.*/
+CSparse kron2_sum(const CSparse &s1, const CSparse &s2);
 
 }  // namespace tensor
 

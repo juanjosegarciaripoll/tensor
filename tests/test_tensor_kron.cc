@@ -80,7 +80,7 @@ TEST(CTensorKronTest, KronSmall) { test_kron_small<cdouble>(); }
 //
 
 template <typename elt_t>
-const Tensor<elt_t> slow_kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b) {
+Tensor<elt_t> slow_kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b) {
   tensor::index a1, a2, b1, b2;
   a.get_dimensions(&a1, &a2);
   b.get_dimensions(&b1, &b2);

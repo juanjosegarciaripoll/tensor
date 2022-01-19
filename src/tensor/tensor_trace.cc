@@ -50,7 +50,7 @@ static void trace_loop(n *C, const n *D, index a1, index a2, index a3, index a4,
 }
 
 template <typename elt_t>
-static const Tensor<elt_t> do_trace(const Tensor<elt_t> &D, int i1, int i2) {
+static Tensor<elt_t> do_trace(const Tensor<elt_t> &D, int i1, int i2) {
   assert(i1 < D.rank() && i1 > -D.rank());
   assert(i2 < D.rank() && i2 > -D.rank());
   if (i1 < 0) i1 = i1 + D.rank();

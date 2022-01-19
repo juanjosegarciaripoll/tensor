@@ -22,7 +22,7 @@
 
 namespace tensor {
 
-const RTensor index_to_tensor(const Indices &ndx) {
+RTensor index_to_tensor(const Indices &ndx) {
   RTensor output(ndx.size());
   std::copy(ndx.begin(), ndx.end(), output.begin());
   return output;

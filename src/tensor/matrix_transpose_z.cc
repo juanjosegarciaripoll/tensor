@@ -21,6 +21,6 @@
 
 namespace tensor {
 
-const CTensor transpose(const CTensor &a) { return do_transpose(a); }
+CTensor transpose(const CTensor &a) { return do_transpose(a); }
 
 }  // namespace tensor

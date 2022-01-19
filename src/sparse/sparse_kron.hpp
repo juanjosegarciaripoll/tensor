@@ -24,8 +24,7 @@ namespace tensor {
 //
 
 template <typename elt_t>
-static const Sparse<elt_t> do_kron(const Sparse<elt_t> &s2,
-                                   const Sparse<elt_t> &s1) {
+static Sparse<elt_t> do_kron(const Sparse<elt_t> &s2, const Sparse<elt_t> &s1) {
   index rows1 = s1.rows();
   index cols1 = s1.columns();
   index rows2 = s2.rows();

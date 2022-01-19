@@ -27,7 +27,7 @@ bool operator<(const cdouble &a, const cdouble &b) {
   return (real(a) < real(b));
 }
 
-const CTensor sort(const CTensor &v, bool reverse) {
+CTensor sort(const CTensor &v, bool reverse) {
   CTensor output(v);
   if (reverse) {
     std::sort(output.begin(), output.end(), std::greater<double>());
@@ -53,7 +53,7 @@ struct CompareInv {
   int operator()(size_t i1, size_t i2) { return p[i1] > p[i2]; }
 };
 
-const Indices sort_indices(const CTensor &v, bool reverse) {
+Indices sort_indices(const CTensor &v, bool reverse) {
   if (v.size()) {
     Indices output = iota(0, v.size() - 1);
     if (reverse) {

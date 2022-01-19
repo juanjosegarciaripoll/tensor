@@ -21,11 +21,11 @@
 
 namespace tensor {
 
-const RTensor diag(const RTensor &a, int which, index rows, index cols) {
+RTensor diag(const RTensor &a, int which, index rows, index cols) {
   return do_diag(a, which, rows, cols);
 }
 
-const RTensor diag(const RTensor &a, int which) {
+RTensor diag(const RTensor &a, int which) {
   index n = a.size() + std::abs(which);
   return diag(a, which, n, n);
 }

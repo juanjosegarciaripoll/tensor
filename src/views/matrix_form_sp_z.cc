@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-const MatrixForm<cdouble> matrix_form(const Sparse<cdouble> &t) {
+const MatrixForm<cdouble> matrix_form(const CSparse &t) {
   return matrix_form(full(t));
 }
 

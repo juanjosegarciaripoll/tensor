@@ -137,7 +137,7 @@ void permute_13(Tensor<n> &b, const Tensor<n> &a, index a1, index a2, index a3,
 }
 
 template <typename n>
-const Tensor<n> do_permute(const Tensor<n> &a, index ndx1, index ndx2) {
+Tensor<n> do_permute(const Tensor<n> &a, index ndx1, index ndx2) {
   index n1 = normalize_index(ndx1, a.rank());
   index n2 = normalize_index(ndx2, a.rank());
   if (n2 < n1) {

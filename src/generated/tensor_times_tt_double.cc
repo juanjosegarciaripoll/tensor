@@ -21,8 +21,7 @@
 
 namespace tensor {
 
-const Tensor<double> operator*(const Tensor<double> &a,
-                               const Tensor<double> &b) {
+Tensor<double> operator*(const Tensor<double> &a, const Tensor<double> &b) {
   assert(a.size() == b.size());
   Tensor<double> output(a.dimensions());
   Tensor<double>::const_iterator ita = a.begin();

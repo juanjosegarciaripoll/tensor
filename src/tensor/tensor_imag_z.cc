@@ -22,7 +22,7 @@
 namespace tensor {
 
 /**Complex conjugate of a tensor.*/
-const Tensor<double> imag(const Tensor<cdouble> &t) {
+Tensor<double> imag(const Tensor<cdouble> &t) {
   Tensor<double> output(t.dimensions());
   Tensor<double>::iterator a = output.begin();
   Tensor<cdouble>::const_iterator b = t.begin();

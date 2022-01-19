@@ -21,6 +21,6 @@
 
 namespace tensor {
 
-const CTensor adjoint(const CTensor &a) { return do_adjoint(a); }
+CTensor adjoint(const CTensor &a) { return do_adjoint(a); }
 
 }  // namespace tensor

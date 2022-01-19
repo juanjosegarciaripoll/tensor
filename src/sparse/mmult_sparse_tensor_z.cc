@@ -24,7 +24,7 @@ namespace tensor {
 #include "mmult_sparse_tensor.h"
 
 /** Multiply a tensor with a sparse matrix. mmult(m1,m2) is equivalent to fold(m1,-1,m2,0) even if m1 or m2 are sparse matrices. */
-Tensor<cdouble> mmult(const Sparse<cdouble> &m1, const Tensor<cdouble> &m2) {
+Tensor<cdouble> mmult(const CSparse &m1, const Tensor<cdouble> &m2) {
   return do_mmult(m1, m2);
 }
 

@@ -22,7 +22,7 @@
 
 namespace tensor {
 
-const Indices squeeze_dimensions(const Indices &d) {
+Indices squeeze_dimensions(const Indices &d) {
   Indices output(d.size() - std::count(d.begin(), d.end(), 1));
   Indices::const_iterator b = d.begin();
   for (Indices::iterator a = output.begin(); a != output.end() && b != d.end();

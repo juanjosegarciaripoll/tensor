@@ -23,7 +23,7 @@
 namespace tensor {
 
 /**Vector of 'n' equally spaced numbers in the interval [min, max].*/
-const CTensor linspace(cdouble min, cdouble max, index n) {
+CTensor linspace(cdouble min, cdouble max, index n) {
   CTensor a(1);
   a.at(0) = min;
   CTensor b(1);
@@ -32,7 +32,7 @@ const CTensor linspace(cdouble min, cdouble max, index n) {
 }
 
 /**Tensor of 'n' equally spaced vectors in the interval [min, max].*/
-const CTensor linspace(const CTensor &min, const CTensor &max, index n) {
+CTensor linspace(const CTensor &min, const CTensor &max, index n) {
   return do_linspace(min, max, n);
 }
 

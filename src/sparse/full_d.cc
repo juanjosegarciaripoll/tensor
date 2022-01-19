@@ -25,6 +25,6 @@ namespace tensor {
 //
 // Explicitely instantiate a version of the function
 //
-template const Tensor<double> full(const Sparse<double> &s);
+template const Tensor<double> full(const RSparse &s);
 
 }  // namespace tensor

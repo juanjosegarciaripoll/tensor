@@ -21,9 +21,9 @@
 
 namespace tensor {
 
-const Sparse<cdouble> operator/(const Sparse<cdouble> &s, double n) {
-  return Sparse<cdouble>(s.dimensions(), s.priv_row_start(), s.priv_column(),
-                         s.priv_data() / n);
+CSparse operator/(const CSparse &s, double n) {
+  return CSparse(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                 s.priv_data() / n);
 }
 
 }  // namespace tensor

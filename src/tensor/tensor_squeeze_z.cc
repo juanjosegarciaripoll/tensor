@@ -21,10 +21,10 @@
 
 namespace tensor {
 
-const Indices squeeze_dimensions(const Indices &d);
+Indices squeeze_dimensions(const Indices &d);
 
 /** Eliminate all singleton dimensions from a tensor, preserving the data. */
-const CTensor squeeze(const CTensor &t) {
+CTensor squeeze(const CTensor &t) {
   return reshape(t, squeeze_dimensions(t.dimensions()));
 }
 

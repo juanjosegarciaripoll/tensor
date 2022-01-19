@@ -23,7 +23,7 @@
 namespace tensor {
 
 template <typename n>
-inline const Tensor<n> do_transpose(const Tensor<n> &a) {
+inline Tensor<n> do_transpose(const Tensor<n> &a) {
   assert(a.rank() == 2);
   index rows = a.rows();
   index cols = a.columns();

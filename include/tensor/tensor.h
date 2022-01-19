@@ -403,7 +403,7 @@ double sum(const RTensor &r);
 /**Return the mean of the elements in the tensor.*/
 double mean(const RTensor &r);
 /**Return the mean of the elements in the along the given dimension.*/
-const RTensor mean(const RTensor &r, int which);
+RTensor mean(const RTensor &r, int which);
 
 double norm0(const RTensor &r);
 double scprod(const RTensor &a, const RTensor &b);
@@ -423,34 +423,33 @@ RTensor log(const RTensor &t);
 
 RTensor round(const RTensor &t);
 
-const RTensor diag(const RTensor &d, int which, index rows, index cols);
-const RTensor diag(const RTensor &d, int which = 0);
-const RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0,
-                        int ndx2 = -1);
+RTensor diag(const RTensor &d, int which, index rows, index cols);
+RTensor diag(const RTensor &d, int which = 0);
+RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
 double trace(const RTensor &d);
-const RTensor trace(const RTensor &A, int i1, int i2);
+RTensor trace(const RTensor &A, int i1, int i2);
 
 /**Convert a tensor to a 1D vector with the same elements.*/
-const RTensor flatten(const RTensor &t);
+RTensor flatten(const RTensor &t);
 
-const RTensor reshape(const RTensor &t, const Indices &new_dims);
-const RTensor reshape(const RTensor &t, index length);
-const RTensor reshape(const RTensor &t, index rows, index columns);
-const RTensor reshape(const RTensor &t, index d1, index d2, index d3);
-const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4);
-const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
-                      index d5);
-const RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
-                      index d5, index d6);
+RTensor reshape(const RTensor &t, const Indices &new_dims);
+RTensor reshape(const RTensor &t, index length);
+RTensor reshape(const RTensor &t, index rows, index columns);
+RTensor reshape(const RTensor &t, index d1, index d2, index d3);
+RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4);
+RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
+                index d5);
+RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
+                index d5, index d6);
 
-const RTensor squeeze(const RTensor &t);
-const RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
-const RTensor transpose(const RTensor &a);
-inline const RTensor adjoint(const RTensor &a) { return transpose(a); }
+RTensor squeeze(const RTensor &t);
+RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
+RTensor transpose(const RTensor &a);
+inline RTensor adjoint(const RTensor &a) { return transpose(a); }
 
 RTensor fold(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
 RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
-const RTensor foldin(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
+RTensor foldin(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
 RTensor mmult(const RTensor &a, const RTensor &b);
 
 void fold_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b,
@@ -467,48 +466,48 @@ inline bool some_unequal(const t1 &a, const t2 &b) {
   return !all_equal(a, b);
 }
 
-const Booleans operator==(const RTensor &a, const RTensor &b);
-const Booleans operator<(const RTensor &a, const RTensor &b);
-const Booleans operator>(const RTensor &a, const RTensor &b);
-const Booleans operator<=(const RTensor &a, const RTensor &b);
-const Booleans operator>=(const RTensor &a, const RTensor &b);
-const Booleans operator!=(const RTensor &a, const RTensor &b);
+Booleans operator==(const RTensor &a, const RTensor &b);
+Booleans operator<(const RTensor &a, const RTensor &b);
+Booleans operator>(const RTensor &a, const RTensor &b);
+Booleans operator<=(const RTensor &a, const RTensor &b);
+Booleans operator>=(const RTensor &a, const RTensor &b);
+Booleans operator!=(const RTensor &a, const RTensor &b);
 
-const Booleans operator==(const RTensor &a, double b);
-const Booleans operator<(const RTensor &a, double b);
-const Booleans operator>(const RTensor &a, double b);
-const Booleans operator<=(const RTensor &a, double b);
-const Booleans operator>=(const RTensor &a, double b);
-const Booleans operator!=(const RTensor &a, double b);
+Booleans operator==(const RTensor &a, double b);
+Booleans operator<(const RTensor &a, double b);
+Booleans operator>(const RTensor &a, double b);
+Booleans operator<=(const RTensor &a, double b);
+Booleans operator>=(const RTensor &a, double b);
+Booleans operator!=(const RTensor &a, double b);
 
-inline const Booleans operator==(double a, const RTensor &b) { return b == a; }
-inline const Booleans operator<(double a, const RTensor &b) { return b >= a; }
-inline const Booleans operator>(double a, const RTensor &b) { return b <= a; }
-inline const Booleans operator<=(double a, const RTensor &b) { return b > a; }
-inline const Booleans operator>=(double a, const RTensor &b) { return b < a; }
-inline const Booleans operator!=(double a, const RTensor &b) { return b != a; }
+inline Booleans operator==(double a, const RTensor &b) { return b == a; }
+inline Booleans operator<(double a, const RTensor &b) { return b >= a; }
+inline Booleans operator>(double a, const RTensor &b) { return b <= a; }
+inline Booleans operator<=(double a, const RTensor &b) { return b > a; }
+inline Booleans operator>=(double a, const RTensor &b) { return b < a; }
+inline Booleans operator!=(double a, const RTensor &b) { return b != a; }
 
-const RTensor operator+(const RTensor &a, const RTensor &b);
-const RTensor operator-(const RTensor &a, const RTensor &b);
-const RTensor operator*(const RTensor &a, const RTensor &b);
-const RTensor operator/(const RTensor &a, const RTensor &b);
+RTensor operator+(const RTensor &a, const RTensor &b);
+RTensor operator-(const RTensor &a, const RTensor &b);
+RTensor operator*(const RTensor &a, const RTensor &b);
+RTensor operator/(const RTensor &a, const RTensor &b);
 
-const RTensor operator+(const RTensor &a, double b);
-const RTensor operator-(const RTensor &a, double b);
-const RTensor operator*(const RTensor &a, double b);
-const RTensor operator/(const RTensor &a, double b);
+RTensor operator+(const RTensor &a, double b);
+RTensor operator-(const RTensor &a, double b);
+RTensor operator*(const RTensor &a, double b);
+RTensor operator/(const RTensor &a, double b);
 
-const RTensor operator+(double a, const RTensor &b);
-const RTensor operator-(double a, const RTensor &b);
-const RTensor operator*(double a, const RTensor &b);
-const RTensor operator/(double a, const RTensor &b);
+RTensor operator+(double a, const RTensor &b);
+RTensor operator-(double a, const RTensor &b);
+RTensor operator*(double a, const RTensor &b);
+RTensor operator/(double a, const RTensor &b);
 
 RTensor &operator+=(RTensor &a, const RTensor &b);
 RTensor &operator-=(RTensor &a, const RTensor &b);
 
-const RTensor kron(const RTensor &a, const RTensor &b);
-const RTensor kron2(const RTensor &a, const RTensor &b);
-const RTensor kron2_sum(const RTensor &a, const RTensor &b);
+RTensor kron(const RTensor &a, const RTensor &b);
+RTensor kron2(const RTensor &a, const RTensor &b);
+RTensor kron2_sum(const RTensor &a, const RTensor &b);
 
 extern template class Tensor<cdouble>;
 /** Complex Tensor with elements of type "cdouble". */
@@ -527,24 +526,24 @@ cdouble sum(const CTensor &r);
 /**Return the mean of the elements in the tensor.*/
 cdouble mean(const CTensor &r);
 /**Return the mean of the elements in the along the given dimension.*/
-const CTensor mean(const CTensor &r, int ndx);
+CTensor mean(const CTensor &r, int ndx);
 
 double norm0(const CTensor &r);
 cdouble scprod(const CTensor &a, const CTensor &b);
 double norm2(const CTensor &r);
 double matrix_norminf(const CTensor &r);
 
-inline const RTensor real(const RTensor &r) { return r; }
-const RTensor imag(const RTensor &r);
-const RTensor real(const CTensor &r);
-const RTensor imag(const CTensor &r);
+inline RTensor real(const RTensor &r) { return r; }
+RTensor imag(const RTensor &r);
+RTensor real(const CTensor &r);
+RTensor imag(const CTensor &r);
 
-const CTensor to_complex(const RTensor &r);
-inline const CTensor to_complex(const CTensor &r) { return r; }
-const CTensor to_complex(const RTensor &r, const RTensor &i);
+CTensor to_complex(const RTensor &r);
+inline const CTensor &to_complex(const CTensor &r) { return r; }
+CTensor to_complex(const RTensor &r, const RTensor &i);
 
 /**Complex conjugate of a real tensor. Returns the same tensor.*/
-inline const RTensor conj(const RTensor &r) { return r; }
+inline const RTensor &conj(const RTensor &r) { return r; }
 const CTensor conj(const CTensor &c);
 
 RTensor abs(const CTensor &t);
@@ -558,101 +557,100 @@ CTensor exp(const CTensor &t);
 CTensor sqrt(const CTensor &t);
 CTensor log(const CTensor &t);
 
-const CTensor diag(const CTensor &d, int which, index rows, index cols);
-const CTensor diag(const CTensor &d, int which = 0);
-const CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0,
-                        int ndx2 = -1);
+CTensor diag(const CTensor &d, int which, index rows, index cols);
+CTensor diag(const CTensor &d, int which = 0);
+CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
 cdouble trace(const CTensor &d);
-const CTensor trace(const CTensor &A, int i1, int i2);
+CTensor trace(const CTensor &A, int i1, int i2);
 
 /**Convert a tensor to a 1D vector with the same elements.*/
-const CTensor flatten(const CTensor &t);
+CTensor flatten(const CTensor &t);
 
-const CTensor reshape(const CTensor &t, const Indices &new_dims);
-const CTensor reshape(const CTensor &t, index length);
-const CTensor reshape(const CTensor &t, index rows, index columns);
-const CTensor reshape(const CTensor &t, index d1, index d2, index d3);
-const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4);
-const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
-                      index d5);
-const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
-                      index d5, index d6);
+CTensor reshape(const CTensor &t, const Indices &new_dims);
+CTensor reshape(const CTensor &t, index length);
+CTensor reshape(const CTensor &t, index rows, index columns);
+CTensor reshape(const CTensor &t, index d1, index d2, index d3);
+CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4);
+CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
+                index d5);
+CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
+                index d5, index d6);
 
-const CTensor squeeze(const CTensor &t);
-const CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
-const CTensor transpose(const CTensor &a);
-const CTensor adjoint(const CTensor &a);
+CTensor squeeze(const CTensor &t);
+CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
+CTensor transpose(const CTensor &a);
+CTensor adjoint(const CTensor &a);
 
 CTensor fold(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 CTensor fold(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
 CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
 
-const CTensor foldc(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
-const CTensor foldc(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
-const CTensor foldc(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
+CTensor foldc(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
+CTensor foldc(const RTensor &a, int ndx1, const CTensor &b, int ndx2);
+CTensor foldc(const CTensor &a, int ndx1, const RTensor &b, int ndx2);
 
 CTensor mmult(const CTensor &a, const CTensor &b);
 CTensor mmult(const RTensor &a, const CTensor &b);
 CTensor mmult(const CTensor &a, const RTensor &b);
 
-const RTensor scale(const RTensor &t, int ndx1, const RTensor &v);
-const CTensor scale(const CTensor &t, int ndx1, const CTensor &v);
-const CTensor scale(const CTensor &t, int ndx1, const RTensor &v);
+RTensor scale(const RTensor &t, int ndx1, const RTensor &v);
+CTensor scale(const CTensor &t, int ndx1, const CTensor &v);
+CTensor scale(const CTensor &t, int ndx1, const RTensor &v);
 void scale_inplace(RTensor &t, int ndx1, const RTensor &v);
 void scale_inplace(CTensor &t, int ndx1, const CTensor &v);
 void scale_inplace(CTensor &t, int ndx1, const RTensor &v);
 
-const CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
+CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 
-const RTensor linspace(double min, double max, index n = 100);
-const RTensor linspace(const RTensor &min, const RTensor &max, index n = 100);
-const CTensor linspace(cdouble min, cdouble max, index n = 100);
-const CTensor linspace(const CTensor &min, const CTensor &max, index n = 100);
+RTensor linspace(double min, double max, index n = 100);
+RTensor linspace(const RTensor &min, const RTensor &max, index n = 100);
+CTensor linspace(cdouble min, cdouble max, index n = 100);
+CTensor linspace(const CTensor &min, const CTensor &max, index n = 100);
 
-const Indices sort(const Indices &v, bool reverse = false);
-const Indices sort_indices(const Indices &v, bool reverse = false);
+Indices sort(const Indices &v, bool reverse = false);
+Indices sort_indices(const Indices &v, bool reverse = false);
 
-const RTensor sort(const RTensor &v, bool reverse = false);
-const Indices sort_indices(const RTensor &v, bool reverse = false);
+RTensor sort(const RTensor &v, bool reverse = false);
+Indices sort_indices(const RTensor &v, bool reverse = false);
 
-const CTensor sort(const CTensor &v, bool reverse = false);
-const Indices sort_indices(const CTensor &v, bool reverse = false);
+CTensor sort(const CTensor &v, bool reverse = false);
+Indices sort_indices(const CTensor &v, bool reverse = false);
 
 bool all_equal(const CTensor &a, const CTensor &b);
 bool all_equal(const CTensor &a, const cdouble &b);
 inline bool all_equal(cdouble b, const CTensor &a) { return all_equal(a, b); }
 
-const Booleans operator==(const CTensor &a, const CTensor &b);
-const Booleans operator!=(const CTensor &a, const CTensor &b);
-const Booleans operator==(const CTensor &a, cdouble b);
-const Booleans operator!=(const CTensor &a, cdouble b);
-inline const Booleans operator==(cdouble a, const CTensor &b) { return b == a; }
-inline const Booleans operator!=(cdouble a, const CTensor &b) { return b != a; }
+Booleans operator==(const CTensor &a, const CTensor &b);
+Booleans operator!=(const CTensor &a, const CTensor &b);
+Booleans operator==(const CTensor &a, cdouble b);
+Booleans operator!=(const CTensor &a, cdouble b);
+inline Booleans operator==(cdouble a, const CTensor &b) { return b == a; }
+inline Booleans operator!=(cdouble a, const CTensor &b) { return b != a; }
 
-const CTensor operator+(const CTensor &a, const CTensor &b);
-const CTensor operator-(const CTensor &a, const CTensor &b);
-const CTensor operator*(const CTensor &a, const CTensor &b);
-const CTensor operator/(const CTensor &a, const CTensor &b);
+CTensor operator+(const CTensor &a, const CTensor &b);
+CTensor operator-(const CTensor &a, const CTensor &b);
+CTensor operator*(const CTensor &a, const CTensor &b);
+CTensor operator/(const CTensor &a, const CTensor &b);
 
-const CTensor operator+(const CTensor &a, cdouble b);
-const CTensor operator-(const CTensor &a, cdouble b);
-const CTensor operator*(const CTensor &a, cdouble b);
-const CTensor operator/(const CTensor &a, cdouble b);
+CTensor operator+(const CTensor &a, cdouble b);
+CTensor operator-(const CTensor &a, cdouble b);
+CTensor operator*(const CTensor &a, cdouble b);
+CTensor operator/(const CTensor &a, cdouble b);
 
-const CTensor operator+(cdouble a, const CTensor &b);
-const CTensor operator-(cdouble a, const CTensor &b);
-const CTensor operator*(cdouble a, const CTensor &b);
-const CTensor operator/(cdouble a, const CTensor &b);
+CTensor operator+(cdouble a, const CTensor &b);
+CTensor operator-(cdouble a, const CTensor &b);
+CTensor operator*(cdouble a, const CTensor &b);
+CTensor operator/(cdouble a, const CTensor &b);
 
 CTensor &operator+=(CTensor &a, const CTensor &b);
 CTensor &operator-=(CTensor &a, const CTensor &b);
 
-const CTensor kron(const CTensor &a, const CTensor &b);
-const CTensor kron2(const CTensor &a, const CTensor &b);
-const CTensor kron2_sum(const CTensor &a, const CTensor &b);
+CTensor kron(const CTensor &a, const CTensor &b);
+CTensor kron2(const CTensor &a, const CTensor &b);
+CTensor kron2_sum(const CTensor &a, const CTensor &b);
 
 /** Convert a vector of indices to a 1D tensor of real numbers.*/
-const RTensor index_to_tensor(const Indices &i);
+RTensor index_to_tensor(const Indices &i);
 
 }  // namespace tensor
 

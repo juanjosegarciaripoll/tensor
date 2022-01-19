@@ -77,10 +77,10 @@ const MatrixForm<double> matrix_form(const Tensor<double> &t);
 const MatrixForm<cdouble> matrix_form(const Tensor<cdouble> &t);
 
 /**Matrix form representation of a tensor.*/
-const MatrixForm<double> matrix_form(const Sparse<double> &t);
+const MatrixForm<double> matrix_form(const RSparse &t);
 
 /**Matrix form representation of a tensor.*/
-const MatrixForm<cdouble> matrix_form(const Sparse<cdouble> &t);
+const MatrixForm<cdouble> matrix_form(const CSparse &t);
 
 }  // namespace tensor
 

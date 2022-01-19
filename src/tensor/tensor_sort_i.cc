@@ -23,7 +23,7 @@
 
 namespace tensor {
 
-const Indices sort(const Indices &v, bool reverse) {
+Indices sort(const Indices &v, bool reverse) {
   Indices output(v);
   if (reverse) {
     std::sort(output.begin(), output.end(), std::greater<Indices::elt_t>());
@@ -49,7 +49,7 @@ struct CompareInv {
   int operator()(index i1, index i2) { return p[i1] > p[i2]; }
 };
 
-const Indices sort_indices(const Indices &v, bool reverse) {
+Indices sort_indices(const Indices &v, bool reverse) {
   if (v.size()) {
     Indices output = iota(0, v.size() - 1);
     if (reverse) {

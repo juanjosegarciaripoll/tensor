@@ -21,8 +21,7 @@
 
 namespace tensor {
 
-const Sparse<cdouble> operator-(const Sparse<cdouble> &a,
-                                const Sparse<cdouble> &b) {
+CSparse operator-(const CSparse &a, const CSparse &b) {
   return sparse_binop(a, b, std::minus<cdouble>());
 }
 

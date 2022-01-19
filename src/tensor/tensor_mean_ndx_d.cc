@@ -21,6 +21,6 @@
 namespace tensor {
 
 /* Compute the mean of the tensor T over dimension NDX. */
-const RTensor mean(const RTensor &t, int ndx) { return ::do_mean(t, ndx); }
+RTensor mean(const RTensor &t, int ndx) { return ::do_mean(t, ndx); }
 
 }  // namespace tensor

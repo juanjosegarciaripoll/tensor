@@ -22,6 +22,6 @@
 
 namespace tensor {
 
-const CTensor flatten(const CTensor &t) { return reshape(t, t.size()); }
+CTensor flatten(const CTensor &t) { return reshape(t, t.size()); }
 
 }  // namespace tensor

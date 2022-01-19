@@ -26,7 +26,7 @@
 namespace tensor {
 
 template <typename T1, typename T2, class binop>
-const Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
+Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
     const Sparse<T1> &m1, const Sparse<T2> &m2, binop op) {
   typedef typename std::common_type<T1, T2>::type T3;
 

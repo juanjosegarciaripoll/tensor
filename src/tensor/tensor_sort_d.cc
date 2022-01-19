@@ -23,7 +23,7 @@
 
 namespace tensor {
 
-const RTensor sort(const RTensor &v, bool reverse) {
+RTensor sort(const RTensor &v, bool reverse) {
   RTensor output(v);
   if (reverse) {
     std::sort(output.begin(), output.end(), std::greater<double>());
@@ -49,7 +49,7 @@ struct CompareInv {
   int operator()(size_t i1, size_t i2) { return p[i1] > p[i2]; }
 };
 
-const Indices sort_indices(const RTensor &v, bool reverse) {
+Indices sort_indices(const RTensor &v, bool reverse) {
   if (v.size()) {
     Indices output = iota(0, v.size() - 1);
     if (reverse) {

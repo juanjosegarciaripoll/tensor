@@ -22,19 +22,19 @@
 namespace tensor {
 
 /**Return a CTensor with same data and given dimensions.*/
-const CTensor reshape(const CTensor &t, const Indices &new_dims) {
+CTensor reshape(const CTensor &t, const Indices &new_dims) {
   return CTensor(new_dims, t);
 }
 
 /**Return a CTensor with same data and given dimensions.*/
-const CTensor reshape(const CTensor &t, index length) {
+CTensor reshape(const CTensor &t, index length) {
   Indices new_dims(1);
   new_dims.at(0) = length;
   return CTensor(new_dims, t);
 }
 
 /**Return a CTensor with same data and given dimensions.*/
-const CTensor reshape(const CTensor &t, index rows, index cols) {
+CTensor reshape(const CTensor &t, index rows, index cols) {
   Indices new_dims(2);
   new_dims.at(0) = rows;
   new_dims.at(1) = cols;
@@ -42,7 +42,7 @@ const CTensor reshape(const CTensor &t, index rows, index cols) {
 }
 
 /**Return a CTensor with same data and given dimensions.*/
-const CTensor reshape(const CTensor &t, index d1, index d2, index d3) {
+CTensor reshape(const CTensor &t, index d1, index d2, index d3) {
   Indices new_dims(3);
   new_dims.at(0) = d1;
   new_dims.at(1) = d2;
@@ -51,8 +51,7 @@ const CTensor reshape(const CTensor &t, index d1, index d2, index d3) {
 }
 
 /**Return a CTensor with same data and given dimensions.*/
-const CTensor reshape(const CTensor &t, index d1, index d2, index d3,
-                      index d4) {
+CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4) {
   Indices new_dims(4);
   new_dims.at(0) = d1;
   new_dims.at(1) = d2;
@@ -62,8 +61,8 @@ const CTensor reshape(const CTensor &t, index d1, index d2, index d3,
 }
 
 /**Return a CTensor with same data and given dimensions.*/
-const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
-                      index d5) {
+CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
+                index d5) {
   Indices new_dims(5);
   new_dims.at(0) = d1;
   new_dims.at(1) = d2;
@@ -74,8 +73,8 @@ const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
 }
 
 /**Return a CTensor with same data and given dimensions.*/
-const CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
-                      index d5, index d6) {
+CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
+                index d5, index d6) {
   Indices new_dims(6);
   new_dims.at(0) = d1;
   new_dims.at(1) = d2;

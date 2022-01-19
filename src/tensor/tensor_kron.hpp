@@ -32,8 +32,8 @@ namespace tensor {
 //
 
 template <typename elt_t>
-static inline const Tensor<elt_t> do_kron(const Tensor<elt_t> &b,
-                                          const Tensor<elt_t> &a) {
+static inline Tensor<elt_t> do_kron(const Tensor<elt_t> &b,
+                                    const Tensor<elt_t> &a) {
   assert(b.rank() == a.rank());
   assert(b.rank() <= 2);
   if (a.rank() == 1) {

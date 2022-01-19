@@ -58,8 +58,8 @@ Tensor<cdouble> fold(const Tensor<cdouble> &a, int ndx1,
 
      \ingroup Tensors
   */
-const Tensor<cdouble> foldc(const Tensor<cdouble> &a, int ndx1,
-                            const Tensor<cdouble> &b, int ndx2) {
+Tensor<cdouble> foldc(const Tensor<cdouble> &a, int ndx1,
+                      const Tensor<cdouble> &b, int ndx2) {
   Tensor<cdouble> output;
   do_fold<cdouble, true>(output, a, ndx1, b, ndx2);
   return output;

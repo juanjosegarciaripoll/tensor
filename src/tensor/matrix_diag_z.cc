@@ -21,11 +21,11 @@
 
 namespace tensor {
 
-const CTensor diag(const CTensor &a, int which, index rows, index cols) {
+CTensor diag(const CTensor &a, int which, index rows, index cols) {
   return do_diag(a, which, rows, cols);
 }
 
-const CTensor diag(const CTensor &a, int which) {
+CTensor diag(const CTensor &a, int which) {
   index n = a.size() + std::abs(which);
   return diag(a, which, n, n);
 }

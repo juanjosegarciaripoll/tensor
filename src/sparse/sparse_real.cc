@@ -21,7 +21,7 @@
 
 namespace tensor {
 
-const RSparse real(const CSparse &A) {
+RSparse real(const CSparse &A) {
   return RSparse(A.priv_dims(), A.priv_row_start(), A.priv_column(),
                  real(A.priv_data()));
 }

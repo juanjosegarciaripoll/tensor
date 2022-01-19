@@ -24,7 +24,7 @@
 
 namespace tensor {
 
-const Booleans operator||(const Booleans &a, const Booleans &b) {
+Booleans operator||(const Booleans &a, const Booleans &b) {
   assert(a.size() == b.size());
   Booleans output(a.size());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),

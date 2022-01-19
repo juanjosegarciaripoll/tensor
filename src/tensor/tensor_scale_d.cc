@@ -28,8 +28,8 @@ namespace tensor {
 
      \ingroup Tensors
   */
-const Tensor<double> scale(const Tensor<double> &t, int ndx,
-                           const Tensor<double> &v) {
+Tensor<double> scale(const Tensor<double> &t, int ndx,
+                     const Tensor<double> &v) {
   index d1, d2, d3;
   Tensor<double> output(t.dimensions());
   ndx = (int)normalize_index(ndx, t.rank());

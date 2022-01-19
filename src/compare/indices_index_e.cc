@@ -22,7 +22,7 @@
 
 namespace tensor {
 
-const Booleans operator==(const Indices &a, index b) {
+Booleans operator==(const Indices &a, index b) {
   Booleans c(a.size());
   Booleans::iterator ic = c.begin();
   for (Indices::const_iterator ia = a.begin(); ia != a.end(); ia++, ic++)

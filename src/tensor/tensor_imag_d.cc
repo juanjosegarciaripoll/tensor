@@ -22,7 +22,7 @@
 namespace tensor {
 
 /**Complex conjugate of a tensor.*/
-const Tensor<double> imag(const Tensor<double> &t) {
+Tensor<double> imag(const Tensor<double> &t) {
   Tensor<double> output(t.dimensions());
   output.fill_with_zeros();
   return output;
