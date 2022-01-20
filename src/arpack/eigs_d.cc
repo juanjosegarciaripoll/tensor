@@ -18,7 +18,7 @@
 */
 
 #include <tensor/linalg.h>
-#include <tensor/arpack_d.h>
+#include <tensor/arpack.h>
 #include "gemv.cc"
 
 namespace linalg {

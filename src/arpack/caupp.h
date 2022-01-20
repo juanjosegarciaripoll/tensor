@@ -37,7 +37,7 @@
 
 #include "arpackf.h"
 
-inline void caupp(blas::integer& ido, char bmat, blas::integer n, const char* which, blas::integer nev,
+inline void gen_aupp(blas::integer& ido, char bmat, blas::integer n, const char* which, blas::integer nev,
                   double& tol, tensor::cdouble resid[], blas::integer ncv,
                   tensor::cdouble V[], blas::integer ldv, blas::integer iparam[], blas::integer ipntr[],
                   tensor::cdouble workd[], tensor::cdouble workl[],

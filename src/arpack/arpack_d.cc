@@ -17,15 +17,11 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/arpack_d.h>
-#include "saupp.h"
-#include "seupp.h"
-
-#define ARPACK RArpack
-#define ELT_T double
-#undef COMPLEX
-
 #include "arpack_t.cc"
+
+namespace linalg {
+template class Arpack<double>;
+}
 
 /// Local variables:
 /// mode: c++
