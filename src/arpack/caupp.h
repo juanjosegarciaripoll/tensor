@@ -300,7 +300,7 @@ inline void caupp(blas::integer& ido, char bmat, blas::integer n, const char* wh
 */
 
 {
-  F77_FUNC(znaupd,ZNAUPD)(&ido, &bmat, &n, which, &nev, &tol,
+  F77NAME(znaupd)(&ido, &bmat, &n, which, &nev, &tol,
                           reinterpret_cast<blas::cdouble*>(resid), &ncv,
                           reinterpret_cast<blas::cdouble*>(V), &ldv,
                           iparam, ipntr,

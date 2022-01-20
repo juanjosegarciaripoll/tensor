@@ -307,7 +307,7 @@ inline void saupp(blas::integer& ido, char bmat, blas::integer n, const char* wh
 
 {
 
-  F77_FUNC(dsaupd,DSAUPD)(&ido, &bmat, &n, which, &nev, &tol, resid, &ncv,
+  F77NAME(dsaupd)(&ido, &bmat, &n, which, &nev, &tol, resid, &ncv,
                           &V[0], &ldv, &iparam[0], &ipntr[0], &workd[0], &workl[0],
                           &lworkl, &info);
 

@@ -27,8 +27,8 @@ namespace linalg {
 
 CTensor eigs(const CSparse &A, int eig_type, size_t neig, CTensor *eigenvectors,
              bool *converged) {
-  return do_eigs(new tensor::MatrixMap<CSparse>(A), A.columns(), eig_type, neig,
-                 eigenvectors, converged);
+  return eigs([&A](const CTensor &x) { return mmult(A, x); }, A.columns(), eig_type, neig,
+              eigenvectors, converged);
 }
 
 }  // namespace linalg

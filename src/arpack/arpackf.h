@@ -54,19 +54,19 @@ extern "C"
     blas::integer msaupd, msaup2, msaitr, mseigt, msapps, msgets, mseupd;
     blas::integer mnaupd, mnaup2, mnaitr, mneigt, mnapps, mngets, mneupd;
     blas::integer mcaupd, mcaup2, mcaitr, mceigt, mcapps, mcgets, mceupd;
-  } F77_FUNC(debug,DEBUG);
+  } F77NAME(debug);
 
 
   // double precision symmetric routines.
 
-  void F77_FUNC(dsaupd,DSAUPD)
+  void F77NAME(dsaupd)
     (blas::integer *ido, const char *bmat, blas::integer *n, const char *which,
      blas::integer *nev, double *tol, double *resid,
      blas::integer *ncv, double *V, blas::integer *ldv,
      blas::integer *iparam, blas::integer *ipntr, double *workd,
      double *workl, blas::integer *lworkl, blas::integer *info);
 
-  void F77_FUNC(dseupd,DSEUPD)
+  void F77NAME(dseupd)
     (logical *rvec, const char *HowMny, logical *select,
      double *d, double *Z, blas::integer *ldz,
      double *sigma, const char *bmat, blas::integer *n,
@@ -78,14 +78,14 @@ extern "C"
 
   // double precision nonsymmetric routines.
 
-  void F77_FUNC(dnaupd,DNAUPD)
+  void F77NAME(dnaupd)
     (blas::integer *ido, const char *bmat, blas::integer *n, const char *which,
      blas::integer *nev, double *tol, double *resid,
      blas::integer *ncv, double *V, blas::integer *ldv,
      blas::integer *iparam, blas::integer *ipntr, double *workd,
      double *workl, blas::integer *lworkl, blas::integer *info);
 
-  void F77_FUNC(dneupd,DNEUPD)
+  void F77NAME(dneupd)
     (logical *rvec, const char *HowMny, logical *select,
      double *dr, double *di, double *Z,
      blas::integer *ldz, double *sigmar,
@@ -99,7 +99,7 @@ extern "C"
 
   // double precision complex routines.
 
-  void F77_FUNC(znaupd,ZNAUPD)
+  void F77NAME(znaupd)
     (blas::integer *ido,
      const char *bmat, blas::integer *n, const char *which, blas::integer *nev,
      double *tol, cdouble *resid, blas::integer *ncv,
@@ -108,7 +108,7 @@ extern "C"
      cdouble *workl, blas::integer *lworkl,
      double *rwork, blas::integer *info);
 
-  void F77_FUNC(zneupd,ZNEUPD)
+  void F77NAME(zneupd)
     (logical *rvec, const char *HowMny, logical *select,
      cdouble *d, cdouble *Z, blas::integer *ldz,
      cdouble *sigma, cdouble *workev,

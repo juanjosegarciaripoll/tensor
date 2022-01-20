@@ -26,7 +26,6 @@
 #cmakedefine HAVE___BUILTIN_RETURN_ADDRESS
 #cmakedefine HAVE_GETTIMEOFDAY
 #cmakedefine TENSOR_BIGENDIAN
-#define F77_FUNC(name,NAME) @F77_FUNC@
 
 #cmakedefine TENSOR_64BITS
 

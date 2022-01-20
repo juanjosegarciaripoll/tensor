@@ -158,8 +158,8 @@ inline void seupp(bool rvec, char HowMny, double d[], double Z[],
   auto iselect = std::make_unique<logical[]>(ncv);
   double* iZ = (Z == NULL) ? &V[0] : Z;
 
-  F77_FUNC(dseupd, DSEUPD)
-  (&irvec, &HowMny, iselect, d, iZ, &ldz, &sigma, &bmat, &n, which, &nev, &tol,
+  F77NAME(dseupd)
+  (&irvec, &HowMny, iselect.get(), d, iZ, &ldz, &sigma, &bmat, &n, which, &nev, &tol,
    resid, &ncv, &V[0], &ldv, &iparam[0], &ipntr[0], &workd[0], &workl[0],
    &lworkl, &info);
 }  // seupp (double).

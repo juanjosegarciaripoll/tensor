@@ -188,7 +188,7 @@ inline void ceupp(blas::integer rvec, char HowMny, tensor::cdouble d[],
   auto iselect = std::make_unique<logical[]>(ncv);
   blas::cdouble* iZ = reinterpret_cast<blas::cdouble*>((Z == NULL) ? V : Z);
 
-  F77_FUNC(zneupd, ZNEUPD)
+  F77NAME(zneupd)
   (&rvec, &HowMny, iselect.get(), reinterpret_cast<blas::cdouble*>(d), iZ, &ldz,
    reinterpret_cast<blas::cdouble*>(&sigma),
    reinterpret_cast<blas::cdouble*>(workev), &bmat, &n, which, &nev, &tol,

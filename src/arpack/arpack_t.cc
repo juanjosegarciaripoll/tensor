@@ -297,9 +297,17 @@ ELT_T *ARPACK::get_y_vector() {
   return &workd[ipntr[2 - 1] - 1];
 }
 
-const Tensor<ELT_T> ARPACK::get_x() { return Vector<ELT_T>(n, get_x_vector()); }
+const Tensor<ELT_T> ARPACK::get_x() {
+  Vector<ELT_T> output(n);
+  memcpy(output.begin(), get_x_vector(), n * sizeof(ELT_T));
+  return output;
+}
 
-Tensor<ELT_T> ARPACK::get_y() { return Vector<ELT_T>(n, get_y_vector()); }
+Tensor<ELT_T> ARPACK::get_y() {
+  Vector<ELT_T> output(n);
+  memcpy(output.begin(), get_y_vector(), n * sizeof(ELT_T));
+  return output;
+}
 
 void ARPACK::set_y(const Tensor<ELT_T> &y) {
   memcpy(get_y_vector(), y.begin(), sizeof(Tensor<ELT_T>::elt_t) * n);
