@@ -21,6 +21,7 @@
 #ifndef TENSOR_VECTOR_H
 #define TENSOR_VECTOR_H
 
+#include <algorithm>
 #include <memory>
 #include <cstring>
 #include <tensor/numbers.h>
@@ -46,6 +47,11 @@ class Vector {
       : size_{size},
         base_{new elt_t[size]},
         data_(base_, std::default_delete<elt_t[]>()) {}
+
+  template <typename other_elt>
+  Vector(const std::initializer_list<other_elt> &l) : Vector(l.size()) {
+    std::copy(l.begin(), l.end(), base_);
+  }
 
   /* Copy constructor and copy operator */
   Vector(const Vector<elt_t> &v) = default;

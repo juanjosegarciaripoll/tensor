@@ -22,7 +22,6 @@
 #define TENSOR_INDICES_H
 
 #include <list>
-#include <vector>
 #include <tensor/vector.h>
 #include <tensor/gen.h>
 
@@ -39,6 +38,10 @@ class Indices : public Vector<index> {
   Indices(const Vector<index> &v) : Vector<index>(v) {}
   template <size_t n>
   Indices(StaticVector<index, n> v) : Vector<index>(v) {}
+
+  template <typename other_elt>
+  Indices(const std::initializer_list<other_elt> &l) : Vector<index>(l) {}
+
   explicit Indices(index size) : Vector<index>(size) {}
 
   static const Indices range(index min, index max, index step = 1);
