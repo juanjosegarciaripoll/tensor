@@ -296,16 +296,12 @@ elt_t *Arpack<elt_t>::get_y_vector() {
 
 template <typename elt_t>
 const tensor::Tensor<elt_t> Arpack<elt_t>::get_x() {
-  Vector<elt_t> output(n);
-  memcpy(output.begin(), get_x_vector(), n * sizeof(elt_t));
-  return output;
+  return Tensor(tensor::Vector<elt_t>(n, get_x_vector()));
 }
 
 template <typename elt_t>
 tensor::Tensor<elt_t> Arpack<elt_t>::get_y() {
-  Vector<elt_t> output(n);
-  memcpy(output.begin(), get_y_vector(), n * sizeof(elt_t));
-  return output;
+  return Tensor(tensor::Vector<elt_t>(n, get_y_vector()));
 }
 
 template <typename elt_t>

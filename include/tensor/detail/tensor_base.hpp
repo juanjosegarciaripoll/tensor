@@ -105,7 +105,12 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(const Vector<elt_t> &data) : dims_(1), data_(data) {
-  dims_.at(0) = data.size();
+  dims_.at(0) = data_.size();
+}
+
+template <typename elt_t>
+Tensor<elt_t>::Tensor(Vector<elt_t> &&data) : dims_(1), data_(std::move(data)) {
+  dims_.at(0) = data_.size();
 }
 
 //
