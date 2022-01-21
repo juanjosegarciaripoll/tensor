@@ -21,24 +21,111 @@
 #ifndef TENSOR_ARPACK_H
 #define TENSOR_ARPACK_H
 
-#include <tensor/arpack_d.h>
-#include <tensor/arpack_z.h>
+#include <tensor/tensor_blas.h>
+#include <tensor/linalg.h>
 
 namespace linalg {
+/*!\addtogroup Linalg */
+/*!@{*/
 
-template <class Tensor>
-class Arpack;
-template <>
-class Arpack<RTensor> : public RArpack {
+/**Finder of a few eigenvalues of eigenvectors via Arnoldi method.*/
+template <typename scalar_t>
+class Arpack {
  public:
-  Arpack(size_t n, enum EigType t, size_t neig) : RArpack(n, t, neig) {}
+  using elt_t = scalar_t;
+  using integer = blas::integer;
+  using Tensor = tensor::Tensor<elt_t>;
+
+  enum Status {
+    Uninitialized = 0,
+    Initialized = 1,
+    Running = 2,
+    Finished = 3,
+    Error = 4,
+    TooManyIterations = 5,
+    NoConvergence = 6,
+  };
+
+  Arpack(size_t n, enum EigType t, size_t neig);
+  void set_random_start_vector();
+  void set_start_vector(const elt_t *v);
+  void set_tolerance(double tol);
+  void set_maxiter(size_t maxiter);
+  enum Status update();
+  elt_t *get_x_vector();
+  elt_t *get_y_vector();
+  const Tensor get_x();
+  Tensor get_y();
+  void set_y(const Tensor &y);
+  Tensor get_data(Tensor *vectors);
+  Tensor get_data(elt_t *z);
+  std::string error_message() { return std::string(error); };
+  enum Status get_status() { return status; };
+  size_t get_vector_size() { return n; };
+
+  static tensor::Indices sort_values(const tensor::CTensor &t,
+                                     EigType selector);
+
+ protected:
+  enum Status status;
+  enum EigType which_eig;
+
+  integer n;          // Dimension of the eigenproblem.
+  integer nev;        // Number of eigenvalues to be computed. 0 < nev < n-1.
+  integer ncv;        // Number of Arnoldi vectors generated at each iteration.
+  integer maxit;      // Maximum number of Arnoldi update iterations allowed.
+  const char *which;  // Specify which of the Ritz values of OP to compute.
+  double tol;         // Stopping criterion (relative accuracy of Ritz values).
+  elt_t sigma;        // Shift (for nonsymmetric problems).
+  std::unique_ptr<elt_t[]> resid;  // Initial residual vector.
+
+  // a.2) Internal variables.
+
+  bool symmetric;      // Symmetric matrix, or not
+  bool rvec;           // Indicates if eigenvectors/Schur vectors were
+                       // requested (or only eigenvalues will be determined).
+  char bmat;           // Indicates if the problem is a standard ('I') or
+                       // generalized ('G") eigenproblem.
+  char hwmny;          // Indicates if eigenvectors ('A') or Schur vectors ('P')
+                       // were requested (not referenced if rvec = false).
+  integer ido;         // Original ARPACK reverse communication flag.
+  integer info;        // Original ARPACK error flag.
+  integer mode;        // Indicates the type of the eigenproblem (regular,
+                       // shift and invert, etc).
+  integer lworkl;      // Dimension of array workl.
+  integer lworkv;      // Dimension of array workv.
+  integer lrwork;      // Dimension of array rwork.
+  integer iparam[12];  // RVector that handles original ARPACK parameters.
+  integer ipntr[15];   // RVector that handles original ARPACK pointers.
+  std::unique_ptr<double[]> rwork;  // Original ARPACK internal vector.
+  std::unique_ptr<elt_t[]> workl;   // Original ARPACK internal vector.
+  std::unique_ptr<elt_t[]> workd;   // Original ARPACK internal vector.
+  std::unique_ptr<elt_t[]> workv;   // Original ARPACK internal vector.
+  std::unique_ptr<elt_t[]> V;       // Arnoldi basis / Schur vectors.
+
+  // a.3) Pure output variables.
+
+  integer nconv;  // Number of "converged" Ritz values.
+
+  const char *error;
 };
 
-template <>
-class Arpack<CTensor> : public CArpack {
- public:
-  Arpack(size_t n, enum EigType t, size_t neig) : CArpack(n, t, neig) {}
-};
+/*!@}*/
+
+extern template class Arpack<double>;
+extern template class Arpack<tensor::cdouble>;
+
+#ifdef DOXYGEN_ONLY
+/** Arpack solver for vectors of type RTensor and real matrices. */
+struct RArpack : public Arpack<double> {
+}
+/** Arpack solver for vectors of type CTensor and complex matrices. */
+struct CArpack : public Arpack<tensor::cdouble> {
+}
+#else
+typedef Arpack<double> RArpack;
+typedef Arpack<tensor::cdouble> CArpack;
+#endif
 
 }  // namespace linalg
 

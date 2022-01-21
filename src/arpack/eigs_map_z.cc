@@ -18,14 +18,14 @@
 */
 
 #include <tensor/linalg.h>
-#include <tensor/arpack_z.h>
+#include <tensor/arpack.h>
 
 namespace linalg {
 
 using namespace tensor;
 
-CTensor do_eigs(const Map<CTensor> *A, size_t n, int eig_type, size_t neig,
-                CTensor *eigenvectors, bool *converged) {
+CTensor eigs(const LinearMap<CTensor> &A, size_t n, int eig_type, size_t neig,
+             CTensor *eigenvectors, bool *converged) {
   EigType t = (EigType)eig_type;
 
   if (neig > n || neig == 0) {
@@ -43,7 +43,7 @@ CTensor do_eigs(const Map<CTensor> *A, size_t n, int eig_type, size_t neig,
     for (int i = 0; i < n; i++) {
       CTensor v = CTensor::zeros(igen << n);
       v.at(i) = 1.0;
-      M.at(range(), range(i)) = (*A)(v);
+      M.at(range(), range(i)) = A(v);
     }
     CTensor vectors;
     CTensor values = eig(M, NULL, eigenvectors ? &vectors : 0);
@@ -65,7 +65,7 @@ CTensor do_eigs(const Map<CTensor> *A, size_t n, int eig_type, size_t neig,
     data.set_start_vector(eigenvectors->begin_const());
 
   while (data.update() < CArpack::Finished) {
-    data.set_y((*A)(data.get_x()));
+    data.set_y(A(data.get_x()));
   }
   if (data.get_status() == CArpack::Finished) {
     if (converged) *converged = true;

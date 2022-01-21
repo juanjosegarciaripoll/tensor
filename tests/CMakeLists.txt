@@ -15,7 +15,7 @@ add_library(testmain
   random_unitary_d.cc random_unitary_z.cc
   random_permutation.cc)
 target_link_libraries(testmain
-  PUBLIC tensor GTest::gtest)
+  PUBLIC tensor ${GTEST_COMPONENT})
 
 macro(package_add_test TESTNAME)
     # create an exectuable in which the tests will be stored

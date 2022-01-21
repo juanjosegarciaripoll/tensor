@@ -21,6 +21,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Used modules
+include(FetchContent)
 include(CheckIncludeFile)
 include(CheckSymbolExists)
 include(CheckTypeSize)
@@ -105,24 +106,6 @@ if(TENSOR_ARPACK)
     DEPENDENCIES TENSOR_DEPENDENCIES
     PKGCONFIG_NAMES arpack-ng arpack
     REQUIRED)
-  enable_language(Fortran)
-  include(FortranCInterface)
-  FortranCInterface_HEADER(dummy.h)
-  if(FortranCInterface_GLOBAL_FOUND)
-    if(${FortranCInterface_GLOBAL_CASE} STREQUAL "UPPER")
-      set(F77_FUNC NAME)
-    else()
-      set(F77_FUNC name)
-    endif()
-    if(NOT ("${FortranCInterface_GLOBAL_PREFIX}" STREQUAL ""))
-      set(F77_FUNC "${FortranCInterface_GLOBAL_PREFIX}##${F77_FUNC}")
-    endif()
-    if(NOT ("${FortranCInterface_GLOBAL_SUFFIX}" STREQUAL ""))
-      set(F77_FUNC "${F77_FUNC}##${FortranCInterface_GLOBAL_SUFFIX}")
-    endif()
-  else()
-    message(FATAL_ERROR "Unable to find Fortran-C interface")
-  endif()
 endif()
 
 #
@@ -206,17 +189,18 @@ add_subdirectory("profile")
 #
 if(TENSOR_TEST)
   find_package(GTest)
-  set(GTEST_PREFIX GTest::)
+  set(GTEST_COMPONENT GTest::gtest)
   if(NOT GTest_FOUND)
-	include(FetchContent)
-	FetchContent_Declare(
-	  googletest
-	  URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
-	  )
-	# For Windows: Prevent overriding the parent project's compiler/linker settings
-	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-	FetchContent_MakeAvailable(googletest)
-	set(GTEST_PREFIX "")
+    message(STATUS "GTest not found")
+	  FetchContent_Declare(
+	    googletest
+	    URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+	    )
+	  # For Windows: Prevent overriding the parent project's compiler/linker settings
+	  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    message(STATUS "Downloading googletest")
+	  FetchContent_MakeAvailable(googletest)
+	  set(GTEST_COMPONENT "gtest_main")
   endif()
   add_subdirectory(tests)
 endif()

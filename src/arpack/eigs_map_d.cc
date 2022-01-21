@@ -18,15 +18,15 @@
 */
 
 #include <tensor/linalg.h>
-#include <tensor/arpack_d.h>
+#include <tensor/arpack.h>
 #include "gemv.cc"
 
 namespace linalg {
 
 using namespace tensor;
 
-RTensor do_eigs(const Map<RTensor> *A, size_t n, int eig_type, size_t neig,
-                RTensor *eigenvectors, bool *converged) {
+RTensor eigs(const LinearMap<RTensor> &A, size_t n, int eig_type, size_t neig,
+             RTensor *eigenvectors, bool *converged) {
   EigType t = (EigType)eig_type;
 
   if (neig > n || neig == 0) {
@@ -44,7 +44,7 @@ RTensor do_eigs(const Map<RTensor> *A, size_t n, int eig_type, size_t neig,
     for (int i = 0; i < n; i++) {
       RTensor v = RTensor::zeros(igen << n);
       v.at(i) = 1.0;
-      M.at(range(), range(i)) = (*A)(v);
+      M.at(range(), range(i)) = A(v);
     }
     CTensor vectors;
     CTensor values = eig(M, NULL, eigenvectors ? &vectors : 0);
@@ -66,7 +66,7 @@ RTensor do_eigs(const Map<RTensor> *A, size_t n, int eig_type, size_t neig,
     data.set_start_vector(eigenvectors->begin_const());
 
   while (data.update() < RArpack::Finished) {
-    data.set_y((*A)(data.get_x()));
+    data.set_y(A(data.get_x()));
   }
   if (data.get_status() == RArpack::Finished) {
     if (converged) *converged = true;

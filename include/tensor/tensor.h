@@ -65,9 +65,12 @@ class Tensor {
   /**Constructs a 1-D Tensor from a vector.*/
   Tensor(const Vector<elt_t> &data);
 
+  /**Constructs a 1-D Tensor from a vector (move version for temporaries).*/
+  Tensor(Vector<elt_t> &&data);
+
   /**Constructs a 1-D Tensor from a vector.*/
-  Tensor(const std::vector<elt_t> &data) : data_(data.size()), dims_(1) {
-    dims_.at(0) = static_cast<index>(data.size());
+  Tensor(const std::vector<elt_t> &data)
+      : data_(data.size()), dims_{static_cast<index>(data.size())} {
     std::copy(data.begin(), data.end(), begin());
   }
 

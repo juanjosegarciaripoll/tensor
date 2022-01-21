@@ -18,14 +18,20 @@
 */
 
 #include <algorithm>
+#include <tensor/arpack.h>
+#include "saupp.h"
+#include "seupp.h"
+#include "caupp.h"
+#include "ceupp.h"
 
 using namespace tensor;
 using namespace linalg;
 
-ARPACK::ARPACK(size_t _n, enum EigType _t, size_t _nev) {
-#ifdef COMPLEX
-  static const char *whichs[6] = {"LM", "SM", "LR", "SR", "LI", "SI"};
-#else
+template <typename elt_t>
+const char *eigenvalue_selector(enum EigType _t);
+
+template <>
+inline const char *eigenvalue_selector<double>(enum EigType _t) {
   static const char *whichs[6] = {"LM", "SM", "LA", "SA", NULL, NULL};
   if (_t == LargestImaginary) {
     std::cerr
@@ -39,7 +45,17 @@ ARPACK::ARPACK(size_t _n, enum EigType _t, size_t _nev) {
               << std::endl;
     abort();
   }
-#endif
+  return whichs[_t];
+}
+
+template <>
+inline const char *eigenvalue_selector<tensor::cdouble>(enum EigType _t) {
+  static const char *whichs[6] = {"LM", "SM", "LR", "SR", "LI", "SI"};
+  return whichs[_t];
+}
+
+template <typename elt_t>
+Arpack<elt_t>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
   if (_t < 0 || _t > 6) {
     std::cerr << "Invalid argument EigType passed to Arpack constructor"
               << std::endl;
@@ -48,12 +64,8 @@ ARPACK::ARPACK(size_t _n, enum EigType _t, size_t _nev) {
 
   // Select the type of problem
   which_eig = _t;
-  which = whichs[which_eig];
-#ifdef COMPLEX
-  symmetric = 0;
-#else
-  symmetric = 1;
-#endif
+  which = eigenvalue_selector<elt_t>(_t);
+  symmetric = sizeof(elt_t) == sizeof(double);
 
   // Default tolerance is machine precision
   tol = -1.0;
@@ -64,7 +76,7 @@ ARPACK::ARPACK(size_t _n, enum EigType _t, size_t _nev) {
 
   // There's a limit in the number of eigenvalues we can get
   if ((nev == 0) || (nev > (n - 1))) {
-    std::cerr << "Error in ARPACK::ARPACK(): \n "
+    std::cerr << "Error in Arpack<elt_t>::Arpack(): \n "
               << "You request NEV=" << nev
               << " eigenvalues, while only between 1 and " << (n - 1)
               << " eigenvalues can be computed.";
@@ -76,12 +88,12 @@ ARPACK::ARPACK(size_t _n, enum EigType _t, size_t _nev) {
 
   // By default, random vector
   info = 0;
-  resid = new ELT_T[n];
+  resid = std::make_unique<elt_t[]>(n);
 
   // Reserve space for the lanczos basis in which the eigenvectors are
   // approximated.
   ncv = std::min<blas::integer>(std::max<blas::integer>(2 * nev, 20), n);
-  V = new ELT_T[n * ncv];
+  V = std::make_unique<elt_t[]>(n * ncv);
 
   // Conservative estimate by Matlab
 
@@ -106,35 +118,18 @@ ARPACK::ARPACK(size_t _n, enum EigType _t, size_t _nev) {
   //
   lworkl = symmetric ? ncv * (ncv + 8) : ncv * (3 * ncv + 5);
   lworkv = ncv * 3;
-  workd = new ELT_T[n * 3];
-  workl = new ELT_T[lworkl];
-  workv = new ELT_T[lworkv];
-  rwork = new double[ncv];
+  workd = std::make_unique<elt_t[]>(n * 3);
+  workl = std::make_unique<elt_t[]>(lworkl);
+  workv = std::make_unique<elt_t[]>(lworkv);
+  rwork = std::make_unique<double[]>(ncv);
   for (size_t i = 0; i < 15; i++) ipntr[i] = 0;
 
   // We have initialized this structure
   status = Initialized;
 }
 
-ARPACK::~ARPACK() {
-  // Deleting working arrays
-  delete[] workd;
-  workd = 0;
-  delete[] workl;
-  workl = 0;
-  delete[] workv;
-  workv = 0;
-  delete[] rwork;
-  rwork = 0;
-  delete[] V;
-  V = 0;
-
-  // Deleting input and output arrays
-  delete[] resid;
-  resid = 0;
-}
-
-ARPACK::Status ARPACK::update() {
+template <typename elt_t>
+typename Arpack<elt_t>::Status Arpack<elt_t>::update() {
   if (status < Initialized) {
     error = "ARPACK: Cannot call update() with an uninitialized ARPACK object.";
     status = Error;
@@ -146,13 +141,8 @@ ARPACK::Status ARPACK::update() {
     return status;
   }
 
-#ifdef COMPLEX
-  caupp(ido, bmat, n, which, nev, tol, resid, ncv, V, n, iparam, ipntr, workd,
-        workl, lworkl, rwork, info);
-#else
-  saupp(ido, bmat, n, which, nev, tol, resid, ncv, V, n, iparam, ipntr, workd,
-        workl, lworkl, info);
-#endif
+  gen_aupp(ido, bmat, n, which, nev, tol, resid.get(), ncv, V.get(), n, iparam,
+           ipntr, workd.get(), workl.get(), lworkl, rwork.get(), info);
 
   if (ido == 99) {
     status = Error;
@@ -185,14 +175,16 @@ ARPACK::Status ARPACK::update() {
   return status;
 }
 
-Tensor<ELT_T> ARPACK::get_data(Tensor<ELT_T> *vectors) {
+template <typename elt_t>
+Tensor<elt_t> Arpack<elt_t>::get_data(tensor::Tensor<elt_t> *vectors) {
   if (vectors) {
-    *vectors = Tensor<ELT_T>(n, nev);
+    *vectors = Tensor(n, nev);
   }
   return get_data(vectors ? vectors->begin() : NULL);
 }
 
-Tensor<ELT_T> ARPACK::get_data(Tensor<ELT_T>::elt_t *z) {
+template <typename elt_t>
+Tensor<elt_t> Arpack<elt_t>::get_data(elt_t *z) {
   // Do we want eigenvectors?
   bool rvec;
   int ldz;
@@ -205,19 +197,15 @@ Tensor<ELT_T> ARPACK::get_data(Tensor<ELT_T>::elt_t *z) {
   }
 
   // Room for eigenvalues
-  Tensor<ELT_T> output(nev + 1);
-  ELT_T *d = output.begin();
+  Tensor output(nev + 1);
+  elt_t *d = output.begin();
 
   // Unused here
-  ELT_T sigma = number_zero<ELT_T>();
+  elt_t sigma = number_zero<elt_t>();
 
-#ifdef COMPLEX
-  ceupp(rvec, hwmny, d, z, ldz, sigma, workv, bmat, n, which, nev, tol, resid,
-        ncv, V, n, iparam, ipntr, workd, workl, lworkl, rwork, info);
-#else
-  seupp(rvec, hwmny, d, z, ldz, sigma, bmat, n, which, nev, tol, resid, ncv, V,
-        n, iparam, ipntr, workd, workl, lworkl, info);
-#endif
+  gen_eupp(rvec, hwmny, d, z, ldz, sigma, workv.get(), bmat, n, which, nev, tol,
+           resid.get(), ncv, V.get(), n, iparam, ipntr, workd.get(),
+           workl.get(), lworkl, rwork.get(), info);
   if (info != 0) {
     static const char *const messages[17] = {
         "Unknown error.",
@@ -235,7 +223,7 @@ Tensor<ELT_T> ARPACK::get_data(Tensor<ELT_T>::elt_t *z) {
         "DSAUPP did not find any eigenvalues to sufficient accuracy.",
         "HOWMNY must be one of 'A' or 'S' if rvec = true.",
         "HOWMNY = 'S' not yet implemented."};
-    std::cerr << "Routine ARPACK::get_data() failed" << std::endl
+    std::cerr << "Routine Arpack<elt_t>::get_data() failed" << std::endl
               << messages[(info < -16 || info > 0) ? 0 : (-info)] << std::endl
               << "N=" << n << std::endl
               << "NEV=" << n << std::endl
@@ -251,61 +239,78 @@ Tensor<ELT_T> ARPACK::get_data(Tensor<ELT_T>::elt_t *z) {
   return output(range(0, nev - 1));
 }
 
-void ARPACK::set_start_vector(const ELT_T *v) {
+template <typename elt_t>
+void Arpack<elt_t>::set_start_vector(const elt_t *v) {
   if (status >= Running) {
-    std::cerr << "ARPACK:: Cannot change start vector while running\n";
+    std::cerr << "Arpack<elt_t>:: Cannot change start vector while running\n";
     abort();
   }
   info = 1;
-  memcpy(resid, v, n * sizeof(ELT_T));
+  memcpy(resid.get(), v, n * sizeof(elt_t));
 }
 
-void ARPACK::set_random_start_vector() { info = 0; }
+template <typename elt_t>
+void Arpack<elt_t>::set_random_start_vector() {
+  info = 0;
+}
 
-void ARPACK::set_tolerance(double _tol) {
+template <typename elt_t>
+void Arpack<elt_t>::set_tolerance(double _tol) {
   if (status >= Running) {
-    std::cerr << "ARPACK:: Cannot change tolerance while running\n";
+    std::cerr << "Arpack<elt_t>:: Cannot change tolerance while running\n";
     abort();
   }
   tol = _tol;
 }
 
-void ARPACK::set_maxiter(size_t new_maxiter) {
+template <typename elt_t>
+void Arpack<elt_t>::set_maxiter(size_t new_maxiter) {
   if (status >= Running) {
-    std::cerr << "ARPACK:: Cannot change number of iterations while running\n";
+    std::cerr
+        << "Arpack<elt_t>:: Cannot change number of iterations while running\n";
     abort();
   }
   maxit = new_maxiter;
   iparam[2] = maxit;
 }
 
-ELT_T *ARPACK::get_x_vector() {
+template <typename elt_t>
+elt_t *Arpack<elt_t>::get_x_vector() {
   if (status != Running) {
-    std::cerr << "ARPACK:: get_x_vector() invoked outside main loop";
+    std::cerr << "Arpack<elt_t>:: get_x_vector() invoked outside main loop";
     abort();
   }
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   return &workd[ipntr[1 - 1] - 1];
 }
 
-ELT_T *ARPACK::get_y_vector() {
+template <typename elt_t>
+elt_t *Arpack<elt_t>::get_y_vector() {
   if (status != Running) {
-    std::cerr << "ARPACK:: get_y_vector() invoked outside main loop";
+    std::cerr << "Arpack<elt_t>:: get_y_vector() invoked outside main loop";
     abort();
   }
   // IPNTR[2] has a FORTRAN index, which is one-based, instead of zero-based
   return &workd[ipntr[2 - 1] - 1];
 }
 
-const Tensor<ELT_T> ARPACK::get_x() { return Vector<ELT_T>(n, get_x_vector()); }
-
-Tensor<ELT_T> ARPACK::get_y() { return Vector<ELT_T>(n, get_y_vector()); }
-
-void ARPACK::set_y(const Tensor<ELT_T> &y) {
-  memcpy(get_y_vector(), y.begin(), sizeof(Tensor<ELT_T>::elt_t) * n);
+template <typename elt_t>
+const tensor::Tensor<elt_t> Arpack<elt_t>::get_x() {
+  return Tensor(tensor::Vector<elt_t>(n, get_x_vector()));
 }
 
-Indices ARPACK::sort_values(const CTensor &values, EigType t) {
+template <typename elt_t>
+tensor::Tensor<elt_t> Arpack<elt_t>::get_y() {
+  return Tensor(tensor::Vector<elt_t>(n, get_y_vector()));
+}
+
+template <typename elt_t>
+void Arpack<elt_t>::set_y(const tensor::Tensor<elt_t> &y) {
+  memcpy(get_y_vector(), y.begin(), sizeof(elt_t) * n);
+}
+
+template <typename elt_t>
+Indices Arpack<elt_t>::sort_values(const CTensor &values, EigType t) {
   RTensor aux;
   switch (t) {
     case LargestReal:

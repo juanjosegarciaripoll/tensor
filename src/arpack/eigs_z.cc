@@ -22,7 +22,7 @@
 //
 
 #include <tensor/linalg.h>
-#include <tensor/arpack_z.h>
+#include <tensor/arpack.h>
 #include "gemv.cc"
 
 namespace linalg {

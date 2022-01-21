@@ -21,6 +21,7 @@
 #ifndef TENSOR_VECTOR_H
 #define TENSOR_VECTOR_H
 
+#include <algorithm>
 #include <memory>
 #include <cstring>
 #include <tensor/numbers.h>
@@ -40,10 +41,17 @@ class Vector {
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
-  Vector() : size_{0}, data_{} {}
+  Vector() : size_{0}, base_{nullptr}, data_{} {}
 
   explicit Vector(size_t size)
-      : size_{size}, data_(new elt_t[size], std::default_delete<elt_t[]>()) {}
+      : size_{size},
+        base_{new elt_t[size]},
+        data_(base_, std::default_delete<elt_t[]>()) {}
+
+  template <typename other_elt>
+  Vector(const std::initializer_list<other_elt> &l) : Vector(l.size()) {
+    std::copy(l.begin(), l.end(), base_);
+  }
 
   /* Copy constructor and copy operator */
   Vector(const Vector<elt_t> &v) = default;
@@ -55,7 +63,7 @@ class Vector {
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */
-  //Vector(size_t size, elt_t *data) : size_{size}, data_{data} {}
+  Vector(size_t size, elt_t *data) : size_{size}, base_{data}, data_{} {}
 
   constexpr size_t size() const { return size_; }
 
@@ -63,10 +71,10 @@ class Vector {
   elt_t &at(size_t pos) { return *(begin() + pos); }
 
   iterator begin() { return appropriate(); }
-  const_iterator begin() const { return data_.get(); }
-  const_iterator begin_const() const { return data_.get(); }
-  const_iterator end_const() const { return data_.get() + size_; }
-  const_iterator end() const { return data_.get() + size_; }
+  const_iterator begin() const { return base_; }
+  const_iterator begin_const() const { return base_; }
+  const_iterator end_const() const { return begin_const() + size_; }
+  const_iterator end() const { return begin_const() + size_; }
   iterator end() { return begin() + size_; }
 
   // Only for testing purposes
@@ -74,6 +82,7 @@ class Vector {
 
  private:
   size_t size_;
+  elt_t *base_;
   std::shared_ptr<elt_t> data_;
 
   elt_t *appropriate() {
@@ -82,8 +91,9 @@ class Vector {
                                  std::default_delete<elt_t[]>());
       memcpy(tmp.get(), data_.get(), size_ * sizeof(elt_t));
       std::swap(data_, tmp);
+      return base_ = data_.get();
     }
-    return data_.get();
+    return base_;
   }
 };
 

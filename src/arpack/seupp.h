@@ -38,13 +38,13 @@
 #include <memory>
 #include "arpackf.h"
 
-inline void seupp(bool rvec, char HowMny, double d[], double Z[],
-                  blas::integer ldz, double sigma, char bmat, blas::integer n,
-                  const char* which, blas::integer nev, double tol,
-                  double resid[], blas::integer ncv, double V[],
-                  blas::integer ldv, blas::integer iparam[],
-                  blas::integer ipntr[], double workd[], double workl[],
-                  blas::integer lworkl, blas::integer& info)
+inline void gen_eupp(bool rvec, char HowMny, double d[], double Z[],
+                     blas::integer ldz, double sigma, double[], char bmat,
+                     blas::integer n, const char* which, blas::integer nev,
+                     double tol, double resid[], blas::integer ncv, double V[],
+                     blas::integer ldv, blas::integer iparam[],
+                     blas::integer ipntr[], double workd[], double workl[],
+                     blas::integer lworkl, double[], blas::integer& info)
 
 /*
   c++ version of ARPACK routine dseupd.
@@ -158,9 +158,9 @@ inline void seupp(bool rvec, char HowMny, double d[], double Z[],
   auto iselect = std::make_unique<logical[]>(ncv);
   double* iZ = (Z == NULL) ? &V[0] : Z;
 
-  F77_FUNC(dseupd, DSEUPD)
-  (&irvec, &HowMny, iselect, d, iZ, &ldz, &sigma, &bmat, &n, which, &nev, &tol,
-   resid, &ncv, &V[0], &ldv, &iparam[0], &ipntr[0], &workd[0], &workl[0],
+  F77NAME(dseupd)
+  (&irvec, &HowMny, iselect.get(), d, iZ, &ldz, &sigma, &bmat, &n, which, &nev,
+   &tol, resid, &ncv, &V[0], &ldv, &iparam[0], &ipntr[0], &workd[0], &workl[0],
    &lworkl, &info);
 }  // seupp (double).
 

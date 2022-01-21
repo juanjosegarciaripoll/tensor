@@ -41,11 +41,11 @@ Tensor<elt_t>::Tensor() : data_(), dims_() {}
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(const Indices &new_dims)
-    : dims_(new_dims), data_(new_dims.total_size()) {}
+    : data_(new_dims.total_size()), dims_(new_dims) {}
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(const Indices &new_dims, const Tensor<elt_t> &other)
-    : dims_(new_dims), data_(other.data_) {
+    : data_(other.data_), dims_(new_dims) {
   assert(dims_.total_size() == size());
 }
 
@@ -54,59 +54,38 @@ Tensor<elt_t>::Tensor(const Indices &new_dims, const Tensor<elt_t> &other)
 //
 
 template <typename elt_t>
-Tensor<elt_t>::Tensor(index length) : data_(length), dims_(1) {
-  dims_.at(0) = length;
-}
+Tensor<elt_t>::Tensor(index length) : data_(length), dims_({length}) {}
 
 template <typename elt_t>
-Tensor<elt_t>::Tensor(index rows, index cols) : data_(rows * cols), dims_(2) {
-  dims_.at(0) = rows;
-  dims_.at(1) = cols;
-}
+Tensor<elt_t>::Tensor(index rows, index cols)
+    : data_(rows * cols), dims_({rows, cols}) {}
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(index d1, index d2, index d3)
-    : data_(d1 * d2 * d3), dims_(3) {
-  dims_.at(0) = d1;
-  dims_.at(1) = d2;
-  dims_.at(2) = d3;
-}
+    : data_(d1 * d2 * d3), dims_({d1, d2, d3}) {}
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4)
-    : data_(d1 * d2 * d3 * d4), dims_(4) {
-  dims_.at(0) = d1;
-  dims_.at(1) = d2;
-  dims_.at(2) = d3;
-  dims_.at(3) = d4;
-}
+    : data_(d1 * d2 * d3 * d4), dims_({d1, d2, d3, d4}) {}
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5)
-    : data_(d1 * d2 * d3 * d4 * d5), dims_(5) {
-  dims_.at(0) = d1;
-  dims_.at(1) = d2;
-  dims_.at(2) = d3;
-  dims_.at(3) = d4;
-  dims_.at(4) = d5;
-}
+    : data_(d1 * d2 * d3 * d4 * d5), dims_({d1, d2, d3, d4, d5}) {}
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
                       index d6)
-    : data_(d1 * d2 * d3 * d4 * d5 * d6), dims_(6) {
-  dims_.at(0) = d1;
-  dims_.at(1) = d2;
-  dims_.at(2) = d3;
-  dims_.at(3) = d4;
-  dims_.at(4) = d5;
-  dims_.at(5) = d6;
+    : data_(d1 * d2 * d3 * d4 * d5 * d6), dims_({d1, d2, d3, d4, d5, d6}) {}
+
+template <typename elt_t>
+Tensor<elt_t>::Tensor(const Vector<elt_t> &data)
+    : dims_{data_.size()}, data_(data) {
+  dims_.at(0) = data_.size();
 }
 
 template <typename elt_t>
-Tensor<elt_t>::Tensor(const Vector<elt_t> &data) : dims_(1), data_(data) {
-  dims_.at(0) = data.size();
-}
+Tensor<elt_t>::Tensor(Vector<elt_t> &&data)
+    : dims_({data_.size()}), data_(std::move(data)) {}
 
 //
 // DIMENSIONS
