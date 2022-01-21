@@ -106,6 +106,6 @@ bool operator==(const Vector<t1> &v1, const Vector<t2> &v2) {
          std::equal(v1.begin(), v1.end(), v2.begin());
 }
 
-};  // namespace tensor
+}  // namespace tensor
 
 #endif  // !TENSOR_VECTOR_H
