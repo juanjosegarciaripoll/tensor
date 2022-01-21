@@ -5,6 +5,9 @@ option(WARNINGS_AS_ERRORS "Compilation and analysis warnings become errors" OFF)
 
 function(make_tensor_options)
     add_library(tensor_options INTERFACE)
+    target_precompile_headers(tensor_options
+        INTERFACE <algorithm> <cmath> <complex> <cstring> <functional>
+                  <memory> <iostream> <string> <vector>)
 
     if (TENSOR_OPTIMIZED_BUILD)
         tensor_add_optimizations()
