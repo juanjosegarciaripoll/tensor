@@ -219,14 +219,21 @@ class fixed_rank_iterator {
   bool finished_;
 };
 
+template <typename elt_t>
+Tensor<elt_t> tensor_with_increasing_values(const Dimensions &d) {
+  Tensor<elt_t> data(d);
+  elt_t accum = 0;
+  for (elt_t &x : data) {
+    x = accum;
+    accum += 1;
+  }
+  return data;
+}
+
 template <typename elt_t, typename unop>
 void test_over_fixed_rank_tensors(unop test, int rank, int max_dimension = 10) {
   for (fixed_rank_iterator it(rank, max_dimension); !it.finished(); it.next()) {
-    Tensor<elt_t> data(it.dimensions());
-    // Make all elements different to make accurate comparisons
-    elt_t accum = 0;
-    for (tensor::index i = 0; i < data.size(); i++, accum += 1)
-      data.at(i) = accum;
+    Tensor<elt_t> data = tensor_with_increasing_values<elt_t>(it.dimensions());
     test(data);
   }
 }
@@ -235,18 +242,12 @@ template <typename elt_t, typename binop>
 void test_over_fixed_rank_pairs(binop test, int rank, int max_dimension = 6) {
   for (fixed_rank_iterator it1(rank, max_dimension); !it1.finished();
        it1.next()) {
-    Tensor<elt_t> data1(it1.dimensions());
-    elt_t accum = 0;
-    // Make all elements different to make accurate comparisons
-    for (tensor::index i = 0; i < data1.size(); i++, accum += 1)
-      data1.at(i) = accum;
+    Tensor<elt_t> data1 =
+        tensor_with_increasing_values<elt_t>(it1.dimensions());
     for (fixed_rank_iterator it2(rank, max_dimension); !it2.finished();
          it2.next()) {
-      Tensor<elt_t> data2(it2.dimensions());
-      elt_t accum = 0;
-      // Make all elements different to make accurate comparisons
-      for (tensor::index i = 0; i < data2.size(); i++, accum += 1)
-        data2.at(i) = accum;
+      Tensor<elt_t> data2 =
+          tensor_with_increasing_values<elt_t>(it2.dimensions());
       test(data1, data2);
     }
   }

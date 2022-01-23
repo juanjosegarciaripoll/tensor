@@ -22,8 +22,10 @@
 #define TENSOR_INDICES_H
 
 #include <list>
+#include <cassert>
 #include <tensor/vector.h>
 #include <tensor/gen.h>
+#include <iostream>
 
 /*!\addtogroup Tensors */
 /*@{*/
@@ -79,9 +81,34 @@ class Dimensions {
   const_iterator end() const { return dimensions_.end(); }
   const SimpleVector<index> &get_vector() const { return dimensions_; }
 
+  static inline index normalize_index(index i, index dimension) {
+    if (i < 0) i += dimension;
+    assert((i < dimension) && (i >= 0));
+    return i;
+  }
+
+  template <typename... index_like>
+  index column_major_position(index i0, index_like... in) const {
+    assert(rank() == sizeof...(in) + 1);
+    return column_major_inner(0, i0, in...);
+  }
+
  private:
   SimpleVector<index> dimensions_;
   index total_size_;
+
+  template <typename... index_like>
+  index column_major_inner(index n, index in, index_like... irest) const {
+    index dn = dimensions_[n];
+    in = normalize_index(in, dn);
+    return in + dn * column_major_inner(n + 1, irest...);
+  }
+
+  inline index column_major_inner(index n, index in) const {
+    index dn = dimensions_[n];
+    in = normalize_index(in, dn);
+    return in;
+  }
 
   static index compute_total_size(const SimpleVector<index> &dims);
 };

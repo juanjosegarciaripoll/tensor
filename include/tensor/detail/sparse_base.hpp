@@ -236,8 +236,8 @@ Sparse<elt_t> Sparse<elt_t>::random(index rows, index columns, double density) {
 //
 template <typename elt_t>
 elt_t Sparse<elt_t>::operator()(index row, index col) const {
-  row = normalize_index(row, rows());
-  col = normalize_index(col, columns());
+  row = Dimensions::normalize_index(row, rows());
+  col = Dimensions::normalize_index(col, columns());
   for (index ndx1 = row_start_[row], ndx2 = row_start_[row + 1]; ndx1 < ndx2;
        ndx1++) {
     index this_col = column_[ndx1];

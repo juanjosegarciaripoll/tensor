@@ -21,14 +21,6 @@
 #ifndef TENSOR_DETAIL_COMMON_HPP
 #define TENSOR_DETAIL_COMMON_HPP
 
-namespace tensor {
-
-inline index normalize_index(index i, index dimension) {
-  if (i < 0) i += dimension;
-  assert((i < dimension) && (i >= 0));
-  return i;
-}
-
-}  // namespace tensor
+namespace tensor {}  // namespace tensor
 
 #endif  // TENSOR_DETAIL_COMMON_HPP

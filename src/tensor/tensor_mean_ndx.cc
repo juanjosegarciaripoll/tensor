@@ -31,7 +31,7 @@ Tensor do_mean(const Tensor &t, int ndx) {
     output.at(0) = mean(t);
     return output;
   } else {
-    ndx = (int)normalize_index(ndx, rank);
+    ndx = (int)Dimensions::normalize_index(ndx, rank);
     Indices dimensions(rank - 1);
     tensor::index left = 1, middle = 1, right = 1;
     for (int i = 0, j = 0; i < rank; i++) {

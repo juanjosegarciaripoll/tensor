@@ -121,8 +121,8 @@ void test_tensor_set_appropiates(Tensor<elt_t> &P) {
     typename Tensor<elt_t>::const_iterator old_p = P.begin_const();
     Tensor<elt_t> P2(P);
     unchanged(P2, P, 2);
-    for (tensor::index i = 0; i < P.size(); i++) {
-      P2.at(i) += number_one<elt_t>();
+    for (auto &x : P2) {
+      x += number_one<elt_t>();
     }
     unique(P);
     unique(P2);
@@ -135,8 +135,8 @@ void test_tensor_set_appropiates(Tensor<elt_t> &P) {
     typename Tensor<elt_t>::const_iterator old_p = P.begin_const();
     Tensor<elt_t> P2(P);
     unchanged(P2, P, 2);
-    for (tensor::index i = 0; i < P.size(); i++) {
-      P.at(i) += number_one<elt_t>();
+    for (auto &x : P) {
+      x += number_one<elt_t>();
     }
     unique(P);
     unique(P2);
@@ -157,13 +157,13 @@ void test_tensor_set_appropiates_only_once(Tensor<elt_t> &P) {
     unchanged(P, P2, 2);
 
     // Now P2 changed and unlinks from P
-    P2.at(0) = number_zero<elt_t>();
+    P2.at_seq(0) = number_zero<elt_t>();
     unique(P);
     unique(P2);
 
     // But the second access does not cause new memory being allocated
     typename Tensor<elt_t>::const_iterator old_p = P2.begin_const();
-    P2.at(P2.size() - 1) = number_one<elt_t>();
+    P2.at_seq(P2.size() - 1) = number_one<elt_t>();
     unique(P);
     unique(P2);
     EXPECT_EQ(old_p, P2.begin_const());

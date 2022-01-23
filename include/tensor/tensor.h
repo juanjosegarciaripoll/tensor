@@ -153,36 +153,20 @@ class Tensor {
   void reshape(const Dimensions &new_dims);
 
   /**Return the i-th element, accessed in column major order.*/
-  const elt_t &operator[](index i) const;
-  /**Return an element of a 1D Tensor.*/
-  const elt_t &operator()(index i) const;
-  /**Return an element of a 2D Tensor.*/
-  const elt_t &operator()(index row, index col) const;
-  /**Return an element of a 3D Tensor.*/
-  const elt_t &operator()(index d0, index d1, index d2) const;
-  /**Return an element of a 4D Tensor.*/
-  const elt_t &operator()(index d0, index d1, index d2, index d3) const;
-  /**Return an element of a 5D Tensor.*/
-  const elt_t &operator()(index d0, index d1, index d2, index d3,
-                          index d4) const;
-  /**Return an element of a 6D Tensor.*/
-  const elt_t &operator()(index d0, index d1, index d2, index d3, index d4,
-                          index d5w) const;
+  inline const elt_t &operator[](index i) const { return data_[i]; };
+  /**Return an element of a Tensor based on one or more indices.*/
+  template <typename... index_like>
+  inline const elt_t &operator()(index i0, index_like... irest) const {
+    return data_[dims_.column_major_position(i0, irest...)];
+  }
 
   /**Return a mutable reference to the i-th element of a Tensor, in column major order.*/
-  elt_t &at_seq(index i);
-  /**Return a mutable reference to an element of a 1D Tensor.*/
-  elt_t &at(index i);
-  /**Return a mutable reference to an element of a 2D Tensor.*/
-  elt_t &at(index row, index col);
-  /**Return a mutable reference to an element of a 3D Tensor.*/
-  elt_t &at(index d1, index d2, index d3);
-  /**Return a mutable reference to an element of a 4D Tensor.*/
-  elt_t &at(index d1, index d2, index d3, index d4);
-  /**Return a mutable reference to an element of a 5D Tensor.*/
-  elt_t &at(index d1, index d2, index d3, index d4, index d5);
-  /**Return a mutable reference to an element of 6D Tensor.*/
-  elt_t &at(index d1, index d2, index d3, index d4, index d5, index d6);
+  inline elt_t &at_seq(index i) { return data_.at(i); };
+  /**Return a mutable reference to an element of a Tensor based on one or more indices.*/
+  template <typename... index_like>
+  inline elt_t &at(index i0, index_like... irest) {
+    return data_.at(dims_.column_major_position(i0, irest...));
+  }
 
   /**Fill with an element.*/
   Tensor<elt_t> &fill_with(const elt_t &e);

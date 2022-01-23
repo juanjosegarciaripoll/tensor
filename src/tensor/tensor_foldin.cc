@@ -35,8 +35,8 @@ void do_foldin_into(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
   index rank, i;
   const index ranka = a.rank();
   const index rankb = b.rank();
-  index ndx1 = normalize_index(_ndx1, ranka);
-  index ndx2 = normalize_index(_ndx2, rankb);
+  index ndx1 = Dimensions::normalize_index(_ndx1, ranka);
+  index ndx2 = Dimensions::normalize_index(_ndx2, rankb);
   Indices new_dims(ranka + rankb - 2);
   /*
      * Since we use row-major order, in which the first

@@ -35,8 +35,8 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
   int rank, i;
   const index ranka = a.rank();
   const index rankb = b.rank();
-  index ndx1 = normalize_index(_ndx1, ranka);
-  index ndx2 = normalize_index(_ndx2, rankb);
+  index ndx1 = Dimensions::normalize_index(_ndx1, ranka);
+  index ndx2 = Dimensions::normalize_index(_ndx2, rankb);
   Indices new_dims(std::max<index>(ranka + rankb - 2, 1));
   /*
      * Since we use row-major order, in which the first
