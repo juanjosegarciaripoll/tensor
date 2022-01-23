@@ -168,8 +168,8 @@ class Tensor {
 
   /**N-dimensional tensor one or more dimensions, filled with random numbers.*/
   template <typename... index_like>
-  static inline Tensor<elt_t> random(index_like... next_dimensions) {
-    return Tensor<elt_t>::empty(next_dimensions...).randomize();
+  static inline Tensor<elt_t> random(index d0, index_like... next_dimensions) {
+    return Tensor<elt_t>::empty(d0, next_dimensions...).randomize();
   }
 
   /**N-dimensional tensor filled with random numbers.*/
