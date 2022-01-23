@@ -10,7 +10,9 @@ function(make_tensor_options)
                   <memory> <iostream> <string> <vector>)
 
     if (TENSOR_OPTIMIZED_BUILD)
-        tensor_add_optimizations()
+        if (NOT CMAKE_BUILD_TYPE MATCHES "Rel")
+            tensor_add_optimizations()
+        endif()
     endif()
 
     if (TENSOR_DEFAULT_WARNINGS)
