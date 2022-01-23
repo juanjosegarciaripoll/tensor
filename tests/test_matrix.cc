@@ -100,7 +100,7 @@ void test_zeros(int n) {
 template <typename elt_t>
 void test_diag(int n) {
   elt_t zero = number_zero<elt_t>();
-  Tensor<elt_t> d(n);
+  auto d = Tensor<elt_t>::empty(n);
   int i = 1;
   for (typename Tensor<elt_t>::iterator it = d.begin(); it != d.end(); it++) {
     *it = (i++);
@@ -138,8 +138,7 @@ void test_diag(int n) {
 template <typename elt_t>
 void test_transpose(int n) {
   for (int m = 0; m <= n; m++) {
-    Tensor<elt_t> A(n, m);
-    A.randomize();
+    auto A = Tensor<elt_t>::random(n, m);
 
     Tensor<elt_t> At = transpose(A);
     EXPECT_EQ(At.rank(), 2);
@@ -166,8 +165,7 @@ void test_transpose(int n) {
 template <typename elt_t>
 void test_adjoint(int n) {
   for (int m = 0; m <= n; m++) {
-    Tensor<elt_t> A(n, m);
-    A.randomize();
+    auto A = Tensor<elt_t>::random(n, m);
 
     Tensor<elt_t> At = adjoint(A);
     EXPECT_EQ(At.rank(), 2);
@@ -194,8 +192,7 @@ void test_adjoint(int n) {
 template <typename elt_t>
 void test_permute(int n) {
   for (int m = 0; m <= n; m++) {
-    Tensor<elt_t> A(n, m);
-    A.randomize();
+    auto A = Tensor<elt_t>::random(n, m);
 
     Tensor<elt_t> At = transpose(A);
     Tensor<elt_t> Ap = permute(A);

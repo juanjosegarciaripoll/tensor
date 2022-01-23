@@ -35,7 +35,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_11_11(
   B.get_dimensions(&b1);
   assert(a1 == b1);
 
-  Tensor<n3> output(1);
+  auto output = Tensor<n3>::empty(1);
   n3 x = number_zero<n3>();
   for (index i = 0; i < a1; i++) {
     x += A(i) * B(i);
@@ -53,7 +53,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_12_11(
   B.get_dimensions(&b1, &b2);
   assert(a1 == b1);
 
-  Tensor<n3> output(b2);
+  auto output = Tensor<n3>::empty(b2);
   for (index j = 0; j < b2; j++) {
     n3 x = number_zero<n3>();
     for (index i = 0; i < a1; i++) {
@@ -73,7 +73,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_13_11(
   B.get_dimensions(&b1, &b2, &b3);
   assert(a1 == b1);
 
-  Tensor<n3> output(b2, b3);
+  auto output = Tensor<n3>::empty(b2, b3);
   for (index k = 0; k < b3; k++) {
     for (index j = 0; j < b2; j++) {
       n3 x = number_zero<n3>();
@@ -95,7 +95,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_21_11(
   B.get_dimensions(&b1);
   assert(a1 == b1);
 
-  Tensor<n3> output(a2);
+  auto output = Tensor<n3>::empty(a2);
 
   for (index j = 0; j < a2; j++) {
     n3 x = number_zero<n3>();
@@ -116,7 +116,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_22_11(
   B.get_dimensions(&b1, &b2);
   assert(a1 == b1);
 
-  Tensor<n3> output(a2, b2);
+  auto output = Tensor<n3>::empty(a2, b2);
 
   for (index k = 0; k < b2; k++) {
     for (index j = 0; j < a2; j++) {
@@ -139,7 +139,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_23_11(
   B.get_dimensions(&b1, &b2, &b3);
   assert(a1 == b1);
 
-  Tensor<n3> output(a2, b2, b3);
+  auto output = Tensor<n3>::empty(a2, b2, b3);
 
   for (index l = 0; l < b3; l++) {
     for (index k = 0; k < b2; k++) {
@@ -164,7 +164,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_31_11(
   B.get_dimensions(&b1);
   assert(a1 == b1);
 
-  Tensor<n3> output(a2, a3);
+  auto output = Tensor<n3>::empty(a2, a3);
 
   for (index k = 0; k < a3; k++) {
     for (index j = 0; j < a2; j++) {
@@ -187,7 +187,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_32_11(
   B.get_dimensions(&b1, &b2);
   assert(a1 == b1);
 
-  Tensor<n3> output(a2, a3, b2);
+  auto output = Tensor<n3>::empty(a2, a3, b2);
 
   for (index l = 0; l < b2; l++) {
     for (index k = 0; k < a3; k++) {
@@ -212,7 +212,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_33_11(
   B.get_dimensions(&b1, &b2, &b3);
   assert(a1 == b1);
 
-  Tensor<n3> output(a2, a3, b2, b3);
+  auto output = Tensor<n3>::empty(a2, a3, b2, b3);
 
   for (index m = 0; m < b3; m++) {
     for (index l = 0; l < b2; l++) {

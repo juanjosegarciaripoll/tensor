@@ -56,13 +56,13 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   blas::integer n = A.columns();
   blas::integer k = std::min(m, n);
   blas::integer lwork, ldu, lda, ldv, info;
-  RTensor output(k);
+  RTensor output = RTensor::empty(k);
   cdouble *u, *v, *a = tensor_pointer(A);
   double *s = tensor_pointer(output);
   char jobv[1], jobu[1];
 
   if (U) {
-    *U = CTensor(m, economic ? k : m);
+    *U = CTensor::empty(m, economic ? k : m);
     u = tensor_pointer(*U);
     jobu[0] = economic ? 'S' : 'A';
     ldu = m;
@@ -72,7 +72,7 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
     ldu = 1;
   }
   if (VT) {
-    (*VT) = CTensor(economic ? k : n, n);
+    (*VT) = CTensor::empty(economic ? k : n, n);
     v = tensor_pointer(*VT);
     jobv[0] = economic ? 'S' : 'A';
     ldv = economic ? k : n;

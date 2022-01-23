@@ -66,14 +66,14 @@ CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
   }
 
   if (L) {
-    (*L) = CTensor(n, n);
+    (*L) = CTensor::empty(n, n);
     vl = tensor_pointer(*L);
     jobvl[0] = 'V';
   } else {
     vl = NULL;
   }
   if (R) {
-    (*R) = CTensor(n, n);
+    (*R) = CTensor::empty(n, n);
     vr = tensor_pointer(*R);
     jobvr[0] = 'V';
   } else {
@@ -82,7 +82,7 @@ CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
 
   ldvl = ldvr = n;
   lda = n;
-  CTensor output(n);
+  auto output = CTensor::empty(n);
   w = tensor_pointer(output);
 #ifdef TENSOR_USE_ACML
   zgeev(*jobvl, *jobvr, n, a, lda, w, vl, ldvl, vr, ldvr, &info);

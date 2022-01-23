@@ -59,7 +59,7 @@ RTensor eig_sym(const RTensor &A, RTensor *V) {
   blas::integer lda = n, info[1];
   char jobz[2] = {(V == 0) ? 'N' : 'V', 0};
   char uplo[2] = {'U', 0};
-  RTensor output(n);
+  RTensor output = RTensor::empty(n);
   double *w = tensor_pointer(output);
 
 #ifdef TENSOR_USE_ACML
@@ -70,7 +70,7 @@ RTensor eig_sym(const RTensor &A, RTensor *V) {
   F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, info);
   lwork = (int)work0[0];
 
-  RTensor work(lwork);
+  RTensor work = RTensor::empty(lwork);
   F77NAME(dsyev)
   (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork, info);
 #endif

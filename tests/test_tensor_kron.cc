@@ -86,9 +86,9 @@ Tensor<elt_t> slow_kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b) {
   b.get_dimensions(&b1, &b2);
 
   if (a1 == 0 || a2 == 0 || b1 == 0 || b2 == 0)
-    return Tensor<elt_t>(a1 * b1, b2 * a2);
+    return Tensor<elt_t>::empty(a1 * b1, b2 * a2);
 
-  Tensor<elt_t> output(b1, a1, b2, a2);
+  auto output = Tensor<elt_t>::empty(b1, a1, b2, a2);
   for (tensor::index i = 0; i < b1; i++)
     for (tensor::index j = 0; j < a1; j++)
       for (tensor::index k = 0; k < b2; k++)

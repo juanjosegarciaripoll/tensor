@@ -160,13 +160,13 @@ const Vector InDataFile::load_vector() {
 void InDataFile::load(RTensor *t, const std::string &name) {
   read_tag(name, TAG_RTENSOR);
   Indices dims = load_vector<Indices>();
-  *t = RTensor(dims, load_vector<RTensor>());
+  *t = RTensor(dims, load_vector<Vector<double>>());
 }
 
 void InDataFile::load(CTensor *t, const std::string &name) {
   read_tag(name, TAG_CTENSOR);
   Indices dims = load_vector<Indices>();
-  *t = CTensor(dims, load_vector<CTensor>());
+  *t = CTensor(dims, load_vector<Vector<cdouble>>());
 }
 
 void InDataFile::load(std::vector<RTensor> *m, const std::string &name) {
@@ -236,8 +236,8 @@ void InDataFile::read_header() {
   int file_int_size = var_name[3] - '0';
   int file_index_size = var_name[4] - '0';
   int file_endianness = var_name[5] - '0';
-  if (file_int_size != sizeof(int) || file_index_size != sizeof(tensor::index) ||
-      file_endianness != endian) {
+  if (file_int_size != sizeof(int) ||
+      file_index_size != sizeof(tensor::index) || file_endianness != endian) {
     std::cerr << "File " << _filename << " has word sizes (" << file_int_size
               << ',' << file_index_size
               << ") and cannot be read by this computer";

@@ -49,9 +49,9 @@ static inline Tensor<elt_t> do_kron(const Tensor<elt_t> &b,
   const index l_len = b.columns();
   const index ij_len = i_len * j_len;
   const index kl_len = k_len * l_len;
-  if (ij_len == 0 || kl_len == 0) return Tensor<elt_t>(ij_len, kl_len);
+  if (ij_len == 0 || kl_len == 0) return Tensor<elt_t>::empty(ij_len, kl_len);
 
-  Tensor<elt_t> output(ij_len, k_len * l_len);
+  auto output = Tensor<elt_t>::empty(ij_len, k_len * l_len);
   typename Tensor<elt_t>::iterator pc = output.begin();
   typename Tensor<elt_t>::const_iterator pb = b.begin();
   for (index l = 0; l < l_len; l++, pb += j_len) {

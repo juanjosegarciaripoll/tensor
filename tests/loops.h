@@ -304,46 +304,46 @@ class DimensionsProducer {
     switch (counter) {
         // 1D Tensor<elt_t>
       case 1:
-        P = RTensor(d(0) * d(1) * d(2) * d(3));
+        P = RTensor::empty(d(0) * d(1) * d(2) * d(3));
         break;
         // 2D Tensor<elt_t>
       case 2:
-        P = RTensor(d(0), d(1) * d(2) * d(3));
+        P = RTensor::empty(d(0), d(1) * d(2) * d(3));
         break;
       case 3:
-        P = RTensor(d(0) * d(1), d(2) * d(3));
+        P = RTensor::empty(d(0) * d(1), d(2) * d(3));
         break;
       case 4:
-        P = RTensor(d(0) * d(1) * d(2), d(3));
+        P = RTensor::empty(d(0) * d(1) * d(2), d(3));
         break;
       case 5:
-        P = RTensor(d(3), d(0) * d(1) * d(2));
+        P = RTensor::empty(d(3), d(0) * d(1) * d(2));
         break;
       case 6:
-        P = RTensor(d(2) * d(3), d(0) * d(1));
+        P = RTensor::empty(d(2) * d(3), d(0) * d(1));
         break;
         // 3D Tensor<elt_t>
       case 7:
-        P = RTensor(d(0), d(1), d(2) * d(3));
+        P = RTensor::empty(d(0), d(1), d(2) * d(3));
         break;
       case 8:
-        P = RTensor(d(0) * d(1), d(2), d(3));
+        P = RTensor::empty(d(0) * d(1), d(2), d(3));
         break;
       case 9:
-        P = RTensor(d(3) * d(2), d(0), d(1));
+        P = RTensor::empty(d(3) * d(2), d(0), d(1));
         break;
         // 4D Tensor<elt_t>
       case 10:
-        P = RTensor(d(0), d(1), d(2), d(3));
+        P = RTensor::empty(d(0), d(1), d(2), d(3));
         break;
       case 11:
-        P = RTensor(d(3), d(1), d(2), d(0));
+        P = RTensor::empty(d(3), d(1), d(2), d(0));
         break;
       case 12:
-        P = RTensor(d(1), d(0), d(3), d(2));
+        P = RTensor::empty(d(1), d(0), d(3), d(2));
         break;
       case 13:
-        P = RTensor(d(2), d(0), d(3), d(1));
+        P = RTensor::empty(d(2), d(0), d(3), d(1));
         break;
     }
     return P.dimensions();

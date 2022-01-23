@@ -47,8 +47,7 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
     return s;
   }
 
-  RTensor s(minrc);
-  s.fill_with_zeros();
+  RTensor s = RTensor::zeros(minrc);
   if (pU) {
     *pU = Tensor::zeros(rows, economic ? minrc : rows);
   }

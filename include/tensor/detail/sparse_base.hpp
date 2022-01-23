@@ -45,14 +45,15 @@ static inline index safe_size(index nonzero, index rows, index cols) {
 }
 
 template <typename elt_t>
-Sparse<elt_t>::Sparse() : dims_{0, 0}, row_start_({0}), column_(0), data_(0) {}
+Sparse<elt_t>::Sparse()
+    : dims_{0, 0}, row_start_({0}), column_(0), data_(Vector<elt_t>(0)) {}
 
 template <typename elt_t>
 Sparse<elt_t>::Sparse(index rows, index cols, index nonzero)
     : dims_{rows, cols},
       row_start_(rows + 1),
       column_(safe_size(nonzero, rows, cols)),
-      data_(safe_size(nonzero, rows, cols)) {
+      data_(Vector<elt_t>(safe_size(nonzero, rows, cols))) {
   std::fill(row_start_.begin(), row_start_.end(), 0);
 }
 
@@ -105,7 +106,7 @@ Sparse<elt_t> make_sparse(const Indices &rows, const Indices &cols,
   std::sort(sorted_data.begin(), sorted_data.end());
   auto row_start_ = Indices(nrows + 1);
   auto column_ = Indices(l = sorted_data.size());
-  auto data_ = Tensor<elt_t>(l);
+  auto data_ = Tensor<elt_t>::empty(l);
 
   /* Fill in the Sparse structure.
      */
@@ -148,7 +149,7 @@ Sparse<elt_t>::Sparse(const Tensor<elt_t> &t)
     : dims_(t.dimensions()), row_start_(t.rows() + 1), column_(), data_() {
   index nonzero = number_of_nonzero<elt_t>(t);
   column_ = Indices(nonzero);
-  data_ = Tensor<elt_t>(nonzero);
+  data_ = Tensor<elt_t>::empty(nonzero);
 
   index nrows = rows();
   index ncols = columns();
@@ -175,7 +176,7 @@ template <typename elt_t>
 const Tensor<elt_t> full(const Sparse<elt_t> &s) {
   index nrows = s.rows();
   index ncols = s.columns();
-  Tensor<elt_t> output(nrows, ncols);
+  auto output = Tensor<elt_t>::empty(nrows, ncols);
   if (nrows && ncols) {
     output.fill_with_zeros();
 
@@ -205,7 +206,7 @@ index Sparse<elt_t>::dimension(int dimension) const {
 template <typename elt_t>
 Sparse<elt_t> Sparse<elt_t>::eye(index rows, index columns) {
   index nel = std::min(rows, columns);
-  Tensor<elt_t> data(nel);
+  auto data = Tensor<elt_t>::empty(nel);
   std::fill(data.begin(), data.end(), number_one<elt_t>());
   Indices row_start(rows + 1);
   for (index i = 0; i <= rows; i++) {
@@ -219,7 +220,7 @@ Sparse<elt_t> Sparse<elt_t>::eye(index rows, index columns) {
 
 template <typename elt_t>
 Sparse<elt_t> Sparse<elt_t>::random(index rows, index columns, double density) {
-  Tensor<elt_t> output(rows * columns);
+  auto output = Tensor<elt_t>::empty(rows * columns);
   output.randomize();
   for (typename Tensor<elt_t>::iterator it = output.begin(), end = output.end();
        it < end; it++) {

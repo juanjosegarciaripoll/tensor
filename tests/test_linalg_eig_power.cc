@@ -62,7 +62,7 @@ template <typename elt_t>
 Tensor<elt_t> random_Hermitian_with_gap(int n, double largest = 10.0) {
   // Build a random Hermitian matrix
   Tensor<elt_t> U = tensor_test::random_unitary<elt_t>(n);
-  Tensor<elt_t> lambda(n);
+  auto lambda = Tensor<elt_t>::empty(n);
   lambda.randomize();
   lambda.at(0) = largest;  // Larger than other eigenvalues
   return mmult(U, mmult(diag(lambda), adjoint(U)));

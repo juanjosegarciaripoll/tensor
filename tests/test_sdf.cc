@@ -23,7 +23,7 @@
 using namespace sdf;
 
 TEST(SDF, RTensor) {
-  RTensor a = RTensor(0);
+  RTensor a = RTensor::empty(0);
   RTensor b = RTensor::random(13);
   RTensor c = RTensor::random(4, 15);
   RTensor d = RTensor::random(3, 7, 5);
@@ -54,7 +54,7 @@ TEST(SDF, RTensor) {
 }
 
 TEST(SDF, CTensor) {
-  CTensor a = CTensor(0);
+  CTensor a = CTensor::empty(0);
   CTensor b = CTensor::random(13);
   CTensor c = CTensor::random(4, 15);
   CTensor d = CTensor::random(3, 7, 5);

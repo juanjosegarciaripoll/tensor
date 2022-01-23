@@ -98,6 +98,7 @@ class Tensor {
     assert(data_.size() == d.total_size());
   }
 
+#if 0
   /**Build a 1D Tensor or vector.*/
   explicit Tensor(index length);
   /**Build a 2D Tensor or matrix.*/
@@ -110,6 +111,7 @@ class Tensor {
   Tensor(index d1, index d2, index d3, index d4, index d5);
   /**Build a 6D Tensor.*/
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
+#endif
 
   operator Vector<elt_t>() const { return data_; }
 
@@ -218,7 +220,7 @@ class Tensor {
   static inline Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
   /**Rectangular identity matrix.*/
   static Tensor<elt_t> eye(index rows, index cols) {
-    Tensor<elt_t> output(rows, cols);
+    auto output = empty(rows, cols);
     output.fill_with_zeros();
     for (index i = 0; i < rows && i < cols; ++i) {
       output.at(i, i) = number_one<elt_t>();

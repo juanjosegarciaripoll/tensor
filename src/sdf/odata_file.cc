@@ -198,14 +198,12 @@ void OutDataFile::dump(const std::vector<CTensor> &m, const std::string &name) {
 }
 
 void OutDataFile::dump(const double v, const std::string &name) {
-  RTensor t(1);
-  t.at(0) = v;
+  RTensor t(Dimensions({1}), Vector<double>({v}));
   dump(t, name);
 }
 
 void OutDataFile::dump(const cdouble v, const std::string &name) {
-  CTensor t(1);
-  t.at(0) = v;
+  CTensor t(Dimensions({1}), Vector<cdouble>({v}));
   dump(t, name);
 }
 

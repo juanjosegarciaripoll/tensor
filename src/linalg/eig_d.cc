@@ -27,6 +27,7 @@ namespace linalg {
 using tensor::CTensor;
 using tensor::RTensor;
 using namespace lapack;
+using tensor::Dimensions;
 
 /**Eigenvalue decomposition of a real matrix.
      Given a square matrix A, we find a diagonal matrix D and a set of vectors R
@@ -65,18 +66,19 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   }
 
   if (L) {
-    realL = std::make_unique<RTensor>(n, n);
+    realL = std::make_unique<RTensor>(Dimensions({n, n}));
     vl = tensor_pointer(*realL);
     jobvl[0] = 'V';
   }
   if (R) {
-    realR = std::make_unique<RTensor>(n, n);
+    realR = std::make_unique<RTensor>(Dimensions({n, n}));
     vr = tensor_pointer(*realR);
     jobvr[0] = 'V';
   }
   ldvl = ldvr = n;
   lda = n;
-  RTensor real(n), imag(n);
+  auto real = RTensor::empty(n);
+  auto imag = RTensor::empty(n);
   wr = tensor_pointer(real);
   wi = tensor_pointer(imag);
 

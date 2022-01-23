@@ -61,21 +61,21 @@ RTensor eig_sym(const CTensor &A, CTensor *V) {
   blas::integer lda = n, info[1];
   char jobz[2] = {(V == 0) ? 'N' : 'V', 0};
   char uplo[2] = {'U', 0};
-  RTensor output(n);
+  RTensor output = RTensor::empty(n);
   double *w = tensor_pointer(output);
-  RTensor rwork(3 * n);
+  RTensor rwork = RTensor::empty(3 * n);
 
 #ifdef TENSOR_USE_ACML
   zheev(*jobz, *uplo, n, a, lda, w, info);
 #else
   blas::integer lwork = -1;
-  CTensor work(1);
+  CTensor work = CTensor::empty(1);
   F77NAME(zheev)
   (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork,
    tensor_pointer(rwork), info);
   lwork = (int)tensor::real(work[0]);
 
-  work = CTensor(lwork);
+  work = CTensor::empty(lwork);
   F77NAME(zheev)
   (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork,
    tensor_pointer(rwork), info);

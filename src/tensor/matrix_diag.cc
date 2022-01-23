@@ -25,7 +25,7 @@ namespace tensor {
 template <typename n>
 inline Tensor<n> do_diag(const Tensor<n> &a, int which, index rows,
                          index cols) {
-  Tensor<n> output(rows, cols);
+  auto output = Tensor<n>::empty(rows, cols);
   output.fill_with_zeros();
   index r0, c0;
   if (which < 0) {

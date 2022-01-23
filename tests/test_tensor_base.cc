@@ -36,7 +36,7 @@ void test_empty_constructor() {
   }
   {
     SCOPED_TRACE("1D");
-    Tensor<elt_t> P(0);
+    auto P = Tensor<elt_t>::empty(0);
     EXPECT_EQ(0, P.size());
     EXPECT_EQ(1, P.rank());
     EXPECT_EQ(1, P.ref_count());
@@ -44,7 +44,7 @@ void test_empty_constructor() {
   }
   {
     SCOPED_TRACE("2D");
-    Tensor<elt_t> P(1, 0);
+    auto P = Tensor<elt_t>::empty(1, 0);
     EXPECT_EQ(0, P.size());
     EXPECT_EQ(2, P.rank());
     EXPECT_EQ(1, P.ref_count());
@@ -138,7 +138,7 @@ void test_get_dimensions_errors() {
     Indices dimensions(i);
     std::fill(dimensions.begin(), dimensions.end(), (Indices::elt_t)2);
 
-    Tensor<elt_t> P(dimensions);
+    auto P = Tensor<elt_t>::empty(dimensions);
 
     ASSERT_DEATH(P.dimension(-1), ".*");
     ASSERT_DEATH(P.dimension(i), ".*");

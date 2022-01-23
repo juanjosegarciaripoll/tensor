@@ -54,8 +54,7 @@ void test_random_eig(int n) {
     return;
   }
   for (int times = 10; times; --times) {
-    Tensor<elt_t> A(n, n);
-    A.randomize();
+    auto A = Tensor<elt_t>::random(n, n);
     CTensor L, R, s = linalg::eig(A, &R, &L);
     CTensor dS = diag(s);
     EXPECT_TRUE(approx_eq(mmult(A, R), mmult(R, dS), 1e-12));

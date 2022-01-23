@@ -27,7 +27,7 @@ inline Tensor<n> do_adjoint(const Tensor<n> &a) {
   assert(a.rank() == 2);
   index rows = a.rows();
   index cols = a.columns();
-  Tensor<n> b(cols, rows);
+  auto b = Tensor<n>::empty(cols, rows);
   if (cols && rows) {
     typename Tensor<n>::const_iterator ij_a = a.begin();
     typename Tensor<n>::iterator j_b = b.begin();

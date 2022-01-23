@@ -29,7 +29,7 @@ static inline const Tensor<elt_t> do_linspace(const Tensor<elt_t> &min,
                                               const Tensor<elt_t> &max,
                                               index n = 100) {
   index d = min.size();
-  Tensor<elt_t> output(d, n);
+  auto output = Tensor<elt_t>::empty(d, n);
   if (n == 1) {
     output = min;
   } else if (n) {

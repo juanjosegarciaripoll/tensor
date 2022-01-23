@@ -37,7 +37,7 @@ void test_empty_constructor() {
     //EXPECT_EQ(S.priv_row_start(), (igen << 0));
     EXPECT_EQ(0, S.priv_column().size());
     EXPECT_EQ(0, S.priv_data().size());
-    EXPECT_TRUE(all_equal(full(S), Tensor<elt_t>(0, 0)));
+    EXPECT_TRUE(all_equal(full(S), Tensor<elt_t>::empty(0, 0)));
   }
   {
     SCOPED_TRACE("0x1");
@@ -229,7 +229,7 @@ void test_sparse_random_small() {
     EXPECT_TRUE(all_equal(igen << 0, S.priv_row_start()));
     EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
     EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
-    EXPECT_TRUE(all_equal(Tensor<elt_t>(0, 0), full(S)));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(0, 0), full(S)));
   }
   {
     // sprandom(0,1)
@@ -240,7 +240,7 @@ void test_sparse_random_small() {
     EXPECT_TRUE(all_equal(igen << 0, S.priv_row_start()));
     EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
     EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
-    EXPECT_TRUE(all_equal(Tensor<elt_t>(0, 1), full(S)));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(0, 1), full(S)));
   }
   {
     // sprandom(2,0)
@@ -251,7 +251,7 @@ void test_sparse_random_small() {
     EXPECT_TRUE(all_equal(igen << 0 << 0 << 0, S.priv_row_start()));
     EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
     EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
-    EXPECT_TRUE(all_equal(Tensor<elt_t>(2, 0), full(S)));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(2, 0), full(S)));
   }
 }
 

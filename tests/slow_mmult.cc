@@ -35,7 +35,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_22_12(
   B.get_dimensions(&b1, &b2);
   assert(a2 == b1);
 
-  Tensor<n3> output(a1, b2);
+  auto output = Tensor<n3>::empty(a1, b2);
 
   for (index i = 0; i < a1; i++) {
     for (index k = 0; k < b2; k++) {

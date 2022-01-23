@@ -10,3 +10,5 @@ Changes in version 0.2
 * Formerly, `Tensor::ones(n)` and `Tensor::zeros(n)` would return n-by-n matrices filled with ones and zeros, following Matlab. Now they return 1-D tensors, as Numpy.
 
 * `Tensor::at(n)` only works for 1-D tensors, unlike before, where it allowed accessing all elements sequentially.
+
+* To avoid ambiguities, all constructors of the form `Tensor(index i0, index i1 ...)` have been eliminated. Use `Tensor::empty(i0, i1, ...)` instead.

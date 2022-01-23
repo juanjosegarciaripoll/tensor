@@ -54,30 +54,6 @@ Tensor<elt_t>::Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other)
 //
 
 template <typename elt_t>
-Tensor<elt_t>::Tensor(index length) : data_(length), dims_({length}) {}
-
-template <typename elt_t>
-Tensor<elt_t>::Tensor(index rows, index cols)
-    : data_(rows * cols), dims_({rows, cols}) {}
-
-template <typename elt_t>
-Tensor<elt_t>::Tensor(index d1, index d2, index d3)
-    : data_(d1 * d2 * d3), dims_({d1, d2, d3}) {}
-
-template <typename elt_t>
-Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4)
-    : data_(d1 * d2 * d3 * d4), dims_({d1, d2, d3, d4}) {}
-
-template <typename elt_t>
-Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5)
-    : data_(d1 * d2 * d3 * d4 * d5), dims_({d1, d2, d3, d4, d5}) {}
-
-template <typename elt_t>
-Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
-                      index d6)
-    : data_(d1 * d2 * d3 * d4 * d5 * d6), dims_({d1, d2, d3, d4, d5, d6}) {}
-
-template <typename elt_t>
 Tensor<elt_t>::Tensor(const Vector<elt_t> &data)
     : dims_{data_.size()}, data_(data) {}
 
