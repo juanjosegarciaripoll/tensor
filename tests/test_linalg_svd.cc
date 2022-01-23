@@ -60,7 +60,7 @@ void test_eye_svd(int n) {
     Tensor<elt_t> Imn = Tensor<elt_t>::eye(m, n);
     Tensor<elt_t> Imm = Tensor<elt_t>::eye(m, m);
     Tensor<elt_t> Inn = Tensor<elt_t>::eye(n, n);
-    RTensor s1 = RTensor::ones(igen << std::min(m, n));
+    RTensor s1 = RTensor::ones(Dimensions({std::min(m, n)}));
     Tensor<elt_t> U, V;
     RTensor s;
 

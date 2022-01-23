@@ -42,7 +42,7 @@ void test_eye_eig(int n) {
   CTensor U, V, s = linalg::eig(Inn, &U, &V);
   EXPECT_TRUE(all_equal(CTensor::eye(n), U));
   EXPECT_TRUE(all_equal(CTensor::eye(n), V));
-  EXPECT_TRUE(all_equal(s, CTensor::ones(igen << n)));
+  EXPECT_TRUE(all_equal(s, CTensor::ones(n)));
 }
 
 template <typename elt_t>

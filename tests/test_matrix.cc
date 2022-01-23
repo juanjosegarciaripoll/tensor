@@ -30,12 +30,11 @@ namespace tensor_test {
 template <typename elt_t>
 void test_ones(int n) {
   elt_t one = number_one<elt_t>();
-  SCOPED_TRACE("square matrix");
+  SCOPED_TRACE("vector");
   {
     Tensor<elt_t> M = Tensor<elt_t>::ones(n);
-    EXPECT_EQ(2, M.rank());
-    EXPECT_EQ(n, M.rows());
-    EXPECT_EQ(n, M.columns());
+    EXPECT_EQ(1, M.rank());
+    EXPECT_EQ(n, M.dimension(0));
     size_t ones = std::count(M.begin_const(), M.end_const(), one);
     EXPECT_EQ(M.size(), ones);
     EXPECT_EQ(1, M.ref_count());
@@ -66,12 +65,11 @@ void test_ones(int n) {
 template <typename elt_t>
 void test_zeros(int n) {
   elt_t zero = number_zero<elt_t>();
-  SCOPED_TRACE("square matrix");
+  SCOPED_TRACE("vector");
   {
     Tensor<elt_t> M = Tensor<elt_t>::zeros(n);
-    EXPECT_EQ(2, M.rank());
-    EXPECT_EQ(n, M.rows());
-    EXPECT_EQ(n, M.columns());
+    EXPECT_EQ(1, M.rank());
+    EXPECT_EQ(n, M.dimension(0));
     size_t zeros = std::count(M.begin_const(), M.end_const(), zero);
     EXPECT_EQ(M.size(), zeros);
     EXPECT_EQ(1, M.ref_count());

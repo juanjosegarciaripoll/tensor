@@ -76,7 +76,7 @@ RTensor eigs(const RTensor &A, int eig_type, size_t neig, RTensor *eigenvectors,
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return RTensor::zeros(igen << neig);
+      return RTensor::zeros(neig);
     } else {
       abort();
     }

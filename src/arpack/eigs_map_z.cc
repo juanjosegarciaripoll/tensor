@@ -41,7 +41,7 @@ CTensor eigs(const LinearMap<CTensor> &A, size_t n, int eig_type, size_t neig,
        */
     CTensor M(n, n);
     for (int i = 0; i < n; i++) {
-      CTensor v = CTensor::zeros(igen << n);
+      CTensor v = CTensor::zeros(n);
       v.at(i) = 1.0;
       M.at(range(), range(i)) = A(v);
     }
@@ -74,7 +74,7 @@ CTensor eigs(const LinearMap<CTensor> &A, size_t n, int eig_type, size_t neig,
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return CTensor::zeros(igen << neig);
+      return CTensor::zeros(neig);
     } else {
       abort();
     }

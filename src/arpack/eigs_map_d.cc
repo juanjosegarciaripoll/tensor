@@ -42,7 +42,7 @@ RTensor eigs(const LinearMap<RTensor> &A, size_t n, int eig_type, size_t neig,
        */
     CTensor M(n, n);
     for (int i = 0; i < n; i++) {
-      RTensor v = RTensor::zeros(igen << n);
+      RTensor v = RTensor::zeros(n);
       v.at(i) = 1.0;
       M.at(range(), range(i)) = A(v);
     }
@@ -75,7 +75,7 @@ RTensor eigs(const LinearMap<RTensor> &A, size_t n, int eig_type, size_t neig,
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return RTensor::zeros(igen << neig);
+      return RTensor::zeros(neig);
     } else {
       abort();
     }

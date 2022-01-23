@@ -308,67 +308,17 @@ elt_t &Tensor<elt_t>::at(index i1, index i2, index i3, index i4, index i5,
 //
 
 template <typename elt_t>
-void Tensor<elt_t>::fill_with(const elt_t &e) {
+Tensor<elt_t> &Tensor<elt_t>::fill_with(const elt_t &e) {
   std::fill(begin(), end(), e);
+  return *this;
 }
 
 template <typename elt_t>
-void Tensor<elt_t>::randomize() {
+Tensor<elt_t> &Tensor<elt_t>::randomize() {
   for (iterator it = begin(); it != end(); it++) {
     *it = rand<elt_t>();
   }
-}
-
-template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::random(index length) {
-  Tensor<elt_t> t(length);
-  t.randomize();
-  return t;
-}
-
-template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::random(index rows, index cols) {
-  Tensor<elt_t> t(rows, cols);
-  t.randomize();
-  return t;
-}
-
-template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::random(index d1, index d2, index d3) {
-  Tensor<elt_t> t(d1, d2, d3);
-  t.randomize();
-  return t;
-}
-
-template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::random(index d1, index d2, index d3,
-                                          index d4) {
-  Tensor<elt_t> t(d1, d2, d3, d4);
-  t.randomize();
-  return t;
-}
-
-template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::random(index d1, index d2, index d3,
-                                          index d4, index d5) {
-  Tensor<elt_t> t(d1, d2, d3, d4, d5);
-  t.randomize();
-  return t;
-}
-
-template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::random(index d1, index d2, index d3,
-                                          index d4, index d5, index d6) {
-  Tensor<elt_t> t(d1, d2, d3, d4, d5, d6);
-  t.randomize();
-  return t;
-}
-
-template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::random(const Dimensions &dims) {
-  Tensor<elt_t> t(dims);
-  t.randomize();
-  return t;
+  return *this;
 }
 
 }  // namespace tensor

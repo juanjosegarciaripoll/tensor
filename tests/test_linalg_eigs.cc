@@ -41,7 +41,7 @@ void test_eigs_eye(int n) {
   }
   typedef typename Matrix::elt_t elt_t;
   Matrix A = Matrix::eye(n, n);
-  Tensor<elt_t> V1 = Tensor<elt_t>::ones(n);
+  Tensor<elt_t> V1 = Tensor<elt_t>::ones(n, n);
   for (int neig = 1; neig < std::min(n, 4); neig++) {
     Tensor<elt_t> U;
     for (int type = 0; type < LargestImaginary; type++) {
@@ -51,7 +51,7 @@ void test_eigs_eye(int n) {
       EXPECT_EQ(n, U.dimension(0));
       EXPECT_EQ(neig, U.dimension(1));
       EXPECT_EQ(neig, E.size());
-      EXPECT_CEQ(CTensor::ones(igen << neig), E);
+      EXPECT_CEQ(CTensor::ones(Dimensions({neig}), E);
     }
   }
 }
@@ -63,11 +63,11 @@ void test_eigs_permuted_diagonal(int n) {
   RTensor pinv = adjoint(p);
   RTensor d = diag(linspace((double)1.0, n, n), 0);
 
-  Tensor<elt_t> e1 = RTensor::zeros(igen << n);
+  Tensor<elt_t> e1 = RTensor::zeros(n);
   e1.at(0) = 1.0;
   e1 = mmult(pinv, e1);
 
-  Tensor<elt_t> en = RTensor::zeros(igen << n);
+  Tensor<elt_t> en = RTensor::zeros(n);
   en.at(n - 1) = 1.0;
   en = mmult(pinv, en);
 

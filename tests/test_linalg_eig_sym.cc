@@ -44,7 +44,7 @@ void test_eye_eig_sym(int n) {
   Tensor<elt_t> V = adjoint(U);
   EXPECT_TRUE(all_equal(Inn, U));
   EXPECT_TRUE(all_equal(Inn, V));
-  EXPECT_TRUE(all_equal(s, RTensor::ones(igen << n)));
+  EXPECT_TRUE(all_equal(s, RTensor::ones(Dimensions({n}))));
 }
 
 template <typename elt_t>

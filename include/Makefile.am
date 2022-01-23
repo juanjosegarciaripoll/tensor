@@ -8,7 +8,6 @@ nobase_include_HEADERS = \
 	tensor/detail/sparse_base.hpp \
 	tensor/detail/sparse_ops.hpp \
 	tensor/detail/tensor_base.hpp \
-	tensor/detail/tensor_matrix.hpp \
 	tensor/detail/tensor_ops.hpp \
 	tensor/detail/tensor_reshape.hpp \
 	tensor/detail/tensor_slice.hpp \

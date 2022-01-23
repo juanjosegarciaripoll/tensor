@@ -81,7 +81,7 @@ CTensor eigs(const CTensor &A, int eig_type, size_t neig, CTensor *eigenvectors,
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return CTensor::zeros(igen << neig);
+      return CTensor::zeros(neig);
     } else {
       abort();
     }

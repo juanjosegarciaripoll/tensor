@@ -185,28 +185,22 @@ class Tensor {
   elt_t &at(index d1, index d2, index d3, index d4, index d5, index d6);
 
   /**Fill with an element.*/
-  void fill_with(const elt_t &e);
+  Tensor<elt_t> &fill_with(const elt_t &e);
   /**Fill with zeros.*/
-  void fill_with_zeros() { fill_with(number_zero<elt_t>()); }
+  Tensor<elt_t> &fill_with_zeros() { return fill_with(number_zero<elt_t>()); }
   /**Fills with random numbers.*/
-  void randomize();
+  Tensor<elt_t> &randomize();
 
-  /**Build a random 1D Tensor. */
-  static const Tensor<elt_t> random(index length);
-  /**Build a random 2D Tensor.*/
-  static const Tensor<elt_t> random(index rows, index cols);
-  /**Build a random 3D Tensor.*/
-  static const Tensor<elt_t> random(index d1, index d2, index d3);
-  /**Build a random 4D Tensor.*/
-  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4);
-  /**Build a random 5D Tensor.*/
-  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4,
-                                    index d5);
-  /**Build a random 6D Tensor.*/
-  static const Tensor<elt_t> random(index d1, index d2, index d3, index d4,
-                                    index d5, index d6);
-  /**Build a random Tensor with arbitrary dimensions. */
-  static const Tensor<elt_t> random(const Dimensions &dimensions);
+  /**N-dimensional tensor one or more dimensions, filled with random numbers.*/
+  template <typename... index_like>
+  static inline Tensor<elt_t> random(index_like... next_dimensions) {
+    return Tensor<elt_t>::empty(next_dimensions...).randomize();
+  }
+
+  /**N-dimensional tensor filled with random numbers.*/
+  static inline Tensor<elt_t> random(const Dimensions &dimensions) {
+    return Tensor<elt_t>(dimensions).randomize();
+  };
 
   //
   // Tensor slicing
@@ -246,40 +240,45 @@ class Tensor {
   // Matrix operations
   //
   /**Identity matrix.*/
-  static const Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
+  static inline Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
   /**Rectangular identity matrix.*/
-  static const Tensor<elt_t> eye(index rows, index cols);
-  /**Matrix of zeros.*/
-  static const Tensor<elt_t> zeros(index rows) { return zeros(rows, rows); }
-  /**Matrix of zeros.*/
-  static const Tensor<elt_t> zeros(index rows, index cols);
-  /**4D Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(index d1, index d2, index d3);
-  /**4D Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4);
-  /**5D Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4,
-                                   index d5);
-  /**6D Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4,
-                                   index d5, index d6); /**Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(const Dimensions &dimensions);
+  static Tensor<elt_t> eye(index rows, index cols) {
+    Tensor<elt_t> output(rows, cols);
+    output.fill_with_zeros();
+    for (index i = 0; i < rows && i < cols; ++i) {
+      output.at(i, i) = number_one<elt_t>();
+    }
+    return output;
+  }
 
-  /**Matrix of ones.*/
-  static const Tensor<elt_t> ones(index rows) { return ones(rows, rows); }
-  /**Matrix of ones.*/
-  static const Tensor<elt_t> ones(index rows, index cols);
-  /**4D Tensor of ones.*/
-  static const Tensor<elt_t> ones(index d1, index d2, index d3);
-  /**4D Tensor of ones.*/
-  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4);
-  /**5D Tensor of ones.*/
-  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4,
-                                  index d5);
-  /**6D Tensor of ones.*/
-  static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4,
-                                  index d5, index d6); /**Tensor of ones.*/
-  static const Tensor<elt_t> ones(const Dimensions &dimensions);
+  /**Empty tensor one or more dimensions, with undetermined values.*/
+  template <typename... index_like>
+  static inline Tensor<elt_t> empty(index_like... nth_dimension) {
+    return Tensor<elt_t>(Dimensions({static_cast<index>(nth_dimension)...}));
+  }
+
+  /**N-dimensional tensor one or more dimensions, filled with zeros.*/
+  template <typename... index_like>
+  static inline Tensor<elt_t> zeros(index first_dimension,
+                                    index_like... next_dimensions) {
+    return Tensor::empty(first_dimension, next_dimensions...).fill_with_zeros();
+  }
+  /**N-dimensional tensor filled with ones.*/
+  static inline Tensor<elt_t> zeros(const Dimensions &dimensions) {
+    return Tensor<elt_t>(dimensions).fill_with_zeros();
+  }
+
+  /**N-dimensional tensor one or more dimensions, filled with ones.*/
+  template <typename... index_like>
+  static inline Tensor<elt_t> ones(index first_dimension,
+                                   index_like... next_dimensions) {
+    return Tensor::empty(first_dimension, next_dimensions...)
+        .fill_with(number_one<elt_t>());
+  }
+  /**N-dimensional tensor filled with zeros.*/
+  static inline Tensor<elt_t> ones(const Dimensions &dimensions) {
+    return Tensor<elt_t>(dimensions).fill_with(number_one<elt_t>());
+  };
 
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
@@ -374,7 +373,6 @@ Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t1> &b);
 //
 #ifdef TENSOR_LOAD_IMPL
 #include <tensor/detail/tensor_base.hpp>
-#include <tensor/detail/tensor_matrix.hpp>
 #endif
 #include <tensor/detail/tensor_slice.hpp>
 #include <tensor/detail/tensor_ops.hpp>

@@ -6,3 +6,5 @@ Changes in version 0.2
 * Tensor, tensor views and sparse matrices dimensions are now stored in a `Dimensions` object, while `Indices` is just a synonym for a vector of `index` integers.
 
 * `Dimensions` and `Indices` allow construction from initializer lists.
+
+* Formerly, `Tensor::ones(n)` and `Tensor::zeros(n)` would return n-by-n matrices filled with ones and zeros, following Matlab. Now they return 1-D tensors, as Numpy.
