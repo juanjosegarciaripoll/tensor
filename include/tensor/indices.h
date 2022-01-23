@@ -93,6 +93,13 @@ class Dimensions {
     return column_major_inner(0, i0, in...);
   }
 
+  template <typename... index_like>
+  void get_values(index_like *...in) const {
+    assert(rank() == sizeof...(in));
+    index n = 0;
+    auto ignored = {(*(in) = dimensions_[n++], 1)...};
+  }
+
  private:
   SimpleVector<index> dimensions_;
   index total_size_;

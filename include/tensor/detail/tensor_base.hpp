@@ -97,60 +97,6 @@ index Tensor<elt_t>::dimension(int which) const {
 }
 
 template <typename elt_t>
-void Tensor<elt_t>::get_dimensions(index *length) const {
-  assert(rank() == 1);
-  *length = dims_[0];
-}
-
-template <typename elt_t>
-void Tensor<elt_t>::get_dimensions(index *rows, index *cols) const {
-  assert(rank() == 2);
-  *rows = dims_[0];
-  *cols = dims_[1];
-}
-
-template <typename elt_t>
-void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2) const {
-  assert(rank() == 3);
-  *d0 = dims_[0];
-  *d1 = dims_[1];
-  *d2 = dims_[2];
-}
-
-template <typename elt_t>
-void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2,
-                                   index *d3) const {
-  assert(rank() == 4);
-  *d0 = dims_[0];
-  *d1 = dims_[1];
-  *d2 = dims_[2];
-  *d3 = dims_[3];
-}
-
-template <typename elt_t>
-void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2, index *d3,
-                                   index *d4) const {
-  assert(rank() == 5);
-  *d0 = dims_[0];
-  *d1 = dims_[1];
-  *d2 = dims_[2];
-  *d3 = dims_[3];
-  *d4 = dims_[4];
-}
-
-template <typename elt_t>
-void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2, index *d3,
-                                   index *d4, index *d5) const {
-  assert(rank() == 6);
-  *d0 = dims_[0];
-  *d1 = dims_[1];
-  *d2 = dims_[2];
-  *d3 = dims_[3];
-  *d4 = dims_[4];
-  *d5 = dims_[5];
-}
-
-template <typename elt_t>
 void Tensor<elt_t>::reshape(const Dimensions &new_dimensions) {
   assert(new_dimensions.total_size() == size());
   dims_ = new_dimensions;

@@ -130,24 +130,15 @@ class Tensor {
   const Dimensions &dimensions() const { return dims_; }
   /**Length of a given Tensor index.*/
   index dimension(int which) const;
-  /**Query dimensions of 1D Tensor.*/
-  void get_dimensions(index *length) const;
-  /**Query dimensions of 2D Tensor.*/
-  void get_dimensions(index *rows, index *cols) const;
-  /**Query dimensions of 3D Tensor.*/
-  void get_dimensions(index *d0, index *d1, index *d2) const;
-  /**Query dimensions of 4D Tensor.*/
-  void get_dimensions(index *d0, index *d1, index *d2, index *d3) const;
-  /**Query dimensions of 5D Tensor.*/
-  void get_dimensions(index *d0, index *d1, index *d2, index *d3,
-                      index *d4) const;
-  /**Query dimensions of 6D Tensor.*/
-  void get_dimensions(index *d0, index *d1, index *d2, index *d3, index *d4,
-                      index *d5) const;
   /**Query the size of 2nd index.*/
   index columns() const { return dimension(1); }
   /**Query then size of 1st index. */
   index rows() const { return dimension(0); }
+  /**Query dimensions of Tensor, returned into the given pointers.*/
+  template <typename... index_like>
+  void get_dimensions(index_like *...in) const {
+    return dims_.get_values(in...);
+  };
 
   /**Change the dimensions, while keeping the data. */
   void reshape(const Dimensions &new_dims);
