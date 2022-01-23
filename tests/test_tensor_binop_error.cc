@@ -32,12 +32,10 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
     {
       Tensor<elt_t2> Paux;
       EXPECT_EQ(0, Paux.rank());
-      /*
       EXPECT_DEATH(P + Paux, "a.size.. == b.size..")
           << P.dimensions() << "," << Paux.dimensions();
       EXPECT_DEATH(Paux + P, ".*")
           << P.dimensions() << "," << Paux.dimensions();
-          */
     }
     {
       Indices dims = P.dimensions();
@@ -62,7 +60,7 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
-/*
+
 TEST(TensorBinopDeathTest, RTensorRTensorBinopError) {
   test_over_tensors<double>(
       test_tensor_tensor_binop_error<double, double, double>);
@@ -76,7 +74,7 @@ TEST(TensorBinopDeathTest, CTensorCTensorBinopError) {
   test_over_tensors<cdouble>(
       test_tensor_tensor_binop_error<cdouble, cdouble, cdouble>);
 }
-*/
+
 TEST(TensorBinopDeathTest, CTensorRTensorBinopError) {
   test_over_tensors<cdouble>(
       test_tensor_tensor_binop_error<cdouble, double, cdouble>);
