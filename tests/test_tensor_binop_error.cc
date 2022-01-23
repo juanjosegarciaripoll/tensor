@@ -28,29 +28,31 @@ namespace tensor_test {
 template <typename elt_t, typename elt_t2, typename elt_t3>
 void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
 #ifndef NDEBUG
-  if (P.rank()) {
+  if (P.size()) {
     {
       Tensor<elt_t2> Paux;
       EXPECT_EQ(0, Paux.rank());
-      ASSERT_DEATH(P + Paux, ".*")
+      /*
+      EXPECT_DEATH(P + Paux, "a.size.. == b.size..")
           << P.dimensions() << "," << Paux.dimensions();
-      ASSERT_DEATH(Paux + P, ".*")
+      EXPECT_DEATH(Paux + P, ".*")
           << P.dimensions() << "," << Paux.dimensions();
+          */
     }
     {
       Indices dims = P.dimensions();
       dims.at(P.rank() - 1) += 1;
       Tensor<elt_t2> Paux(dims);
-      ASSERT_DEATH(P + Paux, ".*")
+      EXPECT_DEATH(P + Paux, ".*")
           << P.dimensions() << "," << Paux.dimensions();
-      ASSERT_DEATH(Paux + P, ".*")
+      EXPECT_DEATH(Paux + P, ".*")
           << P.dimensions() << "," << Paux.dimensions();
     }
     {
-      Tensor<elt_t2> Paux(P.dimension(0) + 2);
-      ASSERT_DEATH(Paux + P, ".*")
+      Tensor<elt_t2> Paux(P.dimension(0) + 1);
+      EXPECT_DEATH(Paux + P, ".*")
           << P.dimensions() << "," << Paux.dimensions();
-      ASSERT_DEATH(P + Paux, ".*")
+      EXPECT_DEATH(P + Paux, ".*")
           << P.dimensions() << "," << Paux.dimensions();
     }
   }
@@ -60,8 +62,8 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
-
-TEST(TensorBinopTest, RTensorRTensorBinopError) {
+/*
+TEST(TensorBinopDeathTest, RTensorRTensorBinopError) {
   test_over_tensors<double>(
       test_tensor_tensor_binop_error<double, double, double>);
 }
@@ -70,17 +72,17 @@ TEST(TensorBinopTest, RTensorRTensorBinopError) {
 // COMPLEX SPECIALIZATIONS
 //
 
-TEST(TensorBinopTest, CTensorCTensorBinopError) {
+TEST(TensorBinopDeathTest, CTensorCTensorBinopError) {
   test_over_tensors<cdouble>(
       test_tensor_tensor_binop_error<cdouble, cdouble, cdouble>);
 }
-
-TEST(TensorBinopTest, CTensorRTensorBinopError) {
+*/
+TEST(TensorBinopDeathTest, CTensorRTensorBinopError) {
   test_over_tensors<cdouble>(
       test_tensor_tensor_binop_error<cdouble, double, cdouble>);
 }
 
-TEST(TensorBinopTest, RTensorCTensorBinopError) {
+TEST(TensorBinopDeathTest, RTensorCTensorBinopError) {
   test_over_tensors<double>(
       test_tensor_tensor_binop_error<double, cdouble, cdouble>);
 }

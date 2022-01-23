@@ -30,9 +30,7 @@ using tensor::index;
 
 template <typename elt_t>
 void test_view_error(const Tensor<elt_t> &P) {
-  if (P.rank() != 1) {
-    ASSERT_DEATH(P(range()), ".*");
-  }
+  EXPECT_EQ(P(range()).size(), P.size());
   if (P.rank() != 2) {
     ASSERT_DEATH(P(range(), range()), ".*");
   }
@@ -57,9 +55,7 @@ void test_view_error(const Tensor<elt_t> &P) {
 #ifndef NDEBUG
 // death by assert
 
-TEST(SliceTestError, SliceRTensorError0D) {
-  test_view_error(RTensor());
-}
+TEST(SliceTestError, SliceRTensorError0D) { test_view_error(RTensor()); }
 
 TEST(SliceTestError, SliceRTensorError1D) {
   test_view_error(RTensor(rgen << 3));
@@ -89,9 +85,7 @@ TEST(SliceTestError, SliceRTensorError6D) {
 // COMPLEX SPECIALIZATIONS
 //
 
-TEST(SliceTestError, SliceCTensorError0D) {
-  test_view_error(CTensor());
-}
+TEST(SliceTestError, SliceCTensorError0D) { test_view_error(CTensor()); }
 
 TEST(SliceTestError, SliceCTensorError1D) {
   test_view_error(CTensor(cgen << 3));

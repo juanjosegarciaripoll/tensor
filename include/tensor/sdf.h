@@ -108,6 +108,9 @@ class OutDataFile : public DataFile {
   template <class Vector>
   void dump_vector(const Vector &v);
 
+  template <typename iterator>
+  void dump_sequence(iterator begin, size_t howmany);
+
   void write_header();
   void write_variable_name(const std::string &name);
   void write_tag(const std::string &name, tensor::index tag);

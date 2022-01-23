@@ -64,12 +64,11 @@ void test_copy_constructor(Tensor<elt_t> &P) {
 //
 template <typename elt_t>
 void test_dims(Tensor<elt_t> &P) {
-  Indices d = P.dimensions();
-  unchanged(d, P.dimensions(), 2);
+  Dimensions d = P.dimensions();
 
   Indices::elt_t a1, a2, a3, a4, a5, a6;
   ASSERT_LE(P.rank(), 6);
-  EXPECT_EQ(d.size(), P.rank());
+  EXPECT_EQ(d.rank(), P.rank());
   switch (P.rank()) {
     case 6: {
       P.get_dimensions(&a1, &a2, &a3, &a4, &a5, &a6);

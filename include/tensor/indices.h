@@ -30,6 +30,8 @@
 namespace tensor {
 
 extern template class Vector<index>;
+extern template class SimpleVector<index>;
+class Dimensions;
 
 /** Vector of 'index' type, where 'index' fits the indices of a tensor.*/
 class Indices : public Vector<index> {
@@ -38,6 +40,7 @@ class Indices : public Vector<index> {
   Indices(const Vector<index> &v) : Vector<index>(v) {}
   template <size_t n>
   Indices(StaticVector<index, n> v) : Vector<index>(v) {}
+  Indices(const Dimensions &dims);
 
   template <typename other_elt>
   Indices(const std::initializer_list<other_elt> &l) : Vector<index>(l) {}
@@ -45,8 +48,42 @@ class Indices : public Vector<index> {
   explicit Indices(index size) : Vector<index>(size) {}
 
   static const Indices range(index min, index max, index step = 1);
+};
 
-  index total_size() const;
+class Dimensions {
+ public:
+  typedef index *iterator;
+  typedef const index *const_iterator;
+
+  Dimensions() : dimensions_(), total_size_{0} {}
+
+  Dimensions(const SimpleVector<index> &dims)
+      : dimensions_(dims), total_size_{compute_total_size(dimensions_)} {}
+
+  Dimensions(const Indices &dims)
+      : dimensions_(dims), total_size_{compute_total_size(dimensions_)} {};
+
+  template <typename other_elt>
+  Dimensions(const std::initializer_list<other_elt> &l)
+      : dimensions_(l), total_size_{compute_total_size(dimensions_)} {}
+
+  template <size_t n>
+  Dimensions(const StaticVector<index, n> &v)
+      : dimensions_(v), total_size_{compute_total_size(dimensions_)} {}
+
+  index total_size() const { return total_size_; }
+  index rank() const { return dimensions_.size(); }
+
+  index operator[](index pos) const { return dimensions_[pos]; }
+  const_iterator begin() const { return dimensions_.begin(); }
+  const_iterator end() const { return dimensions_.end(); }
+  const SimpleVector<index> &get_vector() const { return dimensions_; }
+
+ private:
+  SimpleVector<index> dimensions_;
+  index total_size_;
+
+  static index compute_total_size(const SimpleVector<index> &dims);
 };
 
 void surrounding_dimensions(const Indices &d, index ndx, index *d1, index *d2,

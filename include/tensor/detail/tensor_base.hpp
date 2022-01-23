@@ -40,11 +40,11 @@ template <typename elt_t>
 Tensor<elt_t>::Tensor() : data_(), dims_() {}
 
 template <typename elt_t>
-Tensor<elt_t>::Tensor(const Indices &new_dims)
+Tensor<elt_t>::Tensor(const Dimensions &new_dims)
     : data_(new_dims.total_size()), dims_(new_dims) {}
 
 template <typename elt_t>
-Tensor<elt_t>::Tensor(const Indices &new_dims, const Tensor<elt_t> &other)
+Tensor<elt_t>::Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other)
     : data_(other.data_), dims_(new_dims) {
   assert(dims_.total_size() == size());
 }
@@ -79,9 +79,7 @@ Tensor<elt_t>::Tensor(index d1, index d2, index d3, index d4, index d5,
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(const Vector<elt_t> &data)
-    : dims_{data_.size()}, data_(data) {
-  dims_.at(0) = data_.size();
-}
+    : dims_{data_.size()}, data_(data) {}
 
 template <typename elt_t>
 Tensor<elt_t>::Tensor(Vector<elt_t> &&data)
@@ -153,7 +151,7 @@ void Tensor<elt_t>::get_dimensions(index *d0, index *d1, index *d2, index *d3,
 }
 
 template <typename elt_t>
-void Tensor<elt_t>::reshape(const Indices &new_dimensions) {
+void Tensor<elt_t>::reshape(const Dimensions &new_dimensions) {
   assert(new_dimensions.total_size() == size());
   dims_ = new_dimensions;
 }
@@ -367,7 +365,7 @@ const Tensor<elt_t> Tensor<elt_t>::random(index d1, index d2, index d3,
 }
 
 template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::random(const Indices &dims) {
+const Tensor<elt_t> Tensor<elt_t>::random(const Dimensions &dims) {
   Tensor<elt_t> t(dims);
   t.randomize();
   return t;

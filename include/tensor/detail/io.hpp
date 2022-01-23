@@ -44,6 +44,14 @@ std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t) {
 }
 
 template <typename elt_t>
+std::ostream &operator<<(std::ostream &s, const SimpleVector<elt_t> &t) {
+  s << "[";
+  write_to_stream(s, t.begin(), t.end());
+  s << "]";
+  return s;
+}
+
+template <typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t) {
   s << "(" << t.dimensions() << ")/[";
   write_to_stream(s, t.begin_const(), t.end_const());

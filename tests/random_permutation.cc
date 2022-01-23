@@ -30,7 +30,7 @@ RTensor random_permutation(int n, int iterations) {
   if (n > 1) {
     if (iterations <= 0) iterations = 2 * n;
     Indices rows = iota(0, n - 1);
-    RTensor diagonal = RTensor::ones(igen << n);
+    RTensor diagonal = RTensor::ones(Dimensions({n}));
     while (iterations--) {
       Indices columns = rows;
       int i = rand<int>(0, n);

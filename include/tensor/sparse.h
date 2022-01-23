@@ -52,9 +52,13 @@ class Sparse {
   /**Convert a tensor to sparse form.*/
   explicit Sparse(const Tensor<elt_t> &tensor);
   /**Copy constructor.*/
-  Sparse(const Sparse<elt_t> &s);
+  Sparse(const Sparse<elt_t> &s) = default;
+  /**Move constructor.*/
+  Sparse(Sparse<elt_t> &&s) = default;
   /**Assignment operator.*/
-  Sparse &operator=(const Sparse<elt_t> &s);
+  Sparse &operator=(const Sparse<elt_t> &s) = default;
+  /**Move assignment operator.*/
+  Sparse &operator=(Sparse<elt_t> &&s) = default;
   /**Implicit conversion from other sparse types.*/
   template <typename e2>
   Sparse(const Sparse<e2> &other)
@@ -67,7 +71,7 @@ class Sparse {
   elt_t operator()(index row, index col) const;
 
   /**Return Sparse matrix dimensions.*/
-  const Indices &dimensions() const { return dims_; }
+  const Dimensions &dimensions() const { return dims_; }
   /**Length of a given Sparse matrix index.*/
   index dimension(int which) const;
   /**Number of rows.*/
@@ -93,14 +97,14 @@ class Sparse {
   template <typename t>
   friend const Tensor<t> full(const Sparse<t> &s);
 
-  const Indices &priv_dims() const { return dims_; }
+  const Dimensions &priv_dims() const { return dims_; }
   const Indices &priv_row_start() const { return row_start_; }
   const Indices &priv_column() const { return column_; }
   const Tensor<elt> &priv_data() const { return data_; }
 
  public:
   /** The dimensions (rows and columns) of the sparse matrix. */
-  Indices dims_;
+  Dimensions dims_;
   /** Gives for each row of the matrix at which index the column_/data_ entries start. */
   Indices row_start_;
   /** Gives for each data_ entry the column in the matrix. */

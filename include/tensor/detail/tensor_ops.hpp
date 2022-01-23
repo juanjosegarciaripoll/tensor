@@ -53,7 +53,8 @@ bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2);
 template <typename t1, typename t2>
 Tensor<typename std::common_type<t1, t2>::type> operator+(const Tensor<t1> &a,
                                                           const Tensor<t2> &b) {
-  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  assert(a.size() == b.size());
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
                  [](const t1 &x, const t2 &y) { return x + y; });
@@ -63,7 +64,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator+(const Tensor<t1> &a,
 template <typename t1, typename t2>
 Tensor<typename std::common_type<t1, t2>::type> operator-(const Tensor<t1> &a,
                                                           const Tensor<t2> &b) {
-  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  assert(a.size() == b.size());
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
                  [](const t1 &x, const t2 &y) { return x - y; });
@@ -73,7 +74,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator-(const Tensor<t1> &a,
 template <typename t1, typename t2>
 Tensor<typename std::common_type<t1, t2>::type> operator*(const Tensor<t1> &a,
                                                           const Tensor<t2> &b) {
-  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  assert(a.size() == b.size());
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
                  [](const t1 &x, const t2 &y) { return x * y; });
@@ -83,7 +84,7 @@ Tensor<typename std::common_type<t1, t2>::type> operator*(const Tensor<t1> &a,
 template <typename t1, typename t2>
 Tensor<typename std::common_type<t1, t2>::type> operator/(const Tensor<t1> &a,
                                                           const Tensor<t2> &b) {
-  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  assert(a.size() == b.size());
   Tensor<typename std::common_type<t1, t2>::type> output(a.dimensions());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
                  [](const t1 &x, const t2 &y) { return x / y; });

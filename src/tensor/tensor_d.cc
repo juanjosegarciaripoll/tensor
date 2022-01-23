@@ -25,4 +25,4 @@
 // Explicitely instantiate an specialization of Tensor. This generates
 // all required code.
 //
-template class tensor::RTensor;
+template class tensor::Tensor<double>;

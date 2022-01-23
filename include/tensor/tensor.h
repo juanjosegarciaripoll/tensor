@@ -57,10 +57,10 @@ class Tensor {
   Tensor();
 
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
-  explicit Tensor(const Indices &new_dims);
+  explicit Tensor(const Dimensions &new_dims);
 
   /**Constructs an N-D Tensor with given initial data.*/
-  Tensor(const Indices &new_dims, const Tensor<elt_t> &data);
+  Tensor(const Dimensions &new_dims, const Tensor<elt_t> &data);
 
   /**Constructs a 1-D Tensor from a vector.*/
   Tensor(const Vector<elt_t> &data);
@@ -93,7 +93,7 @@ class Tensor {
 
   /**Create a general tensor from data created with "gen" expressions.*/
   template <size_t n>
-  Tensor(const StaticVector<elt_t, n> &t, const Indices &d)
+  Tensor(const StaticVector<elt_t, n> &t, const Dimensions &d)
       : data_(t), dims_(d) {
     assert(data_.size() == d.total_size());
   }
@@ -125,9 +125,9 @@ class Tensor {
   bool is_empty() const { return size() == 0; }
 
   /**Number of Tensor indices.*/
-  int rank() const { return (int)dims_.size(); }
+  int rank() const { return (int)dims_.rank(); }
   /**Return Tensor dimensions.*/
-  const Indices &dimensions() const { return dims_; }
+  const Dimensions &dimensions() const { return dims_; }
   /**Length of a given Tensor index.*/
   index dimension(int which) const;
   /**Query dimensions of 1D Tensor.*/
@@ -150,7 +150,7 @@ class Tensor {
   index rows() const { return dimension(0); }
 
   /**Change the dimensions, while keeping the data. */
-  void reshape(const Indices &new_dims);
+  void reshape(const Dimensions &new_dims);
 
   /**Return the i-th element, accessed in column major order.*/
   const elt_t &operator[](index i) const;
@@ -206,7 +206,7 @@ class Tensor {
   static const Tensor<elt_t> random(index d1, index d2, index d3, index d4,
                                     index d5, index d6);
   /**Build a random Tensor with arbitrary dimensions. */
-  static const Tensor<elt_t> random(const Indices &dimensions);
+  static const Tensor<elt_t> random(const Dimensions &dimensions);
 
   //
   // Tensor slicing
@@ -263,7 +263,7 @@ class Tensor {
   /**6D Tensor of zeros.*/
   static const Tensor<elt_t> zeros(index d1, index d2, index d3, index d4,
                                    index d5, index d6); /**Tensor of zeros.*/
-  static const Tensor<elt_t> zeros(const Indices &dimensions);
+  static const Tensor<elt_t> zeros(const Dimensions &dimensions);
 
   /**Matrix of ones.*/
   static const Tensor<elt_t> ones(index rows) { return ones(rows, rows); }
@@ -279,7 +279,7 @@ class Tensor {
   /**6D Tensor of ones.*/
   static const Tensor<elt_t> ones(index d1, index d2, index d3, index d4,
                                   index d5, index d6); /**Tensor of ones.*/
-  static const Tensor<elt_t> ones(const Indices &dimensions);
+  static const Tensor<elt_t> ones(const Dimensions &dimensions);
 
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
@@ -304,7 +304,7 @@ class Tensor {
 
  private:
   Vector<elt_t> data_;
-  Indices dims_;
+  Dimensions dims_;
 };
 
 //////////////////////////////////////////////////////////////////////

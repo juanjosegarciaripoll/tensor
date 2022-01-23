@@ -44,7 +44,7 @@ const Tensor<elt_t> Tensor<elt_t>::zeros(index rows, index cols) {
 }
 
 template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::zeros(const Indices &dimensions) {
+const Tensor<elt_t> Tensor<elt_t>::zeros(const Dimensions &dimensions) {
   Tensor<elt_t> output(dimensions);
   output.fill_with_zeros();
   return output;
@@ -89,7 +89,7 @@ const Tensor<elt_t> Tensor<elt_t>::ones(index rows, index cols) {
 }
 
 template <typename elt_t>
-const Tensor<elt_t> Tensor<elt_t>::ones(const Indices &dimensions) {
+const Tensor<elt_t> Tensor<elt_t>::ones(const Dimensions &dimensions) {
   Tensor<elt_t> output(dimensions);
   output.fill_with(number_one<elt_t>());
   return output;

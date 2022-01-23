@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <cstring>
 #include <tensor/sdf.h>
 
 using namespace sdf;
@@ -144,12 +145,10 @@ void OutDataFile::write_raw(const cdouble *data, size_t n) {
 }
 
 void OutDataFile::write_variable_name(const std::string &name) {
-  char *buffer = new char[var_name_size];
-  memset(buffer, 0, var_name_size);
-  strncpy(buffer, name.c_str(),
-          std::min<size_t>(var_name_size - 1, name.size()));
-  write_raw(buffer, var_name_size);
-  delete[] buffer;
+  std::string buffer;
+  buffer.assign(var_name_size, static_cast<char>(0));
+  buffer.replace(0, std::min<size_t>(var_name_size - 1, name.size()), name);
+  write_raw(buffer.c_str(), var_name_size);
 }
 
 void OutDataFile::write_tag(const std::string &name, tensor::index type) {
@@ -159,19 +158,24 @@ void OutDataFile::write_tag(const std::string &name, tensor::index type) {
 
 template <class Vector>
 void OutDataFile::dump_vector(const Vector &v) {
-  write_raw(v.size());
-  write_raw(v.begin(), v.size());
+  OutDataFile::dump_sequence(v.begin(), v.size());
+}
+
+template <typename iterator>
+void OutDataFile::dump_sequence(iterator begin, size_t howmany) {
+  write_raw(howmany);
+  write_raw(begin, howmany);
 }
 
 void OutDataFile::dump(const RTensor &t, const std::string &name) {
   write_tag(name, TAG_RTENSOR);
-  dump_vector(t.dimensions());
+  dump_sequence(t.dimensions().begin(), t.rank());
   dump_vector(t);
 }
 
 void OutDataFile::dump(const CTensor &t, const std::string &name) {
   write_tag(name, TAG_CTENSOR);
-  dump_vector(t.dimensions());
+  dump_sequence(t.dimensions().begin(), t.rank());
   dump_vector(t);
 }
 

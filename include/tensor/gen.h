@@ -82,11 +82,6 @@ class StaticVector {
  public:
   StaticVector(const StaticVector<elt_t, n - 1> &other, elt_t x)
       : inner(other), extra(x){};
-  operator Vector<elt_t>() const {
-    Vector<elt_t> output(n);
-    push(output.begin());
-    return output;
-  }
   void push(elt_t *v) const {
     inner.push(v);
     v[n - 1] = extra;

@@ -32,13 +32,15 @@ class Tensor<elt_t>::view {
   ~view() { delete ranges_; };
   operator Tensor<elt_t>() const;
 
+  index size() const { return dims_.total_size(); }
+
  private:
   const Vector<elt_t> data_;
-  Indices dims_;
+  Dimensions dims_;
   Range *ranges_;
 
   // Start from another tensor and a set of ranges
-  view(const Tensor<elt_t> &parent, Indices &dims, Range *ranges)
+  view(const Tensor<elt_t> &parent, Dimensions &dims, Range *ranges)
       : data_(parent.data_), dims_(dims), ranges_(ranges) {}
 
   // We do not want these objects to be initialized by users nor copied.
@@ -60,13 +62,15 @@ class Tensor<elt_t>::mutable_view {
   void operator=(const Tensor<elt_t> &a_tensor);
   void operator=(elt_t v);
 
+  index size() const { return dims_.total_size(); }
+
  private:
   Vector<elt_t> &data_;
-  Indices dims_;
+  Dimensions dims_;
   Range *ranges_;
 
   // Start from another tensor and a set of ranges
-  mutable_view(Tensor<elt_t> &parent, Indices &dims, Range *ranges)
+  mutable_view(Tensor<elt_t> &parent, Dimensions &dims, Range *ranges)
       : data_(parent.data_), dims_(dims), ranges_(ranges) {}
 
   // We do not want these objects to be initialized by users nor copied.

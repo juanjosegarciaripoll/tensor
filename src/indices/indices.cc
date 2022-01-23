@@ -18,6 +18,7 @@
 */
 
 #include <numeric>
+#include <limits>
 #include <functional>
 #include <tensor/io.h>
 #include <tensor/indices.h>
@@ -30,28 +31,33 @@ const ListGenerator<cdouble> cgen = {};
 
 template class Vector<index>;
 
+template class SimpleVector<index>;
+
 bool all_equal(const Indices &a, const Indices &b) {
   return (a.size() == b.size()) &&
          std::equal(a.begin_const(), a.end_const(), b.begin_const());
 }
 
-index Indices::total_size() const {
-  if (size()) {
-    index aux = 1;
-    for (const_iterator it = begin_const(); it != end_const(); ++it) {
-      if (*it < 0) {
-        std::cerr << "Negative dimension in tensor's dimension #"
-                  << (it - begin_const()) << std::endl
-                  << "All dimensions:" << std::endl
-                  << *this << std::endl;
-        return false;
+index Dimensions::compute_total_size(const SimpleVector<index> &dims) {
+  if (dims.size()) {
+    index total_dimension = 1,
+          maximum_dimension = std::numeric_limits<index>::max();
+    for (index dimension : dims) {
+      assert(dimension >= 0);
+      assert(dimension < maximum_dimension);
+      total_dimension *= dimension;
+      if (dimension) {
+        maximum_dimension /= dimension;
       }
-      aux *= *it;
     }
-    return aux;
+    return total_dimension;
   } else {
     return 0;
   }
+}
+
+Indices::Indices(const Dimensions &dims) : Indices(dims.rank()) {
+  std::copy(dims.begin(), dims.end(), begin());
 }
 
 const Indices Indices::range(index min, index max, index step) {

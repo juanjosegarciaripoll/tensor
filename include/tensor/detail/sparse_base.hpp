@@ -45,18 +45,14 @@ static inline index safe_size(index nonzero, index rows, index cols) {
 }
 
 template <typename elt_t>
-Sparse<elt_t>::Sparse() : dims_(2), row_start_(1), column_(0), data_(0) {
-  dims_.at(0) = dims_.at(1) = row_start_.at(0) = 0;
-}
+Sparse<elt_t>::Sparse() : dims_{0, 0}, row_start_({0}), column_(0), data_(0) {}
 
 template <typename elt_t>
 Sparse<elt_t>::Sparse(index rows, index cols, index nonzero)
-    : dims_(2),
+    : dims_{rows, cols},
       row_start_(rows + 1),
       column_(safe_size(nonzero, rows, cols)),
       data_(safe_size(nonzero, rows, cols)) {
-  dims_.at(0) = rows;
-  dims_.at(1) = cols;
   std::fill(row_start_.begin(), row_start_.end(), 0);
 }
 
@@ -83,7 +79,11 @@ Sparse<elt_t>::Sparse(const Indices &dims, const Indices &row_start,
 template <typename elt_t>
 Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols,
                       const Tensor<elt_t> &data, index nrows, index ncols)
-    : dims_(2), row_start_(), column_(), data_() {
+    : Sparse(make_sparse(rows, cols, data, nrows, ncols)) {}
+
+template <typename elt_t>
+Sparse<elt_t> make_sparse(const Indices &rows, const Indices &cols,
+                          const Tensor<elt_t> &data, index nrows, index ncols) {
   index i, j, last_row, last_col, l = rows.size();
   assert(cols.size() == l);
   assert(data.size() == l);
@@ -103,11 +103,9 @@ Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols,
     }
   }
   std::sort(sorted_data.begin(), sorted_data.end());
-  dims_.at(0) = nrows;
-  dims_.at(1) = ncols;
-  row_start_ = Indices(nrows + 1);
-  column_ = Indices(l = sorted_data.size());
-  data_ = Tensor<elt_t>(l);
+  auto row_start_ = Indices(nrows + 1);
+  auto column_ = Indices(l = sorted_data.size());
+  auto data_ = Tensor<elt_t>(l);
 
   /* Fill in the Sparse structure.
      */
@@ -128,22 +126,7 @@ Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols,
   while (last_row < nrows) {
     row_start_.at(++last_row) = j;
   }
-}
-
-template <typename elt_t>
-Sparse<elt_t>::Sparse(const Sparse<elt_t> &s)
-    : dims_(s.dims_),
-      row_start_(s.row_start_),
-      column_(s.column_),
-      data_(s.data_) {}
-
-template <typename elt_t>
-Sparse<elt_t> &Sparse<elt_t>::operator=(const Sparse<elt_t> &s) {
-  row_start_ = s.row_start_;
-  column_ = s.column_;
-  data_ = s.data_;
-  dims_ = s.dims_;
-  return *this;
+  return Sparse<elt_t>(Dimensions{nrows, ncols}, row_start_, column_, data_);
 }
 
 //////////////////////////////////////////////////////////////////////
