@@ -40,7 +40,7 @@ RTensor eigs(const LinearMap<RTensor> &A, size_t n, int eig_type, size_t neig,
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-    CTensor M(n, n);
+    auto M = CTensor::empty(n, n);
     for (int i = 0; i < n; i++) {
       RTensor v = RTensor::zeros(n);
       v.at(i) = 1.0;

@@ -53,7 +53,7 @@ const CTensor fftshift(const CTensor& input, index dim, int direction) {
   // Transform the tensor into a 3-dimensional form, then use slicing.
   // Not terribly efficient, but we can delay extensive memory handling to
   // until someone needs the speed.
-  CTensor output(before, size[dim], after);
+  auto output = CTensor::empty(before, size[dim], after);
   const CTensor reshape_input = reshape(input, output.dimensions());
 
   // even number of grid points as default => direction has no effect.

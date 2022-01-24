@@ -178,7 +178,7 @@ typename Arpack<elt_t>::Status Arpack<elt_t>::update() {
 template <typename elt_t>
 Tensor<elt_t> Arpack<elt_t>::get_data(tensor::Tensor<elt_t> *vectors) {
   if (vectors) {
-    *vectors = Tensor(n, nev);
+    *vectors = Tensor::empty(n, nev);
   }
   return get_data(vectors ? vectors->begin() : NULL);
 }
@@ -197,7 +197,7 @@ Tensor<elt_t> Arpack<elt_t>::get_data(elt_t *z) {
   }
 
   // Room for eigenvalues
-  Tensor output(nev + 1);
+  auto output = Tensor::empty(nev + 1);
   elt_t *d = output.begin();
 
   // Unused here
