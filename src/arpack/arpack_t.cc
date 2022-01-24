@@ -34,15 +34,13 @@ template <>
 inline const char *eigenvalue_selector<double>(enum EigType _t) {
   static const char *whichs[6] = {"LM", "SM", "LA", "SA", NULL, NULL};
   if (_t == LargestImaginary) {
-    std::cerr
-        << "Cannot use LargestImaginary eigenvalue selector with real problems."
-        << std::endl;
+    std::cerr << "Cannot use LargestImaginary eigenvalue selector with real "
+                 "problems.\n";
     abort();
   }
   if (_t == SmallestImaginary) {
     std::cerr << "Cannot use SmallestImaginary eigenvalue selector with real "
-                 "problems."
-              << std::endl;
+                 "problems.\n";
     abort();
   }
   return whichs[_t];
@@ -57,8 +55,7 @@ inline const char *eigenvalue_selector<tensor::cdouble>(enum EigType _t) {
 template <typename elt_t>
 Arpack<elt_t>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
   if (_t < 0 || _t > 6) {
-    std::cerr << "Invalid argument EigType passed to Arpack constructor"
-              << std::endl;
+    std::cerr << "Invalid argument EigType passed to Arpack constructor\n";
     abort();
   }
 
@@ -79,7 +76,7 @@ Arpack<elt_t>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
     std::cerr << "Error in Arpack<elt_t>::Arpack(): \n "
               << "You request NEV=" << nev
               << " eigenvalues, while only between 1 and " << (n - 1)
-              << " eigenvalues can be computed.";
+              << " eigenvalues can be computed.\n";
     abort();
   }
 
@@ -223,17 +220,17 @@ Tensor<elt_t> Arpack<elt_t>::get_data(elt_t *z) {
         "DSAUPP did not find any eigenvalues to sufficient accuracy.",
         "HOWMNY must be one of 'A' or 'S' if rvec = true.",
         "HOWMNY = 'S' not yet implemented."};
-    std::cerr << "Routine Arpack<elt_t>::get_data() failed" << std::endl
-              << messages[(info < -16 || info > 0) ? 0 : (-info)] << std::endl
-              << "N=" << n << std::endl
-              << "NEV=" << n << std::endl
-              << "WHICH=" << which << std::endl
-              << "BMAT=" << bmat << std::endl
-              << "LWORKL=" << workl << std::endl;
+    std::cerr << "Routine Arpack<elt_t>::get_data() failed" << '\n'
+              << messages[(info < -16 || info > 0) ? 0 : (-info)] << '\n'
+              << "N=" << n << '\n'
+              << "NEV=" << n << '\n'
+              << "WHICH=" << which << '\n'
+              << "BMAT=" << bmat << '\n'
+              << "LWORKL=" << lworkl << '\n';
     for (int i = 0; i < 12; i++)
-      std::cerr << "IPARAM[" << i << "]=" << iparam[i] << std::endl;
+      std::cerr << "IPARAM[" << i << "]=" << iparam[i] << '\n';
     for (int i = 8; i < 11; i++)
-      std::cerr << "IPNTR[" << i << "]=" << ipntr[i] << std::endl;
+      std::cerr << "IPNTR[" << i << "]=" << ipntr[i] << '\n';
     abort();
   }
   return output(range(0, nev - 1));
