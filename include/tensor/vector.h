@@ -104,7 +104,7 @@ class Vector {
     if (data_.use_count() > 1) {
       std::shared_ptr<elt_t> tmp(new elt_t[size_],
                                  std::default_delete<elt_t[]>());
-      memcpy(tmp.get(), data_.get(), size_ * sizeof(elt_t));
+      std::copy(base_, base_ + size_, tmp.get());
       std::swap(data_, tmp);
       return base_ = data_.get();
     }
