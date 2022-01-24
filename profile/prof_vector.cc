@@ -104,7 +104,8 @@ void vector_indexed_write(std::tuple<T, typename T::elt_t> &args) {
 template <class T>
 void warmup(size_t size) {
   for (int i = 0; i < 10; ++i) {
-    std::unique_ptr<T> p{new T(T::empty(size))};
+    std::unique_ptr<T> p{new T(Dimensions({size}))};
+    force(*p);
   }
 }
 
