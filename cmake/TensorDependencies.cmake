@@ -63,17 +63,21 @@ function(tensor_find_dependency)
   endif()
 
   # 3. Try to find the dependency with pkgconfig
-  if (PkgConfig_FOUND AND ARGP_PKGCONFIG_NAMES)
-    pkg_search_module(${ARGP_NAME} REQUIRED QUIET
-      IMPORTED_TARGET ${ARGP_PKGCONFIG_NAMES}
-    )
-    if (${ARGP_NAME}_FOUND)
-      message(STATUS "Dependency '${ARGP_NAME}' found with pkgconfig")
-      set("${ARGP_VAR}" "PkgConfig::${ARGP_NAME}" PARENT_SCOPE)
-      #add_library(${target_name} ALIAS PkgConfig::${ARGP_NAME})
-      set("${ARGP_DEPENDENCIES}" "${${ARGP_DEPENDENCIES}}\nfind_dependency(PkgConfig)\npkg_search_module(${ARGP_NAME} REQUIRED QUIET IMPORTED_TARGET ${ARGP_PKGCONFIG_NAMES})" PARENT_SCOPE)
-      set("${ARGP_NAME}_FOUND" TRUE PARENT_SCOPE)
-      return()
+  if (ARGP_PKGCONFIG_NAMES)
+    if (PkgConfig_FOUND)
+      pkg_search_module(${ARGP_NAME} REQUIRED QUIET
+        IMPORTED_TARGET ${ARGP_PKGCONFIG_NAMES}
+      )
+      if (${ARGP_NAME}_FOUND)
+        message(STATUS "Dependency '${ARGP_NAME}' found with pkgconfig")
+        set("${ARGP_VAR}" "PkgConfig::${ARGP_NAME}" PARENT_SCOPE)
+        #add_library(${target_name} ALIAS PkgConfig::${ARGP_NAME})
+        set("${ARGP_DEPENDENCIES}" "${${ARGP_DEPENDENCIES}}\nfind_dependency(PkgConfig)\npkg_search_module(${ARGP_NAME} REQUIRED QUIET IMPORTED_TARGET ${ARGP_PKGCONFIG_NAMES})" PARENT_SCOPE)
+        set("${ARGP_NAME}_FOUND" TRUE PARENT_SCOPE)
+        return()
+      endif()
+    else()
+      message(STATUS "PkgConfig is not installed. Cannot search for ${ARGP_PKGCONFIG_NAMES}")
     endif()
   endif()
 
