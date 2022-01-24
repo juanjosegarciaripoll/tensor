@@ -231,7 +231,7 @@ class Tensor {
   /**Empty tensor one or more dimensions, with undetermined values.*/
   template <typename... index_like>
   static inline Tensor<elt_t> empty(index_like... nth_dimension) {
-    return Tensor<elt_t>(Dimensions({static_cast<index>(nth_dimension)...}));
+    return Tensor<elt_t>(Dimensions{static_cast<index>(nth_dimension)...});
   }
 
   /**N-dimensional tensor one or more dimensions, filled with zeros.*/

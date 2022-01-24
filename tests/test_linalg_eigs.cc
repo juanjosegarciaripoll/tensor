@@ -51,7 +51,7 @@ void test_eigs_eye(int n) {
       EXPECT_EQ(n, U.dimension(0));
       EXPECT_EQ(neig, U.dimension(1));
       EXPECT_EQ(neig, E.size());
-      EXPECT_CEQ(CTensor::ones(Dimensions({neig})), E);
+      EXPECT_CEQ(CTensor::ones(neig), E);
     }
   }
 }

@@ -35,7 +35,7 @@ static Sparse<elt_t> do_kron(const Sparse<elt_t> &s2, const Sparse<elt_t> &s1) {
 
   if (number_nonzero == 0) return Sparse<elt_t>(total_rows, total_cols);
 
-  Tensor<elt_t> output_data(Dimensions({number_nonzero}));
+  auto output_data = Tensor<elt_t>::empty(number_nonzero);
   Indices output_column(number_nonzero);
   Indices output_row_start(total_rows + 1);
   Indices output_dims(igen << total_rows << total_cols);

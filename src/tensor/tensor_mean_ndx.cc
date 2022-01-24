@@ -28,7 +28,7 @@ Tensor do_mean(const Tensor &t, int ndx) {
   typedef typename Tensor::elt_t elt_t;
   int rank = t.rank();
   if (rank == 1) {
-    return Tensor(Dimensions({1}), Vector<elt_t>({mean(t)}));
+    return Tensor(Dimensions{1}, Vector<elt_t>({mean(t)}));
   } else {
     ndx = (int)Dimensions::normalize_index(ndx, rank);
     Indices dimensions(rank - 1);
