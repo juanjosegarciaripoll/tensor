@@ -57,7 +57,7 @@ class nested_list_initializer {
   }
 
   template <class item>
-  static constexpr size_t get_dimension(item l, size_t ndx) {
+  static constexpr size_t get_dimension(item, size_t) {
     return 0;
   }
 
