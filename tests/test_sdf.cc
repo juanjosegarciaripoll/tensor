@@ -17,16 +17,18 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <iostream>
 #include <tensor/sdf.h>
 #include <gtest/gtest.h>
 
 using namespace sdf;
 
 TEST(SDF, RTensor) {
-  RTensor a = RTensor::empty(0);
+  RTensor a = RTensor::random(1);
   RTensor b = RTensor::random(13);
   RTensor c = RTensor::random(4, 15);
   RTensor d = RTensor::random(3, 7, 5);
+  RTensor x = {1e-312};
   {
     OutDataFile f("foo.dat");
     f.dump(a, "a");
@@ -34,27 +36,30 @@ TEST(SDF, RTensor) {
     f.dump(b, "b");
     f.dump(c, "c");
     f.dump(d, "d");
+    f.dump(x, "x");
   }
   {
     InDataFile f("foo.dat");
     RTensor aux;
     f.load(&aux, "a");
     EXPECT_TRUE(all_equal(a, aux));
-    double x;
-    f.load(&x, "a0");
-    EXPECT_EQ(x, a[0]);
+    double a0;
+    f.load(&a0, "a0");
+    EXPECT_EQ(a0, a[0]);
     f.load(&aux, "b");
     EXPECT_TRUE(all_equal(b, aux));
     f.load(&aux, "c");
     EXPECT_TRUE(all_equal(c, aux));
     f.load(&aux, "d");
     EXPECT_TRUE(all_equal(d, aux));
+    f.load(&aux, "x");
+    EXPECT_TRUE(all_equal(x, aux));
   }
   unlink("foo.dat");
 }
 
 TEST(SDF, CTensor) {
-  CTensor a = CTensor::empty(0);
+  CTensor a = CTensor::zeros(1);
   CTensor b = CTensor::random(13);
   CTensor c = CTensor::random(4, 15);
   CTensor d = CTensor::random(3, 7, 5);
@@ -71,9 +76,9 @@ TEST(SDF, CTensor) {
     CTensor aux;
     f.load(&aux, "a");
     EXPECT_TRUE(all_equal(a, aux));
-    cdouble x;
-    f.load(&x, "a0");
-    EXPECT_EQ(x, a[0]);
+    cdouble a0;
+    f.load(&a0, "a0");
+    EXPECT_EQ(a0, a[0]);
     f.load(&aux, "b");
     EXPECT_TRUE(all_equal(b, aux));
     f.load(&aux, "c");
