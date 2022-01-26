@@ -27,6 +27,18 @@
 
 namespace tensor {
 
+/* Printing of complex numbers */
+inline std::istream &operator>>(std::istream &s, cdouble &z) {
+  double r, i;
+  s >> r >> i;
+  z = to_complex(r, i);
+  return s;
+}
+
+inline std::ostream &operator<<(std::ostream &s, const cdouble &d) {
+  return s << real(d) << ' ' << imag(d);
+}
+
 /**Simple text representation of vector.*/
 template <typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t);

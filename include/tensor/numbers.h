@@ -23,7 +23,6 @@
 
 #include <cmath>
 #include <complex>
-#include <iostream>
 
 namespace tensor {
 
@@ -93,17 +92,6 @@ inline cdouble round(cdouble r) {
   return to_complex(::round(real(r)), ::round(imag(r)));
 }
 #endif
-
-inline std::istream &operator>>(std::istream &s, cdouble &z) {
-  double r, i;
-  s >> r >> i;
-  z = to_complex(r, i);
-  return s;
-}
-
-inline std::ostream &operator<<(std::ostream &s, const cdouble &d) {
-  return s << real(d) << ' ' << imag(d);
-}
 
 }  // namespace tensor
 
