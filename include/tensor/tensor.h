@@ -31,6 +31,7 @@
 #include <tensor/vector.h>
 #include <tensor/gen.h>
 #include <tensor/indices.h>
+#include <tensor/initializer.h>
 
 namespace tensor {
 
@@ -97,6 +98,19 @@ class Tensor {
       : data_(t), dims_(d) {
     assert(data_.size() == d.total_size());
   }
+
+  /**Create a Tensor from a vector initializer list {1, 2, 3}. */
+  Tensor(typename nested_initializer_list<1, elt_t>::type l)
+      : Tensor(nested_list_initializer<elt_t>::make_tensor(l)) {}
+  /**Create a Tensor from a matrix braced initializer list of rows, e.g. {{1, 2, 3}, {3, 4, 5}}. */
+  Tensor(typename nested_initializer_list<2, elt_t>::type l)
+      : Tensor(nested_list_initializer<elt_t>::make_tensor(l)) {}
+  /**Create a Tensor from a three-dimensional initializer list, e.g. {{{1}, {2}}, {{3}, {4}}, {{5}, {6}}}. */
+  Tensor(typename nested_initializer_list<3, elt_t>::type l)
+      : Tensor(nested_list_initializer<elt_t>::make_tensor(l)) {}
+  /**Create a Tensor from a four-dimensional initializer list. */
+  Tensor(typename nested_initializer_list<4, elt_t>::type l)
+      : Tensor(nested_list_initializer<elt_t>::make_tensor(l)) {}
 
 #if 0
   /**Build a 1D Tensor or vector.*/

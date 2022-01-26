@@ -7,6 +7,13 @@ Changes in version 0.2
 
 * `Dimensions` and `Indices` allow construction from initializer lists.
 
+* `Tensor` can also be built from nested initializer lists. The interpretation of nested lists is based on C, so that a list of lists is a matrix, with the innermost lists representing the rows. For example:
+```
+RTensor vector = {1.0, 2.0, 3.0};
+RTensor matrix = {{1.0, 2.0}, {3.0, 4.0}};
+RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
+```
+
 * Formerly, `Tensor::ones(n)` and `Tensor::zeros(n)` would return n-by-n matrices filled with ones and zeros, following Matlab. Now they return 1-D tensors, as Numpy.
 
 * `Tensor::at(n)` only works for 1-D tensors, unlike before, where it allowed accessing all elements sequentially.
