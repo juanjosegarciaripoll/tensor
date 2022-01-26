@@ -57,7 +57,8 @@ TEST(RTensorTest, RTensor2DListConstructor) {
 }
 
 RTensor rtensor_failed_2d_list_initialization() {
-  RTensor A = {{1.0, 2.0}, {3.0}};
+  // Length of sublists do not match
+  RTensor A = {{1.0, 2.0}, {3.0, 4.0, 5.0}};
   return A;
 }
 
@@ -87,7 +88,8 @@ TEST(RTensorTest, RTensor3DListConstructor) {
 }
 
 RTensor rtensor_failed_3d_list_initialization() {
-  RTensor A = {{{1.0}, {2.0}}, {{1.0}}};
+  // Length of sublists do not match
+  RTensor A = {{{1.0, 2.0}, {2.0, 3.0}}, {{1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0}}};
   return A;
 }
 
@@ -106,7 +108,7 @@ TEST(CTensorTest, CTensor1DEmptyListConstructor) {
 }
 
 TEST(CTensorTest, CTensor1DListConstructor) {
-  CTensor A = {1.0, 2.0, 3.0};
+  CTensor A = {cdouble(1.0), 2.0, 3.0};
   EXPECT_EQ(A.size(), 3);
   EXPECT_EQ(A.rank(), 1);
   EXPECT_EQ(A.dimension(0), 3);
@@ -116,7 +118,7 @@ TEST(CTensorTest, CTensor1DListConstructor) {
 }
 
 TEST(CTensorTest, CTensor2DListConstructor) {
-  CTensor A = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
+  CTensor A = {{cdouble(1.0), 2.0, 3.0}, {4.0, 5.0, 6.0}};
   EXPECT_EQ(A.size(), 6);
   EXPECT_EQ(A.rank(), 2);
   EXPECT_EQ(A.dimension(0), 2);
@@ -130,7 +132,7 @@ TEST(CTensorTest, CTensor2DListConstructor) {
 }
 
 CTensor ctensor_failed_2d_list_initialization() {
-  CTensor A = {{1.0, 2.0}, {3.0}};
+  CTensor A = {{cdouble(1.0), 2.0}, {3.0, 4.0, 5.0}};
   return A;
 }
 
@@ -139,7 +141,7 @@ TEST(CTensorTest, CTensor2DListFailedConstructor) {
 }
 
 TEST(CTensorTest, CTensor3DListConstructor) {
-  CTensor A = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}};
+  CTensor A = {{{cdouble(1), 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}};
   EXPECT_EQ(A.size(), 12);
   EXPECT_EQ(A.rank(), 3);
   EXPECT_EQ(A.dimension(0), 2);
@@ -160,7 +162,8 @@ TEST(CTensorTest, CTensor3DListConstructor) {
 }
 
 CTensor ctensor_failed_3d_list_initialization() {
-  CTensor A = {{{1.0}, {2.0}}, {{1.0}}};
+  CTensor A = {{{cdouble(1.0), 2.0}, {2.0, 3.0}},
+               {{1.0, 2.0, 3.0}, {4.0, 5.0}}};
   return A;
 }
 
