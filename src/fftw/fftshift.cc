@@ -21,17 +21,17 @@
 
 namespace tensor {
 
-const CTensor fftshift(const CTensor& input, int direction) {
+CTensor fftshift(const CTensor& input, int direction) {
   // just forward to the simpler function
   CTensor output(input);
-  for (index dim = 0; dim < input.rank(); dim++) {
+  for (index dim : input.dimensions()) {
     output = fftshift(output, dim, direction);
   }
 
   return output;
 }
 
-const CTensor fftshift(const CTensor& input, index dim, int direction) {
+CTensor fftshift(const CTensor& input, index dim, int direction) {
   assert(dim >= 0 && dim < input.rank());
 
   const Indices& size = input.dimensions();
@@ -79,12 +79,11 @@ const CTensor fftshift(const CTensor& input, index dim, int direction) {
   return reshape(output, size);
 }
 
-const CTensor fftshift(const CTensor& input, const Booleans& convert,
-                       int direction) {
+CTensor fftshift(const CTensor& input, const Booleans& convert, int direction) {
   assert(input.rank() == convert.size());
 
   CTensor output(input);
-  for (index dim = 0; dim < input.rank(); dim++) {
+  for (index dim : input.dimensions()) {
     if (convert[dim]) {
       output = fftshift(output, dim, direction);
     }

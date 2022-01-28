@@ -383,7 +383,7 @@ struct RTensor : public Tensor<double> {
 typedef Tensor<double> RTensor;
 #endif
 
-const RTensor
+RTensor
 change_dimension(const RTensor &U, int dimension, index new_size);
 
 /**Return the smallest element in the tensor.*/
@@ -510,7 +510,7 @@ struct CTensor : public Tensor<cdouble> {
 typedef Tensor<cdouble> CTensor;
 #endif
 
-const CTensor
+CTensor
 change_dimension(const CTensor &U, int dimension, index new_size);
 
 /**Return the sum of the elements in the tensor.*/

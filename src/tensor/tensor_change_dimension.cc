@@ -23,8 +23,7 @@
 namespace tensor {
 
 template <class Tensor>
-static const Tensor change_dimension_inner(const Tensor &a, int dim,
-                                           index new_size) {
+static Tensor change_dimension_inner(const Tensor &a, int dim, index new_size) {
   typedef typename Tensor::elt_t elt_t;
 
   dim = (int)Dimensions::normalize_index(dim, a.rank());
