@@ -32,6 +32,7 @@
 #include <tensor/gen.h>
 #include <tensor/indices.h>
 #include <tensor/initializer.h>
+#include <tensor/rand.h>
 
 namespace tensor {
 
@@ -55,19 +56,24 @@ class Tensor {
   typedef const elt_t *const_iterator;
 
   /**Constructs an empty Tensor.*/
-  Tensor();
+  Tensor() : data_(), dims_() {}
 
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
-  explicit Tensor(const Dimensions &new_dims);
+  explicit Tensor(const Dimensions &new_dims)
+      : data_(new_dims.total_size()), dims_(new_dims){};
 
   /**Constructs an N-D Tensor with given initial data.*/
-  Tensor(const Dimensions &new_dims, const Tensor<elt_t> &data);
+  Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other)
+      : data_(other.data_), dims_(new_dims) {
+    assert(dims_.total_size() == size());
+  }
 
   /**Constructs a 1-D Tensor from a vector.*/
-  Tensor(const Vector<elt_t> &data);
+  Tensor(const Vector<elt_t> &data) : data_(data), dims_{data_.size()} {}
 
   /**Constructs a 1-D Tensor from a vector (move version for temporaries).*/
-  Tensor(Vector<elt_t> &&data);
+  Tensor(Vector<elt_t> &&data)
+      : data_(std::move(data)), dims_({data_.size()}) {}
 
   /**Constructs a 1-D Tensor from a vector.*/
   Tensor(const std::vector<elt_t> &data)
@@ -145,7 +151,11 @@ class Tensor {
   /**Return Tensor dimensions.*/
   const Dimensions &dimensions() const { return dims_; }
   /**Length of a given Tensor index.*/
-  index dimension(int which) const;
+  index dimension(int which) const {
+    assert(rank() > which);
+    assert(which >= 0);
+    return dims_[which];
+  }
   /**Query the size of 2nd index.*/
   index columns() const { return dimension(1); }
   /**Query then size of 1st index. */
@@ -157,7 +167,10 @@ class Tensor {
   };
 
   /**Change the dimensions, while keeping the data. */
-  void reshape(const Dimensions &new_dims);
+  void reshape(const Dimensions &new_dimensions) {
+    assert(new_dimensions.total_size() == size());
+    dims_ = new_dimensions;
+  }
 
   /**Return the i-th element, accessed in column major order.*/
   inline const elt_t &operator[](index i) const { return data_[i]; };
@@ -176,11 +189,19 @@ class Tensor {
   }
 
   /**Fill with an element.*/
-  Tensor<elt_t> &fill_with(const elt_t &e);
+  Tensor<elt_t> &fill_with(const elt_t &e) {
+    std::fill(begin(), end(), e);
+    return *this;
+  }
   /**Fill with zeros.*/
   Tensor<elt_t> &fill_with_zeros() { return fill_with(number_zero<elt_t>()); }
   /**Fills with random numbers.*/
-  Tensor<elt_t> &randomize();
+  Tensor<elt_t> &randomize() {
+    for (auto &x : *this) {
+      x = rand<elt_t>();
+    }
+    return *this;
+  }
 
   /**N-dimensional tensor one or more dimensions, filled with random numbers.*/
   template <typename... index_like>
@@ -362,9 +383,6 @@ Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t1> &b);
 //////////////////////////////////////////////////////////////////////
 // IMPLEMENTATIONS
 //
-#ifdef TENSOR_LOAD_IMPL
-#include <tensor/detail/tensor_base.hpp>
-#endif
 #include <tensor/detail/tensor_slice.hpp>
 #include <tensor/detail/tensor_ops.hpp>
 

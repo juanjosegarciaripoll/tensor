@@ -18,7 +18,6 @@
 */
 
 #include <tensor/tensor.h>
-#include <tensor/detail/common.h>
 
 namespace tensor {
 
