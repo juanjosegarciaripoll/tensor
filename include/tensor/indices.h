@@ -122,6 +122,8 @@ class Dimensions {
 
 void surrounding_dimensions(const Indices &d, index ndx, index *d1, index *d2,
                             index *d3);
+void surrounding_dimensions(const Dimensions &d, index ndx, index *d1,
+                            index *d2, index *d3);
 
 const Indices operator<<(const Indices &a, const Indices &b);
 
