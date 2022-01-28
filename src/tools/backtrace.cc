@@ -128,8 +128,8 @@ static char **backtrace_symbols(void **buffer, int nframes) {
 #endif /* HAVE_BACKTRACE && HAVE_DLADDR */
 #endif /* !HAVE_BACKTRACE_SYMBOLS */
 
-static void dump_backtrace(int size) {
 #ifdef HAVE_BACKTRACE_SYMBOLS
+static void dump_backtrace(int size) {
   {
     void *pointers[32];
     int nframes = backtrace(pointers, 32);
@@ -146,8 +146,10 @@ static void dump_backtrace(int size) {
     fflush(stderr);
     free(names);
   }
-#endif
 }
+#else
+static void dump_backtrace(int) {}
+#endif
 
 #undef abort
 

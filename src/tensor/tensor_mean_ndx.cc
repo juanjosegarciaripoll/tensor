@@ -50,8 +50,7 @@ Tensor do_mean(const Tensor &t, int ndx) {
       for (tensor::index m = 0; m < middle; m++)
         for (tensor::index l = 0; l < left; l++)
           output.at(l, r) += aux(l, m, r);
-    return reshape(output, dimensions) /
-           static_cast<typename Tensor::elt_t>(middle);
+    return reshape(output, dimensions) / static_cast<double>(middle);
   }
 }
 
