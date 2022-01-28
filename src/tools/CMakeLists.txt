@@ -1,6 +1,7 @@
 target_sources(tensor
   PRIVATE
     backtrace.cc
+    exceptions.cc
     flags.cc
     jobs.cc
     jobs_save.cc

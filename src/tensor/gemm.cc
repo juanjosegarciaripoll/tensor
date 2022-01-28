@@ -37,8 +37,7 @@ inline void gemm(char op1, char op2, index m, index n, index k, double alpha,
   if (sizeof(index) < sizeof(tensor::index)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
     if (m > limit || n > limit || lda > limit || ldb > limit || ldc > limit) {
-      throw std::out_of_range(
-          "Tensor size exceeds limits supported by BLAS implementation.");
+      throw blas_integer_overflow();
     }
   }
 #ifdef TENSOR_USE_ESSL
@@ -66,8 +65,7 @@ inline void gemm(char op1, char op2, index m, index n, index k,
   if (sizeof(index) < sizeof(tensor::index)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
     if (m > limit || n > limit || lda > limit || ldb > limit || ldc > limit) {
-      throw std::out_of_range(
-          "Tensor size exceeds limits supported by BLAS implementation.");
+      throw blas_integer_overflow();
     }
   }
 #ifdef TENSOR_USE_ESSL

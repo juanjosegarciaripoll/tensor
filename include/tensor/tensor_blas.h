@@ -21,6 +21,7 @@
 #ifndef TENSOR_TENSOR_BLAS_H
 #define TENSOR_TENSOR_BLAS_H
 
+#include <stdexcept>
 #include <limits>
 #include <tensor/config.h>
 #include <tensor/tensor.h>
@@ -149,6 +150,10 @@ inline CBLAS_TRANSPOSE char_to_op(char op) {
 }
 #endif
 
+struct blas_integer_overflow : public std::out_of_range {
+  blas_integer_overflow();
+};
+
 inline const double *tensor_pointer(const tensor::RTensor &A) {
   return static_cast<const double *>(A.begin());
 }
@@ -172,8 +177,7 @@ inline double real(cdouble &z) {
 inline blas::integer index_to_blas(tensor::index value) {
   constexpr auto limit = std::numeric_limits<blas::integer>::max();
   if (value > limit) {
-    throw std::out_of_range(
-        "Tensor size exceeds limits supported by BLAS implementation.");
+    throw blas_integer_overflow();
   }
   return static_cast<blas::integer>(value);
 }
