@@ -17,18 +17,13 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifdef _MSC_VER
-#include <stdio.h>
-#define unlink _unlink
-#else
-#include <unistd.h>
-#endif
+#include <cstdio>
 #include <tensor/sdf.h>
 
 namespace sdf {
 
 bool delete_file(const std::string &filename) {
-  return unlink(filename.c_str()) == 0;
+  return std::remove(filename.c_str()) == 0;
 }
 
 }  // namespace sdf

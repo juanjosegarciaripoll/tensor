@@ -27,6 +27,7 @@
 #include <tensor/config.h>
 #include <tensor/sdf.h>
 #include <errno.h>
+#include <cstdio>
 
 namespace sdf {
 
@@ -67,7 +68,7 @@ static int get_lock(char const *lockName, bool wait) {
 static void giveup_lock(int fd, char const *lockName) {
 #if !defined(_MSC_VER) && !defined(__MINGW32__)
   if (fd < 0) return;
-  unlink(lockName);
+  std::remove(lockName);
   close(fd);
 #endif
 }
