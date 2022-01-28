@@ -32,9 +32,9 @@ using namespace tensor;
 CTensor eigs(const CTensor &A, int eig_type, size_t neig, CTensor *eigenvectors,
              bool *converged) {
   EigType t = (EigType)eig_type;
-  size_t n = A.columns();
+  blas::integer n = blas::tensor_columns(A);
 
-  if ((A.rank() != 2) || (A.rows() != n)) {
+  if ((A.rank() != 2) || (A.rows() != A.columns())) {
     std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
     abort();
   }

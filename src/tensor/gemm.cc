@@ -20,6 +20,7 @@
 #ifndef TENSOR_GEMM_CC
 #define TENSOR_GEMM_CC
 
+#include <limits>
 #ifdef TENSOR_USE_ESSL
 #include <essl.h>
 #endif
@@ -27,9 +28,19 @@
 
 namespace blas {
 
-inline void gemm(char op1, char op2, integer m, integer n, integer k,
-                 double alpha, const double *A, integer lda, const double *B,
-                 integer ldb, double beta, double *C, integer ldc) {
+using tensor::index;
+
+inline void gemm(char op1, char op2, index m, index n, index k, double alpha,
+                 const double *A, index lda, const double *B, index ldb,
+                 double beta, double *C, index ldc) {
+#pragma warning(disable : 4127)
+  if (sizeof(index) < sizeof(tensor::index)) {
+    constexpr auto limit = std::numeric_limits<blas::integer>::max();
+    if (m > limit || n > limit || lda > limit || ldb > limit || ldc > limit) {
+      throw std::out_of_range(
+          "Tensor size exceeds limits supported by BLAS implementation.");
+    }
+  }
 #ifdef TENSOR_USE_ESSL
   dgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
 #endif
@@ -38,15 +49,27 @@ inline void gemm(char op1, char op2, integer m, integer n, integer k,
         const_cast<double *>(B), ldb, beta, C, ldc);
 #endif
 #if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML)
-  cblas_dgemm(CblasColMajor, char_to_op(op1), char_to_op(op2), m, n, k, alpha,
-              A, lda, B, ldb, beta, C, ldc);
+  cblas_dgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
+              static_cast<blas::integer>(m), static_cast<blas::integer>(n),
+              static_cast<blas::integer>(k), alpha, A,
+              static_cast<blas::integer>(lda), B,
+              static_cast<blas::integer>(ldb), beta, C,
+              static_cast<blas::integer>(ldc));
 #endif
 }
 
-inline void gemm(char op1, char op2, integer m, integer n, integer k,
+inline void gemm(char op1, char op2, index m, index n, index k,
                  const tensor::cdouble &alpha, const tensor::cdouble *A,
-                 integer lda, const tensor::cdouble *B, integer ldb,
-                 const tensor::cdouble &beta, tensor::cdouble *C, integer ldc) {
+                 index lda, const tensor::cdouble *B, index ldb,
+                 const tensor::cdouble &beta, tensor::cdouble *C, index ldc) {
+#pragma warning(disable : 4127)
+  if (sizeof(index) < sizeof(tensor::index)) {
+    constexpr auto limit = std::numeric_limits<blas::integer>::max();
+    if (m > limit || n > limit || lda > limit || ldb > limit || ldc > limit) {
+      throw std::out_of_range(
+          "Tensor size exceeds limits supported by BLAS implementation.");
+    }
+  }
 #ifdef TENSOR_USE_ESSL
   zgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
 #endif
@@ -60,17 +83,25 @@ inline void gemm(char op1, char op2, integer m, integer n, integer k,
       reinterpret_cast<doublecomplex *>(C), ldc);
 #endif
 #ifdef TENSOR_USE_OPENBLAS
-  cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2), m, n, k,
+  cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
+              static_cast<blas::integer>(m), static_cast<blas::integer>(n),
+              static_cast<blas::integer>(k),
               reinterpret_cast<double *>(const_cast<tensor::cdouble *>(&alpha)),
-              reinterpret_cast<double *>(const_cast<tensor::cdouble *>(A)), lda,
-              reinterpret_cast<double *>(const_cast<tensor::cdouble *>(B)), ldb,
+              reinterpret_cast<double *>(const_cast<tensor::cdouble *>(A)),
+              static_cast<blas::integer>(lda),
+              reinterpret_cast<double *>(const_cast<tensor::cdouble *>(B)),
+              static_cast<blas::integer>(ldb),
               reinterpret_cast<double *>(const_cast<tensor::cdouble *>(&beta)),
-              reinterpret_cast<double *>(C), ldc);
+              reinterpret_cast<double *>(C), static_cast<blas::integer>(ldc));
 #endif
 #if !defined(TENSOR_USE_ESSL) && !defined(TENSOR_USE_ACML) && \
     !defined(TENSOR_USE_OPENBLAS)
-  cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2), m, n, k, &alpha,
-              A, lda, B, ldb, &beta, C, ldc);
+  cblas_zgemm(CblasColMajor, char_to_op(op1), char_to_op(op2),
+              static_cast<blas::integer>(m), static_cast<blas::integer>(n),
+              static_cast<blas::integer>(k), &alpha, A,
+              static_cast<blas::integer>(lda), B,
+              static_cast<blas::integer>(ldb), &beta, C,
+              static_cast<blas::integer>(ldc));
 #endif
 }
 

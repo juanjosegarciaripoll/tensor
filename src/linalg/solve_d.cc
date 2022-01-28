@@ -37,13 +37,13 @@ using namespace lapack;
      \ingroup Linalg
   */
 RTensor solve(const RTensor &A, const RTensor &B) {
-  blas::integer n = A.rows();
+  blas::integer n = blas::tensor_rows(A);
   blas::integer lda = n;
-  blas::integer ldb = B.dimension(0);
+  blas::integer ldb = blas::tensor_rows(B);
   blas::integer nrhs;
 
   // Currently, we only solve square systems
-  if (n != A.columns()) {
+  if (n != blas::tensor_columns(A)) {
     std::cerr
         << "Routine solve() can only operate on square systems of equations, "
            "i.e\n"
@@ -68,7 +68,7 @@ RTensor solve(const RTensor &A, const RTensor &B) {
 
   // Since B may be a tensor, we compute how many effective
   // right-hand-sides (nrhs) there are.
-  nrhs = B.size() / ldb;
+  nrhs = blas::index_to_blas(B.size()) / ldb;
 
   // The matrix that we pass to LAPACK is modified
   RTensor aux(A);

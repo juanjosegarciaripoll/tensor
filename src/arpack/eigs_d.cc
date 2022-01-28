@@ -28,9 +28,9 @@ using namespace tensor;
 RTensor eigs(const RTensor &A, int eig_type, size_t neig, RTensor *eigenvectors,
              bool *converged) {
   EigType t = (EigType)eig_type;
-  size_t n = A.columns();
+  blas::integer n = blas::tensor_columns(A);
 
-  if ((A.rank() != 2) || (A.rows() != n)) {
+  if ((A.rank() != 2) || (blas::tensor_rows(A) != n)) {
     std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
     abort();
   }

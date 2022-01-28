@@ -52,8 +52,8 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   assert(A.columns() > 0);
   assert(A.rank() == 2);
 
-  blas::integer m = A.rows();
-  blas::integer n = A.columns();
+  blas::integer m = blas::tensor_rows(A);
+  blas::integer n = blas::tensor_columns(A);
   blas::integer k = std::min(m, n);
   blas::integer lwork, ldu, lda, ldv, info;
   RTensor output = RTensor::empty(k);
