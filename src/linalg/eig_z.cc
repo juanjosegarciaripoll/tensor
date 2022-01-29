@@ -55,7 +55,7 @@ CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
   cdouble *vl, *vr, *w;
   CTensor aux(A);
   cdouble *a = tensor_pointer(aux);
-  blas::integer n = A.rows();
+  blas::integer n = blas::tensor_rows(A);
 
   if (n != A.columns()) {
     std::cerr << "Routine eig() can only compute eigenvalues of square "

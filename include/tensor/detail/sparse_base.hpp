@@ -27,7 +27,6 @@
 #include <cassert>
 #include <algorithm>
 #include <tensor/rand.h>
-#include <tensor/detail/common.h>
 
 namespace tensor {
 

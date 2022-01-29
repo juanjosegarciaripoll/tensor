@@ -78,7 +78,7 @@ const Job::Variable Job::parse_line(const std::string &s) {
   return Variable(data[0], min, max, nsteps);
 }
 
-int Job::parse_file(std::istream &s, var_list &data) {
+int Job::parse_file(std::istream & /*s*/, var_list &data) {
   std::string buffer;
   int line;
   for (line = 0; 1; line++) {

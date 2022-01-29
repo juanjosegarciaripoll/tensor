@@ -54,7 +54,7 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   double *vl = NULL, *vr = NULL, *wr, *wi;
   RTensor aux(A);
   double *a = tensor_pointer(aux);
-  blas::integer n = A.rows();
+  blas::integer n = blas::tensor_rows(A);
   std::unique_ptr<RTensor> realL, realR;
 
   if (n != A.columns()) {

@@ -21,6 +21,8 @@
 #ifndef TENSOR_TENSOR_BLAS_H
 #define TENSOR_TENSOR_BLAS_H
 
+#include <stdexcept>
+#include <limits>
 #include <tensor/config.h>
 #include <tensor/tensor.h>
 
@@ -148,6 +150,10 @@ inline CBLAS_TRANSPOSE char_to_op(char op) {
 }
 #endif
 
+struct blas_integer_overflow : public std::out_of_range {
+  blas_integer_overflow();
+};
+
 inline const double *tensor_pointer(const tensor::RTensor &A) {
   return static_cast<const double *>(A.begin());
 }
@@ -166,6 +172,24 @@ inline cdouble *tensor_pointer(tensor::CTensor &A) {
 
 inline double real(cdouble &z) {
   return tensor::real(*static_cast<tensor::cdouble *>((void *)&z));
+}
+
+inline blas::integer index_to_blas(tensor::index value) {
+  constexpr auto limit = std::numeric_limits<blas::integer>::max();
+  if (value > limit) {
+    throw blas_integer_overflow();
+  }
+  return static_cast<blas::integer>(value);
+}
+
+template <typename elt_t>
+inline blas::integer tensor_rows(const tensor::Tensor<elt_t> &A) {
+  return index_to_blas(A.rows());
+}
+
+template <typename elt_t>
+inline blas::integer tensor_columns(const tensor::Tensor<elt_t> &A) {
+  return index_to_blas(A.columns());
 }
 
 }  // namespace blas

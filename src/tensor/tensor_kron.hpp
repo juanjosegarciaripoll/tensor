@@ -23,7 +23,6 @@
 #define TENSOR_DETAIL_TENSOR_KRON_HPP
 
 #include <cassert>
-#include <tensor/detail/common.h>
 
 namespace tensor {
 

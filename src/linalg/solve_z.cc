@@ -31,13 +31,13 @@ using namespace lapack;
      \ingroup Linalg
   */
 CTensor solve(const CTensor &A, const CTensor &B) {
-  blas::integer n = A.rows();
+  blas::integer n = tensor_rows(A);
   blas::integer lda = n;
-  blas::integer ldb = B.dimension(0);
+  blas::integer ldb = tensor_rows(B);
   blas::integer nrhs;
 
   // Currently, we only solve square systems
-  if (n != (blas::integer)A.columns()) {
+  if (n != blas::tensor_columns(A)) {
     std::cerr
         << "Routine solve() can only operate on square systems of equations, "
            "i.e\n"
@@ -62,7 +62,7 @@ CTensor solve(const CTensor &A, const CTensor &B) {
 
   // Since B may be a tensor, we compute how many effective
   // right-hand-sides (nrhs) there are.
-  nrhs = B.size() / ldb;
+  nrhs = blas::index_to_blas(B.size()) / ldb;
 
   // The matrix that we pass to LAPACK is modified
   CTensor aux(A);

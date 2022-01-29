@@ -45,7 +45,7 @@ RTensor eig_sym(const RTensor &A, RTensor *V) {
   assert(A.rank() == 2);
   assert(A.rows() == A.columns());
 
-  blas::integer n = A.rows();
+  blas::integer n = tensor_rows(A);
   if (n != A.columns()) {
     std::cerr << "Routine eig_sym() can only compute eigenvalues of square "
                  "matrices, and you\n"

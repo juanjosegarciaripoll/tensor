@@ -27,10 +27,12 @@ namespace tensor {
 // RAW ROUTINE FOR THE TENSOR-SPARSE PRODUCT
 //
 
+// TODO: Add additional l_len for multiplication
+
 template <typename elt_t>
 static void mult_t_sp(elt_t *dest, const elt_t *vector, const index *row_start,
                       const index *column, const elt_t *matrix, index i_len,
-                      index j_len, index k_len, index l_len) {
+                      index j_len, index k_len, index /*l_len*/) {
   // dest(i,k,l) = vector(i,j,k) matrix(j,l)
   for (index j = 0; j < j_len; j++, vector += i_len) {
     for (index x = row_start[j]; x < row_start[j + 1]; x++) {

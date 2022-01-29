@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <cstdio>
 #include <iostream>
 #include <tensor/sdf.h>
 #include <gtest/gtest.h>
@@ -55,7 +56,7 @@ TEST(SDF, RTensor) {
     f.load(&aux, "x");
     EXPECT_TRUE(all_equal(x, aux));
   }
-  unlink("foo.dat");
+  std::remove("foo.dat");
 }
 
 TEST(SDF, CTensor) {
@@ -86,5 +87,5 @@ TEST(SDF, CTensor) {
     f.load(&aux, "d");
     EXPECT_TRUE(all_equal(d, aux));
   }
-  unlink("foo.dat");
+  std::remove("foo.dat");
 }

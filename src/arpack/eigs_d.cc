@@ -29,7 +29,7 @@ RTensor eigs_small(const RTensor &A, EigType eig_type, size_t neig,
 
 RTensor eigs(const RTensor &A, EigType eig_type, size_t neig,
              RTensor *eigenvectors, bool *converged) {
-  auto n = A.columns();
+  auto n = blas::tensor_columns(A);
   if (n <= 4) {
     /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
