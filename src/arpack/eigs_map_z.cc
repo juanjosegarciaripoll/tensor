@@ -24,10 +24,47 @@ namespace linalg {
 
 using namespace tensor;
 
-CTensor eigs(const LinearMap<CTensor> &A, size_t n, int eig_type, size_t neig,
-             CTensor *eigenvectors, bool *converged) {
-  EigType t = (EigType)eig_type;
+CTensor eigs(const LinearMap<CTensor> &A, size_t n, EigType eig_type,
+             size_t neig, CTensor *eigenvectors, bool *converged) {
+  return eigs(
+      [&](const CTensor &input, CTensor &output) -> void {
+        CTensor aux = A(input);
+        assert(aux.dimensions() == output.dimensions());
+        std::copy(aux.begin(), aux.end(), output.begin());
+      },
+      n, eig_type, neig, eigenvectors, converged);
+}
 
+static CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
+  auto M = CTensor::empty(n, n);
+  for (int i = 0; i < n; i++) {
+    CTensor v = CTensor::zeros(n);
+    CTensor Av = CTensor::empty(n);
+    v.at(i) = 1.0;
+    A(v, Av);
+    M.at(range(), range(i)) = Av;
+  }
+  return M;
+}
+
+CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
+                   CTensor *eigenvectors, bool *converged) {
+  CTensor vectors;
+  CTensor values = eig(A, NULL, eigenvectors ? &vectors : 0);
+  Indices ndx = RArpack::sort_values(values, eig_type);
+  Indices ndx_out(neig);
+  std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
+  if (eigenvectors) {
+    *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
+  }
+  if (converged) {
+    *converged = true;
+  }
+  return tensor::real(values(range(ndx_out)));
+}
+
+CTensor eigs(const InPlaceLinearMap<CTensor> &A, size_t n, EigType eig_type,
+             size_t neig, CTensor *eigenvectors, bool *converged) {
   if (neig > n || neig == 0) {
     std::cerr << "In eigs(): Can only compute up to " << n << " eigenvalues\n"
               << "in a matrix that has " << n << " times " << n << " elements.";
@@ -39,34 +76,19 @@ CTensor eigs(const LinearMap<CTensor> &A, size_t n, int eig_type, size_t neig,
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-    auto M = CTensor::empty(n, n);
-    for (int i = 0; i < n; i++) {
-      CTensor v = CTensor::zeros(n);
-      v.at(i) = 1.0;
-      M.at(range(), range(i)) = A(v);
-    }
-    CTensor vectors;
-    CTensor values = eig(M, NULL, eigenvectors ? &vectors : 0);
-    Indices ndx = CArpack::sort_values(values, t);
-    Indices ndx_out(neig);
-    std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
-    if (eigenvectors) {
-      *eigenvectors = vectors(range(), range(ndx_out));
-    }
-    if (converged) {
-      *converged = true;
-    }
-    return CTensor(values(range(ndx_out)));
+    return eigs_small(make_matrix(A, n), eig_type, neig, eigenvectors,
+                      converged);
   }
 
-  CArpack data(n, t, neig);
+  CArpack data(n, eig_type, neig);
 
   if (eigenvectors && eigenvectors->size() >= n)
     data.set_start_vector(eigenvectors->begin_const());
 
-  while (data.update() < CArpack::Finished) {
-    data.set_y(A(data.get_x()));
+  while (data.update() < RArpack::Finished) {
+    A(data.get_x(), data.get_y());
   }
+
   if (data.get_status() == CArpack::Finished) {
     if (converged) *converged = true;
     return data.get_data(eigenvectors);
