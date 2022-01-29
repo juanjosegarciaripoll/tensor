@@ -35,7 +35,7 @@ RTensor eigs(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
       n, eig_type, neig, eigenvectors, converged);
 }
 
-static RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n) {
+RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n) {
   auto M = RTensor::empty(n, n);
   for (int i = 0; i < n; i++) {
     RTensor v = RTensor::zeros(n);
