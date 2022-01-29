@@ -21,6 +21,7 @@
 #ifndef TENSOR_ARPACK_H
 #define TENSOR_ARPACK_H
 
+#include <array>
 #include <tensor/tensor_blas.h>
 #include <tensor/linalg.h>
 
@@ -54,8 +55,8 @@ class Arpack {
   enum Status update();
   elt_t *get_x_vector();
   elt_t *get_y_vector();
-  const Tensor get_x();
-  Tensor get_y();
+  const Tensor &get_x();
+  Tensor &get_y();
   void set_y(const Tensor &y);
   Tensor get_data(Tensor *vectors);
   Tensor get_data(elt_t *z);
@@ -97,11 +98,12 @@ class Arpack {
   integer lrwork;      // Dimension of array rwork.
   integer iparam[12];  // RVector that handles original ARPACK parameters.
   integer ipntr[15];   // RVector that handles original ARPACK pointers.
-  std::unique_ptr<double[]> rwork;  // Original ARPACK internal vector.
-  std::unique_ptr<elt_t[]> workl;   // Original ARPACK internal vector.
-  std::unique_ptr<elt_t[]> workd;   // Original ARPACK internal vector.
-  std::unique_ptr<elt_t[]> workv;   // Original ARPACK internal vector.
-  std::unique_ptr<elt_t[]> V;       // Arnoldi basis / Schur vectors.
+  std::unique_ptr<double[]> rwork;     // Original ARPACK internal vector.
+  std::unique_ptr<elt_t[]> workl;      // Original ARPACK internal vector.
+  std::unique_ptr<elt_t[]> workd;      // Original ARPACK internal vector.
+  std::unique_ptr<elt_t[]> workv;      // Original ARPACK internal vector.
+  std::unique_ptr<elt_t[]> V;          // Arnoldi basis / Schur vectors.
+  std::array<Tensor, 3> work_vectors;  // Vectors constructed on top of workd
 
   // a.3) Pure output variables.
 

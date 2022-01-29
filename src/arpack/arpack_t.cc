@@ -120,6 +120,9 @@ Arpack<elt_t>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
   workv = std::make_unique<elt_t[]>(lworkv);
   rwork = std::make_unique<double[]>(ncv);
   for (size_t i = 0; i < 15; i++) ipntr[i] = 0;
+  for (index i = 0; i < 3; i++) {
+    work_vectors[i] = Tensor(Vector<elt_t>(n, &workd[i * n]));
+  }
 
   // We have initialized this structure
   status = Initialized;
@@ -292,13 +295,19 @@ elt_t *Arpack<elt_t>::get_y_vector() {
 }
 
 template <typename elt_t>
-const tensor::Tensor<elt_t> Arpack<elt_t>::get_x() {
-  return Tensor(tensor::Vector<elt_t>(n, get_x_vector()));
+const tensor::Tensor<elt_t> &Arpack<elt_t>::get_x() {
+  // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
+  auto which = ipntr[1 - 1] - 1;
+  assert(which % n == 0);
+  return work_vectors[which / n];
 }
 
 template <typename elt_t>
-tensor::Tensor<elt_t> Arpack<elt_t>::get_y() {
-  return Tensor(tensor::Vector<elt_t>(n, get_y_vector()));
+tensor::Tensor<elt_t> &Arpack<elt_t>::get_y() {
+  // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
+  auto which = ipntr[2 - 1] - 1;
+  assert(which % n == 0);
+  return work_vectors[which / n];
 }
 
 template <typename elt_t>
