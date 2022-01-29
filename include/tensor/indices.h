@@ -21,8 +21,8 @@
 #ifndef TENSOR_INDICES_H
 #define TENSOR_INDICES_H
 
-#include <list>
 #include <cassert>
+#include <algorithm>
 #include <tensor/vector.h>
 #include <tensor/gen.h>
 #include <iostream>
@@ -98,6 +98,11 @@ class Dimensions {
     assert(rank() == sizeof...(in));
     index n = 0;
     auto ignored = {(*(in) = dimensions_[n++], 1)...};
+  }
+
+  bool operator==(const Dimensions &other) const {
+    return (rank() == other.rank()) &&
+           std::equal(begin(), end(), other.begin());
   }
 
  private:
