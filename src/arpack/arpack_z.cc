@@ -20,7 +20,7 @@
 #include "arpack_t.cc"
 
 namespace linalg {
-template class Arpack<tensor::cdouble>;
+template class Arpack<tensor::cdouble, true>;
 }
 
 /// Local variables:

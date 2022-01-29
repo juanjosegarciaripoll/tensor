@@ -30,12 +30,29 @@ namespace linalg {
 /*!@{*/
 
 /**Finder of a few eigenvalues of eigenvectors via Arnoldi method.*/
-template <typename scalar_t>
+template <typename scalar_t, bool is_symmetric = true>
 class Arpack {
+  template <typename elt_t, bool symmetric>
+  struct eigenvalue_type {
+    typedef elt_t type;
+  };
+  template <>
+  struct eigenvalue_type<double, true> {
+    typedef double type;
+  };
+  template <>
+  struct eigenvalue_type<double, false> {
+    typedef tensor::cdouble type;
+  };
+
  public:
   using elt_t = scalar_t;
   using integer = blas::integer;
   using Tensor = tensor::Tensor<elt_t>;
+  using eigenvalue_t = typename eigenvalue_type<elt_t, is_symmetric>::type;
+  using eigenvector_t = tensor::Tensor<eigenvalue_t>;
+  using eigenvalues_t = tensor::Tensor<eigenvalue_t>;
+  static constexpr bool symmetric = is_symmetric;
 
   enum Status {
     Uninitialized = 0,
@@ -58,8 +75,7 @@ class Arpack {
   const Tensor &get_x();
   Tensor &get_y();
   void set_y(const Tensor &y);
-  Tensor get_data(Tensor *vectors);
-  Tensor get_data(elt_t *z);
+  eigenvalues_t get_data(eigenvector_t *vectors);
   std::string error_message() { return std::string(error); };
   enum Status get_status() { return status; };
   size_t get_vector_size() { return n; };
@@ -82,7 +98,6 @@ class Arpack {
 
   // a.2) Internal variables.
 
-  bool symmetric;      // Symmetric matrix, or not
   bool rvec;           // Indicates if eigenvectors/Schur vectors were
                        // requested (or only eigenvalues will be determined).
   char bmat;           // Indicates if the problem is a standard ('I') or
@@ -114,19 +129,19 @@ class Arpack {
 
 /*!@}*/
 
-extern template class Arpack<double>;
-extern template class Arpack<tensor::cdouble>;
+extern template class Arpack<double, true>;
+extern template class Arpack<tensor::cdouble, true>;
 
 #ifdef DOXYGEN_ONLY
 /** Arpack solver for vectors of type RTensor and real matrices. */
-struct RArpack : public Arpack<double> {
+struct RArpack : public Arpack<double, true> {
 }
 /** Arpack solver for vectors of type CTensor and complex matrices. */
-struct CArpack : public Arpack<tensor::cdouble> {
+struct CArpack : public Arpack<tensor::cdouble, true> {
 }
 #else
-typedef Arpack<double> RArpack;
-typedef Arpack<tensor::cdouble> CArpack;
+typedef Arpack<double, true> RArpack;
+typedef Arpack<tensor::cdouble, true> CArpack;
 #endif
 
 }  // namespace linalg

@@ -19,10 +19,7 @@
 
 #include <algorithm>
 #include <tensor/arpack.h>
-#include "saupp.h"
-#include "seupp.h"
-#include "caupp.h"
-#include "ceupp.h"
+#include "arpackf.h"
 
 using namespace tensor;
 using namespace linalg;
@@ -52,8 +49,8 @@ inline const char *eigenvalue_selector<tensor::cdouble>(enum EigType _t) {
   return whichs[_t];
 }
 
-template <typename elt_t>
-Arpack<elt_t>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
+template <typename elt_t, bool is_symmetric>
+Arpack<elt_t, is_symmetric>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
   if (_t < 0 || _t > 6) {
     std::cerr << "Invalid argument EigType passed to Arpack constructor\n";
     abort();
@@ -62,7 +59,6 @@ Arpack<elt_t>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
   // Select the type of problem
   which_eig = _t;
   which = eigenvalue_selector<elt_t>(_t);
-  symmetric = sizeof(elt_t) == sizeof(double);
 
   // Default tolerance is machine precision
   tol = -1.0;
@@ -113,7 +109,12 @@ Arpack<elt_t>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
 
   // Work space for reverse communication
   //
-  lworkl = symmetric ? ncv * (ncv + 8) : ncv * (3 * ncv + 5);
+  if (symmetric && (sizeof(elt_t) == sizeof(double))) {
+    // Real symmetric (dsaupp, dseupp) problems require other sizes
+    lworkl = ncv * (ncv + 8);
+  } else {
+    lworkl = ncv * (3 * ncv + 5);
+  }
   lworkv = ncv * 3;
   workd = std::make_unique<elt_t[]>(n * 3);
   workl = std::make_unique<elt_t[]>(lworkl);
@@ -128,8 +129,9 @@ Arpack<elt_t>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
   status = Initialized;
 }
 
-template <typename elt_t>
-typename Arpack<elt_t>::Status Arpack<elt_t>::update() {
+template <typename elt_t, bool is_symmetric>
+typename Arpack<elt_t, is_symmetric>::Status
+Arpack<elt_t, is_symmetric>::update() {
   if (status < Initialized) {
     error = "ARPACK: Cannot call update() with an uninitialized ARPACK object.";
     status = Error;
@@ -175,37 +177,15 @@ typename Arpack<elt_t>::Status Arpack<elt_t>::update() {
   return status;
 }
 
-template <typename elt_t>
-Tensor<elt_t> Arpack<elt_t>::get_data(tensor::Tensor<elt_t> *vectors) {
-  if (vectors) {
-    *vectors = Tensor::empty(n, nev);
-  }
-  return get_data(vectors ? vectors->begin() : NULL);
-}
-
-template <typename elt_t>
-Tensor<elt_t> Arpack<elt_t>::get_data(elt_t *z) {
-  // Do we want eigenvectors?
-  bool rvec;
-  int ldz;
-  if (z) {
-    rvec = 1;
-    ldz = n;
-  } else {
-    rvec = 0;
-    ldz = 1;
-  }
-
-  // Room for eigenvalues
-  auto output = Tensor::empty(nev + 1);
-  elt_t *d = output.begin();
-
+template <typename elt_t, bool is_symmetric>
+typename Arpack<elt_t, is_symmetric>::eigenvalues_t
+Arpack<elt_t, is_symmetric>::get_data(eigenvector_t *eigenvectors) {
   // Unused here
   elt_t sigma = number_zero<elt_t>();
 
-  gen_eupp(rvec, hwmny, d, z, ldz, sigma, workv.get(), bmat, n, which, nev, tol,
-           resid.get(), ncv, V.get(), n, iparam, ipntr, workd.get(),
-           workl.get(), lworkl, rwork.get(), info);
+  auto output = gen_eupp(eigenvectors, sigma, workv.get(), bmat, n, which, nev,
+                         tol, resid.get(), ncv, V.get(), n, iparam, ipntr,
+                         workd.get(), workl.get(), lworkl, rwork.get(), info);
   if (info != 0) {
     static const char *const messages[17] = {
         "Unknown error.",
@@ -236,11 +216,11 @@ Tensor<elt_t> Arpack<elt_t>::get_data(elt_t *z) {
       std::cerr << "IPNTR[" << i << "]=" << ipntr[i] << '\n';
     abort();
   }
-  return output(range(0, nev - 1));
+  return output;
 }
 
-template <typename elt_t>
-void Arpack<elt_t>::set_start_vector(const elt_t *v) {
+template <typename elt_t, bool is_symmetric>
+void Arpack<elt_t, is_symmetric>::set_start_vector(const elt_t *v) {
   if (status >= Running) {
     std::cerr << "Arpack<elt_t>:: Cannot change start vector while running\n";
     abort();
@@ -249,13 +229,13 @@ void Arpack<elt_t>::set_start_vector(const elt_t *v) {
   memcpy(resid.get(), v, n * sizeof(elt_t));
 }
 
-template <typename elt_t>
-void Arpack<elt_t>::set_random_start_vector() {
+template <typename elt_t, bool is_symmetric>
+void Arpack<elt_t, is_symmetric>::set_random_start_vector() {
   info = 0;
 }
 
-template <typename elt_t>
-void Arpack<elt_t>::set_tolerance(double _tol) {
+template <typename elt_t, bool is_symmetric>
+void Arpack<elt_t, is_symmetric>::set_tolerance(double _tol) {
   if (status >= Running) {
     std::cerr << "Arpack<elt_t>:: Cannot change tolerance while running\n";
     abort();
@@ -263,8 +243,8 @@ void Arpack<elt_t>::set_tolerance(double _tol) {
   tol = _tol;
 }
 
-template <typename elt_t>
-void Arpack<elt_t>::set_maxiter(size_t new_maxiter) {
+template <typename elt_t, bool is_symmetric>
+void Arpack<elt_t, is_symmetric>::set_maxiter(size_t new_maxiter) {
   if (status >= Running) {
     std::cerr
         << "Arpack<elt_t>:: Cannot change number of iterations while running\n";
@@ -274,8 +254,8 @@ void Arpack<elt_t>::set_maxiter(size_t new_maxiter) {
   iparam[2] = maxit;
 }
 
-template <typename elt_t>
-elt_t *Arpack<elt_t>::get_x_vector() {
+template <typename elt_t, bool is_symmetric>
+elt_t *Arpack<elt_t, is_symmetric>::get_x_vector() {
   if (status != Running) {
     std::cerr << "Arpack<elt_t>:: get_x_vector() invoked outside main loop";
     abort();
@@ -284,8 +264,8 @@ elt_t *Arpack<elt_t>::get_x_vector() {
   return &workd[ipntr[1 - 1] - 1];
 }
 
-template <typename elt_t>
-elt_t *Arpack<elt_t>::get_y_vector() {
+template <typename elt_t, bool is_symmetric>
+elt_t *Arpack<elt_t, is_symmetric>::get_y_vector() {
   if (status != Running) {
     std::cerr << "Arpack<elt_t>:: get_y_vector() invoked outside main loop";
     abort();
@@ -294,29 +274,30 @@ elt_t *Arpack<elt_t>::get_y_vector() {
   return &workd[ipntr[2 - 1] - 1];
 }
 
-template <typename elt_t>
-const tensor::Tensor<elt_t> &Arpack<elt_t>::get_x() {
+template <typename elt_t, bool is_symmetric>
+const tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_x() {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   auto which = ipntr[1 - 1] - 1;
   assert(which % n == 0);
   return work_vectors[which / n];
 }
 
-template <typename elt_t>
-tensor::Tensor<elt_t> &Arpack<elt_t>::get_y() {
+template <typename elt_t, bool is_symmetric>
+tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_y() {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   auto which = ipntr[2 - 1] - 1;
   assert(which % n == 0);
   return work_vectors[which / n];
 }
 
-template <typename elt_t>
-void Arpack<elt_t>::set_y(const tensor::Tensor<elt_t> &y) {
+template <typename elt_t, bool is_symmetric>
+void Arpack<elt_t, is_symmetric>::set_y(const tensor::Tensor<elt_t> &y) {
   memcpy(get_y_vector(), y.begin(), sizeof(elt_t) * n);
 }
 
-template <typename elt_t>
-Indices Arpack<elt_t>::sort_values(const CTensor &values, EigType t) {
+template <typename elt_t, bool is_symmetric>
+Indices Arpack<elt_t, is_symmetric>::sort_values(const CTensor &values,
+                                                 EigType t) {
   RTensor aux;
   switch (t) {
     case LargestReal:
