@@ -17,8 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/linalg.h>
-#include <tensor/arpack.h>
+#include "eigs_tools.h"
 
 namespace linalg {
 
@@ -35,7 +34,7 @@ CTensor eigs(const LinearMap<CTensor> &A, size_t n, EigType eig_type,
       n, eig_type, neig, eigenvectors, converged);
 }
 
-static CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
+CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
   auto M = CTensor::empty(n, n);
   for (int i = 0; i < n; i++) {
     CTensor v = CTensor::zeros(n);

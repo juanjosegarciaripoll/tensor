@@ -21,12 +21,9 @@
 // ARPACK DRIVER FOR NONSYMMETRIC SPARSE EIGENVALUE PROBLEMS
 //
 
-#include <tensor/linalg.h>
+#include "eigs_tools.h"
 
 namespace linalg {
-
-CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
-                   CTensor *eigenvectors, bool *converged);
 
 CTensor eigs(const CSparse &A, EigType eig_type, size_t neig,
              CTensor *eigenvectors, bool *converged) {

@@ -17,9 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
-#include <tensor/linalg.h>
-#include <tensor/arpack.h>
+#include "eigs_tools.h"
 #include "gemv.cc"
 
 namespace linalg {

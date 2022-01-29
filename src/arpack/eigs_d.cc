@@ -17,15 +17,12 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/linalg.h>
+#include "eigs_tools.h"
 #include "gemv.cc"
 
 namespace linalg {
 
 using namespace tensor;
-
-RTensor eigs_small(const RTensor &A, EigType eig_type, size_t neig,
-                   RTensor *eigenvectors, bool *converged);
 
 RTensor eigs(const RTensor &A, EigType eig_type, size_t neig,
              RTensor *eigenvectors, bool *converged) {

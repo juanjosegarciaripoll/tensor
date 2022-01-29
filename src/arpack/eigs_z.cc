@@ -21,15 +21,12 @@
 // ARPACK DRIVER FOR NONSYMMETRIC EIGENVALUE PROBLEMS
 //
 
-#include <tensor/linalg.h>
+#include "eigs_tools.h"
 #include "gemv.cc"
 
 namespace linalg {
 
 using namespace tensor;
-
-CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
-                   CTensor *eigenvectors, bool *converged);
 
 CTensor eigs(const CTensor &A, EigType eig_type, size_t neig,
              CTensor *eigenvectors, bool *converged) {
