@@ -30,6 +30,9 @@ TEST(SDF, RTensor) {
   RTensor c = RTensor::random(4, 15);
   RTensor d = RTensor::random(3, 7, 5);
   RTensor x = {1e-312};
+  if (file_exists("foo.dat")) {
+    std::remove("foo.dat");
+  }
   {
     OutDataFile f("foo.dat");
     f.dump(a, "a");
@@ -64,6 +67,9 @@ TEST(SDF, CTensor) {
   CTensor b = CTensor::random(13);
   CTensor c = CTensor::random(4, 15);
   CTensor d = CTensor::random(3, 7, 5);
+  if (file_exists("foo.dat")) {
+    std::remove("foo.dat");
+  }
   {
     OutDataFile f("foo.dat");
     f.dump(a, "a");
