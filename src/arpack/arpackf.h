@@ -35,6 +35,7 @@
 #ifndef ARPACKF_H
 #define ARPACKF_H
 
+#include <complex>
 #include <memory>
 #include <tensor/config.h>
 #include <tensor/tensor_blas.h>
@@ -115,10 +116,18 @@ void F77NAME(zneupd)(logical *rvec, const char *HowMny, logical *select,
 
 namespace linalg {
 
+using tensor::CTensor;
+using tensor::range;
+using tensor::RTensor;
+
+template <bool symmetric>
+class ArpackSymmetric {};
+
 //////////////////////////////////////////////////
 // COMPLEX GENERAL PROBLEMS
 //
 
+template <bool is_symmetric>
 static inline void gen_aupp(blas::integer &ido, char bmat, blas::integer n,
                             const char *which, blas::integer nev, double &tol,
                             tensor::cdouble resid[], blas::integer ncv,
@@ -126,7 +135,8 @@ static inline void gen_aupp(blas::integer &ido, char bmat, blas::integer n,
                             blas::integer iparam[], blas::integer ipntr[],
                             tensor::cdouble workd[], tensor::cdouble workl[],
                             blas::integer lworkl, double rwork[],
-                            blas::integer &info) {
+                            blas::integer &info,
+                            ArpackSymmetric<is_symmetric>) {
   F77NAME(znaupd)
   (&ido, &bmat, &n, which, &nev, &tol, reinterpret_cast<blas::cdouble *>(resid),
    &ncv, reinterpret_cast<blas::cdouble *>(V), &ldv, iparam, ipntr,
@@ -134,13 +144,14 @@ static inline void gen_aupp(blas::integer &ido, char bmat, blas::integer n,
    reinterpret_cast<blas::cdouble *>(workl), &lworkl, rwork, &info);
 }
 
+template <bool is_symmetric>
 static inline CTensor gen_eupp(
     CTensor *eigenvectors, tensor::cdouble sigma, tensor::cdouble workev[],
     char bmat, blas::integer n, const char *which, blas::integer nev,
     double tol, tensor::cdouble resid[], blas::integer ncv, tensor::cdouble V[],
     blas::integer ldv, blas::integer iparam[], blas::integer ipntr[],
     tensor::cdouble workd[], tensor::cdouble workl[], blas::integer lworkl,
-    double rwork[], blas::integer &info) {
+    double rwork[], blas::integer &info, ArpackSymmetric<is_symmetric>) {
   auto iselect = std::make_unique<logical[]>(ncv);
   blas::integer rvec;
   char HowMny;
@@ -172,6 +183,80 @@ static inline CTensor gen_eupp(
 }
 
 //////////////////////////////////////////////////
+// REAL GENERAL PROBLEMS
+//
+static inline void gen_aupp(blas::integer &ido, char bmat, blas::integer n,
+                            const char *which, blas::integer nev, double &tol,
+                            double resid[], blas::integer ncv, double V[],
+                            blas::integer ldv, blas::integer iparam[],
+                            blas::integer ipntr[], double workd[],
+                            double workl[], blas::integer lworkl,
+                            double /*rwork*/[], blas::integer &info,
+                            ArpackSymmetric<false>) {
+  F77NAME(dnaupd)
+  (&ido, &bmat, &n, which, &nev, &tol, resid, &ncv, &V[0], &ldv, &iparam[0],
+   &ipntr[0], &workd[0], &workl[0], &lworkl, &info);
+}
+
+static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
+                               double workv[], char bmat, blas::integer n,
+                               const char *which, blas::integer nev, double tol,
+                               double resid[], blas::integer ncv, double V[],
+                               blas::integer ldv, blas::integer iparam[],
+                               blas::integer ipntr[], double workd[],
+                               double workl[], blas::integer lworkl,
+                               double /*rwork*/[], blas::integer &info,
+                               ArpackSymmetric<false>) {
+  char HowMny;
+  auto iselect = std::make_unique<logical[]>(ncv);
+  RTensor Z;
+  blas::integer ldz;
+  blas::integer rvec;
+  double sigmar = real(sigma), sigmai = imag(sigma);
+  if (eigenvectors) {
+    Z = RTensor::empty(n, nev);
+    HowMny = 'A';
+    ldz = n;
+    rvec = 1;
+  } else {
+    HowMny = 'P';
+    ldz = 1;
+    rvec = 0;
+  }
+  auto dr = std::make_unique<double[]>(nev + 1);
+  auto di = std::make_unique<double[]>(nev + 1);
+
+  F77NAME(dneupd)
+  (&rvec, &HowMny, iselect.get(), dr.get(), di.get(), Z.begin(), &ldz, &sigmar,
+   &sigmai, &workv[0], &bmat, &n, which, &nev, &tol, resid, &ncv, &V[0], &ldv,
+   &iparam[0], &ipntr[0], &workd[0], &workl[0], &lworkl, &info);
+
+  CTensor eigenvalues = CTensor::empty(nev);
+  if (eigenvectors) {
+    *eigenvectors = CTensor::empty(n, nev);
+    std::transform(Z.begin(), Z.end(), eigenvectors->begin(),
+                   [](double x) { return tensor::cdouble(x); });
+  }
+  for (tensor::index i = 0; i < nev;) {
+    if (di[i]) {
+      eigenvalues.at(i) = tensor::cdouble(dr[i], di[i]);
+      eigenvalues.at(i + 1) = tensor::cdouble(dr[i + 1], di[i + 1]);
+      if (eigenvectors) {
+        eigenvectors->at(range(), range(i)) =
+            tensor::to_complex(Z(range(), range(i)), Z(range(), range(i + 1)));
+        eigenvectors->at(range(), range(i + 1)) =
+            tensor::conj((*eigenvectors)(range(), range(i)));
+      }
+      i += 2;
+    } else {
+      eigenvalues.at(i) = dr[i];
+      ++i;
+    }
+  }
+  return eigenvalues;
+}
+
+//////////////////////////////////////////////////
 // REAL SYMMETRIC PROBLEMS
 //
 
@@ -181,7 +266,7 @@ static inline void gen_aupp(blas::integer &ido, char bmat, blas::integer n,
                             blas::integer ldv, blas::integer iparam[],
                             blas::integer ipntr[], double workd[],
                             double workl[], blas::integer lworkl, double[],
-                            blas::integer &info) {
+                            blas::integer &info, ArpackSymmetric<true>) {
   F77NAME(dsaupd)
   (&ido, &bmat, &n, which, &nev, &tol, resid, &ncv, &V[0], &ldv, &iparam[0],
    &ipntr[0], &workd[0], &workl[0], &lworkl, &info);
@@ -194,7 +279,7 @@ static inline RTensor gen_eupp(RTensor *eigenvectors, double sigma, double[],
                                blas::integer iparam[], blas::integer ipntr[],
                                double workd[], double workl[],
                                blas::integer lworkl, double[],
-                               blas::integer &info) {
+                               blas::integer &info, ArpackSymmetric<true>) {
   auto iselect = std::make_unique<logical[]>(ncv);
   char HowMny;
   double *Z;

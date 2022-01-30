@@ -130,10 +130,11 @@ class Arpack {
 /*!@}*/
 
 extern template class Arpack<double, true>;
+extern template class Arpack<double, false>;
 extern template class Arpack<tensor::cdouble, true>;
 
 #ifdef DOXYGEN_ONLY
-/** Arpack solver for vectors of type RTensor and real matrices. */
+/** Arpack solver for vectors of type RTensor and real symmetric matrices. */
 struct RArpack : public Arpack<double, true> {
 }
 /** Arpack solver for vectors of type CTensor and complex matrices. */

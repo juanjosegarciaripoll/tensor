@@ -144,7 +144,8 @@ Arpack<elt_t, is_symmetric>::update() {
   }
 
   gen_aupp(ido, bmat, n, which, nev, tol, resid.get(), ncv, V.get(), n, iparam,
-           ipntr, workd.get(), workl.get(), lworkl, rwork.get(), info);
+           ipntr, workd.get(), workl.get(), lworkl, rwork.get(), info,
+           ArpackSymmetric<is_symmetric>());
 
   if (ido == 99) {
     status = Error;
@@ -181,11 +182,12 @@ template <typename elt_t, bool is_symmetric>
 typename Arpack<elt_t, is_symmetric>::eigenvalues_t
 Arpack<elt_t, is_symmetric>::get_data(eigenvector_t *eigenvectors) {
   // Unused here
-  elt_t sigma = number_zero<elt_t>();
+  auto sigma = number_zero<eigenvalue_t>();
 
   auto output = gen_eupp(eigenvectors, sigma, workv.get(), bmat, n, which, nev,
                          tol, resid.get(), ncv, V.get(), n, iparam, ipntr,
-                         workd.get(), workl.get(), lworkl, rwork.get(), info);
+                         workd.get(), workl.get(), lworkl, rwork.get(), info,
+                         ArpackSymmetric<is_symmetric>());
   if (info != 0) {
     static const char *const messages[17] = {
         "Unknown error.",

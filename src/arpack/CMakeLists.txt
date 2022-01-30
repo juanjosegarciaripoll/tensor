@@ -1,6 +1,7 @@
 target_sources(tensor
   PRIVATE
     arpack_d.cc
+    arpack_d_sym.cc
     arpack_z.cc
     eigs_d.cc
     eigs_z.cc

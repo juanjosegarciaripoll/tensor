@@ -20,7 +20,7 @@
 #include "arpack_t.cc"
 
 namespace linalg {
-template class Arpack<double, false>;
+template class Arpack<double, true>;
 }
 
 /// Local variables:
