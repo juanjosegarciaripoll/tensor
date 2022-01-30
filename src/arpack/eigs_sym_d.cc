@@ -17,22 +17,29 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/arpack.h>
-#include <tensor/linalg.h>
+#include "eigs_tools.h"
+#include "gemv.cc"
 
 namespace linalg {
 
-RTensor eigs_small(const RTensor &A, EigType eig_type, size_t neig,
-                   RTensor *eigenvectors, bool *converged);
+using namespace tensor;
 
-CTensor eigs_gen_small(const RTensor &A, EigType eig_type, size_t neig,
-                       CTensor *eigenvectors, bool *converged);
-
-CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
-                   CTensor *eigenvectors, bool *converged);
-
-RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n);
-
-CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n);
+RTensor eigs(const RTensor &A, EigType eig_type, size_t neig,
+             RTensor *eigenvectors, bool *converged) {
+  auto n = blas::tensor_columns(A);
+  if (n <= 4) {
+    /* For small sizes, the ARPACK solver produces wrong results!
+       * In any case, for these sizes it is more efficient to do the solving
+       * using the full routine.
+       */
+    return eigs_small(A, eig_type, neig, eigenvectors, converged);
+  }
+  return eigs(
+      [&](const RTensor &in, RTensor &out) {
+        blas::gemv('N', n, n, 1.0, A.begin(), n, in.begin(), 1, 0.0,
+                   out.begin(), 1);
+      },
+      n, eig_type, neig, eigenvectors, converged);
+}
 
 }  // namespace linalg

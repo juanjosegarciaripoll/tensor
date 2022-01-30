@@ -109,10 +109,16 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
 
   // Work space for reverse communication
   //
-  if (symmetric && (sizeof(elt_t) == sizeof(double))) {
-    // Real symmetric (dsaupp, dseupp) problems require other sizes
-    lworkl = ncv * (ncv + 8);
+  if (sizeof(elt_t) == sizeof(double)) {
+    if (symmetric) {
+      // Required by dsaupp
+      lworkl = ncv * (ncv + 8);
+    } else {
+      // Required by dnaupp
+      lworkl = 3 * ncv * (ncv + 2);
+    }
   } else {
+    // Required by znaupp
     lworkl = ncv * (3 * ncv + 5);
   }
   lworkv = ncv * 3;
@@ -217,6 +223,18 @@ Arpack<elt_t, is_symmetric>::get_data(eigenvector_t *eigenvectors) {
     for (int i = 8; i < 11; i++)
       std::cerr << "IPNTR[" << i << "]=" << ipntr[i] << '\n';
     abort();
+  }
+  if (!is_symmetric && (sizeof(double) == sizeof(elt_t)) &&
+      output.size() > nev) {
+    // In the non-symmetric, real case, Arpack may choose to output more
+    // eigenvalues than requested.
+    Indices ndx = RArpack::sort_values(output, which_eig);
+    output = output(range(ndx));
+    output = output(range(0, nev - 1));
+    if (eigenvectors) {
+      eigenvector_t vectors = (*eigenvectors)(range(), range(ndx));
+      *eigenvectors = vectors(range(), range(0, nev - 1));
+    }
   }
   return output;
 }

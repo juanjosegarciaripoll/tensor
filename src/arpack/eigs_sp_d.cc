@@ -25,18 +25,18 @@
 
 namespace linalg {
 
-RTensor eigs(const RSparse &A, EigType eig_type, size_t neig,
-             RTensor *eigenvectors, bool *converged) {
+CTensor eigs_gen(const RSparse &A, EigType eig_type, size_t neig,
+                 CTensor *eigenvectors, bool *converged) {
   auto n = A.columns();
-  if (n <= 4) {
+  if (n <= 10) {
     /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-    return eigs_small(full(A), eig_type, neig, eigenvectors, converged);
+    return eigs_gen_small(full(A), eig_type, neig, eigenvectors, converged);
   }
-  return eigs([&](const RTensor &x) { return mmult(A, x); }, A.columns(),
-              eig_type, neig, eigenvectors, converged);
+  return eigs_gen([&](const RTensor &x) -> RTensor { return mmult(A, x); },
+                  A.columns(), eig_type, neig, eigenvectors, converged);
 }
 
 }  // namespace linalg

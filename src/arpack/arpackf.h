@@ -39,6 +39,7 @@
 #include <memory>
 #include <tensor/config.h>
 #include <tensor/tensor_blas.h>
+#include <tensor/io.h>
 
 using namespace blas;
 
@@ -210,11 +211,12 @@ static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
   char HowMny;
   auto iselect = std::make_unique<logical[]>(ncv);
   RTensor Z;
+  blas::integer returned = nev;
   blas::integer ldz;
   blas::integer rvec;
   double sigmar = real(sigma), sigmai = imag(sigma);
   if (eigenvectors) {
-    Z = RTensor::empty(n, nev);
+    Z = RTensor(tensor::Dimensions{n, ncv}, tensor::Vector<double>(n * ncv, V));
     HowMny = 'A';
     ldz = n;
     rvec = 1;
@@ -228,17 +230,20 @@ static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
 
   F77NAME(dneupd)
   (&rvec, &HowMny, iselect.get(), dr.get(), di.get(), Z.begin(), &ldz, &sigmar,
-   &sigmai, &workv[0], &bmat, &n, which, &nev, &tol, resid, &ncv, &V[0], &ldv,
-   &iparam[0], &ipntr[0], &workd[0], &workl[0], &lworkl, &info);
+   &sigmai, &workv[0], &bmat, &n, which, &returned, &tol, resid, &ncv, &V[0],
+   &ldv, &iparam[0], &ipntr[0], &workd[0], &workl[0], &lworkl, &info);
 
-  CTensor eigenvalues = CTensor::empty(nev);
+  CTensor eigenvalues = CTensor::empty(returned);
   if (eigenvectors) {
-    *eigenvectors = CTensor::empty(n, nev);
-    std::transform(Z.begin(), Z.end(), eigenvectors->begin(),
-                   [](double x) { return tensor::cdouble(x); });
+    *eigenvectors = CTensor::empty(n, returned);
   }
-  for (tensor::index i = 0; i < nev;) {
+  for (tensor::index i = 0; i < returned;) {
     if (di[i]) {
+      if (i == nev - 1) {
+        std::cerr << "Complex values found, exceeding number of desired "
+                     "eigenvalues.\n";
+        abort();
+      }
       eigenvalues.at(i) = tensor::cdouble(dr[i], di[i]);
       eigenvalues.at(i + 1) = tensor::cdouble(dr[i + 1], di[i + 1]);
       if (eigenvectors) {
@@ -250,6 +255,10 @@ static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
       i += 2;
     } else {
       eigenvalues.at(i) = dr[i];
+      if (eigenvectors) {
+        eigenvectors->at(range(), range(i)) =
+            tensor::to_complex(Z(range(), range(i)));
+      }
       ++i;
     }
   }

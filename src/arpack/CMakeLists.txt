@@ -9,4 +9,7 @@ target_sources(tensor
     eigs_sp_z.cc
     eigs_map_d.cc
     eigs_map_z.cc
+    eigs_sym_d.cc
+    eigs_sym_sp_d.cc
+    eigs_sym_map_d.cc
     )

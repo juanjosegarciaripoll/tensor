@@ -24,9 +24,9 @@ namespace linalg {
 
 using namespace tensor;
 
-CTensor eigs_gen(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
-                 size_t neig, CTensor *eigenvectors, bool *converged) {
-  return eigs_gen(
+RTensor eigs(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
+             size_t neig, RTensor *eigenvectors, bool *converged) {
+  return eigs(
       [&](const RTensor &input, RTensor &output) {
         RTensor aux = A(input);
         assert(aux.dimensions() == output.dimensions());
@@ -35,27 +35,38 @@ CTensor eigs_gen(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
       n, eig_type, neig, eigenvectors, converged);
 }
 
-CTensor eigs_gen_small(const RTensor &A, EigType eig_type, size_t neig,
-                       CTensor *eigenvectors, bool *converged) {
-  CTensor vectors;
-  CTensor values = eig(A, NULL, eigenvectors ? &vectors : 0);
+RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n) {
+  auto M = RTensor::empty(n, n);
+  for (int i = 0; i < n; i++) {
+    RTensor v = RTensor::zeros(n);
+    RTensor Av = RTensor::empty(n);
+    v.at(i) = 1.0;
+    A(v, Av);
+    M.at(range(), range(i)) = Av;
+  }
+  return M;
+}
+
+RTensor eigs_small(const RTensor &A, EigType eig_type, size_t neig,
+                   RTensor *eigenvectors, bool *converged) {
+  RTensor vectors;
+  RTensor values = eig_sym(A, eigenvectors ? &vectors : 0);
   Indices ndx = RArpack::sort_values(values, eig_type);
   Indices ndx_out(neig);
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
   if (eigenvectors) {
-    *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
+    *eigenvectors = vectors(range(), range(ndx_out));
   }
   if (converged) {
     *converged = true;
   }
-  return tensor::real(values(range(ndx_out)));
+  return values(range(ndx_out));
 }
 
-CTensor eigs_gen(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
-                 size_t neig, CTensor *eigenvectors, bool *converged) {
+RTensor eigs(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
+             size_t neig, RTensor *eigenvectors, bool *converged) {
   if (neig > n || neig == 0) {
-    std::cerr << "In eigs_gen(): Can only compute up to " << n
-              << " eigenvalues\n"
+    std::cerr << "In eigs(): Can only compute up to " << n << " eigenvalues\n"
               << "in a matrix that has " << n << " times " << n << " elements.";
     abort();
   }
@@ -69,11 +80,10 @@ CTensor eigs_gen(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
                       converged);
   }
 
-  Arpack<double, false> data(n, eig_type, neig);
+  Arpack<double, true> data(n, eig_type, neig);
 
   if (eigenvectors && eigenvectors->size() >= n) {
-    RTensor aux = real(*eigenvectors);
-    data.set_start_vector(aux.begin_const());
+    data.set_start_vector(eigenvectors->begin_const());
   } else {
     data.set_random_start_vector();
   }

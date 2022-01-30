@@ -17,45 +17,26 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <tensor/linalg.h>
-#include <tensor/arpack.h>
+//----------------------------------------------------------------------
+// ARPACK DRIVER FOR NONSYMMETRIC SPARSE EIGENVALUE PROBLEMS
+//
 
-RTensor eigs_sym(const RSparse &A, RArpack::EigType t, size_t neig,
-                 RTensor *eigenvectors, const RTensor::elt_t *initial_guess) {
-  size_t n = A.columns();
-#ifdef COMPLEX
-  size_t ndouble = 2 * n;
-#else
-  size_t ndouble = n;
-#endif
+#include "eigs_tools.h"
 
+namespace linalg {
+
+RTensor eigs(const RSparse &A, EigType eig_type, size_t neig,
+             RTensor *eigenvectors, bool *converged) {
+  auto n = A.columns();
   if (n <= 10) {
-    return eigs_sym(full(A), t, neig, eigenvectors, initial_guess);
+    /* For small sizes, the ARPACK solver produces wrong results!
+       * In any case, for these sizes it is more efficient to do the solving
+       * using the full routine.
+       */
+    return eigs_small(full(A), eig_type, neig, eigenvectors, converged);
   }
-
-  if (A.rows() != n) {
-    std::cerr << "In eigs(): Can only compute eigenvalues of square matrices.";
-    myabort();
-  }
-
-  RArpack data(ndouble, t, neig);
-
-  if (initial_guess) data.set_start_vector((const double *)initial_guess);
-
-  size_t bytes = ndouble * sizeof(double);
-  while (data.update() < RArpack::Finished) {
-    RTensor x(n, (RTensor::elt_t *)data.get_x_vector());
-    RTensor y = mmult(A, x);
-    memcpy(data.get_y_vector(), (const double *)x.pointer(), bytes);
-  }
-  if (data.get_status() == RArpack::Finished) {
-    if (eigenvectors) {
-      *eigenvectors = RTensor(n, neig);
-    }
-    return data.get_data((double *)eigenvectors->pointer());
-  } else {
-    std::cerr << data.error_message() << '\n';
-    myabort();
-  }
-  return RTensor();
+  return eigs([&](const RTensor &x) { return mmult(A, x); }, A.columns(),
+              eig_type, neig, eigenvectors, converged);
 }
+
+}  // namespace linalg

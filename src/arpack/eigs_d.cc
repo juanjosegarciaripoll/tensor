@@ -24,17 +24,17 @@ namespace linalg {
 
 using namespace tensor;
 
-RTensor eigs(const RTensor &A, EigType eig_type, size_t neig,
-             RTensor *eigenvectors, bool *converged) {
+CTensor eigs_gen(const RTensor &A, EigType eig_type, size_t neig,
+                 CTensor *eigenvectors, bool *converged) {
   auto n = blas::tensor_columns(A);
   if (n <= 4) {
     /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-    return eigs_small(A, eig_type, neig, eigenvectors, converged);
+    return eigs_gen_small(A, eig_type, neig, eigenvectors, converged);
   }
-  return eigs(
+  return eigs_gen(
       [&](const RTensor &in, RTensor &out) {
         blas::gemv('N', n, n, 1.0, A.begin(), n, in.begin(), 1, 0.0,
                    out.begin(), 1);
