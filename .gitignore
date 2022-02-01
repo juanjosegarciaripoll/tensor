@@ -19,3 +19,4 @@ profile/*.json
 profile/report.html
 profile/report
 CMakeSettings.json
+.vscode
