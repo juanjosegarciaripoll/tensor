@@ -18,9 +18,28 @@
 */
 
 #include <cassert>
+#include <stdexcept>
+#include <tensor/indices.h>
+#include <tensor/io.h>
 
-/**\cond IGNORE */
+namespace tensor {
 
-namespace tensor {}  // namespace tensor
+std::ostream &operator<<(std::ostream &out, const Range &r) {
+  out << "Range(dim=" << r.dimension() << ',';
+  if (!r.has_indices()) {
+    out << "start=" << r.start() << ",end=" << r.limit() - 1
+        << ",step=" << r.step();
+  } else {
+    out << "indices=" << r.indices();
+  }
+  return out << ')';
+}
 
-/**\endcond */
+std::ostream &operator<<(std::ostream &out, const RangeIterator &r) {
+  out << "RangeIterator(pos=" << r.get_position() << ",counter=" << r.counter()
+      << ",offset=" << r.offset();
+  if (r.has_next()) out << ",next=" << r.next();
+  return out << ')';
+}
+
+}  // namespace tensor

@@ -47,7 +47,7 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
           << P.dimensions() << "," << Paux.dimensions();
     }
     {
-      Tensor<elt_t2> Paux(P.dimension(0) + 1);
+      Tensor<elt_t2> Paux = Tensor<elt_t2>::empty(P.dimension(0) + 1);
       EXPECT_DEATH(Paux + P, ".*")
           << P.dimensions() << "," << Paux.dimensions();
       EXPECT_DEATH(P + Paux, ".*")

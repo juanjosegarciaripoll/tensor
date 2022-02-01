@@ -1,6 +1,7 @@
 target_sources(tensor
   PRIVATE
     range.cc
+    range_print.cc
     matrix_form_d.cc
     matrix_form_sp_d.cc
     matrix_form_sp_z.cc

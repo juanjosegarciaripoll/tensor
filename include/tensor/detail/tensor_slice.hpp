@@ -24,66 +24,6 @@
 #ifndef TENSOR_DETAIL_TENSOR_SLICE_HPP
 #define TENSOR_DETAIL_TENSOR_SLICE_HPP
 
-namespace tensor {
-
-template <typename elt_t>
-class Tensor<elt_t>::view {
- public:
-  ~view() { delete ranges_; };
-  operator Tensor<elt_t>() const;
-
-  index size() const { return dims_.total_size(); }
-
- private:
-  const Vector<elt_t> data_;
-  Dimensions dims_;
-  Range *ranges_;
-
-  // Start from another tensor and a set of ranges
-  view(const Tensor<elt_t> &parent, Dimensions &dims, Range *ranges)
-      : data_(parent.data_), dims_(dims), ranges_(ranges) {}
-
-  // We do not want these objects to be initialized by users nor copied.
-  view();
-  view(const view &a_tensor);
-  view(const Tensor<elt_t> *a_tensor, ...);
-  view(Tensor<elt_t> *a_tensor, ...);
-
-  friend class Tensor<elt_t>;
-  friend class Tensor<elt_t>::mutable_view;
-};
-
-template <typename elt_t>
-class Tensor<elt_t>::mutable_view {
- public:
-  ~mutable_view() { delete ranges_; };
-
-  void operator=(const view &a_stripe);
-  void operator=(const Tensor<elt_t> &a_tensor);
-  void operator=(elt_t v);
-
-  index size() const { return dims_.total_size(); }
-
- private:
-  Vector<elt_t> &data_;
-  Dimensions dims_;
-  Range *ranges_;
-
-  // Start from another tensor and a set of ranges
-  mutable_view(Tensor<elt_t> &parent, Dimensions &dims, Range *ranges)
-      : data_(parent.data_), dims_(dims), ranges_(ranges) {}
-
-  // We do not want these objects to be initialized by users nor copied.
-  mutable_view();
-  mutable_view(const mutable_view &a_tensor);
-  mutable_view(const Tensor<elt_t> *a_tensor, ...);
-  mutable_view(Tensor<elt_t> *a_tensor, ...);
-
-  friend class Tensor<elt_t>;
-};
-
-Range *product(Range *r1, Range *r2);
-
-}  // namespace tensor
+namespace tensor {}  // namespace tensor
 
 #endif  // !TENSOR_DETAIL_TENSOR_SLICE_HPP

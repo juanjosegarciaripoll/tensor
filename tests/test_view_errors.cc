@@ -30,21 +30,27 @@ using tensor::index;
 
 template <typename elt_t>
 void test_view_error(const Tensor<elt_t> &P) {
-  EXPECT_EQ(P(range()).size(), P.size());
+  if (P.rank() < 1) {
+    ASSERT_THROW(P(range()), std::out_of_range);
+  } else {
+    EXPECT_EQ(P(range()).size(), P.size());
+  }
   if (P.rank() != 2) {
-    ASSERT_DEATH(P(range(), range()), ".*");
+    ASSERT_THROW(P(range(), range()), std::out_of_range);
   }
   if (P.rank() != 3) {
-    ASSERT_DEATH(P(range(), range(), range()), ".*");
+    ASSERT_THROW(P(range(), range(), range()), std::out_of_range);
   }
   if (P.rank() != 4) {
-    ASSERT_DEATH(P(range(), range(), range(), range()), ".*");
+    ASSERT_THROW(P(range(), range(), range(), range()), std::out_of_range);
   }
   if (P.rank() != 5) {
-    ASSERT_DEATH(P(range(), range(), range(), range(), range()), ".*");
+    ASSERT_THROW(P(range(), range(), range(), range(), range()),
+                 std::out_of_range);
   }
   if (P.rank() != 6) {
-    ASSERT_DEATH(P(range(), range(), range(), range(), range(), range()), ".*");
+    ASSERT_THROW(P(range(), range(), range(), range(), range(), range()),
+                 std::out_of_range);
   }
 }
 

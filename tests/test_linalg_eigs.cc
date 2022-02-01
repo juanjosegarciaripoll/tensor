@@ -35,7 +35,7 @@ template <class Matrix>
 void test_eigs_eye(int n) {
   if (n == 0) {
 #ifndef NDEBUG
-    ASSERT_DEATH(eigs(Matrix::eye(n, n), 1, LargestMagnitude), ".*");
+    ASSERT_DEATH(eigs(Matrix::eye(n, n), LargestMagnitude, 1), ".*");
 #endif
     return;
   }

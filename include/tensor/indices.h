@@ -22,6 +22,7 @@
 #define TENSOR_INDICES_H
 
 #include <cassert>
+#include <iterator>
 #include <algorithm>
 #include <tensor/vector.h>
 #include <tensor/gen.h>
@@ -189,117 +190,163 @@ inline Booleans operator!=(index a, const Indices &b) { return b != a; }
   */
 class Range {
  public:
-  Range();
-  virtual ~Range();
-  virtual index pop();
-  virtual void set_factor(index new_factor);
-  virtual void set_limit(index new_limit);
-  virtual index size() const;
-  virtual void reset();
-  index nomore() const { return ~(index)0; }
-  index get_offset() const { return base_; }
-  index get_limit() const { return limit_; }
-  index get_factor() const { return factor_; }
-  void set_offset(index new_base) { base_ = new_base; }
+  Range() : start_{0}, step_{1}, limit_{0}, dimension_{0} {}
+  Range(index position)
+      : start_{position}, step_{1}, limit_{position + 1}, dimension_{limit_} {}
+  Range(index start, index end)
+      : start_{start}, step_{1}, limit_{end + 1}, dimension_{limit_} {}
+  Range(index start, index end, index step)
+      : start_{start}, step_{step}, limit_{end + 1}, dimension_{limit_} {}
+  Range(Indices indices)
+      : start_{0},
+        step_{1},
+        limit_{static_cast<index>(indices.size())},
+        dimension_{0},
+        indices_{indices.size() ? new Indices(indices) : nullptr} {}
+
+  index start() const { return start_; }
+  index step() const { return step_; }
+  index limit() const { return limit_; }
+  index dimension() const { return dimension_; }
+  void set_dimension(index dimension);
+  bool has_indices() const { return indices_ != nullptr; }
+  const Indices &indices() const { return *indices_; }
+  index get_index(index pos) const { return (*indices_)[pos]; }
+  index size() const { return (limit_ - start_ + step_ - 1) / step_; }
+
+  static Range empty();
+  static Range full(index start = 0, index step = 1);
 
  private:
-  index base_, limit_, factor_;
+  index start_, step_, limit_, dimension_;
+  std::shared_ptr<Indices> indices_{nullptr};
 };
 
-class FullRange : public Range {
+Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
+                                  const Dimensions &parent_dimensions);
+
+class RangeIterator {
  public:
-  FullRange();
-  virtual index pop();
-  virtual void set_factor(index new_factor);
-  virtual void set_limit(index new_limit);
-  virtual index size() const;
-  virtual void reset();
+  static const Range empty_range;
+  typedef std::shared_ptr<RangeIterator> next_t;
+  typedef Range *range_ptr_t;
+  typedef enum { range_begin = 0, range_end = 1 } end_flag_t;
+
+  RangeIterator(const SimpleVector<Range> &ranges,
+                end_flag_t flag = range_begin)
+      : RangeIterator(ranges.begin(), 1, ranges.size(), flag) {}
+  RangeIterator(const Range &r, index factor = 1);
+  index operator*() const { return get_position(); };
+  RangeIterator &operator++();
+  bool finished() { return counter_ >= range_.limit(); }
+  bool operator!=(const RangeIterator &other) const {
+    return other.counter_ != counter_ || other.offset_ != offset_;
+  }
+  bool operator==(const RangeIterator &other) const {
+    return other.counter_ == counter_ && other.offset_ == offset_;
+  }
+  static RangeIterator begin(const SimpleVector<Range> &ranges) {
+    return RangeIterator(ranges, range_begin);
+  }
+  static RangeIterator end(const SimpleVector<Range> &ranges) {
+    return RangeIterator(ranges, range_end);
+  }
+  index get_position() const;
+  index counter() const { return counter_; }
+  index offset() const { return offset_; }
+  bool has_next() const { return next_ != nullptr; }
+  const RangeIterator &next() const { return *next_; }
+  const Range &range() const { return range_; }
 
  private:
-  index counter_, counter_end_;
+  RangeIterator(const Range *ranges, index factor, index left, end_flag_t end);
+  Range range_;
+  index counter_, factor_, offset_;
+  next_t next_;
 };
 
-class StepRange : public Range {
+template <typename elt_t>
+class TensorIterator {
  public:
-  StepRange(index start, index end, index step = 1);
-  virtual index pop();
-  virtual void set_factor(index new_factor);
-  virtual void set_limit(index new_limit);
-  virtual index size() const;
-  virtual void reset();
+  typedef elt_t value_type;
+  typedef index difference_type;
+  typedef elt_t &reference;
+  typedef elt_t *pointer;
+  typedef std::input_iterator_tag iterator_category;
+
+  TensorIterator(RangeIterator &&it, elt_t *base, index size)
+      : iterator_{std::move(it)}, base_{base}, size_{size} {}
+  elt_t &operator*() {
+    index n = iterator_.get_position();
+#ifndef NDEBUG
+    if (n > size_) {
+      throw std::out_of_range("Out of bounds when reading TensorConstIterator");
+    }
+#endif
+    return base_[n];
+  }
+  elt_t &operator->() { return this->operator*(); }
+  TensorIterator<elt_t> &operator++() {
+    ++iterator_;
+    return *this;
+  }
+  bool operator!=(const TensorIterator<elt_t> &other) const {
+    return iterator_ != other.iterator_;
+  }
 
  private:
-  index ndx_, start_, end_, step_;
+  RangeIterator iterator_;
+  elt_t *base_;
+  index size_;
 };
 
-class SingleRange : public Range {
+template <typename elt_t>
+class TensorConstIterator {
  public:
-  SingleRange(index ndx);
-  virtual index pop();
-  virtual void set_factor(index new_factor);
-  virtual void set_limit(index new_limit);
-  virtual index size() const;
-  virtual void reset();
+  typedef const elt_t value_type;
+  typedef index difference_type;
+  typedef const elt_t &reference;
+  typedef const elt_t *pointer;
+  typedef std::input_iterator_tag iterator_category;
+
+  TensorConstIterator(RangeIterator &&it, const elt_t *base, index size)
+      : iterator_{std::move(it)}, base_{base}, size_{size} {}
+  const elt_t &operator*() {
+    index n = iterator_.get_position();
+#ifndef NDEBUG
+    if (n > size_) {
+      throw std::out_of_range("Out of bounds when reading TensorConstIterator");
+    }
+#endif
+    return base_[n];
+  }
+  const elt_t &operator->() { return this->operator*(); }
+  TensorConstIterator<elt_t> &operator++() {
+    ++iterator_;
+    return *this;
+  }
+  bool operator!=(const TensorConstIterator<elt_t> &other) const {
+    return iterator_ != other.iterator_;
+  }
 
  private:
-  index ndx_, counter_;
-};
-
-class IndexRange : public Range {
- public:
-  IndexRange(const Indices &i);
-  virtual index pop();
-  virtual void set_factor(index new_factor);
-  virtual void set_limit(index new_limit);
-  virtual index size() const;
-  virtual void reset();
-
- private:
-  Indices indices_;
-  index counter_;
-};
-
-class ProductRange : public Range {
- public:
-  ProductRange(Range *r1, Range *r2);
-  ~ProductRange();
-  virtual index pop();
-  virtual void set_factor(index new_factor);
-  virtual void set_limit(index new_limit);
-  virtual index size() const;
-  virtual void reset();
-
- private:
-  Range *r1_, *r2_;
-  index base_;
-};
-
-class PRange {
- public:
-  PRange(Range *r) : ptr_(r){};
-  operator Range *() const { return ptr_; }
-  Range &operator*() { return *ptr_; }
-  Range *operator->() { return ptr_; }
-
- private:
-  PRange();
-  Range *ptr_;
+  RangeIterator iterator_;
+  const elt_t *base_;
+  index size_;
 };
 
 /**Create a Range which only contains one index. \sa \ref sec_tensor_view*/
-inline PRange range(index ndx) { return new SingleRange(ndx); }
+inline Range range(index ndx) { return Range(ndx); }
 /**Create a Range start:end (Matlab notation). \sa \ref sec_tensor_view*/
-inline PRange range(index start, index end) {
-  return new StepRange(start, end);
-}
+inline Range range(index start, index end) { return Range(start, end); }
 /**Create a Range start:step:end (Matlab notation). \sa \ref sec_tensor_view*/
-inline PRange range(index start, index end, index step) {
-  return new StepRange(start, end, step);
+inline Range range(index start, index end, index step) {
+  return Range(start, end, step);
 }
 /**Create a Range with the give set of indices. \sa \ref sec_tensor_view*/
-inline PRange range(Indices i) { return new IndexRange(i); }
+inline Range range(Indices i) { return Range(i); }
 /**Create a Range which covers all indices. \ref sec_tensor_view*/
-inline PRange range() { return new FullRange(); }
+inline Range range() { return Range::full(); }
 
 /**Return a vector of integers from 'start' to 'end' (included) in 'steps'. */
 inline Indices iota(index start, index end, index step = 1) {

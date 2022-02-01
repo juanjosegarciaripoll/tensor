@@ -40,12 +40,23 @@ def divides_inplace(A, B):
     A /= B
     return A
 
+def copy_first_column(A, B):
+    A[:,0] = B[:,0]
+
+def copy_first_row(A, B):
+    A[0,:] = A[0,:]
 
 def make_two_real_ndarrays(size: int) -> np.ndarray:
     for _ in range(10):
         a2 = np.empty(size, dtype=np.double)
     return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
 
+def make_two_real_matrices(size: int) -> np.ndarray:
+    for _ in range(10):
+        a2 = np.empty(size, dtype=np.double)
+    size = int(np.sqrt(size))
+    size = (size, size)
+    return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
 
 def make_real_ndarray_and_number(size: int) -> np.ndarray:
     for _ in range(10):
@@ -65,6 +76,14 @@ def make_two_complex_ndarrays(size: int) -> np.ndarray:
     for _ in range(10):
         a2 = np.empty(size, dtype=np.complex128)
     return (a1 + 1j * a2, b1 + 1j * b2)
+
+
+def make_two_complex_matrices(size: int) -> np.ndarray:
+    for _ in range(10):
+        a2 = np.empty(size, dtype=np.complex128)
+    size = int(np.sqrt(size))
+    size = (size, size)
+    return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
 
 
 def make_complex_ndarray_and_number(size: int) -> np.ndarray:
@@ -98,6 +117,8 @@ def run_all():
                     ("minus", minus, make_two_real_ndarrays),
                     ("multiplies", multiplies, make_two_real_ndarrays),
                     ("divides", divides, make_two_real_ndarrays),
+                    ("copy_column", copy_first_row, make_two_real_matrices),
+                    ("copy_row", copy_first_column, make_two_real_matrices),
                 ],
             ),
             BenchmarkGroup.run(
@@ -107,6 +128,8 @@ def run_all():
                     ("minus", minus, make_two_complex_ndarrays),
                     ("multiplies", multiplies, make_two_complex_ndarrays),
                     ("divides", divides, make_two_complex_ndarrays),
+                    ("copy_column", copy_first_row, make_two_complex_matrices),
+                    ("copy_row", copy_first_column, make_two_complex_matrices),
                 ],
             ),
             BenchmarkGroup.run(

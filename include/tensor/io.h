@@ -103,6 +103,12 @@ const MatrixForm<double> matrix_form(const RSparse &t);
 /**Matrix form representation of a tensor.*/
 const MatrixForm<cdouble> matrix_form(const CSparse &t);
 
+/**Print a textual representation of a range.*/
+std::ostream &operator<<(std::ostream &out, const Range &r);
+
+/**Print a textual representation of a range iterator.*/
+std::ostream &operator<<(std::ostream &out, const RangeIterator &it);
+
 }  // namespace tensor
 
 #include <tensor/detail/io.hpp>

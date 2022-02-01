@@ -138,7 +138,7 @@ void test_get_dimensions_errors() {
     Indices dimensions(i);
     std::fill(dimensions.begin(), dimensions.end(), (Indices::elt_t)2);
 
-    auto P = Tensor<elt_t>::empty(dimensions);
+    auto P = Tensor<elt_t>::empty(Dimensions(dimensions));
 
     ASSERT_DEATH(P.dimension(-1), ".*");
     ASSERT_DEATH(P.dimension(i), ".*");

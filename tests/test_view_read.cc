@@ -108,7 +108,7 @@ template <typename elt_t>
 void test_full_size_range1(Tensor<elt_t> &P) {
   Tensor<elt_t> Paux = P;
   Tensor<elt_t> t = P(range());
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
   unchanged(P, Paux);
 }
 
@@ -116,7 +116,7 @@ template <typename elt_t>
 void test_full_size_range2(Tensor<elt_t> &P) {
   Tensor<elt_t> Paux = P;
   Tensor<elt_t> t = P(range(), range());
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
   unchanged(P, Paux);
 }
 
@@ -124,7 +124,7 @@ template <typename elt_t>
 void test_full_size_range3(Tensor<elt_t> &P) {
   Tensor<elt_t> Paux = P;
   Tensor<elt_t> t = P(range(), range(), range());
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
   unchanged(P, Paux);
 }
 
@@ -143,20 +143,20 @@ void test_extract_unit_size1(Tensor<elt_t> &P, index i) {
   EXPECT_EQ(t[0], P(i));
 
   Tensor<elt_t> t3 = P(range(i, i));
-  EXPECT_TRUE(all_equal(t3, t));
+  ASSERT_TRUE(all_equal(t3, t));
 
   Tensor<elt_t> t4 = P(range(i, i, 1));
-  EXPECT_TRUE(all_equal(t4, t));
+  ASSERT_TRUE(all_equal(t4, t));
 
   if (i + 1 < P.dimension(0)) {
     Tensor<elt_t> t5 = P(range(i, i + 1, 2));
-    EXPECT_TRUE(all_equal(t5, t));
+    ASSERT_TRUE(all_equal(t5, t));
   }
 
   Indices ndx(1);
   ndx.at(0) = i;
   Tensor<elt_t> t6 = P(range(ndx));
-  EXPECT_TRUE(all_equal(t6, t));
+  ASSERT_TRUE(all_equal(t6, t));
 
   unchanged(P, Paux);
 }
@@ -172,24 +172,24 @@ void test_extract_unit_size2(Tensor<elt_t> &P, index i, index j) {
   EXPECT_EQ(t[0], P(i, j));
 
   Tensor<elt_t> t2 = P(range(i), range(j, j));
-  EXPECT_TRUE(all_equal(t2, t));
+  ASSERT_TRUE(all_equal(t2, t));
 
   Tensor<elt_t> t3 = P(range(i, i), range(j, j));
-  EXPECT_TRUE(all_equal(t3, t));
+  ASSERT_TRUE(all_equal(t3, t));
 
   Tensor<elt_t> t4 = P(range(i, i), range(j));
-  EXPECT_TRUE(all_equal(t4, t));
+  ASSERT_TRUE(all_equal(t4, t));
 
   if (i + 1 < P.dimension(0)) {
     Tensor<elt_t> t5 = P(range(i, i + 1, 2), range(j));
-    EXPECT_TRUE(all_equal(t5, t));
+    ASSERT_TRUE(all_equal(t5, t));
   }
 
   Tensor<elt_t> t6 = P(range2(i, i + 1, 2), range(j));
-  EXPECT_TRUE(all_equal(t6, t));
+  ASSERT_TRUE(all_equal(t6, t));
 
   Tensor<elt_t> t7 = P(range(i), range(j, j));
-  EXPECT_TRUE(all_equal(t7, t));
+  ASSERT_TRUE(all_equal(t7, t));
 
   unchanged(P, Paux);
 }
@@ -205,29 +205,29 @@ void test_extract_unit_size3(Tensor<elt_t> &P, index i, index j, index k) {
   EXPECT_EQ(t[0], P(i, j, k));
 
   Tensor<elt_t> t2 = P(range(i), range(j, j), range(k));
-  EXPECT_TRUE(all_equal(t2, t));
+  ASSERT_TRUE(all_equal(t2, t));
 
   Tensor<elt_t> t3 = P(range(i, i), range(j, j), range(k));
-  EXPECT_TRUE(all_equal(t3, t));
+  ASSERT_TRUE(all_equal(t3, t));
 
   Tensor<elt_t> t4 = P(range(i, i), range(j), range(k));
-  EXPECT_TRUE(all_equal(t4, t));
+  ASSERT_TRUE(all_equal(t4, t));
 
   if (i + 1 < P.dimension(0)) {
     Tensor<elt_t> t5 = P(range(i, i + 1, 2), range(j), range(k));
-    EXPECT_TRUE(all_equal(t5, t));
+    ASSERT_TRUE(all_equal(t5, t));
   }
   Tensor<elt_t> t6 = P(range2(i, i + 1, 2), range(j), range(k));
-  EXPECT_TRUE(all_equal(t6, t));
+  ASSERT_TRUE(all_equal(t6, t));
 
   Tensor<elt_t> t7 = P(range(i), range(j, j), range(k));
-  EXPECT_TRUE(all_equal(t7, t));
+  ASSERT_TRUE(all_equal(t7, t));
 
   Tensor<elt_t> t8 = P(range(i), range(j, j), range(k, k));
-  EXPECT_TRUE(all_equal(t8, t));
+  ASSERT_TRUE(all_equal(t8, t));
 
   Tensor<elt_t> t9 = P(range(i), range(j, j), range2(k, k + 1, 2));
-  EXPECT_TRUE(all_equal(t9, t));
+  ASSERT_TRUE(all_equal(t9, t));
 
   unchanged(P, Paux);
 }
@@ -243,18 +243,18 @@ void test_view_extract1(Tensor<elt_t> &P, index i0, index i2, index i1) {
 
   Tensor<elt_t> t1 = slow_range1(P, i0, i2, i1);
   Tensor<elt_t> t2 = P(range(i0, i2, i1));
-  EXPECT_TRUE(all_equal(t2, t1));
+  ASSERT_TRUE(all_equal(t2, t1));
 
   Tensor<elt_t> t3 = P(range2(i0, i2, i1));
-  EXPECT_TRUE(all_equal(t3, t1));
+  ASSERT_TRUE(all_equal(t3, t1));
 
   if (t1.dimension(0) == 1) {
     Tensor<elt_t> t5 = P(range(i0));
-    EXPECT_TRUE(all_equal(t5, t1));
+    ASSERT_TRUE(all_equal(t5, t1));
   }
   if (t1.dimension(0) == P.dimension(0)) {
     Tensor<elt_t> t7 = P(range());
-    EXPECT_TRUE(all_equal(t7, t1));
+    ASSERT_TRUE(all_equal(t7, t1));
   }
   unchanged(P, Paux);
 }
@@ -267,32 +267,32 @@ void test_view_extract2(Tensor<elt_t> &P, index i0, index i2, index i1,
 
   Tensor<elt_t> t1 = slow_range2(P, i0, i2, i1, j0, j2, j1);
   Tensor<elt_t> t2 = P(range(i0, i2, i1), range(j0, j2, j1));
-  EXPECT_TRUE(all_equal(t2, t1));
+  ASSERT_TRUE(all_equal(t2, t1));
 
   Tensor<elt_t> t3 = P(range2(i0, i2, i1), range(j0, j2, j1));
-  EXPECT_TRUE(all_equal(t3, t1));
+  ASSERT_TRUE(all_equal(t3, t1));
 
   Tensor<elt_t> t4 = P(range(i0, i2, i1), range2(j0, j2, j1));
-  EXPECT_TRUE(all_equal(t4, t1));
+  ASSERT_TRUE(all_equal(t4, t1));
 
   Tensor<elt_t> t8 = P(range2(i0, i2, i1), range2(j0, j2, j1));
-  EXPECT_TRUE(all_equal(t8, t1));
+  ASSERT_TRUE(all_equal(t8, t1));
 
   if (t1.dimension(0) == 1) {
     Tensor<elt_t> t5 = P(range(i0), range(j0, j2, j1));
-    EXPECT_TRUE(all_equal(t5, t1));
+    ASSERT_TRUE(all_equal(t5, t1));
   }
   if (t1.dimension(1) == 1) {
     Tensor<elt_t> t6 = P(range(i0, i2, i1), range(j0));
-    EXPECT_TRUE(all_equal(t6, t1));
+    ASSERT_TRUE(all_equal(t6, t1));
   }
   if (t1.dimension(0) == P.dimension(0)) {
     Tensor<elt_t> t7 = P(range(), range(j0, j2, j1));
-    EXPECT_TRUE(all_equal(t7, t1));
+    ASSERT_TRUE(all_equal(t7, t1));
   }
   if (t1.dimension(1) == P.dimension(1)) {
     Tensor<elt_t> t7 = P(range(i0, i2, i1), range());
-    EXPECT_TRUE(all_equal(t7, t1));
+    ASSERT_TRUE(all_equal(t7, t1));
   }
   unchanged(P, Paux);
 }
@@ -306,7 +306,7 @@ void test_view_extract3(Tensor<elt_t> &P, index i0, index i2, index i1,
 
   Tensor<elt_t> t1 = slow_range3(P, i0, i2, i1, j0, j2, j1, k0, k2, k1);
   Tensor<elt_t> t2 = P(range(i0, i2, i1), range(j0, j2, j1), range(k0, k2, k1));
-  EXPECT_TRUE(all_equal(t2, t1));
+  ASSERT_TRUE(all_equal(t2, t1));
 
   unchanged(P, Paux);
 }

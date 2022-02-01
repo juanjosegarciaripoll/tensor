@@ -217,36 +217,110 @@ class Tensor {
   //
   // Tensor slicing
   //
-  class view;
-  /**Extracts a slice from a 1D Tensor. */
-  const view operator()(PRange r) const;
-  /**Extracts a slice from a 2D Tensor. */
-  const view operator()(PRange r1, PRange r2) const;
-  /**Extracts a slice from a 3D Tensor. */
-  const view operator()(PRange r1, PRange r2, PRange r3) const;
-  /**Extracts a slice from a 4D Tensor. */
-  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4) const;
-  /**Extracts a slice from a 5D Tensor. */
-  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4,
-                        PRange r5) const;
-  /**Extracts a slice from a 6D Tensor. */
-  const view operator()(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5,
-                        PRange r6) const;
+  class view {
+   public:
+    operator Tensor<elt_t>() const {
+      Tensor<elt_t> output(dimensions());
+      std::copy(begin(), end(), output.begin());
+      return output;
+    }
 
-  class mutable_view;
-  /**Mutable slice from a 1D Tensor. */
-  mutable_view at(PRange r);
-  /**Mutable slice from a 2D Tensor. */
-  mutable_view at(PRange r1, PRange r2);
-  /**Mutable slice from a 3D Tensor. */
-  mutable_view at(PRange r1, PRange r2, PRange r3);
-  /**Mutable slice from a 4D Tensor. */
-  mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4);
-  /**Mutable slice from a 5D Tensor. */
-  mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5);
-  /**Mutable slice from a 6D Tensor. */
-  mutable_view at(PRange r1, PRange r2, PRange r3, PRange r4, PRange r5,
-                  PRange r6);
+    view() = delete;
+    view(const view &other) = default;
+    view(view &&other) = default;
+
+    view(const Tensor<elt_t> &parent, SimpleVector<Range> &&ranges)
+        : data_(parent.data_),
+          ranges_(std::move(ranges)),
+          dims_(dimensions_from_ranges(ranges_, parent.dimensions())) {}
+
+    index size() const { return dims_.total_size(); }
+    const Dimensions &dimensions() const { return dims_; }
+
+    TensorConstIterator<elt_t> begin() const {
+      return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),
+                                        data_.begin(), data_.size());
+    }
+    TensorConstIterator<elt_t> end() const {
+      return TensorConstIterator<elt_t>(RangeIterator::end(ranges_),
+                                        data_.begin(), data_.size());
+    }
+
+   private:
+    const Vector<elt_t> &data_;
+    SimpleVector<Range> ranges_;
+    Dimensions dims_;
+  };
+
+  class mutable_view {
+   public:
+    mutable_view() = delete;
+    mutable_view(const mutable_view &other) = default;
+    mutable_view(mutable_view &&other) = default;
+
+    mutable_view(Tensor<elt_t> &parent, SimpleVector<Range> &&ranges)
+        : data_(parent.data_),
+          ranges_(std::move(ranges)),
+          dims_(dimensions_from_ranges(ranges_, parent.dimensions())) {}
+
+    void operator=(const view &t) {
+      /* TODO: ensure matching dimensions */
+      assert(t.size() == size());
+      std::copy(t.begin(), t.end(), begin());
+    }
+    void operator=(const Tensor<elt_t> &t) {
+      /* TODO: ensure matching dimensions */
+      assert(t.size() == size());
+      std::copy(t.begin(), t.end(), begin());
+    }
+    void operator=(elt_t v) { std::fill(begin(), end(), v); }
+
+    index size() const { return dims_.total_size(); }
+    const Dimensions &dimensions() const { return dims_; }
+
+    TensorIterator<elt_t> begin() {
+      return TensorIterator<elt_t>(RangeIterator::begin(ranges_), data_.begin(),
+                                   data_.size());
+    }
+    TensorIterator<elt_t> end() {
+      return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin(),
+                                   data_.size());
+    }
+
+   private:
+    Vector<elt_t> &data_;
+    SimpleVector<Range> ranges_;
+    Dimensions dims_;
+  };
+
+  /**Extracts a slice from a 1D Tensor. */
+  inline view operator()(Range r) const {
+    // a(range) is valid for 1D and for ND tensors which are treated
+    // as being 1D
+    r.set_dimension(size());
+    return view(*this, SimpleVector<Range>{std::move(r)});
+  }
+
+  /**Extracts a slice from an N-dimensional Tensor. */
+  template <typename... RangeLike>
+  inline view operator()(Range r1, RangeLike... rnext) const {
+    return view(*this, SimpleVector<Range>{std::move(r1), std::move(rnext)...});
+  }
+
+  /**Extracts a slice from a 1D Tensor. */
+  inline mutable_view at(Range r) {
+    // a(range) is valid for 1D and for ND tensors which are treated
+    // as being 1D
+    r.set_dimension(size());
+    return mutable_view(*this, SimpleVector<Range>{std::move(r)});
+  }
+
+  /**Extracts a slice from an N-dimensional Tensor. */
+  template <typename... RangeLike>
+  inline mutable_view at(Range r1, RangeLike... rnext) {
+    return mutable_view(
+        *this, SimpleVector<Range>{std::move(r1), std::move(rnext)...});
+  }
 
   //
   // Matrix operations
@@ -261,6 +335,16 @@ class Tensor {
       output.at(i, i) = number_one<elt_t>();
     }
     return output;
+  }
+
+  /**N-dimensional tensor with undefined values. */
+  static inline Tensor<elt_t> empty(const Dimensions &dimensions) {
+    return Tensor<elt_t>(dimensions);
+  }
+
+  /**N-dimensional tensor with undefined values. */
+  static inline Tensor<elt_t> empty(const Indices &dimensions) {
+    return Tensor<elt_t>(Dimensions(dimensions));
   }
 
   /**Empty tensor one or more dimensions, with undetermined values.*/

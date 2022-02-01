@@ -72,7 +72,7 @@ template <typename elt_t>
 void test_expm_diag(int n) {
   if (n == 0) {
 #ifndef NDEBUG
-    ASSERT_DEATH(linalg::expm(Tensor<elt_t>(0)), ".*");
+    ASSERT_DEATH(linalg::expm(Tensor<elt_t>(Dimensions{0})), ".*");
 #endif
     return;
   }

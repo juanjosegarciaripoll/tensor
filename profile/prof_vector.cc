@@ -24,6 +24,7 @@
 #include <iomanip>
 #include <chrono>
 #include <ctime>
+#include <tensor/io.h>
 
 #include "profile.h"
 
@@ -102,6 +103,20 @@ void vector_indexed_write(std::tuple<T, typename T::elt_t> &args) {
 }
 
 template <class T>
+void copy_first_column(std::tuple<T, T> &args) {
+  T &A = std::get<0>(args);
+  T &B = std::get<1>(args);
+  A.at(range(), range(0)) = B(range(), range(0));
+}
+
+template <class T>
+void copy_first_row(std::tuple<T, T> &args) {
+  T &A = std::get<0>(args);
+  T &B = std::get<1>(args);
+  A.at(range(0), range()) = B(range(0), range());
+}
+
+template <class T>
 void warmup(size_t size) {
   for (int i = 0; i < 10; ++i) {
     std::unique_ptr<T> p{new T(Dimensions{size})};
@@ -129,10 +144,27 @@ std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
   return typename std::tuple<T, typename T::elt_t>(T::random(size), number);
 };
 
+template <class T>
+std::tuple<T, T> make_two_matrices(size_t size) {
+  warmup<T>(size);
+  size = static_cast<size_t>(sqrt(size));
+  return std::tuple<T, T>(T::random(size, size), T::random(size, size));
+};
+
 template <typename T>
 void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
   typedef typename T::elt_t elt_t;
 
+  {
+    BenchmarkGroup group(name);
+    group.add("copy_column", copy_first_column<T>, make_two_matrices<T>);
+    group.add("copy_row", copy_first_row<T>, make_two_matrices<T>);
+    group.add("plus", add<T, T>, make_two_vectors<T>);
+    group.add("minus", subtract<T, T>, make_two_vectors<T>);
+    group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
+    group.add("divides", divide<T, T>, make_two_vectors<T>);
+    set << group;
+  }
   {
     BenchmarkGroup group(name + " access");
     group.add("const_indexed_read", vector_const_indexed_read<T>,
@@ -143,12 +175,14 @@ void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
               make_vector_and_number<T>);
     set << group;
   }
-  {
+  if (false) {
     BenchmarkGroup group(name);
     group.add("plus", add<T, T>, make_two_vectors<T>);
     group.add("minus", subtract<T, T>, make_two_vectors<T>);
     group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
     group.add("divides", divide<T, T>, make_two_vectors<T>);
+    group.add("copy_column", copy_first_column<T>, make_two_vectors<T>);
+    group.add("copy_row", copy_first_row<T>, make_two_vectors<T>);
     set << group;
   }
   {
