@@ -19,3 +19,5 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 * `Tensor::at(n)` only works for 1-D tensors, unlike before, where it allowed accessing all elements sequentially.
 
 * To avoid ambiguities, all constructors of the form `Tensor(index i0, index i1 ...)` have been eliminated. Use `Tensor::empty(i0, i1, ...)` instead.
+
+* Tensor views rely on a new iteration mechanism, built on top of `RangeIterator`, a class that, given a set of ranges and dimensions, produces a sequence of integers corresponding to the positions in a tensor corresponding to that view.
