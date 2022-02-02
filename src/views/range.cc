@@ -28,6 +28,12 @@ Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
                                   const Dimensions &parent_dimensions) {
   SimpleVector<index> output(ranges.size());
   if (ranges.size() != parent_dimensions.rank()) {
+    if (ranges.size() == 1) {
+      // If we only provide one range, it is as if we were flattening the tensor
+      // prior to iteration.
+      return dimensions_from_ranges(ranges,
+                                    Dimensions{parent_dimensions.total_size()});
+    }
     throw std::out_of_range("Number of range() exceeds Tensor rank.");
   }
   for (index i = 0; i < ranges.size(); ++i) {
@@ -85,7 +91,7 @@ bool Range::maybe_combine(const Range &other) {
     dimension_ = total_range_size;
     return true;
   }
-  if (!has_indices() && !has_indices()) {
+  if (!has_indices() && !other.has_indices()) {
     if (size() == 1) {
       step_ = other.step() * dimension_;
       limit_ = start_ + other.limit() * dimension_;
@@ -151,20 +157,10 @@ RangeIterator RangeIterator::make_next_iterator(const Range *ranges,
   Range r = *ranges;
   ++ranges;
   --ranges_left;
-#if 0
-  std::cerr << r;
-  while (ranges_left && r.maybe_combine(*ranges)) {
-    std::cerr << "->" << r;
-    --ranges_left;
-    ++ranges;
-  }
-  std::cerr << '\n';
-#else
   while (ranges_left && r.maybe_combine(*ranges)) {
     --ranges_left;
     ++ranges;
   }
-#endif
   RangeIterator *next = nullptr;
   if (ranges_left) {
     next = new RangeIterator(make_next_iterator(
@@ -185,10 +181,11 @@ RangeIterator::RangeIterator(const Range &r, index factor, end_flag_t end_flag,
    * which starts at offset_, is incremented by step_ and is always
    * below limit_
    */
+  factor_ = factor;
   if (r.has_indices()) {
     start_ = 0;
     limit_ = r.indices().size();
-    step_ = factor;
+    step_ = 1;
   } else {
     step_ = r.step() * factor;
     limit_ = r.limit() * factor;
@@ -203,7 +200,7 @@ RangeIterator::RangeIterator(const Range &r, index factor, end_flag_t end_flag,
 
 index RangeIterator::get_position() const {
   if (range_.has_indices()) {
-    return offset_ + range_.get_index(counter_) * step_;
+    return offset_ + range_.get_index(counter_) * factor_;
   } else {
     return offset_ + counter_;
   }

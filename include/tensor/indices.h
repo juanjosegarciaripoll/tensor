@@ -268,7 +268,7 @@ class RangeIterator {
   const Range &range() const { return range_; }
 
  private:
-  index counter_, start_, limit_, step_, offset_;
+  index counter_, start_, limit_, step_, offset_, factor_;
   Range range_;
   next_t next_;
 
