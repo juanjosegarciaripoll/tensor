@@ -27,18 +27,23 @@ namespace tensor {
 std::ostream &operator<<(std::ostream &out, const Range &r) {
   out << "Range(dim=" << r.dimension() << ',';
   if (!r.has_indices()) {
-    out << "start=" << r.start() << ",end=" << r.limit() - 1
+    out << "start=" << r.start() << ",limit=" << r.limit()
         << ",step=" << r.step();
   } else {
     out << "indices=" << r.indices();
   }
-  return out << ')';
+  return out << ",size=" << r.size() << ')';
 }
 
 std::ostream &operator<<(std::ostream &out, const RangeIterator &r) {
-  out << "RangeIterator(pos=" << r.get_position() << ",counter=" << r.counter()
-      << ",offset=" << r.offset();
-  if (r.has_next()) out << ",next=" << r.next();
+  out << "RangeIterator(counter=" << r.counter() << ",offset=" << r.offset()
+      << ",limit=" << r.limit() << ",step=" << r.step()
+      << ",range=" << r.range() << ",next=";
+  if (r.has_next()) {
+    out << r.next();
+  } else {
+    out << "nullptr";
+  }
   return out << ')';
 }
 

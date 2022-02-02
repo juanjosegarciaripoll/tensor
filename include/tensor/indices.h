@@ -197,29 +197,36 @@ class Range {
       : start_{start}, step_{1}, limit_{end + 1}, dimension_{limit_} {}
   Range(index start, index end, index step)
       : start_{start}, step_{step}, limit_{end + 1}, dimension_{limit_} {}
-  Range(Indices indices)
-      : start_{0},
-        step_{1},
-        limit_{static_cast<index>(indices.size())},
-        dimension_{0},
-        indices_{indices.size() ? new Indices(indices) : nullptr} {}
+  Range(index start, index end, index step, index dimension)
+      : start_{start}, step_{step}, limit_{end + 1}, dimension_{dimension} {}
+  Range(Indices indices);
+#if 0
+  Range(const Range &r) = default;
+  Range(Range &&r) = default;
+  Range &operator=(const Range &r) = default;
+  Range &operator=(Range &&r) = default;
+#endif
 
   index start() const { return start_; }
   index step() const { return step_; }
   index limit() const { return limit_; }
   index dimension() const { return dimension_; }
   void set_dimension(index dimension);
-  bool has_indices() const { return indices_ != nullptr; }
-  const Indices &indices() const { return *indices_; }
-  index get_index(index pos) const { return (*indices_)[pos]; }
+  bool has_indices() const { return indices().size() != 0; }
+  const Indices &indices() const { return indices_; }
+  index get_index(index pos) const { return indices()[pos]; }
   index size() const { return (limit_ - start_ + step_ - 1) / step_; }
+  index is_full() const {
+    return start_ == 0 && step_ == 1 && limit_ == dimension_;
+  }
+  bool maybe_combine(const Range &other);
 
   static Range empty();
   static Range full(index start = 0, index step = 1);
 
  private:
   index start_, step_, limit_, dimension_;
-  std::shared_ptr<Indices> indices_{nullptr};
+  Indices indices_;
 };
 
 Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
@@ -232,37 +239,42 @@ class RangeIterator {
   typedef Range *range_ptr_t;
   typedef enum { range_begin = 0, range_end = 1 } end_flag_t;
 
-  RangeIterator(const SimpleVector<Range> &ranges,
-                end_flag_t flag = range_begin)
-      : RangeIterator(ranges.begin(), 1, ranges.size(), flag) {}
-  RangeIterator(const Range &r, index factor = 1);
+  static RangeIterator make_range_iterators(const SimpleVector<Range> &ranges,
+                                            end_flag_t flag = range_begin);
+  RangeIterator(const Range &r, index factor = 1, end_flag_t flag = range_begin,
+                next_t next = nullptr);
   index operator*() const { return get_position(); };
   RangeIterator &operator++();
-  bool finished() { return counter_ >= range_.limit(); }
+  bool finished() const { return counter_ >= limit_; }
   bool operator!=(const RangeIterator &other) const {
-    return other.counter_ != counter_ || other.offset_ != offset_;
+    return other.counter_ != counter_;
   }
   bool operator==(const RangeIterator &other) const {
-    return other.counter_ == counter_ && other.offset_ == offset_;
+    return other.counter_ == counter_;
   }
   static RangeIterator begin(const SimpleVector<Range> &ranges) {
-    return RangeIterator(ranges, range_begin);
+    return make_range_iterators(ranges, range_begin);
   }
   static RangeIterator end(const SimpleVector<Range> &ranges) {
-    return RangeIterator(ranges, range_end);
+    return make_range_iterators(ranges, range_end);
   }
   index get_position() const;
   index counter() const { return counter_; }
   index offset() const { return offset_; }
+  index step() const { return step_; }
+  index limit() const { return limit_; }
   bool has_next() const { return next_ != nullptr; }
   const RangeIterator &next() const { return *next_; }
   const Range &range() const { return range_; }
 
  private:
-  RangeIterator(const Range *ranges, index factor, index left, end_flag_t end);
+  index counter_, start_, limit_, step_, offset_;
   Range range_;
-  index counter_, factor_, offset_;
   next_t next_;
+
+  static RangeIterator make_next_iterator(
+      const Range *ranges, index left, index factor,
+      end_flag_t end_flagflag = range_begin);
 };
 
 template <typename elt_t>
@@ -278,7 +290,7 @@ class TensorIterator {
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
   elt_t &operator*() {
     index n = iterator_.get_position();
-#ifndef NDEBUG
+#if 1  //ndef NDEBUG
     if (n > size_) {
       throw std::out_of_range("Out of bounds when reading TensorConstIterator");
     }
@@ -313,7 +325,7 @@ class TensorConstIterator {
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
   const elt_t &operator*() {
     index n = iterator_.get_position();
-#ifndef NDEBUG
+#if 1  //ndef NDEBUG
     if (n > size_) {
       throw std::out_of_range("Out of bounds when reading TensorConstIterator");
     }

@@ -27,6 +27,11 @@ namespace tensor_test {
 using namespace tensor;
 using tensor::index;
 
+static bool is_empty_range(const Range &r) {
+  return r.start() == 0 && r.limit() == 0 && r.step() == 1 && r.size() == 0 &&
+         !r.has_indices();
+}
+
 /////////////////////////////////////////////////////////////////////
 // RANGES
 //
@@ -72,6 +77,7 @@ TEST(RangeTest, RangeFullWithStart) {
 
 TEST(RangeTest, RangeEmptyIndices) {
   Range r(Indices{});
+  ASSERT_FALSE(r.has_indices());
   ASSERT_EQ(r.start(), 0);
   ASSERT_EQ(r.limit(), 0);
   ASSERT_EQ(r.step(), 1);
@@ -80,180 +86,113 @@ TEST(RangeTest, RangeEmptyIndices) {
   ASSERT_EQ(r.size(), 0);
 }
 
+TEST(RangeTest, RangeIndicesSize1) {
+  Range r(Indices{1});
+  ASSERT_FALSE(r.has_indices());
+  ASSERT_EQ(r.start(), 1);
+  ASSERT_EQ(r.limit(), 2);
+  ASSERT_EQ(r.step(), 1);
+  ASSERT_EQ(r.size(), 1);
+  ASSERT_NO_THROW(r.set_dimension(3));
+  ASSERT_EQ(r.size(), 1);
+}
+
+TEST(RangeTest, RangeIndicesSize2) {
+  Range r(Indices{1, 3});
+  ASSERT_FALSE(r.has_indices());
+  ASSERT_EQ(r.start(), 1);
+  ASSERT_EQ(r.limit(), 4);
+  ASSERT_EQ(r.step(), 2);
+  ASSERT_EQ(r.size(), 2);
+  ASSERT_NO_THROW(r.set_dimension(4));
+  ASSERT_EQ(r.size(), 2);
+}
+
 TEST(RangeTest, RangeIndices) {
-  Range r(Indices{0, 1, 2});
+  Range r(Indices{0, 1, 3});
   ASSERT_EQ(r.start(), 0);
   ASSERT_EQ(r.limit(), 3);
   ASSERT_EQ(r.step(), 1);
   ASSERT_EQ(r.size(), 3);
-  ASSERT_NO_THROW(r.set_dimension(3));
+  ASSERT_NO_THROW(r.set_dimension(4));
   ASSERT_EQ(r.size(), 3);
-  ASSERT_THROW(r.set_dimension(2), std::out_of_range);
+  ASSERT_THROW(r.set_dimension(3), std::out_of_range);
 }
 
-/////////////////////////////////////////////////////////////////////
-// 1D RANGE ITERATORS
+/////////////////////////////////////////////////////////////////
+// RANGE COMBINATIONS
 //
 
-TEST(RangeTest, EmptyRangeIterator) {
-  Range r = Range::empty();  // = []
-  RangeIterator it(r, 1);
-  ASSERT_TRUE(it.finished());
-  ASSERT_EQ(it, RangeIterator::end({r}));
+TEST(RangeTest, CombineSize1Size3) {
+  auto r1 = Range(/*start*/ 1, /*end*/ 1, /*step*/ 1, /*dimension*/ 4);
+  ASSERT_EQ(r1.size(), 1);
+  auto r2 = Range(/*start*/ 1, /*end*/ 3, /*step*/ 1, /*dimension*/ 5);
+  ASSERT_EQ(r2.size(), 3);
+  ASSERT_TRUE(r1.maybe_combine(r2));
+  ASSERT_EQ(r1.size(), 3);
+  ASSERT_EQ(r1.start(), 1 + 4 * 1);
+  ASSERT_EQ(r1.limit(), 1 + 4 * 4);
+  ASSERT_EQ(r1.step(), 4 * 1);
 }
 
-TEST(RangeTest, RangeIterator1DSize0) {
-  Range r(0, -1);  // = []
-  RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
-  ASSERT_TRUE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 0);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+TEST(RangeTest, CombineSize3Size0) {
+  auto r1 = Range(/*start*/ 1, /*end*/ 3, /*step*/ 1, /*dimension*/ 4);
+  ASSERT_EQ(r1.size(), 3);
+  auto r2 = Range(/*start*/ 2, /*end*/ 1, /*step*/ 1, /*dimension*/ 5);
+  ASSERT_EQ(r2.size(), 0);
+  ASSERT_TRUE(r1.maybe_combine(r2));
+  ASSERT_EQ(r1.size(), 0);
+  ASSERT_EQ(r1.start(), 0);
+  ASSERT_EQ(r1.limit(), 0);
+  ASSERT_EQ(r1.step(), 1);
 }
 
-TEST(RangeTest, RangeIterator1DSize1) {
-  Range r(/*start*/ 0, /*end*/ 0);  // = [0]
-  RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
-  ASSERT_FALSE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1);
-  ASSERT_TRUE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+TEST(RangeTest, CombineSize0Size3) {
+  auto r1 = Range(/*start*/ 2, /*end*/ 1, /*step*/ 1, /*dimension*/ 4);
+  ASSERT_EQ(r1.size(), 0);
+  auto r2 = Range(/*start*/ 1, /*end*/ 3, /*step*/ 1, /*dimension*/ 5);
+  ASSERT_EQ(r2.size(), 3);
+  ASSERT_TRUE(r1.maybe_combine(r2));
+  ASSERT_EQ(r1.size(), 0);
+  ASSERT_EQ(r1.start(), 0);
+  ASSERT_EQ(r1.limit(), 0);
+  ASSERT_EQ(r1.step(), 1);
 }
 
-TEST(RangeTest, RangeIterator1DSize1Start1) {
-  Range r(/*start*/ 1, /*end*/ 1);  // = [1, 1]
-  RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 1);
-  ASSERT_FALSE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 2);
-  ASSERT_TRUE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 2);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+TEST(RangeTest, CombineSize3Size1) {
+  auto r1 = Range(/*start*/ 1, /*end*/ 3, /*step*/ 1, /*dimension*/ 4);
+  ASSERT_EQ(r1.size(), 3);
+  auto r2 = Range(/*start*/ 2, /*end*/ 2, /*step*/ 1, /*dimension*/ 5);
+  ASSERT_EQ(r2.size(), 1);
+  ASSERT_TRUE(r1.maybe_combine(r2));
+  ASSERT_EQ(r1.size(), 3);
+  ASSERT_EQ(r1.start(), 1 + 4 * 2);
+  ASSERT_EQ(r1.limit(), 4 + 4 * 2);
+  ASSERT_EQ(r1.step(), 1);
 }
 
-TEST(RangeTest, RangeIterator1DSize2) {
-  Range r(/*start*/ 0, /*end*/ 1);  // = [0, 1]
-  RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
-  ASSERT_FALSE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1);
-  ASSERT_FALSE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 2);
-  ASSERT_TRUE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 2);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+TEST(RangeTest, CombineIndices3Size0) {
+  auto r1 = Range(Indices{0, 1, 3});
+  ASSERT_EQ(r1.size(), 3);
+  auto r2 = Range::empty();
+  ASSERT_EQ(r2.size(), 0);
+  ASSERT_TRUE(r1.maybe_combine(r2));
+  ASSERT_EQ(r1.size(), 0);
+  ASSERT_EQ(r1.start(), 0);
+  ASSERT_EQ(r1.limit(), 0);
+  ASSERT_EQ(r1.step(), 1);
 }
 
-TEST(RangeTest, RangeIterator1DSize1Step2) {
-  Range r(/*start*/ 0, /*end*/ 0, /*step*/ 2);  // = [0]
-  RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
-  ASSERT_FALSE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1);
-  ASSERT_TRUE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
-}
-
-TEST(RangeTest, RangeIterator1DSize2Step2) {
-  Range r(/*start*/ 0, /*end*/ 1, /*step*/ 2);  // = [0]
-  RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
-  ASSERT_FALSE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 2);
-  ASSERT_TRUE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 2);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
-}
-
-/////////////////////////////////////////////////////////////////////
-// 2D RANGE ITERATORS
-//
-
-TEST(RangeTest, RangeIterator2DEmptyA) {
-  Range r1 = Range::empty(), r2(/*start*/ 0, /*end*/ 0);  // = []
-  r1.set_dimension(3);
-  r2.set_dimension(3);
-  RangeIterator it({r1, r2});
-  ASSERT_EQ(*it, 0 + 3 * 0);
-  ASSERT_TRUE(it.finished());
-  ASSERT_EQ(*(++it), 0 + 3 * 0);  // We do not run past the limit
-  std::cerr << it << '\n';
-  std::cerr << RangeIterator::end({r1, r2}) << '\n';
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
-}
-
-TEST(RangeTest, RangeIterator2DEmptyB) {
-  Range r1(/*start*/ 0, /*end*/ 0), r2 = Range::empty();  // = []
-  r1.set_dimension(3);
-  r2.set_dimension(3);
-  RangeIterator it({r1, r2});
-  ASSERT_EQ(*it, 1 + 3 * 0);
-  ASSERT_TRUE(it.finished());
-  ASSERT_EQ(*(++it), 1 + 3 * 0);  // We do not run past the limit
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
-}
-
-TEST(RangeTest, RangeIterator2DSize1) {
-  Range r1(/*start*/ 0, /*end*/ 0), r2(/*start*/ 0, /*end*/ 0);  // = [[0, 0]]
-  RangeIterator it({r1, r2});
-  ASSERT_EQ(*it, 0);
-  ASSERT_FALSE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1 + 1);
-  ASSERT_TRUE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1 + 1);  // We do not run past the limit
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
-}
-
-TEST(RangeTest, RangeIterator2DSize1Dim3) {
-  Range r1(0, 0), r2(0, 0);
-  r1.set_dimension(3);
-  r2.set_dimension(3);
-  RangeIterator it({r1, r2});
-  ASSERT_EQ(*it, 0);
-  ASSERT_FALSE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1 + 3);
-  ASSERT_TRUE(it.finished());
-  ++it;
-  ASSERT_EQ(*it, 1 + 3);  // We do not run past the limit
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
-}
-
-TEST(RangeTest, RangeIterator2DSize2) {
-  Range r1(0, 1), r2(0, 1);
-  r1.set_dimension(3);
-  r2.set_dimension(3);
-  RangeIterator it({r1, r2});
-  ASSERT_EQ(*it, 0);
-  ASSERT_FALSE(it.finished());
-  ASSERT_EQ(*(++it), 1);
-  ASSERT_FALSE(it.finished());
-  ASSERT_EQ(*(++it), 0 + 3);
-  ASSERT_FALSE(it.finished());
-  ASSERT_EQ(*(++it), 1 + 3);
-  ASSERT_FALSE(it.finished());
-  ASSERT_EQ(*(++it), 2 + 2 * 3);
-  ASSERT_TRUE(it.finished());
-  ASSERT_EQ(*(++it), 2 + 2 * 3);  // We do not run past the limit
-  std::cerr << RangeIterator::end({r1, r2}) << '\n';
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
+TEST(RangeTest, CombineSize0Indices3) {
+  auto r1 = Range::empty();
+  ASSERT_EQ(r1.size(), 0);
+  auto r2 = Range(Indices{0, 1, 3});
+  ASSERT_EQ(r2.size(), 3);
+  ASSERT_TRUE(r1.maybe_combine(r2));
+  ASSERT_EQ(r1.size(), 0);
+  ASSERT_EQ(r1.start(), 0);
+  ASSERT_EQ(r1.limit(), 0);
+  ASSERT_EQ(r1.step(), 1);
 }
 
 }  // namespace tensor_test

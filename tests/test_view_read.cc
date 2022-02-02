@@ -267,6 +267,12 @@ void test_view_extract2(Tensor<elt_t> &P, index i0, index i2, index i1,
 
   Tensor<elt_t> t1 = slow_range2(P, i0, i2, i1, j0, j2, j1);
   Tensor<elt_t> t2 = P(range(i0, i2, i1), range(j0, j2, j1));
+  if (!all_equal(t1, t2)) {
+    std::cerr << P << '\n'
+              << t1 << '\n'
+              << t2 << '\n'
+              << range(i0, i2, i1) << ',' << range(j0, j2, j1) << '\n';
+  }
   ASSERT_TRUE(all_equal(t2, t1));
 
   Tensor<elt_t> t3 = P(range2(i0, i2, i1), range(j0, j2, j1));
