@@ -244,7 +244,12 @@ class RangeIterator {
   RangeIterator(const Range &r, index factor = 1, end_flag_t flag = range_begin,
                 next_t next = nullptr);
   index operator*() const { return get_position(); };
-  RangeIterator &operator++();
+  RangeIterator &operator++() {
+    if ((counter_ += step_) >= limit_) {
+      advance_next();
+    }
+    return *this;
+  }
   bool finished() const { return counter_ >= limit_; }
   bool operator!=(const RangeIterator &other) const {
     return other.counter_ != counter_;
@@ -271,7 +276,7 @@ class RangeIterator {
   index counter_, start_, limit_, step_, offset_, factor_;
   Range range_;
   next_t next_;
-
+  void advance_next();
   static RangeIterator make_next_iterator(
       const Range *ranges, index left, index factor,
       end_flag_t end_flagflag = range_begin);

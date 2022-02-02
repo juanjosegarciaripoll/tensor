@@ -206,19 +206,16 @@ index RangeIterator::get_position() const {
   }
 }
 
-RangeIterator &RangeIterator::operator++() {
-  if ((counter_ += step_) >= limit_) {
-    if (next_) {
-      ++(*next_);
-      offset_ = next_->get_position();
-      if (!next_->finished()) {
-        counter_ = start_;
-        return *this;
-      }
+void RangeIterator::advance_next() {
+  if (next_) {
+    ++(*next_);
+    offset_ = next_->get_position();
+    if (!next_->finished()) {
+      counter_ = start_;
+      return;
     }
-    counter_ = limit_;
   }
-  return *this;
+  counter_ = limit_;
 }
 
 }  // namespace tensor
