@@ -293,15 +293,7 @@ class TensorIterator {
 
   TensorIterator(RangeIterator &&it, elt_t *base, index size)
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
-  elt_t &operator*() {
-    index n = iterator_.get_position();
-#if 1  //ndef NDEBUG
-    if (n > size_) {
-      throw std::out_of_range("Out of bounds when reading TensorConstIterator");
-    }
-#endif
-    return base_[n];
-  }
+  elt_t &operator*() { return base_[iterator_.get_position()]; }
   elt_t &operator->() { return this->operator*(); }
   TensorIterator<elt_t> &operator++() {
     ++iterator_;
@@ -328,15 +320,7 @@ class TensorConstIterator {
 
   TensorConstIterator(RangeIterator &&it, const elt_t *base, index size)
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
-  const elt_t &operator*() {
-    index n = iterator_.get_position();
-#if 1  //ndef NDEBUG
-    if (n > size_) {
-      throw std::out_of_range("Out of bounds when reading TensorConstIterator");
-    }
-#endif
-    return base_[n];
-  }
+  const elt_t &operator*() { return base_[iterator_.get_position()]; }
   const elt_t &operator->() { return this->operator*(); }
   TensorConstIterator<elt_t> &operator++() {
     ++iterator_;
