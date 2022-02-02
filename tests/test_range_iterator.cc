@@ -262,7 +262,9 @@ TEST(RangeIteratorTest, RangeIterator2DSize2x2Dim3x4) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// MANUALLY EXTRACT RANGES FROM A TENSOR USING LOOPS
+// TEST RANGE ITERATION COMPARING WITH MANUALLY CRAFTED LOOPS
+//
+// 1) ONLY PURE RANGES
 //
 
 template <typename elt_t>
@@ -351,6 +353,7 @@ TEST(RangeIteratorTest, Test2D) {
       2);
 }
 
+#if 0
 template <typename elt_t>
 Tensor<elt_t> slow_range_test3(const Tensor<elt_t> &P, index i0, index i2,
                                index i1, index j0, index j2, index j1, index k0,
@@ -411,6 +414,102 @@ TEST(RangeIteratorTest, Test3D) {
         }
       },
       3);
+}
+#endif
+
+//
+// 1) WITH INDICES
+//
+
+Indices random_indices(index size) {
+  return which(RTensor::random(size) < 0.5);
+}
+
+template <typename elt_t>
+Tensor<elt_t> slow_index_range_test1(const Tensor<elt_t> &P) {
+  for (index attempts = 10; attempts; --attempts) {
+    const Indices ndx = random_indices(P.size());
+    SimpleVector<Range> ranges{range(ndx)};
+    Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
+    RangeIterator it = RangeIterator::begin(ranges);
+    for (index i = 0; i < ndx.size(); ++i, ++it) {
+      EXPECT_EQ(ndx[i], *it);
+      if (ndx[i] != *it) {
+        std::stringstream out;
+        out << "Mismatch in range over ranges:\n"
+            << ranges << '\n'
+            << "Mismatch: " << ndx[i] << " != " << *it << '\n';
+        throw std::overflow_error(out.str());
+      }
+    }
+    EXPECT_TRUE(it.finished());
+  }
+  return P;
+}
+
+TEST(RangeIteratorTest, Test1DIndices) {
+  test_over_fixed_rank_tensors<double>(slow_index_range_test1<double>, 1);
+  test_over_fixed_rank_tensors<double>(slow_index_range_test1<double>, 2);
+  test_over_fixed_rank_tensors<double>(slow_index_range_test1<double>, 3);
+}
+
+template <typename elt_t>
+Tensor<elt_t> slow_index_range_test2a(const Tensor<elt_t> &P) {
+  for (index attempts = 10; attempts; --attempts) {
+    const Indices ndx = random_indices(P.dimension(0));
+    SimpleVector<Range> ranges{range(ndx), range()};
+    Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
+    RangeIterator it = RangeIterator::begin(ranges);
+    for (index j = 0; j < P.dimension(1); ++j) {
+      for (index i = 0; i < ndx.size(); ++i, ++it) {
+        index pos = ndx[i] + j * P.dimension(0);
+        EXPECT_EQ(pos, *it);
+        if (pos != *it) {
+          std::stringstream out;
+          out << "Mismatch in range over ranges:\n"
+              << ranges << '\n'
+              << "Indices:" << ndx << '\n'
+              << "Coordinates: (" << ndx[i] << "," << j << ")\n"
+              << "Mismatch: " << pos << " != " << *it << '\n';
+          throw std::overflow_error(out.str());
+        }
+      }
+    }
+    EXPECT_TRUE(it.finished());
+  }
+  return P;
+}
+
+template <typename elt_t>
+Tensor<elt_t> slow_index_range_test2b(const Tensor<elt_t> &P) {
+  for (index attempts = 10; attempts; --attempts) {
+    const Indices ndx = random_indices(P.dimension(1));
+    SimpleVector<Range> ranges{range(), range(ndx)};
+    Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
+    RangeIterator it = RangeIterator::begin(ranges);
+    for (index j = 0; j < ndx.size(); ++j) {
+      for (index i = 0; i < P.dimension(0); ++i, ++it) {
+        index pos = i + ndx[j] * P.dimension(0);
+        EXPECT_EQ(pos, *it);
+        if (pos != *it) {
+          std::stringstream out;
+          out << "Mismatch in range over ranges:\n"
+              << ranges << '\n'
+              << "Indices:" << ndx << '\n'
+              << "Coordinates: (" << i << "," << ndx[j] << ")\n"
+              << "Mismatch: " << pos << " != " << *it << '\n';
+          throw std::overflow_error(out.str());
+        }
+      }
+    }
+    EXPECT_TRUE(it.finished());
+  }
+  return P;
+}
+
+TEST(RangeIteratorTest, Test2DIndices) {
+  test_over_fixed_rank_tensors<double>(slow_index_range_test2a<double>, 2);
+  test_over_fixed_rank_tensors<double>(slow_index_range_test2b<double>, 2);
 }
 
 }  // namespace tensor_test
