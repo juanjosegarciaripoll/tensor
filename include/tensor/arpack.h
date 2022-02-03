@@ -26,30 +26,36 @@
 #include <tensor/linalg.h>
 
 namespace linalg {
+
+namespace arpack {
+
+template <typename elt_t, bool symmetric>
+struct eigenvalue_type {
+  typedef elt_t type;
+};
+template <>
+struct eigenvalue_type<double, true> {
+  typedef double type;
+};
+template <>
+struct eigenvalue_type<double, false> {
+  typedef tensor::cdouble type;
+};
+
+}  // namespace arpack
+
 /*!\addtogroup Linalg */
 /*!@{*/
 
 /**Finder of a few eigenvalues of eigenvectors via Arnoldi method.*/
 template <typename scalar_t, bool is_symmetric = true>
 class Arpack {
-  template <typename elt_t, bool symmetric>
-  struct eigenvalue_type {
-    typedef elt_t type;
-  };
-  template <>
-  struct eigenvalue_type<double, true> {
-    typedef double type;
-  };
-  template <>
-  struct eigenvalue_type<double, false> {
-    typedef tensor::cdouble type;
-  };
-
  public:
   using elt_t = scalar_t;
   using integer = blas::integer;
   using Tensor = tensor::Tensor<elt_t>;
-  using eigenvalue_t = typename eigenvalue_type<elt_t, is_symmetric>::type;
+  using eigenvalue_t =
+      typename arpack::eigenvalue_type<elt_t, is_symmetric>::type;
   using eigenvector_t = tensor::Tensor<eigenvalue_t>;
   using eigenvalues_t = tensor::Tensor<eigenvalue_t>;
   static constexpr bool symmetric = is_symmetric;
