@@ -127,7 +127,7 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
   workv = std::make_unique<elt_t[]>(lworkv);
   rwork = std::make_unique<double[]>(ncv);
   for (size_t i = 0; i < 15; i++) ipntr[i] = 0;
-  for (index i = 0; i < 3; i++) {
+  for (tensor::index i = 0; i < 3; i++) {
     work_vectors[i] = Tensor(Vector<elt_t>(n, &workd[i * n]));
   }
 
