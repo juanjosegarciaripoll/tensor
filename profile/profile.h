@@ -222,12 +222,12 @@ struct BenchmarkItem {
 template <typename T>
 std::ostream &operator<<(std::ostream &out, const std::vector<T> &v) {
   const char *comma = "";
-  out << "[";
+  out << '[';
   for (auto &item : v) {
     out << comma << item;
     comma = ",";
   }
-  out << "]";
+  out << ']';
   return out;
 }
 

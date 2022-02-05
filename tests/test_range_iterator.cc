@@ -40,12 +40,12 @@ static bool is_empty_range_iterator(const RangeIterator &it) {
 template <typename elt_t>
 std::ostream &operator<<(std::ostream &out, const std::vector<elt_t> &v) {
   const char *comma = "";
-  out << "[";
+  out << '[';
   for (auto &x : v) {
     out << comma << x;
     comma = ",";
   }
-  out << "]";
+  out << ']';
   return out;
 }
 

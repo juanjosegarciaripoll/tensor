@@ -41,11 +41,27 @@ inline std::ostream &operator<<(std::ostream &s, const cdouble &d) {
 
 /**Simple text representation of vector.*/
 template <typename elt_t>
-std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t);
+inline std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t) {
+  s << '[';
+  const char *comma = "";
+  for (auto &x : t) {
+    s << comma << x;
+    comma = ",";
+  }
+  return s << ']';
+}
 
 /**Simple text representation of vector.*/
 template <typename elt_t>
-std::ostream &operator<<(std::ostream &s, const SimpleVector<elt_t> &t);
+inline std::ostream &operator<<(std::ostream &s, const SimpleVector<elt_t> &t) {
+  s << '[';
+  const char *comma = "";
+  for (auto &x : t) {
+    s << comma << x;
+    comma = ",";
+  }
+  return s << ']';
+}
 
 /**Simple text representation of dimensions.*/
 inline std::ostream &operator<<(std::ostream &s, const Dimensions &d) {
@@ -54,11 +70,9 @@ inline std::ostream &operator<<(std::ostream &s, const Dimensions &d) {
 
 /**Simple text representation of tensor.*/
 template <typename elt_t>
-std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t);
-
-/**Simple text representation of tensor.*/
-template <typename elt_t>
-std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t);
+std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t) {
+  return s << '(' << t.dimensions() << ")/" << static_cast<Vector<elt_t>>(t);
+}
 
 template <typename t, size_t n>
 inline std::ostream &operator<<(std::ostream &s, const StaticVector<t, n> &v) {
@@ -110,7 +124,5 @@ std::ostream &operator<<(std::ostream &out, const Range &r);
 std::ostream &operator<<(std::ostream &out, const RangeIterator &it);
 
 }  // namespace tensor
-
-#include <tensor/detail/io.hpp>
 
 #endif  // !TENSOR_IO_H

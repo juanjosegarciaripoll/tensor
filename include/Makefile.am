@@ -2,7 +2,6 @@
 nobase_include_HEADERS = \
 	tensor/arpack.h \
 	tensor/detail/functional.h \
-	tensor/detail/io.hpp \
 	tensor/detail/refcount.hpp \
 	tensor/detail/sparse_base.hpp \
 	tensor/detail/sparse_ops.hpp \

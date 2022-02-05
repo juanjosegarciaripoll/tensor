@@ -133,7 +133,7 @@ class Tensor {
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
 #endif
 
-  operator Vector<elt_t>() const { return data_; }
+  explicit operator Vector<elt_t>() const { return data_; }
 
   /**Assignment operator.*/
   Tensor &operator=(const Tensor<elt_t> &other) = default;
