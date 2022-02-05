@@ -99,8 +99,8 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
   bool last_job_found = false;
   bool job_blocks_found = false;
   bool this_job_found = false;
-  tensor::index blocks;
-  tensor::index current_job;
+  tensor::index blocks{0};
+  tensor::index current_job{0};
   int i;
   for (i = 0; i < argc; i++) {
     if (!strcmp(argv[i], "--job")) {

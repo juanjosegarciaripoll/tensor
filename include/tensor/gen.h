@@ -86,7 +86,8 @@ class StaticVector {
     inner.push(v);
     v[n - 1] = extra;
   }
-  index size() const { return n; }
+  size_t size() const { return n; }
+  index ssize() const { return static_cast<index>(n); }
 
  protected:
   StaticVector<elt_t, n - 1> inner;
@@ -94,7 +95,7 @@ class StaticVector {
 };
 
 template <typename elt_t>
-class StaticVector<elt_t, (size_t)1> {
+class StaticVector<elt_t, static_cast<size_t>(1)> {
  public:
   StaticVector(elt_t x) : extra(x){};
   operator Vector<elt_t>() const {
@@ -103,7 +104,8 @@ class StaticVector<elt_t, (size_t)1> {
     return output;
   }
   void push(elt_t *v) const { v[0] = extra; }
-  index size() const { return 1; }
+  size_t size() const { return 1; }
+  index ssize() const { return 1; }
 
  private:
   elt_t extra;

@@ -22,11 +22,19 @@
 
 using namespace sdf;
 
+static std::streamsize safe_streamsize(size_t size) {
+  if (size > std::numeric_limits<std::streamsize>::max()) {
+    throw std::overflow_error("Data record too large for std::istream");
+  }
+  return static_cast<std::streamsize>(size);
+}
+
 #if !defined(aix)
 
 template <class number>
 void write_raw_with_endian(std::ofstream &s, const number *data, size_t n) {
-  s.write((char *)data, n * sizeof(number));
+  s.write(reinterpret_cast<const char *>(data),
+          safe_streamsize(n * sizeof(number)));
   if (s.bad()) {
     std::cerr << "I/O error when writing to SDF stream";
     abort();
@@ -42,7 +50,8 @@ template <class number>
 void write_raw_with_endian(std::ofstream &s, const number *data, size_t n) {
   const int size = sizeof(number);
   if (size == 1) {
-    s.write((char *)data, n * sizeof(number));
+    s.write(reinterpret_cast<const char *>(data),
+            safe_streamsize(n * sizeof(number)));
     if (s.bad()) {
       std::cerr << "I/O error when writing to SDF stream";
       abort();
@@ -79,7 +88,7 @@ void write_raw_with_endian(std::ofstream &s, const number *data, size_t n) {
       }
       n--;
     }
-    s.write(buffer, now);
+    s.write(buffer, safe_streamsize(now));
     if (s.bad()) {
       std::cerr << "I/O error when reading from stream " << s;
       abort();
@@ -94,8 +103,8 @@ void write_raw_with_endian(std::ofstream &s, const number *data, size_t n) {
 // COMMON I/O ROUTINES
 //
 
-OutDataFile::OutDataFile(const std::string &a_filename, int flags)
-    : DataFile(a_filename, flags) {
+OutDataFile::OutDataFile(const std::string &a_filename, int a_flags)
+    : DataFile(a_filename, a_flags) {
   bool existed = file_exists(actual_filename());
   _stream.open(actual_filename().c_str(),
                std::ofstream::app | std::ofstream::binary);
@@ -141,7 +150,7 @@ void OutDataFile::write_raw(const double *data, size_t n) {
 
 void OutDataFile::write_raw(const cdouble *data, size_t n) {
   assert(is_open());
-  write_raw_with_endian(_stream, (double *)data, 2 * n);
+  write_raw_with_endian(_stream, reinterpret_cast<const double *>(data), 2 * n);
 }
 
 void OutDataFile::write_variable_name(const std::string &name) {
@@ -169,13 +178,13 @@ void OutDataFile::dump_sequence(iterator begin, size_t howmany) {
 
 void OutDataFile::dump(const RTensor &t, const std::string &name) {
   write_tag(name, TAG_RTENSOR);
-  dump_sequence(t.dimensions().begin(), t.rank());
+  dump_sequence(t.dimensions().begin(), static_cast<size_t>(t.rank()));
   dump_vector(t);
 }
 
 void OutDataFile::dump(const CTensor &t, const std::string &name) {
   write_tag(name, TAG_CTENSOR);
-  dump_sequence(t.dimensions().begin(), t.rank());
+  dump_sequence(t.dimensions().begin(), static_cast<size_t>(t.rank()));
   dump_vector(t);
 }
 
@@ -208,11 +217,11 @@ void OutDataFile::dump(const cdouble v, const std::string &name) {
 }
 
 void OutDataFile::dump(size_t v, const std::string &name) {
-  dump((double)v, name);
+  dump(static_cast<double>(v), name);
 }
 
 void OutDataFile::dump(int v, const std::string &name) {
-  dump((double)v, name);
+  dump(static_cast<double>(v), name);
 }
 
 void OutDataFile::write_header() {

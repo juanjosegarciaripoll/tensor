@@ -68,7 +68,7 @@ RTensor eig_sym(const RTensor &A, RTensor *V) {
   blas::integer lwork = -1;
   double work0[1];
   F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, info);
-  lwork = (int)work0[0];
+  lwork = static_cast<blas::integer>(work0[0]);
 
   RTensor work = RTensor::empty(lwork);
   F77NAME(dsyev)

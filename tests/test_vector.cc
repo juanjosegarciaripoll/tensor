@@ -39,7 +39,7 @@ TEST(VectorTest, DefaultConstructor) {
 // Verify proper size of object and that the exact number of elements
 // are allocated.
 TEST(VectorTest, SizeConstructor) {
-  for (int i = 1; i < 10; ++i) {
+  for (tensor::index i = 1; i < 10; ++i) {
     {
       AllocInformer::reset_counters();
       const Vector<AllocInformer> r(i);
@@ -71,7 +71,7 @@ TEST(VectorTest, DataConstructor) {
 // The copy constructor increases the number of references, so that
 // r1 and r2 point to the same data.
 TEST(VectorTest, TwoRefsCopyConstructor) {
-  Vector<int> r1(2);
+  Vector<int> r1(size_t(2));
   Vector<int> r2(r1);
   EXPECT_EQ(2, r1.size());
   EXPECT_EQ(2, r1.ref_count());
@@ -97,7 +97,7 @@ TEST(VectorTest, Destructor) {
 
 // Operator= makes two references point to the same data
 TEST(VectorTest, Assigning) {
-  Vector<int> ref(5);
+  Vector<int> ref(size_t(5));
   Vector<int> r2 = ref;
 
   EXPECT_EQ(ref.begin_const(), r2.begin_const());

@@ -37,9 +37,9 @@ RTensor eigs(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
 
 RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n) {
   auto M = RTensor::empty(n, n);
-  for (int i = 0; i < n; i++) {
-    RTensor v = RTensor::zeros(n);
-    RTensor Av = RTensor::empty(n);
+  for (tensor::index i = 0, l = static_cast<tensor::index>(n); i < l; i++) {
+    RTensor v = RTensor::zeros(l);
+    RTensor Av = RTensor::empty(l);
     v.at(i) = 1.0;
     A(v, Av);
     M.at(range(), range(i)) = Av;
@@ -99,7 +99,7 @@ RTensor eigs(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return RTensor::zeros(neig);
+      return RTensor::zeros(static_cast<size_t>(neig));
     } else {
       abort();
     }

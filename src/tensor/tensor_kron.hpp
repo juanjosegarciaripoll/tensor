@@ -37,8 +37,8 @@ static inline Tensor<elt_t> do_kron(const Tensor<elt_t> &b,
   assert(b.rank() <= 2);
   if (a.rank() == 1) {
     // FIXME! CHAPUZA!
-    return reshape(kron(reshape(b, b.size(), 1), reshape(a, a.size(), 1)),
-                   a.size() * b.size());
+    return reshape(kron(reshape(b, b.ssize(), 1), reshape(a, a.ssize(), 1)),
+                   a.ssize() * b.ssize());
   }
 
   // C([i,j],[k,l]) = A(i,k) B(j,l)
@@ -82,8 +82,8 @@ const Tensor<elt_t> do_kron2_sum(const Tensor<elt_t> &a,
   assert(a.rank() <= 2);
   if (a.rank() == 1) {
     // FIXME! CHAPUZA!
-    index a1 = a.size();
-    index b1 = b.size();
+    index a1 = a.ssize();
+    index b1 = b.ssize();
     return reshape(kron2(reshape(a, a1, 1), Tensor<elt_t>::ones(b1, 1)) +
                        kron2(Tensor<elt_t>::ones(a1, 1), reshape(b, b1, 1)),
                    a1 * b1);

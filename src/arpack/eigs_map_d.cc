@@ -78,18 +78,18 @@ CTensor eigs_gen(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
     data.set_random_start_vector();
   }
 
-  while (data.update() < RArpack::Finished) {
+  while (data.update() < data.Finished) {
     A(data.get_x(), data.get_y());
   }
 
-  if (data.get_status() == RArpack::Finished) {
+  if (data.get_status() == data.Finished) {
     if (converged) *converged = true;
     return data.get_data(eigenvectors);
   } else {
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return RTensor::zeros(neig);
+      return RTensor::zeros(static_cast<tensor::index>(neig));
     } else {
       abort();
     }

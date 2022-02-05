@@ -23,14 +23,14 @@
 namespace tensor {
 
 const Indices which(const Booleans &b) {
-  index size = std::count(b.begin(), b.end(), true);
-  Indices output(size);
-  Indices::iterator oit = output.begin();
+  auto size = std::count(b.begin(), b.end(), true);
+  Indices output(static_cast<size_t>(size));
+  auto oit = std::begin(output);
   index i = 0;
-  for (Booleans::const_iterator it = b.begin(); it != b.end(); it++, i++) {
-    if (*it) {
+  for (auto condition : b) {
+    if (condition) {
       *oit = i;
-      ++oit;
+      ++oit, ++i;
     }
   }
   return output;

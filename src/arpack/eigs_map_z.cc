@@ -36,9 +36,9 @@ CTensor eigs(const LinearMap<CTensor> &A, size_t n, EigType eig_type,
 
 CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
   auto M = CTensor::empty(n, n);
-  for (int i = 0; i < n; i++) {
-    CTensor v = CTensor::zeros(n);
-    CTensor Av = CTensor::empty(n);
+  for (tensor::index i = 0, l = static_cast<tensor::index>(n); i < l; i++) {
+    CTensor v = CTensor::zeros(l);
+    CTensor Av = CTensor::empty(l);
     v.at(i) = 1.0;
     A(v, Av);
     M.at(range(), range(i)) = Av;
@@ -84,18 +84,18 @@ CTensor eigs(const InPlaceLinearMap<CTensor> &A, size_t n, EigType eig_type,
   if (eigenvectors && eigenvectors->size() >= n)
     data.set_start_vector(eigenvectors->begin_const());
 
-  while (data.update() < RArpack::Finished) {
+  while (data.update() < data.Finished) {
     A(data.get_x(), data.get_y());
   }
 
-  if (data.get_status() == CArpack::Finished) {
+  if (data.get_status() == data.Finished) {
     if (converged) *converged = true;
     return data.get_data(eigenvectors);
   } else {
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return CTensor::zeros(neig);
+      return CTensor::zeros(static_cast<tensor::index>(neig));
     } else {
       abort();
     }

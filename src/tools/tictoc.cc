@@ -26,6 +26,8 @@
 
 namespace tensor {
 
+/* TODO: Use C++ clock routines as in profile.cc */
+
 static double now() {
 #if defined(HAVE_GETTIMEOFDAY)
   struct timeval tic_now;
@@ -34,7 +36,7 @@ static double now() {
   double museconds = tic_now.tv_usec;
   return seconds + 1e-6 * museconds;
 #else
-  return ((double)clock()) / ((double)CLOCKS_PER_SEC);
+  return static_cast<double>(clock()) / static_cast<double>(CLOCKS_PER_SEC);
 #endif
 }
 

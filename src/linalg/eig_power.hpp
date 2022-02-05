@@ -35,13 +35,13 @@ elt_t eig_power_loop(const LinearMap<Tensor<elt_t>> &A, size_t dims,
   assert(vector);
   Tensor<elt_t> &v = *vector;
   if (v.size() != dims) {
-    v = 0.5 - Tensor<elt_t>::random(dims);
+    v = 0.5 - Tensor<elt_t>::random(static_cast<tensor::index>(dims));
   }
   if (iter == 0) {
     iter = std::max<size_t>(20, v.size());
   }
   v /= norm2(v);
-  elt_t eig = 0, old_eig;
+  elt_t eig = 0;
   //
   // We apply repeatedly the map 'A' onto the same random initial
   // vector, until (A^n)*v converges to the eigenstate with the largest
@@ -54,7 +54,6 @@ elt_t eig_power_loop(const LinearMap<Tensor<elt_t>> &A, size_t dims,
     // Stop if the vector is sufficiently close to an eigenstate
     if (err < tol * std::abs(eig)) break;
     v = (v_new /= norm2(v_new));
-    old_eig = eig;
   }
   return eig;
 }

@@ -72,7 +72,10 @@ inline real_number rand(real_number lower_limit, real_number upper_limit) {
 
 template <>
 inline int rand<int>(int upper) {
-  if (upper) return rand<unsigned int>() % upper;
+  if (upper > 0) {
+    return static_cast<int>(rand<unsigned int>() %
+                            static_cast<unsigned int>(upper));
+  }
   return 0;
 }
 
@@ -83,7 +86,10 @@ inline int rand<int>(int lower, int upper) {
 
 template <>
 inline long rand<long>(long upper) {
-  if (upper) return (long)rand<unsigned long>() % upper;
+  if (upper > 0) {
+    return static_cast<long>(rand<unsigned long>() %
+                             static_cast<unsigned long>(upper));
+  }
   return 0;
 }
 

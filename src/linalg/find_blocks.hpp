@@ -132,8 +132,9 @@ bool find_blocks(const Tensor &A, index *pnblocks, Indices **pblock_rows,
         }
       }
       assert(block_ncols);
-      block_cols[b] = Indices(block_ncols);
-      memcpy(block_cols[b].begin(), buffer, sizeof(index) * block_ncols);
+      block_cols[b] = Indices(static_cast<size_t>(block_ncols));
+      memcpy(block_cols[b].begin(), buffer,
+             sizeof(index) * block_cols[b].size());
 
       index block_nrows = 0;
       for (index r = 0; r < N; r++) {
@@ -142,8 +143,9 @@ bool find_blocks(const Tensor &A, index *pnblocks, Indices **pblock_rows,
         }
       }
       assert(block_nrows);
-      block_rows[b] = Indices(block_nrows);
-      memcpy(block_rows[b].begin(), buffer, sizeof(index) * block_nrows);
+      block_rows[b] = Indices(static_cast<size_t>(block_nrows));
+      memcpy(block_rows[b].begin(), buffer,
+             sizeof(index) * block_rows[b].size());
       b++;
     }
   }

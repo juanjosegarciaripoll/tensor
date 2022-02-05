@@ -51,7 +51,7 @@ struct CompareInv {
 
 Indices sort_indices(const RTensor &v, bool reverse) {
   if (v.size()) {
-    Indices output = iota(0, v.size() - 1);
+    Indices output = iota(0, v.ssize() - 1);
     if (reverse) {
       CompareInv<double> c(v.begin());
       std::sort(output.begin(), output.end(), c);

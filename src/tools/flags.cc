@@ -39,10 +39,11 @@ class Flags &Flags::set(unsigned int code, double value) {
   return *this;
 }
 
+#pragma GCC diagnostic ignored "-Wsign-conversion"
 unsigned int Flags::create_key(double value) {
-  int size = (int)_values.size();
+  auto size = _values.size();
   _values.resize(size + 1, value);
-  return size;
+  return static_cast<int>(size);
 }
 
 const unsigned int TENSOR_DEBUG_BLOCK_SVD = FLAGS.create_key(0.0);

@@ -51,6 +51,6 @@ std::ostream &MatrixForm<elt_t>::display(std::ostream &s) const {
     s << ']';
   }
   return s;
-};
+}
 
 }  // namespace tensor

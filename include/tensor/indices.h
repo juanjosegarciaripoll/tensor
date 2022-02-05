@@ -48,7 +48,7 @@ class Indices : public Vector<index> {
   template <typename other_elt>
   Indices(const std::initializer_list<other_elt> &l) : Vector<index>(l) {}
 
-  explicit Indices(index size) : Vector<index>(size) {}
+  explicit Indices(size_t size) : Vector<index>(size) {}
 
   static const Indices range(index min, index max, index step = 1);
 };
@@ -75,7 +75,7 @@ class Dimensions {
       : dimensions_(v), total_size_{compute_total_size(dimensions_)} {}
 
   index total_size() const { return total_size_; }
-  index rank() const { return dimensions_.size(); }
+  index rank() const { return dimensions_.ssize(); }
 
   index operator[](index pos) const { return dimensions_[pos]; }
   const_iterator begin() const { return dimensions_.begin(); }
@@ -140,7 +140,7 @@ class Booleans : public Vector<bool> {
  public:
   Booleans() : Vector<bool>() {}
   Booleans(const Booleans &b) : Vector<bool>(b) {}
-  explicit Booleans(index size) : Vector<bool>(size) {}
+  explicit Booleans(size_t size) : Vector<bool>(size) {}
 };
 
 Booleans operator!(const Booleans &b);
@@ -292,8 +292,8 @@ class TensorIterator {
   typedef elt_t *pointer;
   typedef std::input_iterator_tag iterator_category;
 
-  TensorIterator(RangeIterator &&it, elt_t *base, index size)
-      : iterator_{std::move(it)}, base_{base}, size_{size} {}
+  TensorIterator(RangeIterator &&it, elt_t *base)
+      : iterator_{std::move(it)}, base_{base} {}
   elt_t &operator*() { return base_[iterator_.get_position()]; }
   elt_t &operator->() { return this->operator*(); }
   TensorIterator<elt_t> &operator++() {
@@ -307,7 +307,6 @@ class TensorIterator {
  private:
   RangeIterator iterator_;
   elt_t *base_;
-  index size_;
 };
 
 template <typename elt_t>
@@ -319,8 +318,8 @@ class TensorConstIterator {
   typedef const elt_t *pointer;
   typedef std::input_iterator_tag iterator_category;
 
-  TensorConstIterator(RangeIterator &&it, const elt_t *base, index size)
-      : iterator_{std::move(it)}, base_{base}, size_{size} {}
+  TensorConstIterator(RangeIterator &&it, const elt_t *base)
+      : iterator_{std::move(it)}, base_{base} {}
   const elt_t &operator*() { return base_[iterator_.get_position()]; }
   const elt_t &operator->() { return this->operator*(); }
   TensorConstIterator<elt_t> &operator++() {
@@ -334,7 +333,6 @@ class TensorConstIterator {
  private:
   RangeIterator iterator_;
   const elt_t *base_;
-  index size_;
 };
 
 /**Create a Range which only contains one index. \sa \ref sec_tensor_view*/
@@ -371,7 +369,7 @@ bool operator==(const tensor::StaticVector<tensor::index, n> &v1,
   return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
 }
 
-};  // namespace tensor
+}  // namespace tensor
 
 /*@}*/
 #endif  // !TENSOR_H

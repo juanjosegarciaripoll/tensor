@@ -33,7 +33,9 @@ using tensor::index;
 inline void gemm(char op1, char op2, index m, index n, index k, double alpha,
                  const double *A, index lda, const double *B, index ldb,
                  double beta, double *C, index ldc) {
+#ifdef _MSC_VER
 #pragma warning(disable : 4127)
+#endif
   if (sizeof(index) < sizeof(tensor::index)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
     if (m > limit || n > limit || lda > limit || ldb > limit || ldc > limit) {

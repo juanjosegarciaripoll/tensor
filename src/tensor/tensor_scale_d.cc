@@ -28,10 +28,10 @@ namespace tensor {
 
      \ingroup Tensors
   */
-RTensor scale(const RTensor &t, int ndx, const RTensor &v) {
+RTensor scale(const RTensor &t, int a_ndx, const RTensor &v) {
   index d1, d2, d3;
   RTensor output(t.dimensions());
-  ndx = (int)Dimensions::normalize_index(ndx, t.rank());
+  index ndx = Dimensions::normalize_index(a_ndx, t.rank());
   surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
   if (d2 != v.ssize()) {
     std::cerr << "In scale() the dimension " << ndx

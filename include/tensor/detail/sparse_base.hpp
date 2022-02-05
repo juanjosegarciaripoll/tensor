@@ -34,23 +34,23 @@ namespace tensor {
 // CONSTRUCTORS
 //
 
-static inline index safe_size(index nonzero, index rows, index cols) {
+static inline size_t safe_size(index nonzero, index rows, index cols) {
   /* The product rows*cols might overflow the word size of this machine */
   if (rows == 0 || cols == 0) {
     return 0;
   }
   assert((nonzero / rows) <= cols);
-  return nonzero;
+  return safe_size_t(nonzero);
 }
 
 template <typename elt_t>
 Sparse<elt_t>::Sparse()
-    : dims_{0, 0}, row_start_({0}), column_(0), data_(Vector<elt_t>(0)) {}
+    : dims_{0, 0}, row_start_({0}), column_(0), data_{Vector<elt_t>()} {}
 
 template <typename elt_t>
 Sparse<elt_t>::Sparse(index rows, index cols, index nonzero)
     : dims_{rows, cols},
-      row_start_(rows + 1),
+      row_start_(safe_size_t(rows + 1)),
       column_(safe_size(nonzero, rows, cols)),
       data_(Vector<elt_t>(safe_size(nonzero, rows, cols))) {
   std::fill(row_start_.begin(), row_start_.end(), 0);
@@ -73,7 +73,7 @@ template <typename elt_t>
 Sparse<elt_t>::Sparse(const Indices &dims, const Indices &row_start,
                       const Indices &column, const Tensor<elt_t> &data)
     : dims_(dims), row_start_(row_start), column_(column), data_(data) {
-  assert(row_start.size() == dims[0] + 1);
+  assert(row_start.ssize() == dims[0] + 1);
 }
 
 template <typename elt_t>
@@ -84,15 +84,15 @@ Sparse<elt_t>::Sparse(const Indices &rows, const Indices &cols,
 template <typename elt_t>
 Sparse<elt_t> make_sparse(const Indices &rows, const Indices &cols,
                           const Tensor<elt_t> &data, index nrows, index ncols) {
-  index i, j, last_row, last_col, l = rows.size();
-  assert(cols.size() == l);
-  assert(data.size() == l);
+  index i, j, last_row, last_col, l = rows.ssize();
+  assert(cols.ssize() == l);
+  assert(data.ssize() == l);
 
   /* Organize data in sparse_triplets (row,column,value), sorted in the
      * same order in which we store data in Sparse
      */
   std::vector<sparse_triplet<elt_t> > sorted_data;
-  sorted_data.reserve(l);
+  sorted_data.reserve(safe_size_t(l));
   for (i = 0; i < l; i++) {
     index r = rows[i];
     index c = cols[i];
@@ -103,15 +103,16 @@ Sparse<elt_t> make_sparse(const Indices &rows, const Indices &cols,
     }
   }
   std::sort(sorted_data.begin(), sorted_data.end());
-  auto row_start_ = Indices(nrows + 1);
-  auto column_ = Indices(l = sorted_data.size());
+  auto row_start_ = Indices(static_cast<size_t>(nrows) + 1);
+  auto column_ = Indices(sorted_data.size());
+  l = column_.ssize();
   auto data_ = Tensor<elt_t>::empty(l);
 
   /* Fill in the Sparse structure.
      */
   std::fill(row_start_.begin(), row_start_.end(), 0);
   for (last_col = 0, last_row = -1, j = i = 0; i < l; i++) {
-    const sparse_triplet<elt_t> &d = sorted_data[i];
+    const sparse_triplet<elt_t> &d = sorted_data[static_cast<size_t>(i)];
     if (d.row == last_row) {
       if (d.col == last_col) continue;
     } else {
@@ -145,10 +146,12 @@ static index number_of_nonzero(const Tensor<elt_t> &data) {
 
 template <typename elt_t>
 Sparse<elt_t>::Sparse(const Tensor<elt_t> &t)
-    : dims_(t.dimensions()), row_start_(t.rows() + 1), column_(), data_() {
-  index nonzero = number_of_nonzero<elt_t>(t);
-  column_ = Indices(nonzero);
-  data_ = Tensor<elt_t>::empty(nonzero);
+    : dims_(t.dimensions()),
+      row_start_(static_cast<size_t>(t.rows()) + 1),
+      column_(),
+      data_() {
+  column_ = Indices(static_cast<size_t>(number_of_nonzero<elt_t>(t)));
+  data_ = Tensor<elt_t>::empty(column_.size());
 
   index nrows = rows();
   index ncols = columns();
@@ -205,9 +208,9 @@ index Sparse<elt_t>::dimension(int dimension) const {
 template <typename elt_t>
 Sparse<elt_t> Sparse<elt_t>::eye(index rows, index columns) {
   index nel = std::min(rows, columns);
-  auto data = Tensor<elt_t>::empty(nel);
+  auto data = Tensor<elt_t>::empty(safe_size_t(nel));
   std::fill(data.begin(), data.end(), number_one<elt_t>());
-  Indices row_start(rows + 1);
+  Indices row_start(safe_size_t(rows) + 1);
   for (index i = 0; i <= rows; i++) {
     row_start.at(i) = std::min(i, nel);
   }

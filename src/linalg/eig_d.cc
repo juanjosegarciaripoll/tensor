@@ -90,8 +90,8 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   F77NAME(dgeev)
   (jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work0, &lwork,
    &info);
-  lwork = (int)work0[0];
-  auto work = std::make_unique<double[]>(lwork);
+  lwork = static_cast<blas::integer>(work0[0]);
+  auto work = std::make_unique<double[]>(tensor::safe_size_t(lwork));
   F77NAME(dgeev)
   (jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work.get(), &lwork,
    &info);
@@ -100,14 +100,14 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   CTensor output(to_complex(real));
   if (L) *L = to_complex(*realL);
   if (R) *R = to_complex(*realR);
-  for (size_t i = 0; i < (size_t)n; i++) {
+  for (blas::integer i = 0; i < n; i++) {
     if (imag[i] != 0) {
       // Complex eigenvalues and eigenvectors. The i-th elements have
       // the real part, the i+1-th, the imaginary.
       output.at(i) = tensor::to_complex(real[i], imag[i]);
       output.at(i + 1) = tensor::to_complex(real[i], -imag[i]);
       if (realL) {
-        for (size_t j = 0; j < (size_t)n; j++) {
+        for (blas::integer j = 0; j < n; j++) {
           double re = (*realL)(j, i);
           double im = (*realL)(j, i + 1);
           (*L).at(j, i) = tensor::to_complex(re, im);
@@ -115,7 +115,7 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
         }
       }
       if (realR) {
-        for (size_t j = 0; j < (size_t)n; j++) {
+        for (blas::integer j = 0; j < n; j++) {
           double re = (*realR)(j, i);
           double im = (*realR)(j, i + 1);
           (*R).at(j, i) = tensor::to_complex(re, im);

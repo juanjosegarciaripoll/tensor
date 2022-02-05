@@ -71,7 +71,7 @@ CTensor fftshift(const CTensor& input, index dim, int direction) {
 }
 
 CTensor fftshift(const CTensor& input, const Booleans& convert, int direction) {
-  assert(input.rank() == convert.size());
+  assert(input.rank() == convert.ssize());
 
   CTensor output(input);
   for (index dim = 0; dim < input.rank(); dim++) {

@@ -20,6 +20,8 @@
 
 namespace tensor {
 
-cdouble mean(const CTensor &r) { return sum(r) / (double)r.size(); }
+cdouble mean(const CTensor &r) {
+  return sum(r) / static_cast<double>(r.size());
+}
 
 }  // namespace tensor

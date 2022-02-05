@@ -45,7 +45,7 @@ static inline void surrounding_dimensions(const index *d, index size, index ndx,
    */
 void surrounding_dimensions(const Indices &d, index ndx, index *d1, index *d2,
                             index *d3) {
-  return surrounding_dimensions(d.begin(), d.size(), ndx, d1, d2, d3);
+  return surrounding_dimensions(d.begin(), d.ssize(), ndx, d1, d2, d3);
 }
 
 /** Calculates the number of elements before, at and after a given index.

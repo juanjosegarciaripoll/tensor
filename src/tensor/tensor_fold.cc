@@ -37,7 +37,7 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
   const index rankb = b.rank();
   index ndx1 = Dimensions::normalize_index(_ndx1, ranka);
   index ndx2 = Dimensions::normalize_index(_ndx2, rankb);
-  Indices new_dims(std::max<index>(ranka + rankb - 2, 1));
+  Indices new_dims(static_cast<size_t>(std::max(ranka + rankb - 2, index(1))));
   /*
      * Since we use row-major order, in which the first
      * index varies faster, we nest the loops beginning with the last index,
@@ -151,7 +151,7 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
     }
   }
   if (do_conj) {
-    for (index j = output.size(); j; j--, pC++) *pC = tensor::conj(*pC);
+    for (index j = output.ssize(); j; j--, pC++) *pC = tensor::conj(*pC);
   }
 }
 

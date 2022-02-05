@@ -84,7 +84,7 @@ class Arpack {
   eigenvalues_t get_data(eigenvector_t *vectors);
   std::string error_message() { return std::string(error); };
   enum Status get_status() { return status; };
-  size_t get_vector_size() { return n; };
+  size_t get_vector_size() { return static_cast<size_t>(n); };
 
   static tensor::Indices sort_values(const tensor::CTensor &t,
                                      EigType selector);

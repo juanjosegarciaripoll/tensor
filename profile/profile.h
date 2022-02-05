@@ -162,9 +162,9 @@ struct BenchmarkGroup {
   }
 
   template <typename run, typename setup>
-  BenchmarkGroup &add(const char *name, run f, setup s,
+  BenchmarkGroup &add(const char *aname, run f, setup s,
                       const std::vector<size_t> &sizes = {}) {
-    items.push_back(BenchmarkItem(name, f, s, sizes));
+    items.push_back(BenchmarkItem(aname, f, s, sizes));
     return *this;
   }
 };
@@ -197,7 +197,7 @@ struct BenchmarkItem {
         auto repeats = i * j;
         double time = timeit(f, repeats);
         if (time >= limit) {
-          return time / repeats;
+          return time / static_cast<double>(repeats);
         }
       }
       i *= 10;
@@ -205,9 +205,9 @@ struct BenchmarkItem {
   }
 
   template <class args_tuple>
-  BenchmarkItem(const std::string &name, void (*f)(args_tuple &),
+  BenchmarkItem(const std::string &aname, void (*f)(args_tuple &),
                 args_tuple (*s)(size_t), const std::vector<size_t> &asizes = {})
-      : name(name),
+      : name(aname),
         sizes(asizes.size() ? asizes : default_sizes()),
         times(sizes.size()) {
     for (size_t i = 0; i < sizes.size(); i++) {

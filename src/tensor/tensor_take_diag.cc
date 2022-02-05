@@ -48,34 +48,37 @@ static void do_diag(elt_t *output, const elt_t *input, tensor::index a1,
 /* Extract a diagonal from a matrix. */
 template <typename elt_t>
 const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
-                                         int which, int ndx1, int ndx2) {
+                                         tensor::index which,
+                                         tensor::index ndx1,
+                                         tensor::index ndx2) {
   if (ndx1 < 0) ndx1 += a.rank();
   assert((ndx1 < a.rank()) && (ndx1 >= 0));
   if (ndx2 < 0) ndx2 += a.rank();
   assert((ndx2 < a.rank()) && (ndx2 >= 0));
 
-  tensor::Indices new_dims(std::max((int)a.rank() - 1, (int)1));
-  int i, rank = 0;
+  tensor::index new_rank = std::max(a.rank() - 1, tensor::index(1));
+  tensor::Indices new_dims(static_cast<size_t>(new_rank));
+  tensor::index i, rank = 0;
   tensor::index a1, a2, a3, a4, a5, a2b;
   if (ndx1 > ndx2) {
     std::swap(ndx1, ndx2);
     which = -which;
   }
   for (i = 0, a1 = 1; i < ndx1; i++) {
-    size_t di = a.dimension(i);
+    auto di = a.dimension(i);
     new_dims.at(rank++) = di;
     a1 *= di;
   }
   a2 = a.dimension(i++);
   new_dims.at(rank++) = a2;
   for (a3 = 1; i < ndx2; i++) {
-    size_t di = a.dimension(i);
+    auto di = a.dimension(i);
     new_dims.at(rank++) = di;
     a3 *= di;
   }
   a4 = a.dimension(i++);
-  for (a5 = 1; i < (int)a.rank(); i++) {
-    size_t di = a.dimension(i);
+  for (a5 = 1; i < a.rank(); i++) {
+    auto di = a.dimension(i);
     new_dims.at(rank++) = di;
     a5 *= di;
   }
@@ -88,9 +91,9 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
     return tensor::Tensor<elt_t>(new_dims, a);
   }
   if (which < 0) {
-    a2b = std::max((tensor::index)0, std::min(a2 + which, a4));
+    a2b = std::max(tensor::index(0), std::min(a2 + which, a4));
   } else {
-    a2b = std::max((tensor::index)0, std::min(a2, a4 - which));
+    a2b = std::max(tensor::index(0), std::min(a2, a4 - which));
   }
   new_dims.at(ndx1) = a2b;
   tensor::Tensor<elt_t> output(new_dims);

@@ -40,6 +40,7 @@
 #include <tensor/config.h>
 #include <tensor/tensor_blas.h>
 #include <tensor/io.h>
+#include <tensor/vector.h>
 
 using namespace blas;
 
@@ -153,7 +154,7 @@ static inline CTensor gen_eupp(
     blas::integer ldv, blas::integer iparam[], blas::integer ipntr[],
     tensor::cdouble workd[], tensor::cdouble workl[], blas::integer lworkl,
     double rwork[], blas::integer &info, ArpackSymmetric<is_symmetric>) {
-  auto iselect = std::make_unique<logical[]>(ncv);
+  auto iselect = tensor::SimpleVector<logical>::empty(static_cast<size_t>(ncv));
   blas::integer rvec;
   char HowMny;
   blas::cdouble *Z;
@@ -172,7 +173,7 @@ static inline CTensor gen_eupp(
     rvec = 0;
   }
   F77NAME(zneupd)
-  (&rvec, &HowMny, iselect.get(),
+  (&rvec, &HowMny, iselect.begin(),
    reinterpret_cast<blas::cdouble *>(eigenvalues.begin()), Z, &ldz,
    reinterpret_cast<blas::cdouble *>(&sigma),
    reinterpret_cast<blas::cdouble *>(workev), &bmat, &n, which, &nev, &tol,
@@ -209,14 +210,14 @@ static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
                                double /*rwork*/[], blas::integer &info,
                                ArpackSymmetric<false>) {
   char HowMny;
-  auto iselect = std::make_unique<logical[]>(ncv);
+  auto iselect = tensor::SimpleVector<logical>(static_cast<size_t>(ncv));
   RTensor Z;
   blas::integer returned = nev;
   blas::integer ldz;
   blas::integer rvec;
   double sigmar = real(sigma), sigmai = imag(sigma);
   if (eigenvectors) {
-    Z = RTensor(tensor::Dimensions{n, ncv}, tensor::Vector<double>(n * ncv, V));
+    Z = RTensor(tensor::Dimensions{n, ncv}, tensor::Vector<double>(static_cast<size_t>(n * ncv), V));
     HowMny = 'A';
     ldz = n;
     rvec = 1;
@@ -225,13 +226,13 @@ static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
     ldz = 1;
     rvec = 0;
   }
-  auto dr = std::make_unique<double[]>(nev + 1);
-  auto di = std::make_unique<double[]>(nev + 1);
+  auto dr = tensor::SimpleVector<double>(static_cast<size_t>(nev) + 1);
+  auto di = tensor::SimpleVector<double>(static_cast<size_t>(nev) + 1);
 
   F77NAME(dneupd)
-  (&rvec, &HowMny, iselect.get(), dr.get(), di.get(), Z.begin(), &ldz, &sigmar,
-   &sigmai, &workv[0], &bmat, &n, which, &returned, &tol, resid, &ncv, &V[0],
-   &ldv, &iparam[0], &ipntr[0], &workd[0], &workl[0], &lworkl, &info);
+  (&rvec, &HowMny, iselect.begin(), dr.begin(), di.begin(), Z.begin(), &ldz,
+   &sigmar, &sigmai, &workv[0], &bmat, &n, which, &returned, &tol, resid, &ncv,
+   &V[0], &ldv, &iparam[0], &ipntr[0], &workd[0], &workl[0], &lworkl, &info);
 
   CTensor eigenvalues = CTensor::empty(returned);
   if (eigenvectors) {
@@ -289,7 +290,7 @@ static inline RTensor gen_eupp(RTensor *eigenvectors, double sigma, double[],
                                double workd[], double workl[],
                                blas::integer lworkl, double[],
                                blas::integer &info, ArpackSymmetric<true>) {
-  auto iselect = std::make_unique<logical[]>(ncv);
+  auto iselect = tensor::SimpleVector<logical>::empty(static_cast<size_t>(ncv));
   char HowMny;
   double *Z;
   blas::integer ldz;
@@ -308,7 +309,7 @@ static inline RTensor gen_eupp(RTensor *eigenvectors, double sigma, double[],
   }
   RTensor eigenvalues = RTensor::empty(nev + 1);
   F77NAME(dseupd)
-  (&rvec, &HowMny, iselect.get(), eigenvalues.begin(), Z, &ldz, &sigma, &bmat,
+  (&rvec, &HowMny, iselect.begin(), eigenvalues.begin(), Z, &ldz, &sigma, &bmat,
    &n, which, &nev, &tol, resid, &ncv, &V[0], &ldv, &iparam[0], &ipntr[0],
    &workd[0], &workl[0], &lworkl, &info);
   return eigenvalues(tensor::range(0, nev - 1));

@@ -155,23 +155,21 @@ struct blas_integer_overflow : public std::out_of_range {
 };
 
 inline const double *tensor_pointer(const tensor::RTensor &A) {
-  return static_cast<const double *>(A.begin());
+  return A.begin();
 }
 
 inline const cdouble *tensor_pointer(const tensor::CTensor &A) {
-  return static_cast<const cdouble *>((void *)A.begin());
+  return reinterpret_cast<const cdouble *>(A.begin());
 }
 
-inline double *tensor_pointer(tensor::RTensor &A) {
-  return static_cast<double *>(A.begin());
-}
+inline double *tensor_pointer(tensor::RTensor &A) { return A.begin(); }
 
 inline cdouble *tensor_pointer(tensor::CTensor &A) {
-  return static_cast<cdouble *>((void *)A.begin());
+  return reinterpret_cast<cdouble *>(A.begin());
 }
 
 inline double real(cdouble &z) {
-  return tensor::real(*static_cast<tensor::cdouble *>((void *)&z));
+  return tensor::real(*reinterpret_cast<tensor::cdouble *>(&z));
 }
 
 inline blas::integer index_to_blas(tensor::index value) {

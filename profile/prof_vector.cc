@@ -128,28 +128,33 @@ template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_number(size_t size) {
   auto number = static_cast<typename T::elt_t>(3.0);
   warmup<T>(size);
-  return typename std::tuple<T, typename T::elt_t>(T::random(size), number);
-};
+  return typename std::tuple<T, typename T::elt_t>(
+      T::random(static_cast<tensor::index>(size)), number);
+}
 
 template <class T>
 std::tuple<T, T> make_two_vectors(size_t size) {
   warmup<T>(size);
-  return std::tuple<T, T>(T::random(size), T::random(size) + 1.0);
-};
+  return std::tuple<T, T>(T::random(static_cast<tensor::index>(size)),
+                          T::random(static_cast<tensor::index>(size)) + 1.0);
+}
 
 template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
   auto number = static_cast<typename T::elt_t>(1.0);
   warmup<T>(size);
-  return typename std::tuple<T, typename T::elt_t>(T::random(size), number);
-};
+  return typename std::tuple<T, typename T::elt_t>(
+      T::random(static_cast<tensor::index>(size)), number);
+}
 
 template <class T>
 std::tuple<T, T> make_two_matrices(size_t size) {
   warmup<T>(size);
-  size = static_cast<size_t>(sqrt(size));
-  return std::tuple<T, T>(T::random(size, size), T::random(size, size));
-};
+  size = static_cast<size_t>(sqrt(static_cast<double>(size)));
+  Dimensions d = {static_cast<tensor::index>(size),
+                  static_cast<tensor::index>(size)};
+  return std::tuple<T, T>(T::random(d), T::random(d));
+}
 
 template <typename T>
 void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {

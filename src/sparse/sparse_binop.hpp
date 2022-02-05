@@ -30,17 +30,17 @@ Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
     const Sparse<T1> &m1, const Sparse<T2> &m2, binop op) {
   typedef typename std::common_type<T1, T2>::type T3;
 
-  size_t rows = m1.rows();
-  size_t cols = m1.columns();
+  index rows = m1.rows();
+  index cols = m1.columns();
 
   assert(rows == m2.rows() && cols == m2.columns());
 
   if (rows == 0 || cols == 0) return Sparse<T3>(rows, cols);
 
-  index max_size = m1.priv_data().size() + m2.priv_data().size();
+  size_t max_size = m1.priv_data().size() + m2.priv_data().size();
   Tensor<T3> data(Dimensions{max_size});
   Indices column(max_size);
-  Indices row_start(rows + 1);
+  Indices row_start(static_cast<size_t>(rows) + 1);
 
   typename Tensor<T3>::iterator out_data = data.begin();
   typename Indices::iterator out_column = column.begin();
@@ -84,7 +84,7 @@ Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
       l2--;
       m2_column++;
       m2_data++;
-    } else if (c2 < (index)cols) {
+    } else if (c2 < cols) {
       // Both elements in m1 and m2 are nonzero.
       value = op(*m1_data, *m2_data);
       c = c1;
@@ -115,7 +115,7 @@ Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
     }
   }
   index j = out_data - out_begin;
-  Indices the_column(j);
+  Indices the_column(safe_size_t(j));
   std::copy(column.begin(), column.begin() + j, the_column.begin());
   Tensor<T3> the_data(Dimensions{j});
   std::copy(data.begin(), data.begin() + j, the_data.begin());

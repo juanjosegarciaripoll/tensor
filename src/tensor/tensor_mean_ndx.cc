@@ -21,18 +21,19 @@
 namespace {
 
 using namespace tensor;
+using tensor::index;
 
 template <typename Tensor>
-Tensor do_mean(const Tensor &t, int ndx) {
+Tensor do_mean(const Tensor &t, index ndx) {
   typedef typename Tensor::elt_t elt_t;
-  int rank = t.rank();
+  index rank = t.rank();
   if (rank == 1) {
     return Tensor(Dimensions{1}, Vector<elt_t>({mean(t)}));
   } else {
-    ndx = (int)Dimensions::normalize_index(ndx, rank);
-    Indices dimensions(rank - 1);
+    ndx = Dimensions::normalize_index(ndx, rank);
+    Indices dimensions(static_cast<size_t>(rank - 1));
     tensor::index left = 1, middle = 1, right = 1;
-    for (int i = 0, j = 0; i < rank; i++) {
+    for (index i = 0, j = 0; i < rank; i++) {
       tensor::index d = t.dimension(i);
       dimensions.at(j++) = d;
       if (i < ndx)

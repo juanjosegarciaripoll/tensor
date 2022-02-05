@@ -35,8 +35,9 @@ CTensor eigs(const CSparse &A, EigType eig_type, size_t neig,
        */
     return eigs_small(full(A), eig_type, neig, eigenvectors, converged);
   }
-  return eigs([&](const CTensor &x) { return mmult(A, x); }, A.columns(),
-              eig_type, neig, eigenvectors, converged);
+  return eigs([&](const CTensor &x) { return mmult(A, x); },
+              static_cast<size_t>(A.columns()), eig_type, neig, eigenvectors,
+              converged);
 }
 
 }  // namespace linalg

@@ -16,7 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <memory>
+#include <algorithm>
 #include <tensor/tensor.h>
 
 namespace tensor {
@@ -24,30 +24,22 @@ namespace tensor {
 double matrix_norminf(const CTensor &m) {
   assert(m.rank() == 2);
 
-  size_t r = m.rows();
-  size_t c = m.columns();
+  auto r = m.rows();
+  auto c = m.columns();
 
   // aux[i] = sum_j abs(A(i,j))
 
-  auto aux = std::make_unique<double[]>(r);
-  CTensor::const_iterator p = m.begin_const();
-  for (size_t i = 0; i < r; i++, p++) {
-    aux[i] = abs(*p);
+  SimpleVector<double> aux(static_cast<size_t>(r));
+  auto p = m.begin_const();
+  for (index i = 0; i < r; i++, ++p) {
+    aux.at(i) = std::abs(*p);
   }
-  for (size_t j = 1; j < c; j++) {
-    for (size_t i = 0; i < r; i++, p++) {
-      aux[i] += abs(*p);
+  for (index j = 1; j < c; j++) {
+    for (index i = 0; i < r; i++, ++p) {
+      aux.at(i) += std::abs(*p);
     }
   }
-
-  // output = max_i aux[i]
-
-  double output = 0.0;
-  for (size_t i = 0; i < r; i++) {
-    if (output < aux[i]) output = aux[i];
-  }
-
-  return output;
+  return *std::max_element(std::begin(aux), std::end(aux));
 }
 
 }  // namespace tensor

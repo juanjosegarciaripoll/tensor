@@ -96,10 +96,10 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
     double work0[1];
     F77NAME(dgesvd)
     (jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work0, &lwork, &info);
-    lwork = (int)work0[0];
+    lwork = static_cast<blas::integer>(work0[0]);
   }
   {
-    auto work = std::make_unique<double[]>(lwork);
+    auto work = std::make_unique<double[]>(tensor::safe_size_t(lwork));
     F77NAME(dgesvd)
     (jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work.get(), &lwork,
      &info);

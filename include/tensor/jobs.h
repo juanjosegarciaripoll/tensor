@@ -55,7 +55,7 @@ class Job {
 
     const std::string &name() const { return name_; }
     const tensor::RTensor &values() const { return values_; }
-    tensor::index size() const { return values_.size(); }
+    tensor::index size() const { return values_.ssize(); }
     void select(tensor::index i) { which_ = i; }
     double value() const { return values_[which_]; }
 

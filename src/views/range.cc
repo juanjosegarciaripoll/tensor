@@ -71,7 +71,7 @@ Range::Range(Indices indices)
     *this = Range(indices[0]);
   } else if (equispaced(indices)) {
     index first = indices[0];
-    index last = indices[indices.size() - 1];
+    index last = indices[indices.ssize() - 1];
     *this = Range(first, last, indices[1] - first);
   }
 }
@@ -147,7 +147,7 @@ RangeIterator RangeIterator::make_range_iterators(
                   [](const Range &s) { return s.size() == 0; })) {
     return RangeIterator(Range::empty(), 1, end_flag);
   } else {
-    return make_next_iterator(ranges.begin(), ranges.size(), 1, end_flag);
+    return make_next_iterator(ranges.begin(), ranges.ssize(), 1, end_flag);
   }
 }
 
@@ -186,7 +186,7 @@ RangeIterator::RangeIterator(const Range &r, index factor, end_flag_t end_flag,
   factor_ = factor;
   if (r.has_indices()) {
     start_ = 0;
-    limit_ = r.indices().size();
+    limit_ = r.indices().ssize();
     step_ = 1;
   } else {
     step_ = r.step() * factor;

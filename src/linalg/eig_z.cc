@@ -89,14 +89,14 @@ CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
 #else
   cdouble work0[1];
   lwork = -1;
-  auto rwork = std::make_unique<double[]>(2 * n);
+  auto rwork = std::make_unique<double[]>(2 * static_cast<size_t>(n));
   F77NAME(zgeev)
   (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work0, &lwork,
    rwork.get(), &info);
   // On exit, work0 contains the optimal amount of work to be done
   lwork = static_cast<blas::integer>(lapack::real(work0[0]));
 
-  auto work = std::make_unique<cdouble[]>(lwork);
+  auto work = std::make_unique<cdouble[]>(static_cast<size_t>(lwork));
   F77NAME(zgeev)
   (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work.get(), &lwork,
    rwork.get(), &info);

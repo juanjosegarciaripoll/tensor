@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <memory>
 #include <cstring>
+#include <stdexcept>
 #include <tensor/numbers.h>
 
 namespace tensor {
@@ -40,6 +41,13 @@ typedef std::ptrdiff_t index;
 template <typename elt_t>
 class SimpleVector;
 
+inline size_t safe_size_t(index s) {
+  if (s < 0) {
+    throw std::length_error("Negative length");
+  }
+  return static_cast<size_t>(s);
+}
+
 template <typename elt>
 class Vector {
  public:
@@ -51,8 +59,14 @@ class Vector {
 
   explicit Vector(size_t size)
       : size_{size},
-        base_{new elt_t[size]},
+        base_{size ? new elt_t[size] : nullptr},
         data_(base_, std::default_delete<elt_t[]>()) {}
+
+  static inline Vector<elt_t> empty(size_t size) { return Vector(size); }
+
+  static inline Vector<elt_t> empty(index size) {
+    return Vector(safe_size_t(size));
+  }
 
   template <size_t n>
   Vector(const StaticVector<elt_t, n> &v) : Vector(v.size()) {
@@ -83,8 +97,8 @@ class Vector {
   constexpr size_t size() const { return size_; }
   constexpr index ssize() const { return static_cast<index>(size_); }
 
-  const elt_t &operator[](size_t pos) const { return *(begin() + pos); }
-  elt_t &at(size_t pos) { return *(begin() + pos); }
+  const elt_t &operator[](index pos) const { return *(begin() + pos); }
+  elt_t &at(index pos) { return *(begin() + pos); }
 
   iterator begin() { return appropriate(); }
   const_iterator begin() const { return base_; }
@@ -94,7 +108,7 @@ class Vector {
   iterator end() { return begin() + size_; }
 
   // Only for testing purposes
-  size_t ref_count() const { return data_.use_count(); }
+  index ref_count() const { return data_.use_count(); }
 
  private:
   size_t size_;
@@ -137,6 +151,9 @@ class SimpleVector {
 
   explicit SimpleVector(size_t size) : size_{size}, base_(new elt_t[size]) {}
 
+  explicit SimpleVector(index size)
+      : size_{safe_size_t(size)}, base_(new elt_t[size]) {}
+
   template <size_t n>
   SimpleVector(const StaticVector<elt_t, n> &v) : SimpleVector(v.size()) {
     v.push(base_.get());
@@ -167,11 +184,15 @@ class SimpleVector {
   SimpleVector(SimpleVector<elt_t> &&v) = default;
   SimpleVector &operator=(SimpleVector<elt_t> &&v) = default;
 
+  static SimpleVector<elt_t> empty(size_t size) {
+    return SimpleVector<elt_t>(size);
+  }
+
   constexpr size_t size() const { return size_; }
   constexpr index ssize() const { return static_cast<index>(size_); }
 
-  const elt_t &operator[](size_t pos) const { return *(begin() + pos); }
-  elt_t &at(size_t pos) { return *(begin() + pos); }
+  const elt_t &operator[](index pos) const { return *(begin() + pos); }
+  elt_t &at(index pos) { return *(begin() + pos); }
 
   iterator begin() { return base_.get(); }
   const_iterator begin() const { return base_.get(); }

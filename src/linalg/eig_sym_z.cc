@@ -73,7 +73,7 @@ RTensor eig_sym(const CTensor &A, CTensor *V) {
   F77NAME(zheev)
   (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork,
    tensor_pointer(rwork), info);
-  lwork = (int)tensor::real(work[0]);
+  lwork = static_cast<blas::integer>(tensor::real(work[0]));
 
   work = CTensor::empty(lwork);
   F77NAME(zheev)

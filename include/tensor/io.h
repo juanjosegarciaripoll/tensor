@@ -66,7 +66,7 @@ inline std::ostream &operator<<(std::ostream &s, const SimpleVector<elt_t> &t) {
 /**Simple text representation of dimensions.*/
 inline std::ostream &operator<<(std::ostream &s, const Dimensions &d) {
   return s << d.get_vector();
-};
+}
 
 /**Simple text representation of tensor.*/
 template <typename elt_t>

@@ -42,13 +42,13 @@ CTensor fftw(const CTensor &in, index dim, int direction) {
   fftw_complex *pin = const_cast<fftw_complex *>(
       reinterpret_cast<const fftw_complex *>(in.begin()));
   fftw_complex *pout = reinterpret_cast<fftw_complex *>(out.begin());
-  do_fftw(pin, pout, (int)dim, in.dimensions(), direction);
+  do_fftw(pin, pout, static_cast<int>(dim), in.dimensions(), direction);
 
   return out;
 }
 
 CTensor fftw(const CTensor &in, const Booleans &convert, int direction) {
-  assert(convert.size() == in.rank());
+  assert(convert.ssize() == in.rank());
   CTensor out(in.dimensions());
 
   fftw_complex *pin = const_cast<fftw_complex *>(

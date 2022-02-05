@@ -72,7 +72,7 @@ void rand_reseed() {
   if (rand_seed) {
     int seed = atoi(rand_seed);
     std::cout << "RANDSEED=" << seed << std::endl;
-    init_genrand(seed);
+    init_genrand(static_cast<uint64_t>(seed));
     return;
   } else {
     FILE *fp = fopen("/dev/urandom", "r");
@@ -82,8 +82,8 @@ void rand_reseed() {
       fclose(fp);
       init_by_array(seed, SEED_SIZE);
     } else {
-      int seed = time(0);
-      init_genrand(seed);
+      int aseed = time(0);
+      init_genrand(static_cast<uint64_t>(aseed));
     }
   }
 #endif
@@ -98,19 +98,19 @@ static bool mt_initialized = initialize_mt();
 #ifdef TENSOR_64BITS
 template <>
 int rand<int>() {
-  return genrand_int63();
+  return static_cast<int>(genrand_int63());
 }
 template <>
 unsigned int rand<unsigned int>() {
-  return genrand_int64();
+  return static_cast<unsigned int>(genrand_int64());
 }
 template <>
 long rand<long>() {
-  return genrand_int63();
+  return static_cast<long>(genrand_int63());
 }
 template <>
 unsigned long rand<unsigned long>() {
-  return genrand_int64();
+  return static_cast<unsigned long>(genrand_int64());
 }
 #else
 template <>
@@ -133,7 +133,7 @@ unsigned long rand<unsigned long>() {
 
 template <>
 float rand<float>() {
-  return (float)genrand_res53();
+  return static_cast<float>(genrand_res53());
 }
 
 template <>

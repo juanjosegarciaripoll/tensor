@@ -17,14 +17,23 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <limits>
 #include <tensor/sdf.h>
 
 using namespace sdf;
 
+static std::streamsize safe_streamsize(size_t size) {
+  if (size > std::numeric_limits<std::streamsize>::max()) {
+    throw std::overflow_error("Data record too large for std::istream");
+  }
+  return static_cast<std::streamsize>(size);
+}
+
 #if !defined(aix)
 template <class number>
 void read_raw_with_endian(std::ifstream &s, number *data, size_t n) {
-  s.read((char *)data, n * sizeof(number));
+  size_t size = n * sizeof(number);
+  s.read(reinterpret_cast<char *>(data), safe_streamsize(size));
   if (s.bad()) {
     std::cerr << "I/O error when reading from SDF stream";
     abort();
@@ -35,7 +44,7 @@ template <class number>
 void read_raw_with_endian(std::ifstream &s, number *data, size_t n) {
   const int size = sizeof(number);
   if (size == 1) {
-    s.read((char *)data, n * sizeof(number));
+    s.read((char *)data, safe_streamsize(n * sizeof(number)));
     if (s.bad()) {
       std::cerr << "I/O error when reading from SDF stream";
       abort();
@@ -49,7 +58,7 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n) {
 
   do {
     size_t now = min<size_t>(n * size, buffer_size);
-    s.read(buffer, now);
+    s.read(buffer, safe_streamsize(now));
     if (s.bad()) {
       std::cerr << "I/O error when reading from stream " << s;
       abort();
@@ -80,8 +89,8 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n) {
 }
 #endif
 
-InDataFile::InDataFile(const std::string &a_filename, int flags)
-    : DataFile(a_filename, flags),
+InDataFile::InDataFile(const std::string &a_filename, int a_flags)
+    : DataFile(a_filename, a_flags),
       _stream(actual_filename().c_str(),
               std::ios_base::in | std::ios_base::binary) {
   _stream.seekg(std::ios_base::beg);
@@ -115,7 +124,7 @@ void InDataFile::read_raw(double *data, size_t n) {
 
 void InDataFile::read_raw(cdouble *data, size_t n) {
   assert(is_open());
-  read_raw_with_endian(_stream, (double *)data, 2 * n);
+  read_raw_with_endian(_stream, reinterpret_cast<double *>(data), 2 * n);
 }
 
 tensor::index InDataFile::read_tag_code() {
@@ -216,13 +225,13 @@ void InDataFile::load(cdouble *value, const std::string &name) {
 void InDataFile::load(size_t *v, const std::string &name) {
   double aux;
   load(&aux, name);
-  *v = (size_t)aux;
+  *v = static_cast<size_t>(aux);
 }
 
 void InDataFile::load(int *v, const std::string &name) {
   double aux;
   load(&aux, name);
-  *v = (int)aux;
+  *v = static_cast<int>(aux);
 }
 
 void InDataFile::read_header() {

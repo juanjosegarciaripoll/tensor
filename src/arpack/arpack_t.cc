@@ -81,17 +81,18 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
 
   // By default, random vector
   info = 0;
-  resid = std::make_unique<elt_t[]>(n);
+  resid = std::make_unique<elt_t[]>(_n);
 
   // Reserve space for the lanczos basis in which the eigenvectors are
   // approximated.
   ncv = std::min<blas::integer>(std::max<blas::integer>(2 * nev, 20), n);
-  V = std::make_unique<elt_t[]>(n * ncv);
+  V = std::make_unique<elt_t[]>(static_cast<size_t>(n * ncv));
 
   // Conservative estimate by Matlab
 
-  maxit = std::max<blas::integer>(
-      300, (int)(ceil(2.0 * n / std::max<blas::integer>(ncv, 1))));
+  maxit = std::max(blas::integer(300),
+                   static_cast<blas::integer>(
+                       ceil(2.0 * n / std::max(ncv, blas::integer(1)))));
 
   // Parameters for the algorithm: the (-1) in the index is to make it
   // look like FORTRAN.
@@ -122,13 +123,14 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
     lworkl = ncv * (3 * ncv + 5);
   }
   lworkv = ncv * 3;
-  workd = std::make_unique<elt_t[]>(n * 3);
-  workl = std::make_unique<elt_t[]>(lworkl);
-  workv = std::make_unique<elt_t[]>(lworkv);
-  rwork = std::make_unique<double[]>(ncv);
+  workd = std::make_unique<elt_t[]>(static_cast<size_t>(n * 3));
+  workl = std::make_unique<elt_t[]>(static_cast<size_t>(lworkl));
+  workv = std::make_unique<elt_t[]>(static_cast<size_t>(lworkv));
+  rwork = std::make_unique<double[]>(static_cast<size_t>(ncv));
   for (size_t i = 0; i < 15; i++) ipntr[i] = 0;
-  for (tensor::index i = 0; i < 3; i++) {
-    work_vectors[i] = Tensor(Vector<elt_t>(n, &workd[i * n]));
+  for (size_t i = 0; i < 3; i++) {
+    work_vectors[i] = Tensor(Vector<elt_t>(static_cast<size_t>(n),
+                                           &workd[i * static_cast<size_t>(n)]));
   }
 
   // We have initialized this structure
@@ -225,7 +227,7 @@ Arpack<elt_t, is_symmetric>::get_data(eigenvector_t *eigenvectors) {
     abort();
   }
   if (!is_symmetric && (sizeof(double) == sizeof(elt_t)) &&
-      output.size() > nev) {
+      output.ssize() > nev) {
     // In the non-symmetric, real case, Arpack may choose to output more
     // eigenvalues than requested.
     Indices ndx = RArpack::sort_values(output, which_eig);
@@ -246,7 +248,7 @@ void Arpack<elt_t, is_symmetric>::set_start_vector(const elt_t *v) {
     abort();
   }
   info = 1;
-  memcpy(resid.get(), v, n * sizeof(elt_t));
+  memcpy(resid.get(), v, static_cast<size_t>(n) * sizeof(elt_t));
 }
 
 template <typename elt_t, bool is_symmetric>
@@ -281,7 +283,9 @@ elt_t *Arpack<elt_t, is_symmetric>::get_x_vector() {
     abort();
   }
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
-  return &workd[ipntr[1 - 1] - 1];
+  auto ndx = ipntr[1 - 1] - 1;
+  assert((ndx >= 0) && (ndx < 3 * n));
+  return &workd[static_cast<size_t>(ndx)];
 }
 
 template <typename elt_t, bool is_symmetric>
@@ -291,28 +295,30 @@ elt_t *Arpack<elt_t, is_symmetric>::get_y_vector() {
     abort();
   }
   // IPNTR[2] has a FORTRAN index, which is one-based, instead of zero-based
-  return &workd[ipntr[2 - 1] - 1];
+  auto ndx = ipntr[2 - 1] - 1;
+  assert((ndx >= 0) && (ndx < 3 * n));
+  return &workd[static_cast<size_t>(ndx)];
 }
 
 template <typename elt_t, bool is_symmetric>
 const tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_x() {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   auto ndx = ipntr[1 - 1] - 1;
-  assert(ndx % n == 0);
-  return work_vectors[ndx / n];
+  assert((ndx >= 0) && (ndx < 3 * n) && (ndx % n == 0));
+  return work_vectors[static_cast<size_t>(ndx / n)];
 }
 
 template <typename elt_t, bool is_symmetric>
 tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_y() {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   auto ndx = ipntr[2 - 1] - 1;
-  assert(ndx % n == 0);
-  return work_vectors[ndx / n];
+  assert((ndx >= 0) && (ndx < 3 * n) && (ndx % n == 0));
+  return work_vectors[static_cast<size_t>(ndx / n)];
 }
 
 template <typename elt_t, bool is_symmetric>
 void Arpack<elt_t, is_symmetric>::set_y(const tensor::Tensor<elt_t> &y) {
-  memcpy(get_y_vector(), y.begin(), sizeof(elt_t) * n);
+  memcpy(get_y_vector(), y.begin(), sizeof(elt_t) * static_cast<size_t>(n));
 }
 
 template <typename elt_t, bool is_symmetric>

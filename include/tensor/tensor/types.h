@@ -54,12 +54,12 @@ class Tensor {
 
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
   explicit Tensor(const Dimensions &new_dims)
-      : data_(new_dims.total_size()), dims_(new_dims){};
+      : data_(static_cast<size_t>(new_dims.total_size())), dims_(new_dims){};
 
   /**Constructs an N-D Tensor with given initial data.*/
   Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other)
       : data_(other.data_), dims_(new_dims) {
-    assert(dims_.total_size() == size());
+    assert(dims_.total_size() == ssize());
   }
 
   /**Constructs a 1-D Tensor from a vector.*/
@@ -143,7 +143,7 @@ class Tensor {
   bool is_empty() const { return size() == 0; }
 
   /**Number of Tensor indices.*/
-  int rank() const { return (int)dims_.rank(); }
+  index rank() const { return dims_.rank(); }
   /**Return Tensor dimensions.*/
   const Dimensions &dimensions() const { return dims_; }
   /**Length of a given Tensor index.*/
@@ -160,7 +160,7 @@ class Tensor {
   template <typename... index_like>
   void get_dimensions(index_like *...in) const {
     return dims_.get_values(in...);
-  };
+  }
 
   /**Change the dimensions, while keeping the data. */
   void reshape(const Dimensions &new_dimensions) {
@@ -230,16 +230,17 @@ class Tensor {
           ranges_(std::move(ranges)),
           dims_(dimensions_from_ranges(ranges_, parent.dimensions())) {}
 
-    index size() const { return dims_.total_size(); }
+    size_t size() const { return static_cast<size_t>(dims_.total_size()); }
+    index ssize() const { return dims_.total_size(); }
     const Dimensions &dimensions() const { return dims_; }
 
     TensorConstIterator<elt_t> begin() const {
       return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),
-                                        data_.begin(), data_.size());
+                                        data_.begin());
     }
     TensorConstIterator<elt_t> end() const {
       return TensorConstIterator<elt_t>(RangeIterator::end(ranges_),
-                                        data_.begin(), data_.size());
+                                        data_.begin());
     }
 
    private:
@@ -271,16 +272,16 @@ class Tensor {
     }
     void operator=(elt_t v) { std::fill(begin(), end(), v); }
 
-    index size() const { return dims_.total_size(); }
+    size_t size() const { return static_cast<size_t>(dims_.total_size()); }
+    index ssize() const { return dims_.total_size(); }
     const Dimensions &dimensions() const { return dims_; }
 
     TensorIterator<elt_t> begin() {
-      return TensorIterator<elt_t>(RangeIterator::begin(ranges_), data_.begin(),
-                                   data_.size());
+      return TensorIterator<elt_t>(RangeIterator::begin(ranges_),
+                                   data_.begin());
     }
     TensorIterator<elt_t> end() {
-      return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin(),
-                                   data_.size());
+      return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin());
     }
 
    private:
@@ -293,7 +294,7 @@ class Tensor {
   inline view operator()(Range r) const {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
-    r.set_dimension(size());
+    r.set_dimension(ssize());
     return view(*this, SimpleVector<Range>{std::move(r)});
   }
 
@@ -307,7 +308,7 @@ class Tensor {
   inline mutable_view at(Range r) {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
-    r.set_dimension(size());
+    r.set_dimension(ssize());
     return mutable_view(*this, SimpleVector<Range>{std::move(r)});
   }
 
@@ -346,7 +347,7 @@ class Tensor {
   /**Empty tensor one or more dimensions, with undetermined values.*/
   template <typename... index_like>
   static inline Tensor<elt_t> empty(index_like... nth_dimension) {
-    return Tensor<elt_t>(Dimensions{static_cast<index>(nth_dimension)...});
+    return Tensor<elt_t>(Dimensions({static_cast<index>(nth_dimension)...}));
   }
 
   /**N-dimensional tensor one or more dimensions, filled with zeros.*/
@@ -386,7 +387,7 @@ class Tensor {
   iterator end() { return data_.end(); }
 
   // Only for testing purposes
-  size_t ref_count() const { return data_.ref_count(); }
+  index ref_count() const { return data_.ref_count(); }
 
   /**Take a diagonal from a tensor.*/
   const Tensor<elt_t> diag(int which = 0, int ndx1 = 0, int ndx2 = -1) {

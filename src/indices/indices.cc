@@ -56,7 +56,8 @@ index Dimensions::compute_total_size(const SimpleVector<index> &dims) {
   }
 }
 
-Indices::Indices(const Dimensions &dims) : Indices(dims.rank()) {
+Indices::Indices(const Dimensions &dims)
+    : Indices(static_cast<size_t>(dims.rank())) {
   std::copy(dims.begin(), dims.end(), begin());
 }
 
@@ -64,7 +65,7 @@ const Indices Indices::range(index min, index max, index step) {
   if (max < min) {
     return Indices();
   } else {
-    index size = (max - min) / step + 1;
+    size_t size = static_cast<size_t>((max - min) / step + 1);
     Indices output(size);
     for (Indices::iterator it = output.begin(); it != output.end(); it++) {
       *it = min;

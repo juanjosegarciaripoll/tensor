@@ -73,14 +73,15 @@ static void giveup_lock(int fd, char const *lockName) {
 #endif
 }
 
-DataFile::DataFile(const std::string &a_filename, int flags)
-    : _flags(flags),
-      _actual_filename(a_filename),
+DataFile::DataFile(const std::string &a_filename, int a_flags)
+    : _actual_filename(a_filename),
       _filename(_actual_filename),
       _lock_filename(_actual_filename + ".lck"),
-      _lock((flags == SDF_SHARED) ? get_lock(_lock_filename.c_str(), true) : 0),
+      _flags(a_flags),
+      _lock((a_flags == SDF_SHARED) ? get_lock(_lock_filename.c_str(), true)
+                                    : 0),
       _open(true) {
-  switch (flags) {
+  switch (a_flags) {
     case SDF_OVERWRITE:
       if (file_exists(_actual_filename) && !delete_file(_actual_filename)) {
         std::cerr << "Cannot overwrite file " << _actual_filename << std::endl;
@@ -94,7 +95,7 @@ DataFile::DataFile(const std::string &a_filename, int flags)
       delete_file(_actual_filename);
       break;
     default:
-      std::cerr << "Unrecognized DataFile mode " << flags << std::endl;
+      std::cerr << "Unrecognized DataFile mode " << a_flags << std::endl;
       abort();
   }
 }

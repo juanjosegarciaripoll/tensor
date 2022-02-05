@@ -36,7 +36,8 @@ CTensor eigs_gen(const RSparse &A, EigType eig_type, size_t neig,
     return eigs_gen_small(full(A), eig_type, neig, eigenvectors, converged);
   }
   return eigs_gen([&](const RTensor &x) -> RTensor { return mmult(A, x); },
-                  A.columns(), eig_type, neig, eigenvectors, converged);
+                  static_cast<size_t>(A.columns()), eig_type, neig,
+                  eigenvectors, converged);
 }
 
 }  // namespace linalg

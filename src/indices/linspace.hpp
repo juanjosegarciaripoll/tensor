@@ -28,15 +28,16 @@ template <typename elt_t>
 static inline const Tensor<elt_t> do_linspace(const Tensor<elt_t> &min,
                                               const Tensor<elt_t> &max,
                                               index n = 100) {
-  index d = min.size();
+  index d = min.ssize();
   auto output = Tensor<elt_t>::empty(d, n);
   if (n == 1) {
     output = min;
   } else if (n) {
     const Tensor<elt_t> base = reshape(max, d);
-    const Tensor<elt_t> delta = reshape((max - min) / (n - 1.0), d);
+    const Tensor<elt_t> delta =
+        reshape((max - min) / static_cast<double>(n - 1), d);
     for (index i = 0; i < n; i++) {
-      output.at(range(), range(i)) = delta * (double)i + min;
+      output.at(range(), range(i)) = delta * static_cast<double>(i) + min;
     }
   }
   if (d == 1)

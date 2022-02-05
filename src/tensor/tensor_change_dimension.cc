@@ -22,8 +22,9 @@
 namespace tensor {
 
 template <class Tensor>
-static Tensor change_dimension_inner(const Tensor &a, int dim, index new_size) {
-  dim = (int)Dimensions::normalize_index(dim, a.rank());
+static Tensor change_dimension_inner(const Tensor &a, index dim,
+                                     index new_size) {
+  dim = Dimensions::normalize_index(dim, a.rank());
   Indices d = a.dimensions();
   index old_size = d[dim];
   if (old_size == new_size) return a;
@@ -39,7 +40,8 @@ static Tensor change_dimension_inner(const Tensor &a, int dim, index new_size) {
 
   index dp_new = new_size * i_len;
   index dp_old = old_size * i_len;
-  index data_size = std::min(dp_new, dp_old) * sizeof(*p_new);
+  auto data_size =
+      static_cast<size_t>(std::min(dp_new, dp_old)) * sizeof(*p_new);
   while (k_len--) {
     memcpy(p_new, p_old, data_size);
     p_old += dp_old;

@@ -55,7 +55,7 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   blas::integer m = blas::tensor_rows(A);
   blas::integer n = blas::tensor_columns(A);
   blas::integer k = std::min(m, n);
-  blas::integer lwork, ldu, lda, ldv, info;
+  blas::integer lwork, ldu, ldv, info;
   RTensor output = RTensor::empty(k);
   cdouble *u, *v, *a = tensor_pointer(A);
   double *s = tensor_pointer(output);
@@ -81,7 +81,6 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
     v = NULL;
     ldv = 1;
   }
-  lda = m;
 #ifdef TENSOR_USE_ACML
   zgesvd(*jobu, *jobv, m, n, a, m, s, u, ldu, v, ldv, &info);
 #else
@@ -93,8 +92,9 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
    &info);
   // work[0] contains the optimal amount of space required
   lwork = static_cast<blas::integer>(lapack::real(work0[0]));
-  auto work = std::make_unique<cdouble[]>(lwork);
-  auto rwork = std::make_unique<double[]>(5 * k);
+  /* TODO: Guard against negative lwork using safe_size_t() */
+  auto work = std::make_unique<cdouble[]>(static_cast<size_t>(lwork));
+  auto rwork = std::make_unique<double[]>(5 * static_cast<size_t>(k));
   F77NAME(zgesvd)
   (jobu, jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work.get(), &lwork,
    rwork.get(), &info);

@@ -23,8 +23,8 @@
 
 namespace tensor {
 
-using std::vector;
 using std::numeric_limits;
+using std::vector;
 
 int inline index_to_fftw_dimension(const Indices& dims, int which) {
   const tensor::index d = dims[which];
@@ -33,24 +33,24 @@ int inline index_to_fftw_dimension(const Indices& dims, int which) {
               << numeric_limits<int>::max() << std::endl;
     abort();
   }
-  return (int)d;
+  return static_cast<int>(d);
 }
 
 // basic FFTW along all degrees of freedom
 void do_fftw(fftw_complex* pin, fftw_complex* pout, const Indices& dims,
              int direction) {
   fftw_plan plan;
-  int d = (int)dims.size();
+  int d = static_cast<int>(dims.ssize());
 
   if (d == 1) {
-    plan = fftw_plan_dft_1d(index_to_fftw_dimension(dims, 0), pin, pout, direction,
-                            FFTW_ESTIMATE);
+    plan = fftw_plan_dft_1d(index_to_fftw_dimension(dims, 0), pin, pout,
+                            direction, FFTW_ESTIMATE);
   } else {
-    std::vector<int> dimensions(d);
+    auto dimensions = SimpleVector<int>::empty(static_cast<size_t>(d));
     for (int i = 0; i < d; i++) {
-      dimensions[d - i - 1] = index_to_fftw_dimension(dims, i);
+      dimensions.at(d - i - 1) = index_to_fftw_dimension(dims, i);
     }
-    plan = fftw_plan_dft(d, dimensions.data(), pin, pout, direction,
+    plan = fftw_plan_dft(d, dimensions.begin(), pin, pout, direction,
                          FFTW_ESTIMATE);
   }
 
@@ -62,14 +62,14 @@ void do_fftw(fftw_complex* pin, fftw_complex* pout, int dim,
              const Indices& dims, int direction) {
   // Collect the dimensions for the transform
   fftw_iodim fft_dim;
-  std::vector<fftw_iodim> loop_dims(dims.size() - 1);
+  auto loop_dims = SimpleVector<fftw_iodim>::empty(dims.size() - 1);
   int stride = 1;
 
   for (int i = 0; i < dim; i++) {
-    loop_dims[i].n = index_to_fftw_dimension(dims, i);
-    loop_dims[i].is = stride;
-    loop_dims[i].os = stride;
-    stride *= loop_dims[i].n;
+    loop_dims.at(i).n = index_to_fftw_dimension(dims, i);
+    loop_dims.at(i).is = stride;
+    loop_dims.at(i).os = stride;
+    stride *= loop_dims.at(i).n;
   }
 
   fft_dim.n = index_to_fftw_dimension(dims, dim);
@@ -77,16 +77,17 @@ void do_fftw(fftw_complex* pin, fftw_complex* pout, int dim,
   fft_dim.os = stride;
   stride *= fft_dim.n;
 
-  for (int i = dim + 1; i < (int)dims.size(); i++) {
-    loop_dims[i - 1].n = index_to_fftw_dimension(dims, i);
-    loop_dims[i - 1].is = stride;
-    loop_dims[i - 1].os = stride;
-    stride *= loop_dims[i - 1].n;
+  for (int i = dim + 1; i < dims.ssize(); i++) {
+    loop_dims.at(i - 1).n = index_to_fftw_dimension(dims, i);
+    loop_dims.at(i - 1).is = stride;
+    loop_dims.at(i - 1).os = stride;
+    stride *= loop_dims.at(i - 1).n;
   }
 
   // Now make a Guru plan and execute it.
-  fftw_plan plan = fftw_plan_guru_dft(1, &fft_dim, (int)dims.size() - 1,
-      loop_dims.data(), pin, pout, direction, FFTW_ESTIMATE);
+  fftw_plan plan = fftw_plan_guru_dft(
+      1, &fft_dim, static_cast<int>(dims.size()) - 1, loop_dims.begin(), pin,
+      pout, direction, FFTW_ESTIMATE);
   fftw_execute(plan);
   fftw_destroy_plan(plan);
 }
@@ -94,24 +95,24 @@ void do_fftw(fftw_complex* pin, fftw_complex* pout, int dim,
 void do_fftw(fftw_complex* pin, fftw_complex* pout, const Booleans& convert,
              const Indices& dims, int direction) {
   // Collect the dimensions for the transform
-  std::vector<fftw_iodim> fft_dims(dims.size());
-  std::vector<fftw_iodim> loop_dims(dims.size());
+  auto fft_dims = SimpleVector<fftw_iodim>::empty(dims.size());
+  auto loop_dims = SimpleVector<fftw_iodim>::empty(dims.size());
   int fft_size = 0;
   int loop_size = 0;
   int stride = 1;
 
-  for (int i = 0; i < (int)dims.size(); i++) {
+  for (int i = 0; i < dims.ssize(); i++) {
     int d = index_to_fftw_dimension(dims, i);
 
     if (convert[i] == false) {
-      loop_dims[loop_size].n = d;
-      loop_dims[loop_size].is = stride;
-      loop_dims[loop_size].os = stride;
+      loop_dims.at(loop_size).n = d;
+      loop_dims.at(loop_size).is = stride;
+      loop_dims.at(loop_size).os = stride;
       loop_size++;
     } else {
-      fft_dims[fft_size].n = d;
-      fft_dims[fft_size].is = stride;
-      fft_dims[fft_size].os = stride;
+      fft_dims.at(fft_size).n = d;
+      fft_dims.at(fft_size).is = stride;
+      fft_dims.at(fft_size).os = stride;
       fft_size++;
     }
 
@@ -119,8 +120,9 @@ void do_fftw(fftw_complex* pin, fftw_complex* pout, const Booleans& convert,
   }
 
   // Now make a Guru plan and execute it.
-  fftw_plan plan = fftw_plan_guru_dft(fft_size, fft_dims.data(), loop_size,
-      loop_dims.data(), pin, pout, direction, FFTW_ESTIMATE);
+  fftw_plan plan = fftw_plan_guru_dft(fft_size, fft_dims.begin(), loop_size,
+                                      loop_dims.begin(), pin, pout, direction,
+                                      FFTW_ESTIMATE);
   fftw_execute(plan);
   fftw_destroy_plan(plan);
 }

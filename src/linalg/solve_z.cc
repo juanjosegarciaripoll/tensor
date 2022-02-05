@@ -62,13 +62,13 @@ CTensor solve(const CTensor &A, const CTensor &B) {
 
   // Since B may be a tensor, we compute how many effective
   // right-hand-sides (nrhs) there are.
-  nrhs = blas::index_to_blas(B.size()) / ldb;
+  nrhs = blas::index_to_blas(B.ssize()) / ldb;
 
   // The matrix that we pass to LAPACK is modified
   CTensor aux(A);
   cdouble *a = tensor_pointer(aux);
 
-  auto ipiv = std::make_unique<blas::integer[]>(n);
+  auto ipiv = std::make_unique<blas::integer[]>(static_cast<size_t>(n));
   blas::integer info;
 #ifdef TENSOR_USE_ACML
   zgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
