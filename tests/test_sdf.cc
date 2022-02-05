@@ -30,11 +30,11 @@ TEST(SDF, RTensor) {
   RTensor c = RTensor::random(4, 15);
   RTensor d = RTensor::random(3, 7, 5);
   RTensor x = {1e-312};
-  if (file_exists("foo.dat")) {
-    std::remove("foo.dat");
+  if (file_exists("sdf_data_rtensor.dat")) {
+    std::remove("sdf_data_rtensor.dat");
   }
   {
-    OutDataFile f("foo.dat");
+    OutDataFile f("sdf_data_rtensor.dat");
     f.dump(a, "a");
     f.dump(a[0], "a0");
     f.dump(b, "b");
@@ -43,7 +43,7 @@ TEST(SDF, RTensor) {
     f.dump(x, "x");
   }
   {
-    InDataFile f("foo.dat");
+    InDataFile f("sdf_data_rtensor.dat");
     RTensor aux;
     f.load(&aux, "a");
     EXPECT_TRUE(all_equal(a, aux));
@@ -59,7 +59,7 @@ TEST(SDF, RTensor) {
     f.load(&aux, "x");
     EXPECT_TRUE(all_equal(x, aux));
   }
-  std::remove("foo.dat");
+  std::remove("sdf_data_rtensor.dat");
 }
 
 TEST(SDF, CTensor) {
@@ -67,11 +67,11 @@ TEST(SDF, CTensor) {
   CTensor b = CTensor::random(13);
   CTensor c = CTensor::random(4, 15);
   CTensor d = CTensor::random(3, 7, 5);
-  if (file_exists("foo.dat")) {
-    std::remove("foo.dat");
+  if (file_exists("sdf_data_ctensor.dat")) {
+    std::remove("sdf_data_ctensor.dat");
   }
   {
-    OutDataFile f("foo.dat");
+    OutDataFile f("sdf_data_ctensor.dat");
     f.dump(a, "a");
     f.dump(a[0], "a0");
     f.dump(b, "b");
@@ -79,7 +79,7 @@ TEST(SDF, CTensor) {
     f.dump(d, "d");
   }
   {
-    InDataFile f("foo.dat");
+    InDataFile f("sdf_data_ctensor.dat");
     CTensor aux;
     f.load(&aux, "a");
     EXPECT_TRUE(all_equal(a, aux));
@@ -93,5 +93,5 @@ TEST(SDF, CTensor) {
     f.load(&aux, "d");
     EXPECT_TRUE(all_equal(d, aux));
   }
-  std::remove("foo.dat");
+  std::remove("sdf_data_ctensor.dat");
 }
