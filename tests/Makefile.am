@@ -32,11 +32,6 @@ test_fftw_SOURCES = test_fftw.cc
 test_fftw_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 endif
 
-TESTS += test_refcount
-check_PROGRAMS += test_refcount
-test_refcount_SOURCES = test_refcount.cc
-test_refcount_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
 TESTS += test_index
 check_PROGRAMS += test_index
 test_index_SOURCES = test_index.cc

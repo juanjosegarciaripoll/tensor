@@ -53,7 +53,6 @@ target_include_directories(test_rand
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
 )
-#package_add_test(test_refcount test_refcount.cc)
 package_add_test(test_sdf test_sdf.cc)
 package_add_test(test_sparse_base test_sparse_base.cc)
 package_add_test(test_sparse_indices test_sparse_indices.cc)

@@ -18,7 +18,6 @@
 */
 
 #include <gtest/gtest.h>
-#include <tensor/refcount.h>
 
 int main(int narg, char *argv[]) {
   ::testing::InitGoogleTest(&narg, argv);
