@@ -132,23 +132,29 @@ inline Booleans operator<=(double a, const RTensor &b) { return b > a; }
 inline Booleans operator>=(double a, const RTensor &b) { return b < a; }
 inline Booleans operator!=(double a, const RTensor &b) { return b != a; }
 
-RTensor operator+(const RTensor &a, const RTensor &b);
-RTensor operator-(const RTensor &a, const RTensor &b);
-RTensor operator*(const RTensor &a, const RTensor &b);
-RTensor operator/(const RTensor &a, const RTensor &b);
+extern template RTensor operator+(const RTensor &a, const RTensor &b);
+extern template RTensor operator-(const RTensor &a, const RTensor &b);
+extern template RTensor operator-(const RTensor &a);
+extern template RTensor operator*(const RTensor &a, const RTensor &b);
+extern template RTensor operator/(const RTensor &a, const RTensor &b);
 
-RTensor operator+(const RTensor &a, double b);
-RTensor operator-(const RTensor &a, double b);
-RTensor operator*(const RTensor &a, double b);
-RTensor operator/(const RTensor &a, double b);
+extern template RTensor operator+(const RTensor &a, double b);
+extern template RTensor operator-(const RTensor &a, double b);
+extern template RTensor operator*(const RTensor &a, double b);
+extern template RTensor operator/(const RTensor &a, double b);
 
-RTensor operator+(double a, const RTensor &b);
-RTensor operator-(double a, const RTensor &b);
-RTensor operator*(double a, const RTensor &b);
-RTensor operator/(double a, const RTensor &b);
+extern template RTensor operator+(double a, const RTensor &b);
+extern template RTensor operator-(double a, const RTensor &b);
+extern template RTensor operator*(double a, const RTensor &b);
+extern template RTensor operator/(double a, const RTensor &b);
 
-RTensor &operator+=(RTensor &a, const RTensor &b);
-RTensor &operator-=(RTensor &a, const RTensor &b);
+extern template RTensor &operator+=(RTensor &a, const RTensor &b);
+extern template RTensor &operator-=(RTensor &a, const RTensor &b);
+extern template RTensor &operator*=(RTensor &a, const RTensor &b);
+
+extern template RTensor &operator+=(RTensor &a, double b);
+extern template RTensor &operator-=(RTensor &a, double b);
+extern template RTensor &operator*=(RTensor &a, double b);
 
 RTensor kron(const RTensor &a, const RTensor &b);
 RTensor kron2(const RTensor &a, const RTensor &b);

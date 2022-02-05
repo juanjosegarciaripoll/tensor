@@ -21,16 +21,8 @@
 
 namespace tensor {
 
-CTensor operator-(const CTensor &a, const CTensor &b) {
-  assert(a.size() == b.size());
-  CTensor output(a.dimensions());
-  CTensor::const_iterator ita = a.begin();
-  CTensor::const_iterator itb = b.begin();
-  CTensor::iterator dest = output.begin();
-  for (index i = a.size(); i; --i, ++dest, ++ita, ++itb) {
-    *dest = (*ita) - (*itb);
-  }
-  return output;
-}
+template CTensor operator/(const CTensor &a, const CTensor &b);
+template CTensor operator/(const CTensor &a, cdouble b);
+template CTensor operator/(cdouble a, const CTensor &b);
 
 }  // namespace tensor

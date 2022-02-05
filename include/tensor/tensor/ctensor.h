@@ -113,23 +113,29 @@ Booleans operator!=(const CTensor &a, cdouble b);
 inline Booleans operator==(cdouble a, const CTensor &b) { return b == a; }
 inline Booleans operator!=(cdouble a, const CTensor &b) { return b != a; }
 
-CTensor operator+(const CTensor &a, const CTensor &b);
-CTensor operator-(const CTensor &a, const CTensor &b);
-CTensor operator*(const CTensor &a, const CTensor &b);
-CTensor operator/(const CTensor &a, const CTensor &b);
+extern template CTensor operator+(const CTensor &a, const CTensor &b);
+extern template CTensor operator-(const CTensor &a, const CTensor &b);
+extern template CTensor operator-(const CTensor &a);
+extern template CTensor operator*(const CTensor &a, const CTensor &b);
+extern template CTensor operator/(const CTensor &a, const CTensor &b);
 
-CTensor operator+(const CTensor &a, cdouble b);
-CTensor operator-(const CTensor &a, cdouble b);
-CTensor operator*(const CTensor &a, cdouble b);
-CTensor operator/(const CTensor &a, cdouble b);
+extern template CTensor operator+(const CTensor &a, cdouble b);
+extern template CTensor operator-(const CTensor &a, cdouble b);
+extern template CTensor operator*(const CTensor &a, cdouble b);
+extern template CTensor operator/(const CTensor &a, cdouble b);
 
-CTensor operator+(cdouble a, const CTensor &b);
-CTensor operator-(cdouble a, const CTensor &b);
-CTensor operator*(cdouble a, const CTensor &b);
-CTensor operator/(cdouble a, const CTensor &b);
+extern template CTensor operator+(cdouble a, const CTensor &b);
+extern template CTensor operator-(cdouble a, const CTensor &b);
+extern template CTensor operator*(cdouble a, const CTensor &b);
+extern template CTensor operator/(cdouble a, const CTensor &b);
 
-CTensor &operator+=(CTensor &a, const CTensor &b);
-CTensor &operator-=(CTensor &a, const CTensor &b);
+extern template CTensor &operator+=(CTensor &a, const CTensor &b);
+extern template CTensor &operator-=(CTensor &a, const CTensor &b);
+extern template CTensor &operator*=(CTensor &a, const CTensor &b);
+
+extern template CTensor &operator+=(CTensor &a, cdouble b);
+extern template CTensor &operator-=(CTensor &a, cdouble b);
+extern template CTensor &operator*=(CTensor &a, cdouble b);
 
 CTensor kron(const CTensor &a, const CTensor &b);
 CTensor kron2(const CTensor &a, const CTensor &b);

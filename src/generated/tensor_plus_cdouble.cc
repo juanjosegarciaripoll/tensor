@@ -21,16 +21,10 @@
 
 namespace tensor {
 
-RTensor operator-(const RTensor &a, const RTensor &b) {
-  assert(a.size() == b.size());
-  RTensor output(a.dimensions());
-  RTensor::const_iterator ita = a.begin();
-  RTensor::const_iterator itb = b.begin();
-  RTensor::iterator dest = output.begin();
-  for (index i = a.size(); i; --i, ++dest, ++ita, ++itb) {
-    *dest = (*ita) - (*itb);
-  }
-  return output;
-}
+template CTensor operator+(const CTensor &a, const CTensor &b);
+template CTensor operator+(cdouble a, const CTensor &b);
+template CTensor operator+(const CTensor &a, cdouble b);
+template CTensor &operator+=(CTensor &a, const CTensor &b);
+template CTensor &operator+=(CTensor &a, cdouble b);
 
 }  // namespace tensor

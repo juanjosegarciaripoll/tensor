@@ -146,26 +146,14 @@ basic_SOURCES = \
 	generated/tensor_unop_exp_z.cc \
 	generated/tensor_unop_sqrt_z.cc \
 	generated/tensor_unop_log_z.cc \
-	generated/tensor_divide_tn_cdouble.cc \
-	generated/tensor_divide_tn_double.cc \
-	generated/tensor_divide_tt_cdouble.cc \
-	generated/tensor_divide_tt_double.cc \
-	generated/tensor_minus_t1_cdouble.cc \
-	generated/tensor_minus_t1_double.cc \
-	generated/tensor_minus_tn_cdouble.cc \
-	generated/tensor_minus_tn_double.cc \
-	generated/tensor_minus_tt_cdouble.cc \
-	generated/tensor_minus_tt_double.cc \
-	generated/tensor_plus_t1_cdouble.cc \
-	generated/tensor_plus_t1_double.cc \
-	generated/tensor_plus_tn_cdouble.cc \
-	generated/tensor_plus_tn_double.cc \
-	generated/tensor_plus_tt_cdouble.cc \
-	generated/tensor_plus_tt_double.cc \
-	generated/tensor_times_tn_cdouble.cc \
-	generated/tensor_times_tn_double.cc \
-	generated/tensor_times_tt_cdouble.cc \
-	generated/tensor_times_tt_double.cc \
+	generated/tensor_divide_cdouble.cc \
+	generated/tensor_divide_double.cc \
+	generated/tensor_minus_cdouble.cc \
+	generated/tensor_minus_double.cc \
+	generated/tensor_plus_cdouble.cc \
+	generated/tensor_plus_double.cc \
+	generated/tensor_times_cdouble.cc \
+	generated/tensor_times_double.cc \
 	generated/sparse_minus_t1_double.cc \
 	generated/sparse_minus_t1_cdouble.cc \
 	generated/sparse_minus_tt_double.cc \

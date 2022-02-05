@@ -23,26 +23,14 @@ target_sources(tensor
     sparse_times_tt_double.cc
     sparse_times_tz_double.cc
     sparse_times_zt_double.cc
-    tensor_divide_tn_cdouble.cc
-    tensor_divide_tn_double.cc
-    tensor_divide_tt_cdouble.cc
-    tensor_divide_tt_double.cc
-    tensor_minus_t1_cdouble.cc
-    tensor_minus_t1_double.cc
-    tensor_minus_tn_cdouble.cc
-    tensor_minus_tn_double.cc
-    tensor_minus_tt_cdouble.cc
-    tensor_minus_tt_double.cc
-    tensor_plus_t1_cdouble.cc
-    tensor_plus_t1_double.cc
-    tensor_plus_tn_cdouble.cc
-    tensor_plus_tn_double.cc
-    tensor_plus_tt_cdouble.cc
-    tensor_plus_tt_double.cc
-    tensor_times_tn_cdouble.cc
-    tensor_times_tn_double.cc
-    tensor_times_tt_cdouble.cc
-    tensor_times_tt_double.cc
+    tensor_divide_cdouble.cc
+    tensor_divide_double.cc
+    tensor_minus_double.cc
+    tensor_minus_cdouble.cc
+    tensor_plus_cdouble.cc
+    tensor_plus_double.cc
+    tensor_times_cdouble.cc
+    tensor_times_double.cc
     tensor_unop_abs_d.cc
     tensor_unop_abs_z.cc
     tensor_unop_cos_d.cc

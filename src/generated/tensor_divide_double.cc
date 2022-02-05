@@ -21,24 +21,8 @@
 
 namespace tensor {
 
-RTensor operator/(const RTensor &a, double b) {
-  RTensor output(a.dimensions());
-  RTensor::const_iterator ita = a.begin();
-  RTensor::iterator dest = output.begin();
-  for (index i = a.size(); i; --i, ++dest, ++ita) {
-    *dest = (*ita) / (b);
-  }
-  return output;
-}
-
-RTensor operator/(double a, const RTensor &b) {
-  RTensor output(b.dimensions());
-  RTensor::const_iterator itb = b.begin();
-  RTensor::iterator dest = output.begin();
-  for (index i = b.size(); i; --i, ++dest, ++itb) {
-    *dest = (a) / (*itb);
-  }
-  return output;
-}
+template RTensor operator/(const RTensor &a, const RTensor &b);
+template RTensor operator/(double a, const RTensor &b);
+template RTensor operator/(const RTensor &a, double b);
 
 }  // namespace tensor

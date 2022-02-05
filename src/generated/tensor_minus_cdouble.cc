@@ -18,27 +18,14 @@
 */
 
 #include <tensor/tensor.h>
-#include <tensor/tensor_blas.h>
 
 namespace tensor {
 
-RTensor &operator-=(RTensor &a, const RTensor &b) {
-  assert(a.size() == b.size());
-#if 1
-  RTensor::iterator ita = a.begin();
-  RTensor::iterator itae = a.end();
-  RTensor::const_iterator itb = b.begin();
-  while (ita != itae) {
-    (*ita) -= (*itb);
-    ++ita;
-    ++itb;
-  }
-#else
-  cblas_daxpy(a.size(), -1.0,
-              static_cast<const double *>((void *)b.begin_const()), 1,
-              static_cast<double *>((void *)a.begin()), 1);
-#endif
-  return a;
-}
+template CTensor operator-(const CTensor &a, const CTensor &b);
+template CTensor operator-(cdouble a, const CTensor &b);
+template CTensor operator-(const CTensor &a, cdouble b);
+template CTensor operator-(const CTensor &a);
+template CTensor &operator-=(CTensor &a, const CTensor &b);
+template CTensor &operator-=(CTensor &a, cdouble b);
 
 }  // namespace tensor

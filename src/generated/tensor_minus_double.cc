@@ -18,21 +18,14 @@
 */
 
 #include <tensor/tensor.h>
-#include <tensor/tensor_blas.h>
 
 namespace tensor {
 
-CTensor &operator+=(CTensor &a, const CTensor &b) {
-  assert(a.size() == b.size());
-  CTensor::iterator ita = a.begin();
-  CTensor::iterator itae = a.end();
-  CTensor::const_iterator itb = b.begin();
-  while (ita != itae) {
-    (*ita) += (*itb);
-    ++ita;
-    ++itb;
-  }
-  return a;
-}
+template RTensor operator-(const RTensor &a, const RTensor &b);
+template RTensor operator-(double a, const RTensor &b);
+template RTensor operator-(const RTensor &a, double b);
+template RTensor operator-(const RTensor &a);
+template RTensor &operator-=(RTensor &a, double b);
+template RTensor &operator-=(RTensor &a, const RTensor &b);
 
 }  // namespace tensor

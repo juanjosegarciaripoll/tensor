@@ -1,4 +1,4 @@
-// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+// -*- mode: c**; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 /*
     Copyright (c) 2010 Juan Jose Garcia Ripoll
 
@@ -21,24 +21,10 @@
 
 namespace tensor {
 
-CTensor operator-(const CTensor &a, cdouble b) {
-  CTensor output(a.dimensions());
-  CTensor::const_iterator ita = a.begin();
-  CTensor::iterator dest = output.begin();
-  for (index i = a.size(); i; --i, ++dest, ++ita) {
-    *dest = (*ita) - (b);
-  }
-  return output;
-}
-
-CTensor operator-(cdouble a, const CTensor &b) {
-  CTensor output(b.dimensions());
-  CTensor::const_iterator itb = b.begin();
-  CTensor::iterator dest = output.begin();
-  for (index i = b.size(); i; --i, ++dest, ++itb) {
-    *dest = (a) - (*itb);
-  }
-  return output;
-}
+template RTensor operator*(const RTensor &a, const RTensor &b);
+template RTensor operator*(double a, const RTensor &b);
+template RTensor operator*(const RTensor &a, double b);
+template RTensor &operator*=(RTensor &a, double b);
+template RTensor &operator*=(RTensor &a, const RTensor &b);
 
 }  // namespace tensor
