@@ -37,8 +37,11 @@ std::ostream &operator<<(std::ostream &out, const Range &r) {
 
 std::ostream &operator<<(std::ostream &out, const RangeIterator &r) {
   out << "RangeIterator(counter=" << r.counter() << ",offset=" << r.offset()
-      << ",limit=" << r.limit() << ",step=" << r.step()
-      << ",range=" << r.range() << ",next=";
+      << ",limit=" << r.limit() << ",step=" << r.step();
+  if (r.has_indices()) {
+    out << ",indices=" << r.indices();
+  }
+  out << ",next=";
   if (r.has_next()) {
     out << r.next();
   } else {

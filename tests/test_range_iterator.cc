@@ -34,8 +34,7 @@ static bool is_empty_range(const Range &r) {
 }
 
 static bool is_empty_range_iterator(const RangeIterator &it) {
-  return is_empty_range(it.range()) && (*it == 0) && (it.finished()) &&
-         !it.has_next();
+  return (*it == 0) && (it.finished()) && !it.has_next();
 }
 
 template <typename elt_t>
@@ -99,7 +98,6 @@ TEST(RangeIteratorTest, OptimizesSize1) {
 TEST(RangeIteratorTest, EmptyRangeIterator) {
   Range r = Range::empty();  // = []
   RangeIterator it(r, 1);
-  ASSERT_TRUE(is_empty_range(it.range()));
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*it, 0);
@@ -109,7 +107,6 @@ TEST(RangeIteratorTest, EmptyRangeIterator) {
 TEST(RangeIteratorTest, RangeIterator1DSize0) {
   Range r(0, -1);  // = []
   RangeIterator it(r, 1);
-  ASSERT_TRUE(is_empty_range(it.range()));
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ++it;

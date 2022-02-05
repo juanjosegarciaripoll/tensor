@@ -270,11 +270,12 @@ class RangeIterator {
   index limit() const { return limit_; }
   bool has_next() const { return next_ != nullptr; }
   const RangeIterator &next() const { return *next_; }
-  const Range &range() const { return range_; }
+  bool has_indices() const { return indices_.size() != 0; }
+  const Indices &indices() const { return indices_; }
 
  private:
-  index counter_, start_, limit_, step_, offset_, factor_;
-  Range range_;
+  index counter_, step_, limit_, offset_, factor_, start_;
+  Indices indices_;
   next_t next_;
   void advance_next();
   static RangeIterator make_next_iterator(

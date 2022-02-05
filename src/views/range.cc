@@ -171,7 +171,9 @@ RangeIterator RangeIterator::make_next_iterator(const Range *ranges,
 
 RangeIterator::RangeIterator(const Range &r, index factor, end_flag_t end_flag,
                              next_t next)
-    : offset_{next ? next->get_position() : 0}, range_{r}, next_{next} {
+    : offset_{next ? next->get_position() : 0},
+      indices_(r.indices()),
+      next_{next} {
   /*
    * When we work with indices, the current position is
    *    step_ * v[counter_] + offset_
@@ -199,11 +201,11 @@ RangeIterator::RangeIterator(const Range &r, index factor, end_flag_t end_flag,
 }
 
 index RangeIterator::get_position() const {
-  if (range_.has_indices()) {
-    return offset_ + range_.get_index(counter_) * factor_;
-  } else {
-    return offset_ + counter_;
+  index n = counter_;
+  if (has_indices()) {
+    n = indices()[n] * factor_;
   }
+  return n + offset_;
 }
 
 void RangeIterator::advance_next() {
