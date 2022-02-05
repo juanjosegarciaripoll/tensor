@@ -27,7 +27,7 @@ namespace tensor {
 Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
                                   const Dimensions &parent_dimensions) {
   SimpleVector<index> output(ranges.size());
-  if (ranges.size() != parent_dimensions.rank()) {
+  if (ranges.ssize() != parent_dimensions.rank()) {
     if (ranges.size() == 1) {
       // If we only provide one range, it is as if we were flattening the tensor
       // prior to iteration.
