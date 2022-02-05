@@ -475,6 +475,12 @@ inline Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1,
   return Tensor<elt_t>({d1, static_cast<index>(dnext)...}, t);
 }
 
+/**Convert a tensor to a 1D vector with the same elements.*/
+template <typename elt_t>
+Tensor<elt_t> flatten(const Tensor<elt_t> &t) {
+  return reshape(t, t.size());
+}
+
 }  // namespace tensor
 
 //////////////////////////////////////////////////////////////////////
@@ -534,9 +540,6 @@ RTensor diag(const RTensor &d, int which = 0);
 RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
 double trace(const RTensor &d);
 RTensor trace(const RTensor &A, int i1, int i2);
-
-/**Convert a tensor to a 1D vector with the same elements.*/
-RTensor flatten(const RTensor &t);
 
 RTensor squeeze(const RTensor &t);
 RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
@@ -658,9 +661,6 @@ CTensor diag(const CTensor &d, int which = 0);
 CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
 cdouble trace(const CTensor &d);
 CTensor trace(const CTensor &A, int i1, int i2);
-
-/**Convert a tensor to a 1D vector with the same elements.*/
-CTensor flatten(const CTensor &t);
 
 CTensor squeeze(const CTensor &t);
 CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
