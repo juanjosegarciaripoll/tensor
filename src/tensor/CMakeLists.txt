@@ -40,8 +40,6 @@ target_sources(tensor
     tensor_permute_d.cc
     tensor_permute_z.cc
     tensor_real_z.cc
-    tensor_reshape_d.cc
-    tensor_reshape_z.cc
     tensor_round_d.cc
     tensor_scale_d.cc
     tensor_scale_z.cc

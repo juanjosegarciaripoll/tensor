@@ -5,7 +5,6 @@ nobase_include_HEADERS = \
 	tensor/detail/sparse_base.hpp \
 	tensor/detail/sparse_ops.hpp \
 	tensor/detail/tensor_ops.hpp \
-	tensor/detail/tensor_reshape.hpp \
 	tensor/flags.h \
 	tensor/gen.h \
 	tensor/indices.h \

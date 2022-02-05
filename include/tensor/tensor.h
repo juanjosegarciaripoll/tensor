@@ -462,6 +462,19 @@ Tensor<t1> &operator*=(Tensor<t1> &a, const Tensor<t1> &b);
 template <typename t1, typename t2>
 Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t1> &b);
 
+/**Return a Tensor with same data and given dimensions.*/
+template <typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, const Dimensions &d) {
+  return Tensor<elt_t>(d, t);
+}
+
+/**Return a RTensor with same data and given dimensions, specified separately.*/
+template <typename elt_t, typename... index_like>
+inline Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1,
+                             index_like... dnext) {
+  return Tensor<elt_t>({d1, static_cast<index>(dnext)...}, t);
+}
+
 }  // namespace tensor
 
 //////////////////////////////////////////////////////////////////////
@@ -524,16 +537,6 @@ RTensor trace(const RTensor &A, int i1, int i2);
 
 /**Convert a tensor to a 1D vector with the same elements.*/
 RTensor flatten(const RTensor &t);
-
-RTensor reshape(const RTensor &t, const Indices &new_dims);
-RTensor reshape(const RTensor &t, index length);
-RTensor reshape(const RTensor &t, index rows, index columns);
-RTensor reshape(const RTensor &t, index d1, index d2, index d3);
-RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4);
-RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
-                index d5);
-RTensor reshape(const RTensor &t, index d1, index d2, index d3, index d4,
-                index d5, index d6);
 
 RTensor squeeze(const RTensor &t);
 RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
@@ -658,16 +661,6 @@ CTensor trace(const CTensor &A, int i1, int i2);
 
 /**Convert a tensor to a 1D vector with the same elements.*/
 CTensor flatten(const CTensor &t);
-
-CTensor reshape(const CTensor &t, const Indices &new_dims);
-CTensor reshape(const CTensor &t, index length);
-CTensor reshape(const CTensor &t, index rows, index columns);
-CTensor reshape(const CTensor &t, index d1, index d2, index d3);
-CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4);
-CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
-                index d5);
-CTensor reshape(const CTensor &t, index d1, index d2, index d3, index d4,
-                index d5, index d6);
 
 CTensor squeeze(const CTensor &t);
 CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);

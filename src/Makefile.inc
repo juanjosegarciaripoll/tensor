@@ -89,8 +89,6 @@ basic_SOURCES = \
 	tensor/tensor_sort_d.cc \
 	tensor/tensor_flatten_d.cc \
 	tensor/tensor_flatten_z.cc \
-	tensor/tensor_reshape_d.cc \
-	tensor/tensor_reshape_z.cc \
 	tensor/tensor_squeeze.cc \
 	tensor/tensor_squeeze_d.cc \
 	tensor/tensor_squeeze_z.cc \
