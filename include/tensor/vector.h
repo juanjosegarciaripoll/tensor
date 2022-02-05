@@ -81,6 +81,7 @@ class Vector {
   Vector(size_t size, elt_t *data) : size_{size}, base_{data}, data_{} {}
 
   constexpr size_t size() const { return size_; }
+  constexpr index ssize() const { return static_cast<index>(size_); }
 
   const elt_t &operator[](size_t pos) const { return *(begin() + pos); }
   elt_t &at(size_t pos) { return *(begin() + pos); }
@@ -167,6 +168,7 @@ class SimpleVector {
   SimpleVector &operator=(SimpleVector<elt_t> &&v) = default;
 
   constexpr size_t size() const { return size_; }
+  constexpr index ssize() const { return static_cast<index>(size_); }
 
   const elt_t &operator[](size_t pos) const { return *(begin() + pos); }
   elt_t &at(size_t pos) { return *(begin() + pos); }

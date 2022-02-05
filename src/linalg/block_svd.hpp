@@ -39,8 +39,8 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
     return svd(A, pU, pVT, economic);
   }
 
-  if ((nblocks == 1) && (block_rows[0].size() >= rows / 2) &&
-      (block_cols[0].size() >= cols / 2)) {
+  if ((nblocks == 1) && (block_rows[0].ssize() >= rows / 2) &&
+      (block_cols[0].ssize() >= cols / 2)) {
     RTensor s = svd(A, pU, pVT, economic);
     delete[] block_rows;
     delete[] block_cols;

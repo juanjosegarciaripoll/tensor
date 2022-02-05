@@ -41,7 +41,7 @@ std::ostream &MatrixForm<elt_t>::display(std::ostream &s) const {
     }
     s << ']';
   } else if (data.rank() == 1) {
-    for (index i = 0; i < data.size(); i++) {
+    for (index i = 0; i < data.ssize(); i++) {
       if (i)
         s << ", ";
       else

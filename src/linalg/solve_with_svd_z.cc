@@ -39,7 +39,7 @@ CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol) {
   if (tol <= 0) {
     tol = DBL_EPSILON;
   }
-  for (tensor::index i = 0; i < s.size(); i++) {
+  for (tensor::index i = 0; i < s.ssize(); i++) {
     if (s[i] <= tol) {
       U = U(range(), range(0, i - 1));
       s = s(range(0, i - 1));

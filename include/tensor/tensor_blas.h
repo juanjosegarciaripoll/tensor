@@ -182,6 +182,14 @@ inline blas::integer index_to_blas(tensor::index value) {
   return static_cast<blas::integer>(value);
 }
 
+inline blas::integer size_t_to_blas(size_t value) {
+  constexpr auto limit = std::numeric_limits<blas::integer>::max();
+  if (value > limit) {
+    throw blas_integer_overflow();
+  }
+  return static_cast<blas::integer>(value);
+}
+
 template <typename elt_t>
 inline blas::integer tensor_rows(const tensor::Tensor<elt_t> &A) {
   return index_to_blas(A.rows());

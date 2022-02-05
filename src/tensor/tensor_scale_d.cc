@@ -33,7 +33,7 @@ RTensor scale(const RTensor &t, int ndx, const RTensor &v) {
   RTensor output(t.dimensions());
   ndx = (int)Dimensions::normalize_index(ndx, t.rank());
   surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
-  if (d2 != v.size()) {
+  if (d2 != v.ssize()) {
     std::cerr << "In scale() the dimension " << ndx
               << " of the tensor does not match the length " << v.size()
               << " of the scale vector" << std::endl;
@@ -48,7 +48,7 @@ void scale_inplace(RTensor &t, int ndx, const RTensor &v) {
   surrounding_dimensions(t.dimensions(),
                          Dimensions::normalize_index(ndx, t.rank()), &d1, &d2,
                          &d3);
-  if (d2 != v.size()) {
+  if (d2 != v.ssize()) {
     std::cerr << "In scale() the dimension " << ndx
               << " of the tensor does not match the length " << v.size()
               << " of the scale vector" << std::endl;

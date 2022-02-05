@@ -64,8 +64,8 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
   tol = -1.0;
 
   // Select the problem size
-  n = _n;
-  nev = _nev;
+  n = blas::size_t_to_blas(_n);
+  nev = blas::size_t_to_blas(_nev);
 
   // There's a limit in the number of eigenvalues we can get
   if ((nev == 0) || (nev > (n - 1))) {
@@ -270,7 +270,7 @@ void Arpack<elt_t, is_symmetric>::set_maxiter(size_t new_maxiter) {
         << "Arpack<elt_t>:: Cannot change number of iterations while running\n";
     abort();
   }
-  maxit = new_maxiter;
+  maxit = static_cast<blas::integer>(new_maxiter);
   iparam[2] = maxit;
 }
 
@@ -297,17 +297,17 @@ elt_t *Arpack<elt_t, is_symmetric>::get_y_vector() {
 template <typename elt_t, bool is_symmetric>
 const tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_x() {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
-  auto which = ipntr[1 - 1] - 1;
-  assert(which % n == 0);
-  return work_vectors[which / n];
+  auto ndx = ipntr[1 - 1] - 1;
+  assert(ndx % n == 0);
+  return work_vectors[ndx / n];
 }
 
 template <typename elt_t, bool is_symmetric>
 tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_y() {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
-  auto which = ipntr[2 - 1] - 1;
-  assert(which % n == 0);
-  return work_vectors[which / n];
+  auto ndx = ipntr[2 - 1] - 1;
+  assert(ndx % n == 0);
+  return work_vectors[ndx / n];
 }
 
 template <typename elt_t, bool is_symmetric>

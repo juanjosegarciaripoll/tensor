@@ -29,7 +29,7 @@ class Booleans;
 const ListGenerator<bool> bgen = {};
 
 bool all_of(const Booleans& b) {
-  return std::count(b.begin_const(), b.end_const(), true) == b.size();
+  return std::count(b.begin_const(), b.end_const(), true) == b.ssize();
 }
 
 bool any_of(const Booleans& b) {

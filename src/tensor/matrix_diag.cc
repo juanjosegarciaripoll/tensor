@@ -42,7 +42,7 @@ inline Tensor<n> do_diag(const Tensor<n> &a, int which, index rows,
               << std::endl;
     abort();
   }
-  if (l != a.size()) {
+  if (l != a.ssize()) {
     std::cerr << "In diag(a,...) the vector A has too few/many elements."
               << std::endl;
     abort();

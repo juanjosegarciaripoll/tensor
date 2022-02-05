@@ -76,7 +76,7 @@ void vector_const_indexed_read(std::tuple<T, typename T::elt_t> &args) {
   const T &v = std::get<0>(args);
   auto n = std::get<1>(args);
   auto x = n;
-  for (tensor::index i = 0; i < v.size(); ++i) {
+  for (tensor::index i = 0; i < v.ssize(); ++i) {
     x += v[i];
   }
   force_nonzero(x);
@@ -87,7 +87,7 @@ void vector_indexed_read(std::tuple<T, typename T::elt_t> &args) {
   T &v = std::get<0>(args);
   auto n = std::get<1>(args);
   auto x = n;
-  for (tensor::index i = 0; i < v.size(); ++i) {
+  for (tensor::index i = 0; i < v.ssize(); ++i) {
     x += v[i];
   }
   force_nonzero(x);
@@ -97,7 +97,7 @@ template <class T>
 void vector_indexed_write(std::tuple<T, typename T::elt_t> &args) {
   T &v = std::get<0>(args);
   auto n = std::get<1>(args);
-  for (tensor::index i = 0; i < v.size(); ++i) {
+  for (tensor::index i = 0; i < v.ssize(); ++i) {
     v.at(i) = n;
   }
 }

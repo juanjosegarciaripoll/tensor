@@ -136,7 +136,9 @@ class Tensor {
   Tensor &operator=(Tensor<elt_t> &&other) = default;
 
   /**Returns total number of elements in Tensor.*/
-  index size() const { return static_cast<index>(data_.size()); }
+  size_t size() const { return data_.size(); }
+  /**Returns total number of elements in Tensor (signed type).*/
+  index ssize() const { return data_.ssize(); }
   /**Does the tensor have elements?*/
   bool is_empty() const { return size() == 0; }
 
@@ -145,7 +147,7 @@ class Tensor {
   /**Return Tensor dimensions.*/
   const Dimensions &dimensions() const { return dims_; }
   /**Length of a given Tensor index.*/
-  index dimension(int which) const {
+  index dimension(index which) const {
     assert(rank() > which);
     assert(which >= 0);
     return dims_[which];

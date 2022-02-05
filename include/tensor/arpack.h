@@ -99,7 +99,6 @@ class Arpack {
   integer maxit;      // Maximum number of Arnoldi update iterations allowed.
   const char *which;  // Specify which of the Ritz values of OP to compute.
   double tol;         // Stopping criterion (relative accuracy of Ritz values).
-  elt_t sigma;        // Shift (for nonsymmetric problems).
   std::unique_ptr<elt_t[]> resid;  // Initial residual vector.
 
   // a.2) Internal variables.
