@@ -4,6 +4,7 @@ file(GLOB TENSOR_HEADER_FILES
   LIST_DIRECTORIES false
   tensor/*.h
   tensor/*.hpp
+  tensor/tensor/*.h
   tensor/detail/*.h
   tensor/detail/*.hpp
   )

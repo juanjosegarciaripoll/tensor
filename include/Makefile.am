@@ -1,7 +1,10 @@
 
 nobase_include_HEADERS = \
 	tensor/arpack.h \
-	tensor/detail/functional.h \
+	tensor/tensor/ctensor.h \
+	tensor/tensor/rtensor.h \
+	tensor/tensor/operators.h \
+	tensor/tensor/types.h \
 	tensor/detail/sparse_base.hpp \
 	tensor/detail/sparse_ops.hpp \
 	tensor/detail/tensor_ops.hpp \

@@ -1,4 +1,5 @@
 // -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+#pragma once
 /*
     Copyright (c) 2010 Juan Jose Garcia Ripoll
 
@@ -16,19 +17,34 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+#ifndef TENSOR_TENSOR_OPERATORS_H
+#define TENSOR_TENSOR_OPERATORS_H
 
-#pragma once
-#if !defined(TENSOR_TENSOR_H)
-#error "This header cannot be included manually"
-#endif
-#ifndef TENSOR_DETAIL_TENSOR_OPS_HPP
-#define TENSOR_DETAIL_TENSOR_OPS_HPP
+#include <tensor/tensor/types.h>
 
-#include <cassert>
-#include <type_traits>
-#include <algorithm>
+/*!\addtogroup Tensors*/
+/* @{ */
 
 namespace tensor {
+
+/**Return a Tensor with same data and given dimensions.*/
+template <typename elt_t>
+Tensor<elt_t> reshape(const Tensor<elt_t> &t, const Dimensions &d) {
+  return Tensor<elt_t>(d, t);
+}
+
+/**Return a RTensor with same data and given dimensions, specified separately.*/
+template <typename elt_t, typename... index_like>
+inline Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1,
+                             index_like... dnext) {
+  return Tensor<elt_t>({d1, static_cast<index>(dnext)...}, t);
+}
+
+/**Convert a tensor to a 1D vector with the same elements.*/
+template <typename elt_t>
+Tensor<elt_t> flatten(const Tensor<elt_t> &t) {
+  return reshape(t, t.size());
+}
 
 //
 // Unary operations
@@ -232,4 +248,6 @@ Tensor<t1> operator/=(Tensor<t1> &a, const t2 &b) {
 
 }  // namespace tensor
 
-#endif  // !TENSOR_DETAIL_TENSOR_OPS_H
+/* @} */
+
+#endif  // TENSOR_TENSOR_OPERATORS_H
