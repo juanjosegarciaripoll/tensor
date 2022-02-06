@@ -31,24 +31,6 @@ target_sources(tensor
     tensor_plus_double.cc
     tensor_times_cdouble.cc
     tensor_times_double.cc
-    tensor_unop_abs_d.cc
-    tensor_unop_abs_z.cc
-    tensor_unop_cos_d.cc
-    tensor_unop_cos_z.cc
-    tensor_unop_cosh_d.cc
-    tensor_unop_cosh_z.cc
-    tensor_unop_exp_d.cc
-    tensor_unop_exp_z.cc
-    tensor_unop_log_d.cc
-    tensor_unop_log_z.cc
-    tensor_unop_sin_d.cc
-    tensor_unop_sin_z.cc
-    tensor_unop_sinh_d.cc
-    tensor_unop_sinh_z.cc
-    tensor_unop_sqrt_d.cc
-    tensor_unop_sqrt_z.cc
-    tensor_unop_tan_d.cc
-    tensor_unop_tan_z.cc
-    tensor_unop_tanh_d.cc
-    tensor_unop_tanh_z.cc
+    tensor_unop_d.cc
+    tensor_unop_z.cc
     )

@@ -40,16 +40,32 @@ def divides_inplace(A, B):
     A /= B
     return A
 
+
 def copy_first_column(A, B):
-    A[:,0] = B[:,0]
+    A[:, 0] = B[:, 0]
+
 
 def copy_first_row(A, B):
-    A[0,:] = A[0,:]
+    A[0, :] = A[0, :]
+
+
+def apply_sum(A, B):
+    return np.sum(A)
+
+
+def apply_cos(A, B):
+    return np.cos(A)
+
+
+def apply_exp(A, B):
+    return np.exp(A)
+
 
 def make_two_real_ndarrays(size: int) -> np.ndarray:
     for _ in range(10):
         a2 = np.empty(size, dtype=np.double)
     return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
+
 
 def make_two_real_matrices(size: int) -> np.ndarray:
     for _ in range(10):
@@ -57,6 +73,7 @@ def make_two_real_matrices(size: int) -> np.ndarray:
     size = int(np.sqrt(size))
     size = (size, size)
     return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
+
 
 def make_real_ndarray_and_number(size: int) -> np.ndarray:
     for _ in range(10):
@@ -119,6 +136,9 @@ def run_all():
                     ("divides", divides, make_two_real_ndarrays),
                     ("copy_column", copy_first_row, make_two_real_matrices),
                     ("copy_row", copy_first_column, make_two_real_matrices),
+                    ("sum", apply_sum, make_real_ndarray_and_number),
+                    ("exp", apply_exp, make_real_ndarray_and_number),
+                    ("cos", apply_cos, make_real_ndarray_and_number),
                 ],
             ),
             BenchmarkGroup.run(
@@ -130,6 +150,9 @@ def run_all():
                     ("divides", divides, make_two_complex_ndarrays),
                     ("copy_column", copy_first_row, make_two_complex_matrices),
                     ("copy_row", copy_first_column, make_two_complex_matrices),
+                    ("sum", apply_sum, make_complex_ndarray_and_one),
+                    ("exp", apply_exp, make_complex_ndarray_and_one),
+                    ("cos", apply_cos, make_complex_ndarray_and_one),
                 ],
             ),
             BenchmarkGroup.run(

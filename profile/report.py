@@ -9,6 +9,7 @@ import sys
 
 
 def load_report(filename: str) -> BenchmarkSet:
+    print(f"Loading {filename}")
     with open(filename, "r") as f:
         data = json.load(f)
     return BenchmarkSet.fromjson(data)

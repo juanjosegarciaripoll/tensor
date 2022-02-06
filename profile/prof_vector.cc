@@ -72,6 +72,21 @@ void divide_inplace(std::tuple<T1, T2> &args) {
 }
 
 template <class T>
+void apply_sum(std::tuple<T> &args) {
+  force_nonzero(sum(std::get<0>(args)));
+}
+
+template <class T>
+void apply_exp(std::tuple<T> &args) {
+  force(exp(std::get<0>(args)));
+}
+
+template <class T>
+void apply_cos(std::tuple<T> &args) {
+  force(cos(std::get<0>(args)));
+}
+
+template <class T>
 void vector_const_indexed_read(std::tuple<T, typename T::elt_t> &args) {
   const T &v = std::get<0>(args);
   auto n = std::get<1>(args);
@@ -140,6 +155,12 @@ std::tuple<T, T> make_two_vectors(size_t size) {
 }
 
 template <class T>
+std::tuple<T> make_vector(size_t size) {
+  warmup<T>(size);
+  return typename std::tuple<T>(T::random(static_cast<tensor::index>(size)));
+}
+
+template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
   auto number = static_cast<typename T::elt_t>(1.0);
   warmup<T>(size);
@@ -168,6 +189,9 @@ void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
     group.add("minus", subtract<T, T>, make_two_vectors<T>);
     group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
     group.add("divides", divide<T, T>, make_two_vectors<T>);
+    group.add("sum", apply_sum<T>, make_vector<T>);
+    group.add("cos", apply_cos<T>, make_vector<T>);
+    group.add("exp", apply_exp<T>, make_vector<T>);
     set << group;
   }
   {
@@ -178,16 +202,6 @@ void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
               make_vector_and_number<T>);
     group.add("indexed_write", vector_indexed_write<T>,
               make_vector_and_number<T>);
-    set << group;
-  }
-  if (false) {
-    BenchmarkGroup group(name);
-    group.add("plus", add<T, T>, make_two_vectors<T>);
-    group.add("minus", subtract<T, T>, make_two_vectors<T>);
-    group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
-    group.add("divides", divide<T, T>, make_two_vectors<T>);
-    group.add("copy_column", copy_first_column<T>, make_two_vectors<T>);
-    group.add("copy_row", copy_first_row<T>, make_two_vectors<T>);
     set << group;
   }
   {

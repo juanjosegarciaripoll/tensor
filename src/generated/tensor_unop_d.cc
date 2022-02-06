@@ -19,17 +19,50 @@
 
 #include <cmath>
 #include <tensor/tensor.h>
+#include <tensor/tensor/mapping.h>
 
 namespace tensor {
 
+using tensor::mapping::ufunc1;
+
+RTensor abs(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::abs(r); });
+}
+
+RTensor sqrt(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::sqrt(r); });
+}
+
+RTensor sin(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::sin(r); });
+}
+
+RTensor cos(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::cos(r); });
+}
+
+RTensor tan(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::tan(r); });
+}
+
+RTensor exp(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::exp(r); });
+}
+
+RTensor log(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::log(r); });
+}
+
 RTensor sinh(const RTensor &t) {
-  RTensor output(t.dimensions());
-  RTensor::const_iterator src = t.begin();
-  RTensor::iterator dest = output.begin();
-  for (; src != t.end(); src++, dest++) {
-    *dest = std::sinh(*src);
-  }
-  return output;
+  return ufunc1(t, [](double r) { return std::sinh(r); });
+}
+
+RTensor cosh(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::cosh(r); });
+}
+
+RTensor tanh(const RTensor &t) {
+  return ufunc1(t, [](double r) { return std::tanh(r); });
 }
 
 }  // namespace tensor

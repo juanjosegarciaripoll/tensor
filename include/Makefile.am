@@ -2,6 +2,7 @@
 nobase_include_HEADERS = \
 	tensor/arpack.h \
 	tensor/tensor/ctensor.h \
+	tensor/tensor/mapping.h \
 	tensor/tensor/rtensor.h \
 	tensor/tensor/operators.h \
 	tensor/tensor/types.h \
