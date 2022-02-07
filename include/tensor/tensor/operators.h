@@ -20,6 +20,7 @@
 #ifndef TENSOR_TENSOR_OPERATORS_H
 #define TENSOR_TENSOR_OPERATORS_H
 
+#include <type_traits>
 #include <tensor/tensor/types.h>
 #include <tensor/traits.h>
 
@@ -67,104 +68,139 @@ bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2);
 //
 // TENSOR <OP> TENSOR
 //
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator+(const Tensor<t1> &a, const Tensor<t2> &b) {
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
+tensor_common_t<t1, t2> operator+(const t1 &a, const t2 &b) {
   // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
-  std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 [](t1 x, t2 y) { return x + y; });
+  std::transform(
+      a.begin(), a.end(), b.begin(), output.begin(),
+      [](tensor_scalar_t<t1> x, tensor_scalar_t<t2> y) { return x + y; });
   return output;
 }
 
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator-(const Tensor<t1> &a, const Tensor<t2> &b) {
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
+tensor_common_t<t1, t2> operator-(const t1 &a, const t2 &b) {
+  // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
-  std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 [](t1 x, t2 y) { return x - y; });
+  std::transform(
+      a.begin(), a.end(), b.begin(), output.begin(),
+      [](tensor_scalar_t<t1> x, tensor_scalar_t<t2> y) { return x - y; });
   return output;
 }
-
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator*(const Tensor<t1> &a, const Tensor<t2> &b) {
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
+tensor_common_t<t1, t2> operator*(const t1 &a, const t2 &b) {
+  // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
-  std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 [](t1 x, t2 y) { return x * y; });
+  std::transform(
+      a.begin(), a.end(), b.begin(), output.begin(),
+      [](tensor_scalar_t<t1> x, tensor_scalar_t<t2> y) { return x * y; });
   return output;
 }
-
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator/(const Tensor<t1> &a, const Tensor<t2> &b) {
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
+tensor_common_t<t1, t2> operator/(const t1 &a, const t2 &b) {
+  // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
-  std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 [](t1 x, t2 y) { return x / y; });
+  std::transform(
+      a.begin(), a.end(), b.begin(), output.begin(),
+      [](tensor_scalar_t<t1> x, tensor_scalar_t<t2> y) { return x / y; });
   return output;
 }
 
 //
 // TENSOR <OP> NUMBER
 //
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator+(const Tensor<t1> &a, t2 b) {
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_scalar<t2>::value && is_tensor<t1>::value>>
+tensor_common_t<t1, t2> operator+(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](t1 x) { return x + b; });
+                 [&](tensor_scalar_t<t1> x) { return x + b; });
   return output;
 }
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator-(const Tensor<t1> &a, t2 b) {
+
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_scalar<t2>::value && is_tensor<t1>::value>>
+tensor_common_t<t1, t2> operator-(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](t1 x) { return x - b; });
+                 [&](tensor_scalar_t<t1> x) { return x - b; });
   return output;
 }
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator*(const Tensor<t1> &a, t2 b) {
+
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_scalar<t2>::value && is_tensor<t1>::value>>
+tensor_common_t<t1, t2> operator*(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](t1 x) { return x * b; });
+                 [&](tensor_scalar_t<t1> x) { return x * b; });
   return output;
 }
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator/(const Tensor<t1> &a, t2 b) {
+
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_scalar<t2>::value && is_tensor<t1>::value>>
+tensor_common_t<t1, t2> operator/(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](t1 x) { return x / b; });
+                 [&](tensor_scalar_t<t1> x) { return x / b; });
   return output;
 }
 
 //
 // NUMBER <OP> TENSOR
 //
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator+(t1 a, const Tensor<t2> &b) {
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_scalar<t1>::value && is_tensor<t2>::value>>
+tensor_common_t<t1, t2> operator+(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](t2 x) { return a + x; });
+                 [&](tensor_scalar_t<t2> x) { return a + x; });
   return output;
 }
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator-(t1 a, const Tensor<t2> &b) {
+
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_scalar<t1>::value && is_tensor<t2>::value>>
+tensor_common_t<t1, t2> operator-(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](t2 x) { return a - x; });
+                 [&](tensor_scalar_t<t2> x) { return a - x; });
   return output;
 }
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator*(t1 a, const Tensor<t2> &b) {
+
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_scalar<t1>::value && is_tensor<t2>::value>>
+tensor_common_t<t1, t2> operator*(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](t2 x) { return a * x; });
+                 [&](tensor_scalar_t<t2> x) { return a * x; });
   return output;
 }
-template <typename t1, typename t2>
-tensor_common_t<t1, t2> operator/(t1 a, const Tensor<t2> &b) {
+
+template <
+    typename t1, typename t2,
+    typename = std::enable_if_t<is_scalar<t1>::value && is_tensor<t2>::value>>
+tensor_common_t<t1, t2> operator/(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](t2 x) { return a / x; });
+                 [&](tensor_scalar_t<t2> x) { return a / x; });
   return output;
 }
 
