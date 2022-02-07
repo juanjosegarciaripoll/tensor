@@ -360,6 +360,12 @@ class TensorView {
                                       data_.begin());
   }
 
+  Tensor<elt_t> copy() const {
+    Tensor<elt_t> output(dimensions());
+    std::copy(begin(), end(), output.begin());
+    return output;
+  }
+
  private:
   const Vector<elt_t> &data_;
   SimpleVector<Range> ranges_;
@@ -401,6 +407,19 @@ class MutableTensorView {
   TensorIterator<elt_t> end() {
     return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin());
   }
+  TensorConstIterator<elt_t> begin() const {
+    return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),
+                                      data_.begin());
+  }
+  TensorConstIterator<elt_t> end() const {
+    return TensorConstIterator<elt_t>(RangeIterator::end(ranges_),
+                                      data_.begin());
+  }
+  Tensor<elt_t> copy() const {
+    Tensor<elt_t> output(dimensions());
+    std::copy(begin(), end(), output.begin());
+    return output;
+  }
 
  private:
   Vector<elt_t> &data_;
@@ -409,15 +428,18 @@ class MutableTensorView {
 };
 
 extern template class Tensor<double>;
-/** Real Tensor with elements of type "double". */
+extern template class TensorView<double>;
+extern template class MutableTensorView<double>;
 #ifdef DOXYGEN_ONLY
-struct RTensor : public Tensor<double> {
-}
+/** Real Tensor with elements of type "double". */
+struct RTensor : public Tensor<double> {};
 #else
 typedef Tensor<double> RTensor;
 #endif
 
 extern template class Tensor<cdouble>;
+extern template class TensorView<cdouble>;
+extern template class MutableTensorView<cdouble>;
 /** Complex Tensor with elements of type "cdouble". */
 #ifdef DOXYGEN_ONLY
 struct CTensor : public Tensor<cdouble> {}

@@ -25,3 +25,5 @@
 // all required code.
 //
 template class tensor::Tensor<double>;
+template class tensor::TensorView<double>;
+template class tensor::MutableTensorView<double>;

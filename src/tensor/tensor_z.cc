@@ -25,3 +25,5 @@
 // all required code.
 //
 template class tensor::Tensor<tensor::cdouble>;
+template class tensor::TensorView<tensor::cdouble>;
+template class tensor::MutableTensorView<tensor::cdouble>;
