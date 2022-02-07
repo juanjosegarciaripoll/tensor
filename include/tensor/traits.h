@@ -25,6 +25,12 @@
 
 namespace tensor {
 
+template <typename t>
+struct is_scalar : public std::is_floating_point<t> {};
+
+template <typename t>
+struct is_scalar<std::complex<t>> : public std::true_type {};
+
 template <typename elt_t>
 struct is_tensor : public std::false_type {};
 
