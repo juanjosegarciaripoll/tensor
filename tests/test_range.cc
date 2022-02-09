@@ -41,7 +41,7 @@ TEST(RangeTest, EmptyRange) {
   ASSERT_EQ(r.start(), 0);
   ASSERT_EQ(r.limit(), 0);
   ASSERT_EQ(r.step(), 1);
-  ASSERT_EQ(r.dimension(), 0);
+  ASSERT_EQ(r.dimension(), -1);
   ASSERT_EQ(r.size(), 0);
 }
 
@@ -50,7 +50,7 @@ TEST(RangeTest, Range1D) {
   ASSERT_EQ(r.start(), 0);
   ASSERT_EQ(r.limit(), 5);
   ASSERT_EQ(r.step(), 1);
-  ASSERT_EQ(r.dimension(), 5);
+  ASSERT_EQ(r.dimension(), -1);
   ASSERT_THROW(r.set_dimension(3), std::out_of_range);
   ASSERT_EQ(r.size(), 5);
 }
@@ -95,6 +95,7 @@ TEST(RangeTest, RangeIndicesSize1) {
   ASSERT_EQ(r.size(), 1);
   ASSERT_NO_THROW(r.set_dimension(3));
   ASSERT_EQ(r.size(), 1);
+  ASSERT_THROW(r.set_dimension(5), std::invalid_argument);
 }
 
 TEST(RangeTest, RangeIndicesSize2) {
@@ -106,6 +107,7 @@ TEST(RangeTest, RangeIndicesSize2) {
   ASSERT_EQ(r.size(), 2);
   ASSERT_NO_THROW(r.set_dimension(4));
   ASSERT_EQ(r.size(), 2);
+  ASSERT_THROW(r.set_dimension(5), std::invalid_argument);
 }
 
 TEST(RangeTest, RangeIndices) {
@@ -114,9 +116,10 @@ TEST(RangeTest, RangeIndices) {
   ASSERT_EQ(r.limit(), 3);
   ASSERT_EQ(r.step(), 1);
   ASSERT_EQ(r.size(), 3);
-  ASSERT_NO_THROW(r.set_dimension(4));
   ASSERT_EQ(r.size(), 3);
-  ASSERT_THROW(r.set_dimension(3), std::out_of_range);
+  ASSERT_THROW(r.set_dimension(2), std::out_of_range);
+  ASSERT_NO_THROW(r.set_dimension(4));
+  ASSERT_THROW(r.set_dimension(5), std::invalid_argument);
 }
 
 /////////////////////////////////////////////////////////////////

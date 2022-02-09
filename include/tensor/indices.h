@@ -191,11 +191,11 @@ inline Booleans operator!=(index a, const Indices &b) { return b != a; }
 class Range {
  public:
   Range(index position)
-      : start_{position}, step_{1}, limit_{position + 1}, dimension_{limit_} {}
+      : start_{position}, step_{1}, limit_{position + 1}, dimension_{-1} {}
   Range(index start, index end)
-      : start_{start}, step_{1}, limit_{end + 1}, dimension_{limit_} {}
+      : start_{start}, step_{1}, limit_{end + 1}, dimension_{-1} {}
   Range(index start, index end, index step)
-      : start_{start}, step_{step}, limit_{end + 1}, dimension_{limit_} {}
+      : start_{start}, step_{step}, limit_{end + 1}, dimension_{-1} {}
   Range(index start, index end, index step, index dimension)
       : start_{start}, step_{step}, limit_{end + 1}, dimension_{dimension} {}
   Range(Indices indices);
@@ -223,7 +223,7 @@ class Range {
   static Range full(index start = 0, index step = 1);
 
  private:
-  index start_{0}, step_{1}, limit_{0}, dimension_{0};
+  index start_{0}, step_{1}, limit_{0}, dimension_{-1};
   Indices indices_;
 };
 

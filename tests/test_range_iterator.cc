@@ -116,6 +116,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize0) {
 
 TEST(RangeIteratorTest, RangeIterator1DSize1) {
   Range r(/*start*/ 0, /*end*/ 0);  // = [0]
+  r.set_dimension(3);
   RangeIterator it(r, 1);
   ASSERT_EQ(*it, 0);
   ASSERT_FALSE(it.finished());
@@ -129,6 +130,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize1) {
 
 TEST(RangeIteratorTest, RangeIterator1DSize1Start1) {
   Range r(/*start*/ 1, /*end*/ 1);  // = [1, 1]
+  r.set_dimension(3);
   RangeIterator it(r, 1);
   ASSERT_EQ(*it, 1);
   ASSERT_FALSE(it.finished());
@@ -142,6 +144,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize1Start1) {
 
 TEST(RangeIteratorTest, RangeIterator1DSize2) {
   Range r(/*start*/ 0, /*end*/ 1);  // = [0, 1]
+  r.set_dimension(3);
   RangeIterator it(r, 1);
   ASSERT_EQ(*it, 0);
   ASSERT_FALSE(it.finished());
@@ -158,6 +161,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize2) {
 
 TEST(RangeIteratorTest, RangeIterator1DSize1Step2) {
   Range r(/*start*/ 0, /*end*/ 0, /*step*/ 2);  // = [0]
+  r.set_dimension(3);
   RangeIterator it(r, 1);
   ASSERT_EQ(*it, 0);
   ASSERT_FALSE(it.finished());

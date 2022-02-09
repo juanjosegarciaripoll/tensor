@@ -63,7 +63,7 @@ Range::Range(Indices indices)
     : start_{0},
       step_{1},
       limit_{static_cast<index>(indices.size())},
-      dimension_{0},
+      dimension_{-1},
       indices_(std::move(indices)) {
   if (indices.size() == 0) {
     *this = empty();
@@ -118,26 +118,25 @@ bool Range::maybe_combine(const Range &other) {
   return false;
 }
 
-void Range::set_dimension(index dimension) {
+void Range::set_dimension(index new_dimension) {
   /* The description of a range is incomplete until we set its dimension, which
   can only be done when it references a tensor. */
-  if (dimension >= limit()) {
-    if (limit() < 0) {
-      // When limit() < 0 we had a full range whose size must be updated
-      limit_ = dimension;
-    } else if (has_indices()) {
-      // Verify that all positions are within range for the selected indices
-      for (auto x : indices()) {
-        if (x >= dimension) {
-          throw std::out_of_range("Range indices exceed tensor dimensions");
-        }
+  if (dimension_ >= 0 && new_dimension != dimension_) {
+    throw std::invalid_argument("Cannot reset dimension of a range");
+  } else if (has_indices()) {
+    // Verify that all positions are within range for the selected indices
+    for (auto x : indices()) {
+      if (x >= new_dimension) {
+        throw std::out_of_range("Range indices exceed tensor dimensions");
       }
     }
-    dimension_ = dimension;
-  } else {
-    // The range [start,end] falls outside [0,dimension)
+  } else if (limit() < 0) {
+    // When limit() < 0 we had a full range whose size must be updated
+    limit_ = new_dimension;
+  } else if (new_dimension < limit()) {
     throw std::out_of_range("Range indices exceed tensor dimensions");
   }
+  dimension_ = new_dimension;
 }
 
 const Range RangeIterator::empty_range = Range::empty();
@@ -148,9 +147,13 @@ RangeIterator RangeIterator::make_range_iterators(
       std::any_of(ranges.begin(), ranges.end(),
                   [](const Range &s) { return s.size() == 0; })) {
     return RangeIterator(Range::empty(), 1, end_flag);
-  } else {
-    return make_next_iterator(ranges.begin(), ranges.ssize(), 1, end_flag);
   }
+  if (std::any_of(ranges.begin(), ranges.end(),
+                  [](const Range &s) { return s.dimension() < 0; })) {
+    throw std::invalid_argument(
+        "Invalid dimension size in Range found when creating RangeIterator");
+  }
+  return make_next_iterator(ranges.begin(), ranges.ssize(), 1, end_flag);
 }
 
 RangeIterator RangeIterator::make_next_iterator(const Range *ranges,
