@@ -43,7 +43,7 @@ CTensor eigs_gen_small(const RTensor &A, EigType eig_type, size_t neig,
   Indices ndx_out(neig);
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
   if (eigenvectors) {
-    *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
+    *eigenvectors = tensor::real(vectors(_, range(ndx_out)));
   }
   if (converged) {
     *converged = true;

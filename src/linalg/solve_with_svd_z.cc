@@ -41,9 +41,9 @@ CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol) {
   }
   for (tensor::index i = 0; i < s.ssize(); i++) {
     if (s[i] <= tol) {
-      U = U(range(), range(0, i - 1));
+      U = U(_, range(0, i - 1));
       s = s(range(0, i - 1));
-      VT = VT(range(0, i - 1), range());
+      VT = VT(range(0, i - 1), _);
     }
   }
   CTensor X = foldc(U, 0, B, 0);

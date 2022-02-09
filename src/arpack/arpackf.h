@@ -119,7 +119,7 @@ void F77NAME(zneupd)(logical *rvec, const char *HowMny, logical *select,
 namespace linalg {
 
 using tensor::CTensor;
-using tensor::range;
+using tensor::range, tensor::_;
 using tensor::RTensor;
 
 template <bool symmetric>
@@ -217,7 +217,8 @@ static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
   blas::integer rvec;
   double sigmar = real(sigma), sigmai = imag(sigma);
   if (eigenvectors) {
-    Z = RTensor(tensor::Dimensions{n, ncv}, tensor::Vector<double>(static_cast<size_t>(n * ncv), V));
+    Z = RTensor(tensor::Dimensions{n, ncv},
+                tensor::Vector<double>(static_cast<size_t>(n * ncv), V));
     HowMny = 'A';
     ldz = n;
     rvec = 1;
@@ -248,17 +249,16 @@ static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
       eigenvalues.at(i) = tensor::cdouble(dr[i], di[i]);
       eigenvalues.at(i + 1) = tensor::cdouble(dr[i + 1], di[i + 1]);
       if (eigenvectors) {
-        eigenvectors->at(range(), range(i)) =
-            tensor::to_complex(Z(range(), range(i)), Z(range(), range(i + 1)));
-        eigenvectors->at(range(), range(i + 1)) =
-            tensor::conj((*eigenvectors)(range(), range(i)));
+        eigenvectors->at(_, range(i)) =
+            tensor::to_complex(Z(_, range(i)), Z(_, range(i + 1)));
+        eigenvectors->at(_, range(i + 1)) =
+            tensor::conj((*eigenvectors)(_, range(i)));
       }
       i += 2;
     } else {
       eigenvalues.at(i) = dr[i];
       if (eigenvectors) {
-        eigenvectors->at(range(), range(i)) =
-            tensor::to_complex(Z(range(), range(i)));
+        eigenvectors->at(_, range(i)) = tensor::to_complex(Z(_, range(i)));
       }
       ++i;
     }

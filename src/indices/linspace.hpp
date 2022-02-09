@@ -37,7 +37,7 @@ static inline const Tensor<elt_t> do_linspace(const Tensor<elt_t> &min,
     const Tensor<elt_t> delta =
         reshape((max - min) / static_cast<double>(n - 1), d);
     for (index i = 0; i < n; i++) {
-      output.at(range(), range(i)) = delta * static_cast<double>(i) + min;
+      output.at(_, range(i)) = delta * static_cast<double>(i) + min;
     }
   }
   if (d == 1)

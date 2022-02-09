@@ -42,7 +42,7 @@ RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n) {
     RTensor Av = RTensor::empty(l);
     v.at(i) = 1.0;
     A(v, Av);
-    M.at(range(), range(i)) = Av;
+    M.at(_, range(i)) = Av;
   }
   return M;
 }
@@ -55,7 +55,7 @@ RTensor eigs_small(const RTensor &A, EigType eig_type, size_t neig,
   Indices ndx_out(neig);
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
   if (eigenvectors) {
-    *eigenvectors = vectors(range(), range(ndx_out));
+    *eigenvectors = vectors(_, range(ndx_out));
   }
   if (converged) {
     *converged = true;

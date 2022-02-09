@@ -32,6 +32,8 @@ class Flags {
   double get(unsigned int code) const;
   Flags &set(unsigned int code, double value);
 
+  int get_int(unsigned int code) const { return static_cast<int>(get(code)); }
+
   unsigned int create_key(double value);
 
  private:

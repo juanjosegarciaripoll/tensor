@@ -41,7 +41,7 @@ CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
     CTensor Av = CTensor::empty(l);
     v.at(i) = 1.0;
     A(v, Av);
-    M.at(range(), range(i)) = Av;
+    M.at(_, range(i)) = Av;
   }
   return M;
 }
@@ -54,7 +54,7 @@ CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
   Indices ndx_out(neig);
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
   if (eigenvectors) {
-    *eigenvectors = tensor::real(vectors(range(), range(ndx_out)));
+    *eigenvectors = tensor::real(vectors(_, range(ndx_out)));
   }
   if (converged) {
     *converged = true;

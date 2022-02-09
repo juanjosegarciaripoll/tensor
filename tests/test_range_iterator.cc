@@ -454,7 +454,7 @@ template <typename elt_t>
 Tensor<elt_t> slow_index_range_test2a(const Tensor<elt_t> &P) {
   for (index attempts = 10; attempts; --attempts) {
     const Indices ndx = random_indices(P.dimension(0));
-    SimpleVector<Range> ranges{range(ndx), range()};
+    SimpleVector<Range> ranges{range(ndx), _};
     Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
     RangeIterator it = RangeIterator::begin(ranges);
     for (index j = 0; j < P.dimension(1); ++j) {
@@ -481,7 +481,7 @@ template <typename elt_t>
 Tensor<elt_t> slow_index_range_test2b(const Tensor<elt_t> &P) {
   for (index attempts = 10; attempts; --attempts) {
     const Indices ndx = random_indices(P.dimension(1));
-    SimpleVector<Range> ranges{range(), range(ndx)};
+    SimpleVector<Range> ranges{_, range(ndx)};
     Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
     RangeIterator it = RangeIterator::begin(ranges);
     for (index j = 0; j < ndx.size(); ++j) {

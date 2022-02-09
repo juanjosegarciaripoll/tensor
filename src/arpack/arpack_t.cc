@@ -234,8 +234,8 @@ Arpack<elt_t, is_symmetric>::get_data(eigenvector_t *eigenvectors) {
     output = output(range(ndx));
     output = output(range(0, nev - 1));
     if (eigenvectors) {
-      eigenvector_t vectors = (*eigenvectors)(range(), range(ndx));
-      *eigenvectors = vectors(range(), range(0, nev - 1));
+      eigenvector_t vectors = (*eigenvectors)(_, range(ndx));
+      *eigenvectors = vectors(_, range(0, nev - 1));
     }
   }
   return output;

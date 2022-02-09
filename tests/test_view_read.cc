@@ -107,7 +107,7 @@ Tensor<elt_t> slow_range4(const Tensor<elt_t> &P, index i0, index i2, index i1,
 template <typename elt_t>
 void test_full_size_range1(Tensor<elt_t> &P) {
   Tensor<elt_t> Paux = P;
-  Tensor<elt_t> t = P(range());
+  Tensor<elt_t> t = P(_);
   ASSERT_TRUE(all_equal(P, t));
   unchanged(P, Paux);
 }
@@ -115,7 +115,7 @@ void test_full_size_range1(Tensor<elt_t> &P) {
 template <typename elt_t>
 void test_full_size_range2(Tensor<elt_t> &P) {
   Tensor<elt_t> Paux = P;
-  Tensor<elt_t> t = P(range(), range());
+  Tensor<elt_t> t = P(_, _);
   ASSERT_TRUE(all_equal(P, t));
   unchanged(P, Paux);
 }
@@ -123,7 +123,7 @@ void test_full_size_range2(Tensor<elt_t> &P) {
 template <typename elt_t>
 void test_full_size_range3(Tensor<elt_t> &P) {
   Tensor<elt_t> Paux = P;
-  Tensor<elt_t> t = P(range(), range(), range());
+  Tensor<elt_t> t = P(_, _, _);
   ASSERT_TRUE(all_equal(P, t));
   unchanged(P, Paux);
 }
@@ -253,7 +253,7 @@ void test_view_extract1(Tensor<elt_t> &P, index i0, index i2, index i1) {
     ASSERT_TRUE(all_equal(t5, t1));
   }
   if (t1.dimension(0) == P.dimension(0)) {
-    Tensor<elt_t> t7 = P(range());
+    Tensor<elt_t> t7 = P(_);
     ASSERT_TRUE(all_equal(t7, t1));
   }
   unchanged(P, Paux);
@@ -293,11 +293,11 @@ void test_view_extract2(Tensor<elt_t> &P, index i0, index i2, index i1,
     ASSERT_TRUE(all_equal(t6, t1));
   }
   if (t1.dimension(0) == P.dimension(0)) {
-    Tensor<elt_t> t7 = P(range(), range(j0, j2, j1));
+    Tensor<elt_t> t7 = P(_, range(j0, j2, j1));
     ASSERT_TRUE(all_equal(t7, t1));
   }
   if (t1.dimension(1) == P.dimension(1)) {
-    Tensor<elt_t> t7 = P(range(i0, i2, i1), range());
+    Tensor<elt_t> t7 = P(range(i0, i2, i1), _);
     ASSERT_TRUE(all_equal(t7, t1));
   }
   unchanged(P, Paux);

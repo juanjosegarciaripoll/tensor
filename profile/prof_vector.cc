@@ -121,14 +121,14 @@ template <class T>
 void copy_first_column(std::tuple<T, T> &args) {
   T &A = std::get<0>(args);
   T &B = std::get<1>(args);
-  A.at(range(), range(0)) = B(range(), range(0));
+  A.at(_, range(0)) = B(_, range(0));
 }
 
 template <class T>
 void copy_first_row(std::tuple<T, T> &args) {
   T &A = std::get<0>(args);
   T &B = std::get<1>(args);
-  A.at(range(0), range()) = B(range(0), range());
+  A.at(range(0), _) = B(range(0), _);
 }
 
 template <class T>

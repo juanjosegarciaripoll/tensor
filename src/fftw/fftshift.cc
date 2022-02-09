@@ -62,10 +62,10 @@ CTensor fftshift(const CTensor& input, index dim, int direction) {
     }
   }
 
-  output.at(range(), range(0, Nhalf - 1), range()) =
-      reshape_input(range(), range(minfreq, end), range());
-  output.at(range(), range(Nhalf, end), range()) =
-      reshape_input(range(), range(0, minfreq - 1), range());
+  output.at(_, range(0, Nhalf - 1), _) =
+      reshape_input(_, range(minfreq, end), _);
+  output.at(_, range(Nhalf, end), _) =
+      reshape_input(_, range(0, minfreq - 1), _);
 
   return reshape(output, input.dimensions());
 }

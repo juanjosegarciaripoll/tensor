@@ -83,20 +83,20 @@ t.at(2,2)   = 5.0;                       // also fails on compilation
 
 \section sec_tensor_slices Tensor slicing
 
-To access more than one element of a tensor, you can use the range() function together with ordinary brackets to get slices.
+To access more than one element of a tensor, you can use the _ function together with ordinary brackets to get slices.
 This works similar to Matlab's slice notation.
-The range() function can take a number of integer arguments, or an Indices vector (see the section on using Indices) to access various items.
+The _ function can take a number of integer arguments, or an Indices vector (see the section on using Indices) to access various items.
 As with single entries, negative values are accepted, and count from the end of the dimension.
 Note that all parameters either have to be numbers, thus retrieving a single item, or slices.
 
 \code
 CTensor t = CTensor::random(5,5);
 
-CTensor full  = t(range(), range());          // no argument  -> take all Indices
-CTensor row   = t(range(2), range());         // one argument -> take only given index
-CTensor full2 = t(range(1,-1), range());      // two arguments-> start and stop
-CTensor evenRows = t(range(1,-1,2), range()); // three args   -> start,stop,stride
-CTensor oddRows = t(range(igen<<1<<3), range());// Indices as argument
+CTensor full  = t(_, _);          // no argument  -> take all Indices
+CTensor row   = t(range(2), _);         // one argument -> take only given index
+CTensor full2 = t(range(1,-1), _);      // two arguments-> start and stop
+CTensor evenRows = t(range(1,-1,2), _); // three args   -> start,stop,stride
+CTensor oddRows = t(range(igen<<1<<3), _);// Indices as argument
 \endcode
 
 To assign data, you can use again the at() function.
@@ -106,9 +106,9 @@ You can assign three things: Either a single value or another tensor or slice wi
 CTensor dest = CTensor::zeros(5,3);
 CTensor col  = CTensor::ones(5,1);
 
-dest.at(range(), range(0)) = 5.0;     // first column gets complex value (5.0, 0)
-dest.at(range(), range(1)) = col;     // second column gets content of col
-dest.at(range(), range(2)) = dest(range(), range(1));  // copy to third column
+dest.at(_, range(0)) = 5.0;     // first column gets complex value (5.0, 0)
+dest.at(_, range(1)) = col;     // second column gets content of col
+dest.at(_, range(2)) = dest(_, range(1));  // copy to third column
 \endcode
 
 Note that the return value is in both cases an internal data structure that is either transparently cast to a tensor, or accepts the assigned data.
@@ -117,7 +117,7 @@ For this reason, you must never use the C++-11 auto feature, unless you know exa
 
 \code
 CTensor t = CTensor::random(5,5);
-auto view = t(range(), range(0,1));    // creates an unsafe object that bypasses copy-on-write
+auto view = t(_, range(0,1));    // creates an unsafe object that bypasses copy-on-write
 \endcode
 
 

@@ -91,21 +91,21 @@ void slow_range_set3(Tensor<elt_t> &P, index i0, index i2, index i1, index j0,
 template <typename elt_t>
 void test_full_size_set1(Tensor<elt_t> &P) {
   Tensor<elt_t> t = fill_continuous(P);
-  P.at(range()) = t;
+  P.at(_) = t;
   EXPECT_TRUE(all_equal(P, t));
 }
 
 template <typename elt_t>
 void test_full_size_set2(Tensor<elt_t> &P) {
   Tensor<elt_t> t = fill_continuous(P);
-  P.at(range(), range()) = t;
+  P.at(_, _) = t;
   EXPECT_TRUE(all_equal(P, t));
 }
 
 template <typename elt_t>
 void test_full_size_set3(Tensor<elt_t> &P) {
   Tensor<elt_t> t = fill_continuous(P);
-  P.at(range(), range(), range()) = t;
+  P.at(_, _, _) = t;
   EXPECT_TRUE(all_equal(P, t));
 }
 
@@ -147,28 +147,28 @@ TEST(SliceSetTest, SliceCTensor3DFullSet) {
 
 template <typename elt_t>
 void test_full_size_set_number1(Tensor<elt_t> &P) {
-  Tensor<elt_t> t = P(range());
+  Tensor<elt_t> t = P(_);
   t.fill_with(number_one<elt_t>());
   if (t.size()) EXPECT_FALSE(all_equal(t, P));
-  P.at(range()) = number_one<elt_t>();
+  P.at(_) = number_one<elt_t>();
   EXPECT_TRUE(all_equal(P, t));
 }
 
 template <typename elt_t>
 void test_full_size_set_number2(Tensor<elt_t> &P) {
-  Tensor<elt_t> t = P(range(), range());
+  Tensor<elt_t> t = P(_, _);
   t.fill_with(number_one<elt_t>());
   if (t.size()) EXPECT_FALSE(all_equal(t, P));
-  P.at(range(), range()) = number_one<elt_t>();
+  P.at(_, _) = number_one<elt_t>();
   EXPECT_TRUE(all_equal(P, t));
 }
 
 template <typename elt_t>
 void test_full_size_set_number3(Tensor<elt_t> &P) {
-  Tensor<elt_t> t = P(range(), range(), range());
+  Tensor<elt_t> t = P(_, _, _);
   t.fill_with(number_one<elt_t>());
   if (t.size()) EXPECT_FALSE(all_equal(t, P));
-  P.at(range(), range(), range()) = number_one<elt_t>();
+  P.at(_, _, _) = number_one<elt_t>();
   EXPECT_TRUE(all_equal(P, t));
 }
 

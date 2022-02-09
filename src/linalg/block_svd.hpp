@@ -91,8 +91,8 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
 
   Indices ndx = sort_indices(s, true);
   s = s(range(ndx));
-  if (pU) *pU = (*pU)(range(), range(ndx));
-  if (pVT) *pVT = (*pVT)(range(ndx), range());
+  if (pU) *pU = (*pU)(_, range(ndx));
+  if (pVT) *pVT = (*pVT)(range(ndx), _);
   return s;
 }
 

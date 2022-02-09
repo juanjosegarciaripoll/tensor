@@ -21,3 +21,5 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 * To avoid ambiguities, all constructors of the form `Tensor(index i0, index i1 ...)` have been eliminated. Use `Tensor::empty(i0, i1, ...)` instead.
 
 * Tensor views rely on a new iteration mechanism, built on top of `RangeIterator`, a class that, given a set of ranges and dimensions, produces a sequence of integers corresponding to the positions in a tensor corresponding to that view.
+
+* A new constant `tensor::_` can be used to represent all elements in a range, as in `A(_, range(0))`.

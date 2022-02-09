@@ -41,9 +41,9 @@ RTensor solve_with_svd(const RTensor &A, const RTensor &B, double tol) {
   }
   for (tensor::index i = 0; i < s.ssize(); i++) {
     if (s[i] <= tol) {
-      U = U(range(), range(0, i - 1));
+      U = U(_, range(0, i - 1));
       s = s(range(0, i - 1));
-      VT = VT(range(0, i - 1), range());
+      VT = VT(range(0, i - 1), _);
     }
   }
   RTensor X = foldc(U, 0, B, 0);

@@ -7,7 +7,7 @@ array elements one by one, extracting pieces of an array, reshaping arrays, etc
 \code
   Tensor<double> a = Tensor<double>::eye(2,2);  // creates a 2x2 identity matrix
   double one = a(0,0);                          // returns the upper left element
-  Tensor<double> b = a(range(0,-1), range());   // returns first to last row, all columns
+  Tensor<double> b = a(range(0,-1), _);   // returns first to last row, all columns
   Tensor<double> c = reshape(b, 1,4);           // converts b into a row vector
 \endcode
 

@@ -34,7 +34,7 @@ Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
       return dimensions_from_ranges(ranges,
                                     Dimensions{parent_dimensions.total_size()});
     }
-    throw std::out_of_range("Number of range() exceeds Tensor rank.");
+    throw std::out_of_range("Number of _ exceeds Tensor rank.");
   }
   for (index i = 0; i < ranges.ssize(); ++i) {
     Range &r = ranges.at(i);
@@ -77,6 +77,8 @@ Range::Range(Indices indices)
 }
 
 Range Range::empty() { return Range(0, -1, 1); }
+
+const Range _ = Range::full();
 
 Range Range::full(index start, index step) { return Range(start, -2, step); }
 

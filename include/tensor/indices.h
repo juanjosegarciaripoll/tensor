@@ -182,15 +182,14 @@ inline Booleans operator!=(index a, const Indices &b) { return b != a; }
 //
 
 /** Range of indices. This class should never be used by public functions, but
-      only as the output of the function range() and only to access segments of
+      only as the output of the function _ and only to access segments of
       a tensors, as in
       \code
-      b = a(range(1,2),range())
+      b = a(range(1,2),_)
       \endcode
   */
 class Range {
  public:
-  Range() : start_{0}, step_{1}, limit_{0}, dimension_{0} {}
   Range(index position)
       : start_{position}, step_{1}, limit_{position + 1}, dimension_{limit_} {}
   Range(index start, index end)
@@ -200,12 +199,11 @@ class Range {
   Range(index start, index end, index step, index dimension)
       : start_{start}, step_{step}, limit_{end + 1}, dimension_{dimension} {}
   Range(Indices indices);
-#if 0
+  Range() = default;
   Range(const Range &r) = default;
   Range(Range &&r) = default;
   Range &operator=(const Range &r) = default;
   Range &operator=(Range &&r) = default;
-#endif
 
   index start() const { return start_; }
   index step() const { return step_; }
@@ -225,9 +223,11 @@ class Range {
   static Range full(index start = 0, index step = 1);
 
  private:
-  index start_, step_, limit_, dimension_;
+  index start_{0}, step_{1}, limit_{0}, dimension_{0};
   Indices indices_;
 };
+
+extern const Range _;
 
 Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
                                   const Dimensions &parent_dimensions);
