@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <list>
+#include <vector>
 #include <algorithm>
 #include <tensor/flags.h>
 #include <tensor/tensor.h>
@@ -26,13 +26,6 @@ namespace linalg {
 
 using namespace tensor;
 using tensor::index;
-
-static void replace_integer(index N, index v[], index old_value,
-                            index new_value) {
-  for (index k = 0; k < N; k++) {
-    if (v[k] == old_value) v[k] = new_value;
-  }
-}
 
 /*Find blocks in a block-diagonal matrix.*/
 /*If A is a block diagonal matrix, that means that, after appropiate reordering
@@ -56,102 +49,93 @@ static void replace_integer(index N, index v[], index old_value,
     one denoting the rows and columns of the nonzero blocks in the matrix.
   */
 template <class Tensor>
-bool find_blocks(const Tensor &A, index *pnblocks, Indices **pblock_rows,
-                 Indices **pblock_cols, double tol = 0.0) {
+bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
+                 std::vector<Indices> &column_indices, double tol = 0.0) {
   index N = A.rows();
   index M = A.columns();
-  if (N > M)
-    return find_blocks(transpose(A), pnblocks, pblock_cols, pblock_rows);
+  if (N > M) {
+    return find_blocks(transpose(A), column_indices, row_indices);
+  }
 
-  index &nblocks = *pnblocks;
-  Indices *&block_rows = *pblock_rows;
-  Indices *&block_cols = *pblock_cols;
-
-  index *row_block = new index[N];
-  index *col_block = new index[M];
   const index aux = 0;
   const index empty = ~aux;
+  std::vector<index> row_block(N, empty);
+  std::vector<index> column_block;
+  column_block.reserve(M);
 
-  for (index row = 0; row < N; row++) row_block[row] = empty;
-
-  nblocks = 0;
-  const typename Tensor::elt_t *data = A.begin_const();
-
+  index nblocks = 0;
+  auto data = A.begin_const();
   for (index col = 0; col < M; col++) {
     // For each col, we see what rowumns it is linked to. If some of these
     // rowumns belongs to a block, and the current block is not set, we
     // set our current block. Otherwise, we mix different blocks.
     index curr_block = col;
-    bool set = 0;
-    for (index row = 0; row < N; row++, data++) {
+    bool set = false;
+    for (index row = 0; row < N; row++, ++data) {
       bool significant = abs(real(*data)) + abs(imag(*data)) > tol;
       if (significant) {
-        set = 1;
+        set = true;
         index new_block = row_block[row];
         if (new_block == empty) {
           row_block[row] = curr_block;
         } else if (new_block != curr_block) {
           nblocks--;
-          replace_integer(N, row_block, curr_block, new_block);
-          replace_integer(col, col_block, curr_block, new_block);
+          std::replace(std::begin(row_block), std::end(row_block), curr_block,
+                       new_block);
+          std::replace(std::begin(column_block), std::end(column_block),
+                       curr_block, new_block);
           curr_block = new_block;
         }
       }
     }
     if (set) {
       nblocks++;
-      col_block[col] = curr_block;
+      column_block.push_back(curr_block);
     } else {
-      col_block[col] = empty;
+      column_block.push_back(empty);
     }
   }
   if (tensor::FLAGS.get(tensor::TENSOR_DEBUG_BLOCK_SVD)) {
     std::cout << "*** find_blocks: nxm=" << N << "x" << M
               << ", n_blocks=" << nblocks << std::endl;
   }
-  if (nblocks == 1) {
-    block_rows = 0;
-    block_cols = 0;
-    delete[] row_block;
-    delete[] col_block;
+  if (nblocks <= 1) {
     return false;
   }
 
-  index *buffer = new index[std::max<index>(N, M)];
-  block_cols = new Indices[nblocks];
-  block_rows = new Indices[nblocks];
+  std::vector<index> buffer;
+  buffer.reserve(std::max<index>(N, M));
+  column_indices.reserve(nblocks);
+  row_indices.reserve(nblocks);
 
-  for (index b = 0, col = 0; col < M; col++) {
-    index block = col_block[col];
+  auto extract_positions = [&](std::vector<index> &v, index start,
+                               index which) {
+    buffer.clear();
+    index count = 0;
+    for (index ndx = start; ndx < static_cast<index>(v.size()); ++ndx) {
+      auto &x = v[ndx];
+      if (x == which) {
+        x = empty;
+        ++count;
+        buffer.push_back(ndx);
+      }
+    }
+    assert(count);
+    Indices output = Indices::empty(count);
+    std::copy(std::begin(buffer), std::end(buffer), std::begin(output));
+    return output;
+  };
+
+  for (index start = 0; start < static_cast<index>(column_block.size());
+       ++start) {
+    auto block = column_block[start];
     if (block != empty) {
-      index block_ncols = 0;
-      for (index c = 0; c < M; c++) {
-        if (col_block[c] == block) {
-          buffer[block_ncols++] = c;
-          col_block[c] = empty;
-        }
-      }
-      assert(block_ncols);
-      block_cols[b] = Indices(static_cast<size_t>(block_ncols));
-      memcpy(block_cols[b].begin(), buffer,
-             sizeof(index) * block_cols[b].size());
-
-      index block_nrows = 0;
-      for (index r = 0; r < N; r++) {
-        if (row_block[r] == block) {
-          buffer[block_nrows++] = r;
-        }
-      }
-      assert(block_nrows);
-      block_rows[b] = Indices(static_cast<size_t>(block_nrows));
-      memcpy(block_rows[b].begin(), buffer,
-             sizeof(index) * block_rows[b].size());
-      b++;
+      column_indices.push_back(extract_positions(column_block, start, block));
+      row_indices.push_back(extract_positions(row_block, 0, block));
     }
   }
-  delete[] buffer;
-  delete[] row_block;
-  delete[] col_block;
+  assert(column_indices.size() == nblocks);
+  assert(row_indices.size() == nblocks);
   return true;
 }
 

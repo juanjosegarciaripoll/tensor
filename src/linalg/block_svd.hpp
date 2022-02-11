@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <vector>
 #include <tensor/tensor.h>
 #include <tensor/io.h>
 #include <tensor/linalg.h>
@@ -33,20 +34,11 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
   if (rows != cols && !economic) return svd(A, pU, pVT, economic);
   index minrc = std::min(rows, cols);
 
-  index nblocks;
-  Indices *block_rows, *block_cols;
-  if (!find_blocks<Tensor>(A, &nblocks, &block_rows, &block_cols)) {
+  std::vector<Indices> row_indices, column_indices;
+  if (!find_blocks<Tensor>(A, row_indices, column_indices)) {
     return svd(A, pU, pVT, economic);
   }
-
-  if ((nblocks == 1) && (block_rows[0].ssize() >= rows / 2) &&
-      (block_cols[0].ssize() >= cols / 2)) {
-    RTensor s = svd(A, pU, pVT, economic);
-    delete[] block_rows;
-    delete[] block_cols;
-    return s;
-  }
-
+  index nblocks = row_indices.size();
   RTensor s = RTensor::zeros(minrc);
   if (pU) {
     *pU = Tensor::zeros(rows, economic ? minrc : rows);
@@ -60,21 +52,21 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
   Tensor *pUtemp = pU ? &Utemp : 0;
   Tensor *pVtemp = pVT ? &Vtemp : 0;
   for (index b = 0, sndx = 0; b < nblocks; b++) {
-    Tensor m = A(range(block_rows[b]), range(block_cols[b]));
+    Tensor m = A(range(row_indices[b]), range(column_indices[b]));
     if (m.size() > 1) {
       stemp = svd(m, pUtemp, pVtemp, economic);
       index slast = sndx + stemp.ssize() - 1;
       s.at(range(sndx, slast)) = stemp;
       if (pU) {
-        (*pU).at(range(block_rows[b]), range(sndx, slast)) = Utemp;
+        (*pU).at(range(row_indices[b]), range(sndx, slast)) = Utemp;
       }
       if (pVT) {
-        (*pVT).at(range(sndx, slast), range(block_cols[b])) = Vtemp;
+        (*pVT).at(range(sndx, slast), range(column_indices[b])) = Vtemp;
       }
       sndx = slast + 1;
     } else {
-      index row = block_rows[b][0];
-      index col = block_cols[b][0];
+      index row = row_indices[b][0];
+      index col = column_indices[b][0];
       double aux = abs(m[0]);
       s.at(sndx) = aux;
       if (pU) {
@@ -86,8 +78,6 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
       ++sndx;
     }
   }
-  delete[] block_rows;
-  delete[] block_cols;
 
   Indices ndx = sort_indices(s, true);
   s = s(range(ndx));
