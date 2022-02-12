@@ -29,8 +29,7 @@ using namespace tensor;
 using tensor::index;
 
 static bool is_empty_range(const Range &r) {
-  return r.start() == 0 && r.limit() == 0 && r.step() == 1 && r.size() == 0 &&
-         !r.has_indices();
+  return r.size() == 0 && !r.has_indices();
 }
 
 static bool is_empty_range_iterator(const RangeIterator &it) {
@@ -49,31 +48,44 @@ std::ostream &operator<<(std::ostream &out, const std::vector<elt_t> &v) {
   return out;
 }
 
+SimpleVector<Range> make_ranges(SimpleVector<Range> l, Dimensions d) {
+  dimensions_from_ranges(l, d);
+  return l;
+}
+
 /////////////////////////////////////////////////////////////////////
 // RANGE ITERATOR OPTIMIZATIONS
 //
 TEST(RangeIteratorTest, OptimizesEmptyRanges01) {
-  auto it = RangeIterator::begin({Range::empty(), Range(0, 3)});
+  auto ranges = make_ranges({Range::empty(), Range(0, 3)}, {2, 4});
+  auto it = RangeIterator::begin(ranges);
   ASSERT_TRUE(is_empty_range_iterator(it));
 }
 
 TEST(RangeIteratorTest, OptimizesEmptyRanges10) {
-  auto it = RangeIterator::begin({Range(0, 3), Range::empty()});
+  auto ranges = make_ranges({Range(0, 3), Range::empty()}, {4, 2});
+  auto it = RangeIterator::begin(ranges);
   ASSERT_TRUE(is_empty_range_iterator(it));
 }
 
 TEST(RangeIteratorTest, OptimizesEmptyRanges011) {
-  auto it = RangeIterator::begin({Range::empty(), Range(0, 3), Range(0, 4)});
+  auto ranges =
+      make_ranges({Range::empty(), Range(0, 3), Range(0, 4)}, {2, 4, 5});
+  auto it = RangeIterator::begin(ranges);
   ASSERT_TRUE(is_empty_range_iterator(it));
 }
 
 TEST(RangeIteratorTest, OptimizesEmptyRanges101) {
-  auto it = RangeIterator::begin({Range(0, 3), Range::empty(), Range(0, 4)});
+  auto ranges =
+      make_ranges({Range(0, 3), Range::empty(), Range(0, 4)}, {4, 2, 5});
+  auto it = RangeIterator::begin(ranges);
   ASSERT_TRUE(is_empty_range_iterator(it));
 }
 
 TEST(RangeIteratorTest, OptimizesEmptyRanges110) {
-  auto it = RangeIterator::begin({Range(0, 5), Range(0, 3), Range::empty()});
+  auto ranges =
+      make_ranges({Range(0, 5), Range(0, 3), Range::empty()}, {6, 4, 2});
+  auto it = RangeIterator::begin(ranges);
   ASSERT_TRUE(is_empty_range_iterator(it));
 }
 
@@ -85,10 +97,10 @@ TEST(RangeIteratorTest, OptimizesSize1) {
   ASSERT_EQ(r2.size(), 1);
   auto it = RangeIterator::begin({r1, r2});
   ASSERT_FALSE(it.has_next());
-  ASSERT_EQ(it.counter(), 1 + 2 * 2);
+  ASSERT_EQ(it.counter(), 0);
   ASSERT_EQ(it.step(), 2 * 1);
-  ASSERT_EQ(it.limit(), 1 + 2 * 3);
-  ASSERT_EQ(it.offset(), 0);
+  ASSERT_EQ(it.limit(), r1.size() * r2.size());
+  ASSERT_EQ(it.offset(), 1 + 2 * 2);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -96,7 +108,7 @@ TEST(RangeIteratorTest, OptimizesSize1) {
 //
 
 TEST(RangeIteratorTest, EmptyRangeIterator) {
-  Range r = Range::empty();  // = []
+  Range r = Range::empty(0);  // = []
   RangeIterator it(r, 1);
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
@@ -105,7 +117,7 @@ TEST(RangeIteratorTest, EmptyRangeIterator) {
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize0) {
-  Range r(0, -1);  // = []
+  Range r(/*start*/ -1, /*end*/ -2, /*step*/ 1, /*dimension*/ 1);  // = []
   RangeIterator it(r, 1);
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
@@ -118,71 +130,96 @@ TEST(RangeIteratorTest, RangeIterator1DSize1) {
   Range r(/*start*/ 0, /*end*/ 0);  // = [0]
   r.set_dimension(3);
   RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
+  index last;
+  ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
-  ASSERT_EQ(*it, 1);
   ASSERT_TRUE(it.finished());
+  ASSERT_EQ(*it, last);
   ++it;
-  ASSERT_EQ(*it, 1);  // We do not run past the limit
+  ASSERT_EQ(*it, last);  // We do not run past the limit
   ASSERT_EQ(it, RangeIterator::end({r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize1Start1) {
   Range r(/*start*/ 1, /*end*/ 1);  // = [1, 1]
   r.set_dimension(3);
+  index last;
   RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 1);
+  ASSERT_EQ(last = *it, 1);
   ASSERT_FALSE(it.finished());
   ++it;
-  ASSERT_EQ(*it, 2);
   ASSERT_TRUE(it.finished());
+  ASSERT_EQ(*it, last);
   ++it;
-  ASSERT_EQ(*it, 2);  // We do not run past the limit
+  ASSERT_EQ(*it, last);  // We do not run past the limit
   ASSERT_EQ(it, RangeIterator::end({r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize2) {
   Range r(/*start*/ 0, /*end*/ 1);  // = [0, 1]
   r.set_dimension(3);
+  index last;
   RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
+  ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
-  ASSERT_EQ(*it, 1);
   ASSERT_FALSE(it.finished());
+  ASSERT_EQ(last = *it, 1);
   ++it;
-  ASSERT_EQ(*it, 2);
   ASSERT_TRUE(it.finished());
+  ASSERT_EQ(*it, last);
   ++it;
-  ASSERT_EQ(*it, 2);  // We do not run past the limit
+  ASSERT_EQ(*it, last);  // We do not run past the limit
   ASSERT_EQ(it, RangeIterator::end({r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize1Step2) {
   Range r(/*start*/ 0, /*end*/ 0, /*step*/ 2);  // = [0]
   r.set_dimension(3);
+  index last;
   RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
+  ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
-  ASSERT_EQ(*it, 1);
   ASSERT_TRUE(it.finished());
+  ASSERT_EQ(*it, last);
   ++it;
-  ASSERT_EQ(*it, 1);  // We do not run past the limit
+  ASSERT_EQ(*it, last);  // We do not run past the limit
   ASSERT_EQ(it, RangeIterator::end({r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize2Step2) {
   Range r(/*start*/ 0, /*end*/ 1, /*step*/ 2, /*dimension*/ 2);  // = [0]
+  index last;
   RangeIterator it(r, 1);
-  ASSERT_EQ(*it, 0);
+  ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
-  ASSERT_EQ(*it, 2);
   ASSERT_TRUE(it.finished());
+  ASSERT_EQ(*it, last);
   ++it;
-  ASSERT_EQ(*it, 2);  // We do not run past the limit
+  ASSERT_EQ(*it, last);  // We do not run past the limit
+  ASSERT_EQ(it, RangeIterator::end({r}));
+}
+
+/////////////////////////////////////////////////////////////////////
+// 1D RANGE ITERATORS
+//
+
+TEST(RangeIteratorTest, RangeIterator1DNegativeStep) {
+  Range r(/*start*/ 1, /*end*/ 0, /*step*/ -1, /*dimension*/ 2);  // = [1, 0]
+  RangeIterator it(r, 1);
+  index last;
+  ASSERT_EQ(*it, 1);
+  ++it;
+  ASSERT_FALSE(it.finished());
+  ASSERT_EQ(last = *it, 0);
+  ++it;
+  ASSERT_TRUE(it.finished());
+  ASSERT_EQ(*it, last);
+  ++it;
+  ASSERT_EQ(*it, last);  // We do not run past the limit
   ASSERT_EQ(it, RangeIterator::end({r}));
 }
 
@@ -220,13 +257,13 @@ TEST(RangeIteratorTest, RangeIterator2DSize1x1) {
   Range r1(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 1);
   Range r2(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 1);  // = [[0, 0]]
   RangeIterator it = RangeIterator::make_range_iterators({r1, r2});
-  ASSERT_EQ(*it, 0);
   ASSERT_FALSE(it.finished());
+  ASSERT_EQ(*it, 0);
   ++it;
-  ASSERT_EQ(*it, 1);
   ASSERT_TRUE(it.finished());
+  ASSERT_EQ(*it, 0);
   ++it;
-  ASSERT_EQ(*it, 1);  // We do not run past the limit
+  ASSERT_EQ(*it, 0);  // We do not run past the limit
   ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
 }
 
@@ -234,13 +271,13 @@ TEST(RangeIteratorTest, RangeIterator2DSize1x1Dim3x4) {
   Range r1(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 3);
   Range r2(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 4);
   RangeIterator it = RangeIterator::make_range_iterators({r1, r2});
-  ASSERT_EQ(*it, 0);
   ASSERT_FALSE(it.finished());
+  ASSERT_EQ(*it, 0);
   ++it;
-  ASSERT_EQ(*it, 3);
   ASSERT_TRUE(it.finished());
+  ASSERT_EQ(*it, 0);
   ++it;
-  ASSERT_EQ(*it, 3);  // We do not run past the limit
+  ASSERT_EQ(*it, 0);  // We do not run past the limit
   ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
 }
 
@@ -248,6 +285,7 @@ TEST(RangeIteratorTest, RangeIterator2DSize2x2Dim3x4) {
   Range r1(/*start*/ 0, /*end*/ 1, /*step*/ 1, /*dimension*/ 3);
   Range r2(/*start*/ 0, /*end*/ 1, /*step*/ 1, /*dimension*/ 4);
   RangeIterator it = RangeIterator::make_range_iterators({r1, r2});
+  ASSERT_FALSE(it.finished());
   ASSERT_EQ(*it, 0);
   ASSERT_FALSE(it.finished());
   ASSERT_EQ(*(++it), 1);
@@ -256,9 +294,9 @@ TEST(RangeIteratorTest, RangeIterator2DSize2x2Dim3x4) {
   ASSERT_FALSE(it.finished());
   ASSERT_EQ(*(++it), 1 + 3);
   ASSERT_FALSE(it.finished());
-  ASSERT_EQ(*(++it), 2 + 2 * 3);
+  ASSERT_EQ(*(++it), 1 + 3);
   ASSERT_TRUE(it.finished());
-  ASSERT_EQ(*(++it), 2 + 2 * 3);  // We do not run past the limit
+  ASSERT_EQ(*(++it), 1 + 3);  // We do not run past the limit
   ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
 }
 

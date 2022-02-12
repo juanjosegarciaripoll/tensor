@@ -24,6 +24,7 @@
 #include <cassert>
 #include <iterator>
 #include <algorithm>
+#include <stdexcept>
 #include <tensor/vector.h>
 #include <tensor/gen.h>
 #include <iostream>
@@ -31,6 +32,22 @@
 /*!\addtogroup Tensors */
 /*@{*/
 namespace tensor {
+
+struct invalid_dimension : public std::invalid_argument {
+  invalid_dimension()
+      : std::invalid_argument(
+            "Invalid dimension size (negative or too large)"){};
+};
+
+struct out_of_bounds_index : public std::out_of_range {
+  out_of_bounds_index()
+      : std::out_of_range("Index out of tensor dimension's bounds"){};
+};
+
+struct iterator_overflow : public std::out_of_range {
+  iterator_overflow()
+      : std::out_of_range("Iterator accessed elements out of the tensor"){};
+};
 
 extern template class Vector<index>;
 extern template class SimpleVector<index>;
@@ -84,7 +101,19 @@ class Dimensions {
 
   static inline index normalize_index(index i, index dimension) {
     if (i < 0) i += dimension;
-    assert((i < dimension) && (i >= 0));
+#if 1
+    if ((i > dimension) || (i < 0)) {
+      throw out_of_bounds_index();
+    }
+#endif
+    return i;
+  }
+
+  static inline index normalize_index_safe(index i, index dimension) {
+    if (i < 0) i += dimension;
+    if ((i > dimension) || (i < 0)) {
+      throw out_of_bounds_index();
+    }
     return i;
   }
 
@@ -182,22 +211,34 @@ inline Booleans operator!=(index a, const Indices &b) { return b != a; }
 //
 
 /** Range of indices. This class should never be used by public functions, but
-      only as the output of the function _ and only to access segments of
-      a tensors, as in
-      \code
-      b = a(range(1,2),_)
-      \endcode
+    only as the output of the function range and only to access segments of
+    a tensors, as in
+    \code
+    b = a(range(1,2),_)
+    \endcode
   */
 class Range {
+  /* The logic of ranges is that we define the start, the step and one past the
+     last element we visit (the limit). We combine this with the wraparound
+     semantics from Numpy, by which negative numbers are associated positions
+     relative to the dimension of the coordinate we are running through. Thus,
+    
+     (first, last) = (0, 0)   -> runs over [0]
+                   = (0, -1)  -> runs over [0, 1, 2] for dimension = 3
+                   = (-2, -1) -> runs over [1, 2] for dimension = 3
+
+     Since we can store negative numbers, the `limit=end+1` can also take
+     negative or zero values.
+   */
  public:
-  Range(index position)
-      : start_{position}, step_{1}, limit_{position + 1}, dimension_{-1} {}
-  Range(index start, index end)
-      : start_{start}, step_{1}, limit_{end + 1}, dimension_{-1} {}
-  Range(index start, index end, index step)
-      : start_{start}, step_{step}, limit_{end + 1}, dimension_{-1} {}
-  Range(index start, index end, index step, index dimension)
-      : start_{start}, step_{step}, limit_{end + 1}, dimension_{dimension} {}
+  Range(index position) : Range(position, position, 1) {}
+  Range(index first, index last) : Range(first, last, 1) {}
+  Range(index first, index last, index step)
+      : first_{first}, step_{step}, last_{last}, limit_{-1}, dimension_{-1} {}
+  Range(index first, index last, index step, index dimension)
+      : first_{first}, step_{step}, last_{last}, limit_{-1}, dimension_{-1} {
+    set_dimension(dimension);
+  }
   Range(Indices indices);
   Range() = default;
   Range(const Range &r) = default;
@@ -205,25 +246,34 @@ class Range {
   Range &operator=(const Range &r) = default;
   Range &operator=(Range &&r) = default;
 
-  index start() const { return start_; }
+  index first() const { return first_; }
   index step() const { return step_; }
-  index limit() const { return limit_; }
+  index last() const { return last_; }
+  index limit() const {
+    if (dimension_ < 0)
+      throw std::invalid_argument(
+          "Unable to retrieve limit from a range without dimension.");
+    return limit_;
+  }
   index dimension() const { return dimension_; }
   void set_dimension(index dimension);
   bool has_indices() const { return indices().size() != 0; }
   const Indices &indices() const { return indices_; }
   index get_index(index pos) const { return indices()[pos]; }
-  index size() const { return (limit_ - start_ + step_ - 1) / step_; }
+  index size() const {
+    return std::max<index>(0, 1 + (last_ - first_) / step_);
+  }
   index is_full() const {
-    return start_ == 0 && step_ == 1 && limit_ == dimension_;
+    return first_ == 0 && step_ == 1 && limit_ == dimension_;
   }
   bool maybe_combine(const Range &other);
 
   static Range empty();
-  static Range full(index start = 0, index step = 1);
+  static Range empty(index dimension);
+  static Range full(index first = 0, index step = 1);
 
  private:
-  index start_{0}, step_{1}, limit_{0}, dimension_{-1};
+  index first_{-1}, step_{1}, last_{-2}, limit_{-1}, dimension_{-1};
   Indices indices_;
 };
 
@@ -245,8 +295,10 @@ class RangeIterator {
                 next_t next = nullptr);
   index operator*() const { return get_position(); };
   RangeIterator &operator++() {
-    if ((counter_ += step_) >= limit_) {
+    if (++counter_ >= limit_) {
       advance_next();
+    } else {
+      offset_ += step_;
     }
     return *this;
   }
@@ -266,15 +318,15 @@ class RangeIterator {
   index get_position() const;
   index counter() const { return counter_; }
   index offset() const { return offset_; }
-  index step() const { return step_; }
   index limit() const { return limit_; }
+  index step() const { return step_; }
   bool has_next() const { return next_ != nullptr; }
   const RangeIterator &next() const { return *next_; }
   bool has_indices() const { return indices_.size() != 0; }
   const Indices &indices() const { return indices_; }
 
  private:
-  index counter_, step_, limit_, offset_, factor_, start_;
+  index counter_, limit_, step_, offset_, factor_, start_;
   Indices indices_;
   next_t next_;
   void advance_next();
@@ -292,9 +344,19 @@ class TensorIterator {
   typedef elt_t *pointer;
   typedef std::input_iterator_tag iterator_category;
 
-  TensorIterator(RangeIterator &&it, elt_t *base)
-      : iterator_{std::move(it)}, base_{base} {}
+  TensorIterator(RangeIterator &&it, elt_t *base, index size = 0)
+      : iterator_{std::move(it)}, base_{base}, size_{size} {}
+#if 0
   elt_t &operator*() { return base_[iterator_.get_position()]; }
+#else
+  elt_t &operator*() {
+    index n = iterator_.get_position();
+    if (n < 0 || n >= size_) {
+      throw iterator_overflow();
+    }
+    return base_[n];
+  }
+#endif
   elt_t &operator->() { return this->operator*(); }
   TensorIterator<elt_t> &operator++() {
     ++iterator_;
@@ -307,6 +369,7 @@ class TensorIterator {
  private:
   RangeIterator iterator_;
   elt_t *base_;
+  index size_;
 };
 
 template <typename elt_t>

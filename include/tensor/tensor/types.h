@@ -402,10 +402,12 @@ class MutableTensorView {
   const Dimensions &dimensions() const { return dims_; }
 
   TensorIterator<elt_t> begin() {
-    return TensorIterator<elt_t>(RangeIterator::begin(ranges_), data_.begin());
+    return TensorIterator<elt_t>(RangeIterator::begin(ranges_), data_.begin(),
+                                 data_.size());
   }
   TensorIterator<elt_t> end() {
-    return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin());
+    return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin(),
+                                 data_.size());
   }
   TensorConstIterator<elt_t> begin() const {
     return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),

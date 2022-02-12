@@ -27,8 +27,8 @@ namespace tensor {
 std::ostream &operator<<(std::ostream &out, const Range &r) {
   out << "Range(dim=" << r.dimension() << ',';
   if (!r.has_indices()) {
-    out << "start=" << r.start() << ",limit=" << r.limit()
-        << ",step=" << r.step();
+    out << "start=" << r.first() << ",last=" << r.last()
+        << ",limit=" << r.limit() << ",step=" << r.step();
   } else {
     out << "indices=" << r.indices();
   }
