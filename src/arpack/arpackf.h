@@ -118,8 +118,9 @@ void F77NAME(zneupd)(logical *rvec, const char *HowMny, logical *select,
 
 namespace linalg {
 
+using tensor::_;
 using tensor::CTensor;
-using tensor::range, tensor::_;
+using tensor::range;
 using tensor::RTensor;
 
 template <bool symmetric>
