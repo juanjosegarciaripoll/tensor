@@ -19,6 +19,7 @@
 
 #include "loops.h"
 #include <gtest/gtest.h>
+#include <tensor/exceptions.h>
 #include <tensor/tensor.h>
 
 #include "slow_fold.cc"
@@ -75,7 +76,7 @@ void test_fold(int max_dim) {
 }
 
 template <typename n1, typename n2>
-void test_fold_death() {
+void test_fold_throws() {
   for (int rankA = 1; rankA <= 4; rankA++) {
     for (int rankB = 1; rankB <= 4; rankB++) {
       for (int i = 0; i < rankA; i++) {
@@ -87,7 +88,7 @@ void test_fold_death() {
           dB.at(j) = 0;
           Tensor<n1> A(dA);
           Tensor<n2> B(dB);
-          ASSERT_DEATH(fold(A, i, B, j), ".*");
+          ASSERT_THROW(fold(A, i, B, j), tensor::dimensions_mismatch);
         }
       }
     }
@@ -104,7 +105,9 @@ TEST(FoldTest, FoldDoubleDoubleTest) {
   test_fold<double, double>(MATRIX_MAX_DIM);
 }
 
-TEST(FoldTest, FoldDoubleDoubleDeathTest) { test_fold_death<double, double>(); }
+TEST(FoldTest, FoldDoubleDoubleDeathTest) {
+  test_fold_throws<double, double>();
+}
 
 //////////////////////////////////////////////////////////////////////
 // COMPLEX SPECIALIZATIONS
@@ -115,7 +118,7 @@ TEST(FoldTest, FoldCdoubleCdoubleTest) {
 }
 
 TEST(FoldTest, FoldCdoubleCdoubleDeathTest) {
-  test_fold_death<cdouble, cdouble>();
+  test_fold_throws<cdouble, cdouble>();
 }
 
 }  // namespace tensor_test

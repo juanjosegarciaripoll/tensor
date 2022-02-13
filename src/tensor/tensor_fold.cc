@@ -18,9 +18,8 @@
 */
 
 #define TENSOR_LOAD_IMPL
-#include <iostream>
+#include <tensor/exceptions.h>
 #include <tensor/tensor.h>
-#include <tensor/io.h>
 #include <tensor/tensor_lapack.h>
 #include "gemm.cc"
 
@@ -55,12 +54,7 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
   }
   l_len = a.dimension(i++);
   if (l_len == 0) {
-    std::cerr << "Unable to fold() tensors with dimensions" << std::endl
-              << "\t" << a.dimensions() << " and " << b.dimensions()
-              << std::endl
-              << "\tbecause indices " << ndx1 << " and " << ndx2 << " are empty"
-              << std::endl;
-    abort();
+    throw dimensions_mismatch(a.dimensions(), b.dimensions(), ndx1, ndx2);
   }
   for (j_len = 1; i < ranka; i++) {
     index di = a.dimension(i);
@@ -73,12 +67,7 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
     k_len *= di;
   }
   if (l_len != b.dimension(i++)) {
-    std::cerr << "Unable to fold() tensors with dimensions" << std::endl
-              << "\t" << a.dimensions() << " and " << b.dimensions()
-              << std::endl
-              << "\tbecause indices " << ndx1 << " and " << ndx2
-              << " have different sizes" << std::endl;
-    abort();
+    throw dimensions_mismatch(a.dimensions(), b.dimensions(), ndx1, ndx2);
   }
   for (m_len = 1; i < rankb; i++) {
     index di = b.dimension(i);

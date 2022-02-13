@@ -17,8 +17,12 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <string>
+#include <strstream>
+#include <tensor/exceptions.h>
 #include <tensor/tensor_blas.h>
 #include <tensor/tensor.h>
+#include <tensor/io.h>
 
 namespace blas {
 
@@ -27,3 +31,37 @@ blas_integer_overflow::blas_integer_overflow()
           "Tensor size exceeds limits supported by BLAS implementation.") {}
 
 }  // namespace blas
+
+namespace tensor {
+
+dimensions_mismatch::dimensions_mismatch(const char *message)
+    : std::out_of_range(message) {}
+
+static std::string dimensions_mismatch_message(const Dimensions &d1,
+                                               const Dimensions &d2) {
+  std::strstream out;
+  out << "Unable to perform binary operation among tensors with dimensions\n"
+      << d1 << " and " << d2;
+  return out.str();
+}
+
+dimensions_mismatch::dimensions_mismatch(const Dimensions &d1,
+                                         const Dimensions &d2)
+    : std::out_of_range(dimensions_mismatch_message(d1, d2)) {}
+
+static std::string dimensions_mismatch_message(const Dimensions &d1,
+                                               const Dimensions &d2,
+                                               index which1, index which2) {
+  std::strstream out;
+  out << "Unable to perform binary operation among tensors with dimensions\n"
+      << d1 << " and " << d2 << "\nbecause indices " << which1 << " and "
+      << which2 << " differ or are zero";
+  return out.str();
+}
+
+dimensions_mismatch::dimensions_mismatch(const Dimensions &d1,
+                                         const Dimensions &d2, index which1,
+                                         index which2)
+    : std::out_of_range(dimensions_mismatch_message(d1, d2, which1, which2)) {}
+
+}  // namespace tensor

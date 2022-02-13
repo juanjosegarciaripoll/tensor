@@ -24,8 +24,8 @@
 #include <algorithm>
 #include <memory>
 #include <cstring>
-#include <stdexcept>
 #include <tensor/numbers.h>
+#include <tensor/exceptions.h>
 
 namespace tensor {
 
@@ -35,8 +35,6 @@ class StaticVector;
 //////////////////////////////////////////////////////////////////////
 // VECTOR CLASS WITH SHARED DATA
 //
-
-typedef std::ptrdiff_t index;
 
 template <typename elt_t>
 class SimpleVector;

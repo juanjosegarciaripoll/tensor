@@ -19,6 +19,7 @@
 
 #include "loops.h"
 #include <gtest/gtest.h>
+#include <tensor/exceptions.h>
 #include <tensor/tensor.h>
 
 #include "slow_mmult.cc"
@@ -43,7 +44,8 @@ void test_mmult(index max_dim) {
     }
   }
   std::cout << std::endl;
-  ASSERT_DEATH(mmult(Tensor<n1>::eye(1, 0), Tensor<n2>::ones(0, 3)), ".*");
+  ASSERT_THROW(mmult(Tensor<n1>::eye(1, 0), Tensor<n2>::ones(0, 3)),
+               dimensions_mismatch);
 }
 
 //////////////////////////////////////////////////////////////////////

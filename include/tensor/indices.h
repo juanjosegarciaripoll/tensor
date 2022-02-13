@@ -1,4 +1,5 @@
 // -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
+#pragma once
 /*
     Copyright (c) 2010 Juan Jose Garcia Ripoll
 
@@ -17,37 +18,20 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
 #ifndef TENSOR_INDICES_H
 #define TENSOR_INDICES_H
 
 #include <cassert>
 #include <iterator>
 #include <algorithm>
-#include <stdexcept>
 #include <tensor/vector.h>
+#include <tensor/exceptions.h>
 #include <tensor/gen.h>
 #include <iostream>
 
 /*!\addtogroup Tensors */
 /*@{*/
 namespace tensor {
-
-struct invalid_dimension : public std::invalid_argument {
-  invalid_dimension()
-      : std::invalid_argument(
-            "Invalid dimension size (negative or too large)"){};
-};
-
-struct out_of_bounds_index : public std::out_of_range {
-  out_of_bounds_index()
-      : std::out_of_range("Index out of tensor dimension's bounds"){};
-};
-
-struct iterator_overflow : public std::out_of_range {
-  iterator_overflow()
-      : std::out_of_range("Iterator accessed elements out of the tensor"){};
-};
 
 extern template class Vector<index>;
 extern template class SimpleVector<index>;
