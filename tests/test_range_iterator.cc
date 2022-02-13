@@ -18,7 +18,6 @@
 */
 
 #include "loops.h"
-#include <strstream>
 #include <gtest/gtest.h>
 #include <tensor/tensor.h>
 #include <tensor/io.h>
