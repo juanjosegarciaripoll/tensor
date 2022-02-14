@@ -27,11 +27,6 @@ namespace tensor_test {
 using namespace tensor;
 using tensor::index;
 
-static bool is_empty_range(const Range &r) {
-  return r.first() == 0 && r.limit() == 0 && r.step() == 1 && r.size() == 0 &&
-         !r.has_indices();
-}
-
 /////////////////////////////////////////////////////////////////////
 // RANGES
 //
@@ -61,7 +56,6 @@ TEST(RangeTest, RangeFull) {
   ASSERT_EQ(r.step(), 1);
   r.set_dimension(3);
   ASSERT_EQ(r.last(), 2);
-  ASSERT_EQ(r.limit(), 3);
   ASSERT_EQ(r.size(), 3);
 }
 
@@ -72,7 +66,6 @@ TEST(RangeTest, RangeFullWithStart) {
   ASSERT_EQ(r.step(), 1);
   r.set_dimension(3);
   ASSERT_EQ(r.last(), 2);
-  ASSERT_EQ(r.limit(), 3);
   ASSERT_EQ(r.size(), 2);
 }
 
@@ -96,7 +89,6 @@ TEST(RangeTest, RangeIndicesSize1) {
   ASSERT_EQ(r.step(), 1);
   ASSERT_EQ(r.size(), 1);
   ASSERT_NO_THROW(r.set_dimension(3));
-  ASSERT_EQ(r.limit(), 2);
   ASSERT_EQ(r.size(), 1);
   ASSERT_THROW(r.set_dimension(5), std::invalid_argument);
 }
@@ -109,7 +101,6 @@ TEST(RangeTest, RangeIndicesSize2) {
   ASSERT_EQ(r.step(), 2);
   ASSERT_EQ(r.size(), 2);
   ASSERT_NO_THROW(r.set_dimension(4));
-  ASSERT_EQ(r.limit(), 5);
   ASSERT_EQ(r.size(), 2);
   ASSERT_THROW(r.set_dimension(5), std::invalid_argument);
 }
@@ -134,7 +125,6 @@ TEST(RangeTest, RangeNegativeEnd1A) {
   r.set_dimension(0);
   ASSERT_EQ(r.first(), 0);
   ASSERT_EQ(r.last(), -1);
-  ASSERT_EQ(r.limit(), 0);
   ASSERT_EQ(r.size(), 0);
 }
 
@@ -143,7 +133,6 @@ TEST(RangeTest, RangeNegativeEnd1B) {
   r.set_dimension(3);
   ASSERT_EQ(r.first(), 0);
   ASSERT_EQ(r.last(), 2);
-  ASSERT_EQ(r.limit(), 3);
   ASSERT_EQ(r.size(), 3);
 }
 
@@ -152,7 +141,6 @@ TEST(RangeTest, RangeNegativeEnd1C) {
   r.set_dimension(3);
   ASSERT_EQ(r.first(), 0);
   ASSERT_EQ(r.last(), 1);
-  ASSERT_EQ(r.limit(), 2);
   ASSERT_EQ(r.size(), 2);
 }
 
@@ -161,7 +149,6 @@ TEST(RangeTest, RangeNegativeEnd1D) {
   r.set_dimension(3);
   ASSERT_EQ(r.first(), 0);
   ASSERT_EQ(r.last(), 0);
-  ASSERT_EQ(r.limit(), 1);
   ASSERT_EQ(r.size(), 1);
 }
 
@@ -170,7 +157,6 @@ TEST(RangeTest, RangeNegativeEnd1E) {
   r.set_dimension(3);
   ASSERT_EQ(r.first(), 0);
   ASSERT_EQ(r.last(), -1);
-  ASSERT_EQ(r.limit(), 0);
   ASSERT_EQ(r.size(), 0);
 }
 
@@ -179,7 +165,6 @@ TEST(RangeTest, RangeNegativeBeginning1A) {
   r.set_dimension(3);
   ASSERT_EQ(r.first(), 2);
   ASSERT_EQ(r.last(), 2);
-  ASSERT_EQ(r.limit(), 3);
   ASSERT_EQ(r.size(), 1);
 }
 
@@ -188,7 +173,6 @@ TEST(RangeTest, RangeNegativeBeginning1B) {
   r.set_dimension(3);
   ASSERT_EQ(r.first(), 1);
   ASSERT_EQ(r.last(), 2);
-  ASSERT_EQ(r.limit(), 3);
   ASSERT_EQ(r.size(), 2);
 }
 
@@ -197,7 +181,6 @@ TEST(RangeTest, RangeNegativeBeginning1C) {
   r.set_dimension(3);
   ASSERT_EQ(r.first(), 0);
   ASSERT_EQ(r.last(), 2);
-  ASSERT_EQ(r.limit(), 3);
   ASSERT_EQ(r.size(), 3);
 }
 
@@ -226,7 +209,6 @@ TEST(RangeTest, CombineSize1Size3) {
   ASSERT_TRUE(r1.maybe_combine(r2));
   ASSERT_EQ(r1.size(), 3);
   ASSERT_EQ(r1.first(), 1 + 4 * 1);
-  ASSERT_EQ(r1.limit(), 1 + 4 * 4);
   ASSERT_EQ(r1.step(), 4 * 1);
 }
 
@@ -238,7 +220,6 @@ TEST(RangeTest, CombineSize3Size0) {
   ASSERT_TRUE(r1.maybe_combine(r2));
   ASSERT_EQ(r1.size(), 0);
   ASSERT_EQ(r1.first(), 0);
-  ASSERT_EQ(r1.limit(), 0);
   ASSERT_EQ(r1.step(), 1);
 }
 
@@ -250,7 +231,6 @@ TEST(RangeTest, CombineSize0Size3) {
   ASSERT_TRUE(r1.maybe_combine(r2));
   ASSERT_EQ(r1.size(), 0);
   ASSERT_EQ(r1.first(), 0);
-  ASSERT_EQ(r1.limit(), 0);
   ASSERT_EQ(r1.step(), 1);
 }
 
@@ -262,7 +242,6 @@ TEST(RangeTest, CombineSize3Size1) {
   ASSERT_TRUE(r1.maybe_combine(r2));
   ASSERT_EQ(r1.size(), 3);
   ASSERT_EQ(r1.first(), 1 + 4 * 2);
-  ASSERT_EQ(r1.limit(), 4 + 4 * 2);
   ASSERT_EQ(r1.step(), 1);
 }
 
@@ -274,7 +253,6 @@ TEST(RangeTest, CombineIndices3Size0) {
   ASSERT_TRUE(r1.maybe_combine(r2));
   ASSERT_EQ(r1.size(), 0);
   ASSERT_EQ(r1.first(), 0);
-  ASSERT_EQ(r1.limit(), 0);
   ASSERT_EQ(r1.step(), 1);
 }
 
@@ -286,7 +264,6 @@ TEST(RangeTest, CombineSize0Indices3) {
   ASSERT_TRUE(r1.maybe_combine(r2));
   ASSERT_EQ(r1.size(), 0);
   ASSERT_EQ(r1.first(), 0);
-  ASSERT_EQ(r1.limit(), 0);
   ASSERT_EQ(r1.step(), 1);
 }
 

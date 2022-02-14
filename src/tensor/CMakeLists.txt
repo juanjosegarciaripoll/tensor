@@ -43,7 +43,6 @@ target_sources(tensor
     tensor_scale_z.cc
     tensor_sort_d.cc
     tensor_sort_i.cc
-    tensor_squeeze.cc
     tensor_squeeze_d.cc
     tensor_squeeze_z.cc
     tensor_sum_d.cc

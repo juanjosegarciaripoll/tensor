@@ -92,21 +92,21 @@ template <typename elt_t>
 void test_full_size_set1(Tensor<elt_t> &P) {
   Tensor<elt_t> t = fill_continuous(P);
   P.at(_) = t;
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
 }
 
 template <typename elt_t>
 void test_full_size_set2(Tensor<elt_t> &P) {
   Tensor<elt_t> t = fill_continuous(P);
   P.at(_, _) = t;
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
 }
 
 template <typename elt_t>
 void test_full_size_set3(Tensor<elt_t> &P) {
   Tensor<elt_t> t = fill_continuous(P);
   P.at(_, _, _) = t;
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
 }
 
 //
@@ -149,27 +149,27 @@ template <typename elt_t>
 void test_full_size_set_number1(Tensor<elt_t> &P) {
   Tensor<elt_t> t = P(_);
   t.fill_with(number_one<elt_t>());
-  if (t.size()) EXPECT_FALSE(all_equal(t, P));
+  if (t.size()) ASSERT_FALSE(all_equal(t, P));
   P.at(_) = number_one<elt_t>();
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
 }
 
 template <typename elt_t>
 void test_full_size_set_number2(Tensor<elt_t> &P) {
   Tensor<elt_t> t = P(_, _);
   t.fill_with(number_one<elt_t>());
-  if (t.size()) EXPECT_FALSE(all_equal(t, P));
+  if (t.size()) ASSERT_FALSE(all_equal(t, P));
   P.at(_, _) = number_one<elt_t>();
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
 }
 
 template <typename elt_t>
 void test_full_size_set_number3(Tensor<elt_t> &P) {
   Tensor<elt_t> t = P(_, _, _);
   t.fill_with(number_one<elt_t>());
-  if (t.size()) EXPECT_FALSE(all_equal(t, P));
+  if (t.size()) ASSERT_FALSE(all_equal(t, P));
   P.at(_, _, _) = number_one<elt_t>();
-  EXPECT_TRUE(all_equal(P, t));
+  ASSERT_TRUE(all_equal(P, t));
 }
 
 //

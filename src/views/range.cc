@@ -19,14 +19,29 @@
 
 #include <cassert>
 #include <stdexcept>
+#include <algorithm>
 #include <tensor/indices.h>
 #include <tensor/io.h>
 
 namespace tensor {
 
+Dimensions squeeze_dimensions(const Dimensions &dims) {
+  index ones = std::count(std::begin(dims), std::end(dims), 1);
+  if (ones == dims.rank()) {
+    // A(range(0), range(3), range(1)) has dimensions [1,1,1] which
+    // squeeze down to [1].
+    return Dimensions{1};
+  } else if (ones > 0) {
+    SimpleVector<index> without_ones(dims.rank() - ones);
+    std::copy_if(std::begin(dims), std::end(dims), std::begin(without_ones),
+                 [](index n) { return n != 1; });
+    return Dimensions(without_ones);
+  }
+  return dims;
+}
+
 Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
                                   const Dimensions &parent_dimensions) {
-  SimpleVector<index> output(ranges.size());
   if (ranges.ssize() != parent_dimensions.rank()) {
     if (ranges.size() == 1) {
       // If we only provide one range, it is as if we were flattening the tensor
@@ -36,12 +51,35 @@ Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
     }
     throw std::out_of_range("Number of _ exceeds Tensor rank.");
   }
-  for (index i = 0; i < ranges.ssize(); ++i) {
+#ifdef TENSOR_RANGE_SQUEEZE
+  index removed_dimensions =
+      std::count_if(std::begin(ranges), std::end(ranges),
+                    [](const Range &r) { return r.squeezed(); });
+  index final_size = ranges.ssize() - removed_dimensions;
+  index total_size = 1;
+  SimpleVector<index> output(final_size);
+  for (index i = 0, j = 0; i < ranges.ssize(); ++i) {
     Range &r = ranges.at(i);
     r.set_dimension(parent_dimensions[i]);
-    output.at(i) = r.size();
+    if (!r.squeezed()) {
+      index s = r.size();
+      total_size *= s;
+      output.at(j++) = s;
+    }
   }
-  return Dimensions(output);
+  if (final_size == 0) {
+    return Dimensions{total_size};
+  }
+#else
+#error "TENSOR_RANGE_SQUEEZE is outdated!"
+  SimpleVector<index> output(ranges.size());
+  for (index i = 0, j = 0; i < ranges.ssize(); ++i) {
+    Range &r = ranges.at(i);
+    r.set_dimension(parent_dimensions[i]);
+    output.at(j++) = r.size();
+  }
+#endif
+  return output;
 }
 
 static bool equispaced(const Indices &indices) {
@@ -63,13 +101,12 @@ Range::Range(Indices indices)
     : first_{0},
       step_{1},
       last_{indices.ssize() - 1},
-      limit_{-1},
       dimension_{-1},
       indices_(std::move(indices)) {
   if (indices.size() == 0) {
     *this = empty();
   } else if (indices.size() == 1) {
-    *this = Range(indices[0]);
+    *this = Range(indices[0], indices[0]);
   } else if (equispaced(indices)) {
     index first = indices[0];
     index last = indices[indices.ssize() - 1];
@@ -84,11 +121,7 @@ Range::Range(Indices indices)
 Range Range::empty() { return Range(-1, -2, 1); }
 
 Range Range::empty(index dimension) {
-  Range output(0);
-  output.first_ = 0;
-  output.limit_ = 0;
-  output.last_ = -1;
-  output.step_ = 1;
+  Range output(0, -1, 1);
   output.dimension_ = dimension;
   return output;
 }
@@ -112,7 +145,6 @@ bool Range::maybe_combine(const Range &other) {
       // This range only defines a global displacement, determined by first()
       index offset = first_;
       step_ = other.step() * dimension_;
-      limit_ = offset + other.limit() * dimension_;
       last_ = offset + other.last() * dimension_;
       first_ = offset + other.first() * dimension_;
       dimension_ = total_range_size;
@@ -123,14 +155,13 @@ bool Range::maybe_combine(const Range &other) {
       index offset = other.first() * dimension_;
       first_ += offset;
       last_ += offset;
-      limit_ += offset;
       dimension_ = total_range_size;
       return true;
     }
     if (is_full() && other.is_full()) {
       first_ = 0;
-      limit_ = dimension_ = total_range_size;
-      last_ = limit_ - 1;
+      dimension_ = total_range_size;
+      last_ = total_range_size - 1;
       step_ = 1;
       return true;
     }
@@ -158,9 +189,9 @@ void Range::set_dimension(index new_dimension) {
       x = Dimensions::normalize_index_safe(x, new_dimension);
     }
   } else {
-    /* We reinterpret start_ and limit_ when they have negative values
+    /* We reinterpret start_ and last_ when they have negative values
      * as relative to one past the last element (i.e. -1 = last element).
-     * We then make the intersection between [start_,limit_] and
+     * We then make the intersection between [start_,last_] and
      * [0, new_dimension].
      */
     if (first_ < 0) {
@@ -181,7 +212,6 @@ void Range::set_dimension(index new_dimension) {
       return;
     }
     last_ = first_ + step_ * (delta / step_);
-    limit_ = last_ + step_;
   }
   dimension_ = new_dimension;
 }

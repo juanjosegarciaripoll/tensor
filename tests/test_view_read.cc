@@ -134,101 +134,209 @@ void test_full_size_range3(Tensor<elt_t> &P) {
 
 template <typename elt_t>
 void test_extract_unit_size1(Tensor<elt_t> &P, index i) {
-  SCOPED_TRACE("extract unite range 1D");
+  SCOPED_TRACE("extract unit range 1D");
   Tensor<elt_t> Paux = P;
-
-  Tensor<elt_t> t = P(range(i));
-  EXPECT_EQ(P.rank(), t.rank());
-  EXPECT_EQ(1, t.size());
-  EXPECT_EQ(t[0], P(i));
-
-  Tensor<elt_t> t3 = P(range(i, i));
-  ASSERT_TRUE(all_equal(t3, t));
-
-  Tensor<elt_t> t4 = P(range(i, i, 1));
-  ASSERT_TRUE(all_equal(t4, t));
-
-  if (i + 1 < P.dimension(0)) {
-    Tensor<elt_t> t5 = P(range(i, i + 1, 2));
-    ASSERT_TRUE(all_equal(t5, t));
+  {
+    Tensor<elt_t> t = P(range(i));
+    ASSERT_EQ(t.rank(), 1);
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i));
   }
-
-  Indices ndx(1);
-  ndx.at(0) = i;
-  Tensor<elt_t> t6 = P(range(ndx));
-  ASSERT_TRUE(all_equal(t6, t));
-
+  {
+    Tensor<elt_t> t = P(range(i, i));
+    ASSERT_EQ(t.rank(), 1);
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i));
+  }
+  {
+    Tensor<elt_t> t = P(range(i, i, 1));
+    ASSERT_EQ(t.rank(), 1);
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i));
+  }
+  if (i + 1 < P.dimension(0)) {
+    Tensor<elt_t> t = P(range(i, i + 1, 2));
+    ASSERT_EQ(t.rank(), 1);
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i));
+  }
+  {
+    Indices ndx(1);
+    ndx.at(0) = i;
+    Tensor<elt_t> t = P(range(ndx));
+    ASSERT_EQ(t.rank(), 1);
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i));
+  }
   unchanged(P, Paux);
 }
 
 template <typename elt_t>
 void test_extract_unit_size2(Tensor<elt_t> &P, index i, index j) {
-  SCOPED_TRACE("extract unite range 2D");
+  SCOPED_TRACE("extract unit range 2D");
   Tensor<elt_t> Paux = P;
-
-  Tensor<elt_t> t = P(range(i), range(j));
-  EXPECT_EQ(P.rank(), t.rank());
-  EXPECT_EQ(1, t.size());
-  EXPECT_EQ(t[0], P(i, j));
-
-  Tensor<elt_t> t2 = P(range(i), range(j, j));
-  ASSERT_TRUE(all_equal(t2, t));
-
-  Tensor<elt_t> t3 = P(range(i, i), range(j, j));
-  ASSERT_TRUE(all_equal(t3, t));
-
-  Tensor<elt_t> t4 = P(range(i, i), range(j));
-  ASSERT_TRUE(all_equal(t4, t));
-
-  if (i + 1 < P.dimension(0)) {
-    Tensor<elt_t> t5 = P(range(i, i + 1, 2), range(j));
-    ASSERT_TRUE(all_equal(t5, t));
+  {
+    Tensor<elt_t> t = P(range(i), range(j));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#endif
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i, j));
   }
-
-  Tensor<elt_t> t6 = P(range2(i, i + 1, 2), range(j));
-  ASSERT_TRUE(all_equal(t6, t));
-
-  Tensor<elt_t> t7 = P(range(i), range(j, j));
-  ASSERT_TRUE(all_equal(t7, t));
-
+  {
+    Tensor<elt_t> t = P(range(i), range(j, j));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#endif
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i, j));
+  }
+  {
+    Tensor<elt_t> t = P(range(i, i), range(j, j));
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+    ASSERT_EQ(t[0], P(i, j));
+  }
+  {
+    Tensor<elt_t> t = P(range(i, i), range(j));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#endif
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i, j));
+  }
+  if (i + 1 < P.dimension(0)) {
+    Tensor<elt_t> t = P(range(i, i + 1, 2), range(j));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#endif
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i, j));
+  }
+  {
+    Tensor<elt_t> t = P(range2(i, i + 1, 2), range(j));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#endif
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i, j));
+  }
+  {
+    Tensor<elt_t> t = P(range(i), range(j, j));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#endif
+    ASSERT_EQ(t.size(), 1);
+    ASSERT_EQ(t[0], P(i, j));
+  }
   unchanged(P, Paux);
 }
 
 template <typename elt_t>
 void test_extract_unit_size3(Tensor<elt_t> &P, index i, index j, index k) {
-  SCOPED_TRACE("extract unite range 3D");
+  SCOPED_TRACE("extract unit range 3D");
   Tensor<elt_t> Paux = P;
-
-  Tensor<elt_t> t = P(range(i), range(j), range(k));
-  EXPECT_EQ(P.rank(), t.rank());
-  EXPECT_EQ(1, t.size());
-  EXPECT_EQ(t[0], P(i, j, k));
-
-  Tensor<elt_t> t2 = P(range(i), range(j, j), range(k));
-  ASSERT_TRUE(all_equal(t2, t));
-
-  Tensor<elt_t> t3 = P(range(i, i), range(j, j), range(k));
-  ASSERT_TRUE(all_equal(t3, t));
-
-  Tensor<elt_t> t4 = P(range(i, i), range(j), range(k));
-  ASSERT_TRUE(all_equal(t4, t));
-
-  if (i + 1 < P.dimension(0)) {
-    Tensor<elt_t> t5 = P(range(i, i + 1, 2), range(j), range(k));
-    ASSERT_TRUE(all_equal(t5, t));
+  {
+    Tensor<elt_t> t = P(range(i), range(j), range(k));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
   }
-  Tensor<elt_t> t6 = P(range2(i, i + 1, 2), range(j), range(k));
-  ASSERT_TRUE(all_equal(t6, t));
-
-  Tensor<elt_t> t7 = P(range(i), range(j, j), range(k));
-  ASSERT_TRUE(all_equal(t7, t));
-
-  Tensor<elt_t> t8 = P(range(i), range(j, j), range(k, k));
-  ASSERT_TRUE(all_equal(t8, t));
-
-  Tensor<elt_t> t9 = P(range(i), range(j, j), range2(k, k + 1, 2));
-  ASSERT_TRUE(all_equal(t9, t));
-
+  {
+    Tensor<elt_t> t = P(range(i), range(j, j), range(k));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
+  }
+  {
+    Tensor<elt_t> t = P(range(i, i), range(j, j), range(k));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
+  }
+  {
+    Tensor<elt_t> t = P(range(i, i), range(j), range(k));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
+  }
+  if (i + 1 < P.dimension(0)) {
+    Tensor<elt_t> t = P(range(i, i + 1, 2), range(j), range(k));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
+  }
+  {
+    Tensor<elt_t> t = P(range2(i, i + 1, 2), range(j), range(k));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
+  }
+  {
+    Tensor<elt_t> t = P(range(i), range(j, j), range(k));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
+  }
+  {
+    Tensor<elt_t> t = P(range(i), range(j, j), range(k, k));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
+  }
+  {
+    Tensor<elt_t> t = P(range(i), range(j, j), range2(k, k + 1, 2));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1}));
+#else
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{1, 1, 1}));
+#endif
+    ASSERT_EQ(1, t.size());
+    ASSERT_EQ(t[0], P(i, j, k));
+  }
   unchanged(P, Paux);
 }
 
@@ -242,77 +350,92 @@ void test_view_extract1(Tensor<elt_t> &P, index i0, index i2, index i1) {
   Tensor<elt_t> Paux = P;
 
   Tensor<elt_t> t1 = slow_range1(P, i0, i2, i1);
-  Tensor<elt_t> t2 = P(range(i0, i2, i1));
-  ASSERT_TRUE(all_equal(t2, t1));
-
-  Tensor<elt_t> t3 = P(range2(i0, i2, i1));
-  ASSERT_TRUE(all_equal(t3, t1));
-
+  {
+    Tensor<elt_t> t = P(range(i0, i2, i1));
+    ASSERT_TRUE(all_equal(t, t1));
+  }
+  {
+    Tensor<elt_t> t = P(range2(i0, i2, i1));
+    ASSERT_TRUE(all_equal(t, t1));
+  }
   if (t1.dimension(0) == 1) {
-    Tensor<elt_t> t5 = P(range(i0));
-    ASSERT_TRUE(all_equal(t5, t1));
+    Tensor<elt_t> t = P(range(i0));
+    ASSERT_TRUE(all_equal(t, t1));
   }
   if (t1.dimension(0) == P.dimension(0)) {
-    Tensor<elt_t> t7 = P(_);
-    ASSERT_TRUE(all_equal(t7, t1));
+    Tensor<elt_t> t = P(_);
+    ASSERT_TRUE(all_equal(t, t1));
   }
   unchanged(P, Paux);
 }
 
 template <typename elt_t>
-void test_view_extract2(Tensor<elt_t> &P, index i0, index i2, index i1,
-                        index j0, index j2, index j1) {
+void test_view_extract(Tensor<elt_t> &P, index i0, index i2, index i1, index j0,
+                       index j2, index j1) {
   SCOPED_TRACE("extract view 2D");
   Tensor<elt_t> Paux = P;
-
   Tensor<elt_t> t1 = slow_range2(P, i0, i2, i1, j0, j2, j1);
-  Tensor<elt_t> t2 = P(range(i0, i2, i1), range(j0, j2, j1));
-  if (!all_equal(t1, t2)) {
-    std::cerr << P << '\n'
-              << t1 << '\n'
-              << t2 << '\n'
-              << range(i0, i2, i1) << ',' << range(j0, j2, j1) << '\n';
+  {
+    Tensor<elt_t> t = P(range(i0, i2, i1), range(j0, j2, j1));
+    if (!all_equal(t1, t)) {
+      std::cerr << P << '\n'
+                << t1 << '\n'
+                << t << '\n'
+                << range(i0, i2, i1) << ',' << range(j0, j2, j1) << '\n';
+    }
+    ASSERT_TRUE(all_equal(t, t1));
   }
-  ASSERT_TRUE(all_equal(t2, t1));
-
-  Tensor<elt_t> t3 = P(range2(i0, i2, i1), range(j0, j2, j1));
-  ASSERT_TRUE(all_equal(t3, t1));
-
-  Tensor<elt_t> t4 = P(range(i0, i2, i1), range2(j0, j2, j1));
-  ASSERT_TRUE(all_equal(t4, t1));
-
-  Tensor<elt_t> t8 = P(range2(i0, i2, i1), range2(j0, j2, j1));
-  ASSERT_TRUE(all_equal(t8, t1));
-
+  {
+    Tensor<elt_t> t = P(range2(i0, i2, i1), range(j0, j2, j1));
+    ASSERT_TRUE(all_equal(t, t1));
+  }
+  {
+    Tensor<elt_t> t = P(range(i0, i2, i1), range2(j0, j2, j1));
+    ASSERT_TRUE(all_equal(t, t1));
+  }
+  {
+    Tensor<elt_t> t = P(range2(i0, i2, i1), range2(j0, j2, j1));
+    ASSERT_TRUE(all_equal(t, t1));
+  }
   if (t1.dimension(0) == 1) {
-    Tensor<elt_t> t5 = P(range(i0), range(j0, j2, j1));
-    ASSERT_TRUE(all_equal(t5, t1));
+    Tensor<elt_t> t = P(range(i0), range(j0, j2, j1));
+    ASSERT_EQ(t.size(), t1.size());
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{t1.size()}));
+    ASSERT_TRUE(all_equal(flatten(t), flatten(t1)));
+#else
+    ASSERT_TRUE(all_equal(t, t1));
+#endif
   }
   if (t1.dimension(1) == 1) {
-    Tensor<elt_t> t6 = P(range(i0, i2, i1), range(j0));
-    ASSERT_TRUE(all_equal(t6, t1));
+    Tensor<elt_t> t = P(range(i0, i2, i1), range(j0));
+#ifdef TENSOR_RANGE_SQUEEZE
+    ASSERT_TRUE(all_equal(t.dimensions(), Dimensions{t1.size()}));
+    ASSERT_TRUE(all_equal(flatten(t), flatten(t1)));
+#else
+    ASSERT_TRUE(all_equal(t, t1));
+#endif
   }
   if (t1.dimension(0) == P.dimension(0)) {
-    Tensor<elt_t> t7 = P(_, range(j0, j2, j1));
-    ASSERT_TRUE(all_equal(t7, t1));
+    Tensor<elt_t> t = P(_, range(j0, j2, j1));
+    ASSERT_TRUE(all_equal(t, t1));
   }
   if (t1.dimension(1) == P.dimension(1)) {
-    Tensor<elt_t> t7 = P(range(i0, i2, i1), _);
-    ASSERT_TRUE(all_equal(t7, t1));
+    Tensor<elt_t> t = P(range(i0, i2, i1), _);
+    ASSERT_TRUE(all_equal(t, t1));
   }
   unchanged(P, Paux);
 }
 
 template <typename elt_t>
-void test_view_extract3(Tensor<elt_t> &P, index i0, index i2, index i1,
-                        index j0, index j2, index j1, index k0, index k2,
-                        index k1) {
+void test_view_extract(Tensor<elt_t> &P, index i0, index i2, index i1, index j0,
+                       index j2, index j1, index k0, index k2, index k1) {
   SCOPED_TRACE("extract view 3D");
   Tensor<elt_t> Paux = P;
 
   Tensor<elt_t> t1 = slow_range3(P, i0, i2, i1, j0, j2, j1, k0, k2, k1);
-  Tensor<elt_t> t2 = P(range(i0, i2, i1), range(j0, j2, j1), range(k0, k2, k1));
-  ASSERT_TRUE(all_equal(t2, t1));
+  Tensor<elt_t> t = P(range(i0, i2, i1), range(j0, j2, j1), range(k0, k2, k1));
+  ASSERT_TRUE(all_equal(t, t1));
 
   unchanged(P, Paux);
 }
@@ -355,7 +478,7 @@ void test_range_extract2(Tensor<elt_t> &P) {
         for (index j0 = 0; j0 < cols; j0++) {
           for (index i2 = i0; i2 < rows; i2++) {
             for (index j2 = j0; j2 < cols; j2++) {
-              test_view_extract2(P, i0, i2, i1, j0, j2, j1);
+              test_view_extract(P, i0, i2, i1, j0, j2, j1);
             }
           }
         }
@@ -387,7 +510,7 @@ void test_range_extract3(Tensor<elt_t> &P) {
               for (index i2 = i0; i2 < d0; i2++) {
                 for (index j2 = j0; j2 < d1; j2++) {
                   for (index k2 = k0; k2 < d2; k2++) {
-                    test_view_extract3(P, i0, i2, i1, j0, j2, j1, k0, k2, k1);
+                    test_view_extract(P, i0, i2, i1, j0, j2, j1, k0, k2, k1);
                   }
                 }
               }

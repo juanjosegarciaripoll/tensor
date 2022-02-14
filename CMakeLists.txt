@@ -44,6 +44,7 @@ option(TENSOR_FFTW "Enable support for FFTW" OFF)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 option(TENSOR_BENCHMARK "Enable benchmarking code after building" OFF)
+option(TENSOR_RANGE_SQUEEZE "Selecting ranges from a tensor can remove dimensions" ON)
 set(TENSOR_BLAS "OpenBLAS" CACHE STRING "BLAS backend to use. Values are OpenBLAS (default) or MKL (also brings LAPACK backend)")
 
 # Compiler settings and other tooling

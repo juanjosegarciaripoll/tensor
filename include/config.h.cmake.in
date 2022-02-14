@@ -6,6 +6,7 @@
 #ifndef TENSOR_CONFIG_H
 #define TENSOR_CONFIG_H
 
+#cmakedefine TENSOR_RANGE_SQUEEZE
 #cmakedefine TENSOR_USE_ATLAS
 #cmakedefine TENSOR_USE_OPENBLAS
 #cmakedefine TENSOR_USE_VECLIB

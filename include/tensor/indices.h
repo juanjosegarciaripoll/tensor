@@ -143,6 +143,7 @@ void surrounding_dimensions(const Indices &d, index ndx, index *d1, index *d2,
                             index *d3);
 void surrounding_dimensions(const Dimensions &d, index ndx, index *d1,
                             index *d2, index *d3);
+Dimensions squeeze_dimensions(const Dimensions &d);
 
 const Indices operator<<(const Indices &a, const Indices &b);
 
@@ -215,12 +216,19 @@ class Range {
      negative or zero values.
    */
  public:
-  Range(index position) : Range(position, position, 1) {}
+  Range(index position) : Range(position, position, 1) { squeezed_ = true; }
   Range(index first, index last) : Range(first, last, 1) {}
   Range(index first, index last, index step)
-      : first_{first}, step_{step}, last_{last}, limit_{-1}, dimension_{-1} {}
+      : first_{first}, step_{step}, last_{last}, dimension_{-1} {
+    if (step == 0) {
+      throw std::invalid_argument("Invalid step sie in Range()");
+    }
+  }
   Range(index first, index last, index step, index dimension)
-      : first_{first}, step_{step}, last_{last}, limit_{-1}, dimension_{-1} {
+      : first_{first}, step_{step}, last_{last}, dimension_{-1} {
+    if (step == 0) {
+      throw std::invalid_argument("Invalid step sie in Range()");
+    }
     set_dimension(dimension);
   }
   Range(Indices indices);
@@ -233,12 +241,6 @@ class Range {
   index first() const { return first_; }
   index step() const { return step_; }
   index last() const { return last_; }
-  index limit() const {
-    if (dimension_ < 0)
-      throw std::invalid_argument(
-          "Unable to retrieve limit from a range without dimension.");
-    return limit_;
-  }
   index dimension() const { return dimension_; }
   void set_dimension(index dimension);
   bool has_indices() const { return indices().size() != 0; }
@@ -248,8 +250,10 @@ class Range {
     return std::max<index>(0, 1 + (last_ - first_) / step_);
   }
   index is_full() const {
-    return first_ == 0 && step_ == 1 && limit_ == dimension_;
+    return first_ == 0 && step_ == 1 &&
+           (last_ == -1 || last_ == dimension_ - 1);
   }
+  bool squeezed() const { return squeezed_; }
   bool maybe_combine(const Range &other);
 
   static Range empty();
@@ -257,8 +261,9 @@ class Range {
   static Range full(index first = 0, index step = 1);
 
  private:
-  index first_{-1}, step_{1}, last_{-2}, limit_{-1}, dimension_{-1};
+  index first_{-1}, step_{1}, last_{-2}, dimension_{-1};
   Indices indices_;
+  bool squeezed_{false};
 };
 
 extern const Range _;
@@ -330,7 +335,7 @@ class TensorIterator {
 
   TensorIterator(RangeIterator &&it, elt_t *base, index size = 0)
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
-#if 0
+#ifdef NDEBUG
   elt_t &operator*() { return base_[iterator_.get_position()]; }
 #else
   elt_t &operator*() {

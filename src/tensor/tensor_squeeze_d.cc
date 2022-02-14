@@ -21,8 +21,6 @@
 
 namespace tensor {
 
-Indices squeeze_dimensions(const Indices &d);
-
 /** Eliminate all singleton dimensions from a tensor, preserving the data. */
 RTensor squeeze(const RTensor &t) {
   return reshape(t, squeeze_dimensions(t.dimensions()));
