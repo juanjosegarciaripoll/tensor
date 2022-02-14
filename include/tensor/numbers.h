@@ -23,6 +23,7 @@
 
 #include <cmath>
 #include <complex>
+#include <tensor/config.h>
 
 namespace tensor {
 
