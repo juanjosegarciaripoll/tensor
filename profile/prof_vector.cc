@@ -28,8 +28,9 @@
 
 #include "profile.h"
 
+namespace benchmark {
+
 using namespace tensor;
-using namespace benchmark;
 
 template <class T1, class T2>
 void add(std::tuple<T1, T2> &args) {
@@ -91,7 +92,7 @@ void vector_const_indexed_read(std::tuple<T, typename T::elt_t> &args) {
   const T &v = std::get<0>(args);
   auto n = std::get<1>(args);
   auto x = n;
-  for (tensor::index i = 0; i < static_cast<index>(v.size()); ++i) {
+  for (tensor::index i = 0; i < static_cast<tensor::index>(v.size()); ++i) {
     x += v[i];
   }
   force_nonzero(x);
@@ -102,7 +103,7 @@ void vector_indexed_read(std::tuple<T, typename T::elt_t> &args) {
   T &v = std::get<0>(args);
   auto n = std::get<1>(args);
   auto x = n;
-  for (tensor::index i = 0; i < static_cast<index>(v.size()); ++i) {
+  for (tensor::index i = 0; i < static_cast<tensor::index>(v.size()); ++i) {
     x += v[i];
   }
   force_nonzero(x);
@@ -112,7 +113,7 @@ template <class T>
 void vector_indexed_write(std::tuple<T, typename T::elt_t> &args) {
   T &v = std::get<0>(args);
   auto n = std::get<1>(args);
-  for (tensor::index i = 0; i < v.size(); ++i) {
+  for (tensor::index i = 0; i < static_cast<tensor::index>(v.size()); ++i) {
     v.at(i) = n;
   }
 }
@@ -239,6 +240,8 @@ void run_all(std::ostream &out, const std::string &version = "") {
   out << set << std::endl;
 }
 
+}  // namespace benchmark
+
 /**
  * Generate a UTC ISO8601-formatted timestamp
  * and return as std::string
@@ -267,5 +270,5 @@ int main(int argn, char **argv) {
   }
   std::cerr << "Writing output to file " << filename << std::endl;
   std::ofstream mycout(filename);
-  run_all(mycout, tag);
+  benchmark::run_all(mycout, tag);
 }
