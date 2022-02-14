@@ -169,7 +169,7 @@ class Tensor {
 
   /**Change the dimensions, while keeping the data. */
   void reshape(const Dimensions &new_dimensions) {
-    assert(new_dimensions.total_size() == size());
+    assert(new_dimensions.total_size() == ssize());
     dims_ = new_dimensions;
   }
 
