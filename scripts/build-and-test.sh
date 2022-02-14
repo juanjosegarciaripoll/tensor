@@ -38,7 +38,7 @@ CMAKE_FLAGS="-DTENSOR_ARPACK=ON -DTENSOR_FFTW=ON -DTENSOR_CLANG_TIDY=ON -DTENSOR
 cmake -H"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
 if [ $? -ne 0 ]; then
     echo CMake configuration failed
-    exit -1
+    exit 1
 fi
 #
 # Build
@@ -46,7 +46,7 @@ fi
 cmake --build "$builddir" --config Release -j $threads -- 2>&1 | tee -a "$logfile"
 if [ $? -ne 0 ]; then
     echo CMake build failed
-    exit -1
+    exit 1
 fi
 #
 # Run profile
@@ -55,7 +55,7 @@ if [ $do_profile = yes ]; then
     "$builddir/profile/profile" "$sourcedir/profile/benchmark_$os.json" 2>&1 | tee -a "$logfile"
     if [ $? -ne 0 ]; then
         echo CMake profile failed
-        exit -1
+        exit 1
     fi
 fi
 #
