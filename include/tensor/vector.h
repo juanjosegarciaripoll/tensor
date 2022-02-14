@@ -46,6 +46,11 @@ inline size_t safe_size_t(index s) {
   return static_cast<size_t>(s);
 }
 
+template <typename sequence>
+index ssize(const sequence &s) {
+  return static_cast<index>(s.size());
+}
+
 template <typename elt>
 class Vector {
  public:
