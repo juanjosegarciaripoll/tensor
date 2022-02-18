@@ -1,4 +1,3 @@
-// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 /*
 	Copyright (c) 2013 Juan Jose Garcia Ripoll
 

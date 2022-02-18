@@ -1,4 +1,3 @@
-// -*- mode: c++; fill-column: 80; c-basic-offset: 2; indent-tabs-mode: nil -*-
 /*!\mainpage Tensor Library Documentation
 
 Tensor is a tensor algebra library for doing numerics with arrays of real and
