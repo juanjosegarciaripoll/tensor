@@ -1,3 +1,4 @@
+#pragma once
 /*
     Copyright (c) 2010 Juan Jose Garcia Ripoll
 
@@ -16,7 +17,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
 #ifndef TENSOR_TENSOR_H
 #define TENSOR_TENSOR_H
 
