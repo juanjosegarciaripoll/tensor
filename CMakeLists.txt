@@ -16,7 +16,7 @@ project(tensor
   HOMEPAGE_URL https://github.com/juanjosegarciaripoll/tensor)
 
 # specify the C++ standard
-# GoogleTest requiers C++14 or better
+# GoogleTest requires C++14 or better
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -222,14 +222,14 @@ if(TENSOR_TEST)
   set(GTEST_COMPONENT GTest::gtest)
   if(NOT GTest_FOUND)
     message(STATUS "GTest not found")
-	  FetchContent_Declare(
-	    googletest
-	    URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
-	    )
-	  # For Windows: Prevent overriding the parent project's compiler/linker settings
-	  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_Declare(
+      googletest
+      URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+    )
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     message(STATUS "Downloading googletest")
-	  #FetchContent_MakeAvailable(googletest)
+    #FetchContent_MakeAvailable(googletest)
     FetchContent_GetProperties(googletest)
     if(NOT googletest_POPULATED)
       FetchContent_Populate(googletest)
