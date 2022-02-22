@@ -59,35 +59,35 @@ make_tensor_options()
 
 # Search for dependencies
 set(TENSOR_DEPENDENCIES)
-set(CBLAS_FOUND FALSE)
+set(cblas_found FALSE)
 set(TENSOR_USE_LAPACK TRUE)
 if(TENSOR_BLAS STREQUAL MKL)
   tensor_find_dependency(
     NAME MKL
-    VAR TENSOR_BLAS_TARGET
+    VAR tensor_blas_target
     CONFIG_NAMES MKL
     IMPORT_TARGET MKL::MKL
     DEPENDENCIES TENSOR_DEPENDENCIES
     REQUIRED
   )
-  set(CBLAS_FOUND TRUE)
+  set(cblas_found TRUE)
   set(TENSOR_USE_MKL TRUE)
   set(TENSOR_USE_LAPACK FALSE)
 endif()
-if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT CBLAS_FOUND))
+if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT cblas_found))
   tensor_find_dependency(
     NAME OpenBLAS
-    VAR TENSOR_BLAS_TARGET
+    VAR tensor_blas_target
     CONFIG_NAMES OpenBLAS
     IMPORT_TARGET OpenBLAS::OpenBLAS
     DEPENDENCIES TENSOR_DEPENDENCIES
     PKGCONFIG_NAMES openblas openblas64
     REQUIRED
   )
-  set(CBLAS_FOUND TRUE)
+  set(cblas_found TRUE)
   set(TENSOR_USE_OPENBLAS TRUE)
   set(HAVE_CBLAS_H TRUE)
-  tensor_openblas_requires_lapack(TARGET ${TENSOR_BLAS_TARGET})
+  tensor_openblas_requires_lapack(TARGET ${tensor_blas_target})
   set(TENSOR_USE_LAPACK ${OPENBLAS_REQUIRES_LAPACK})
 else()
   message(FATAL_ERROR "TENSOR_BLAS must be one of MKL or OpenBLAS. Current value is \"${TENSOR_BLAS}\"")
@@ -95,7 +95,7 @@ endif()
 if(TENSOR_USE_LAPACK)
   tensor_find_dependency(
     NAME lapack
-    VAR TENSOR_LAPACK_TARGET
+    VAR tensor_lapack_target
     CONFIG_NAMES LAPACK
     IMPORT_TARGET LAPACK::LAPACK
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -108,7 +108,7 @@ endif()
 if(TENSOR_ARPACK)
   tensor_find_dependency(
     NAME arpack
-    VAR TENSOR_ARPACK_TARGET
+    VAR tensor_arpack_target
     CONFIG_NAMES ARPACK arpack-ng
     IMPORT_TARGET ARPACK::ARPACK
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -147,7 +147,7 @@ endif()
 if(TENSOR_FFTW)
   tensor_find_dependency(
     NAME fftw3
-    VAR TENSOR_FFTW_TARGET
+    VAR tensor_fftw_target
     CONFIG_NAMES FFTW3
     DEPENDENCIES TENSOR_DEPENDENCIES
     IMPORT_TARGET FFTW3::fftw3
@@ -172,15 +172,15 @@ target_include_directories(tensor
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/config_aux>
   )
 if(TENSOR_FFTW)
-  target_link_libraries(tensor PRIVATE ${TENSOR_FFTW_TARGET})
+  target_link_libraries(tensor PRIVATE ${tensor_fftw_target})
 endif()
 if(TENSOR_ARPACK)
-  target_link_libraries(tensor PUBLIC ${TENSOR_ARPACK_TARGET})
+  target_link_libraries(tensor PUBLIC ${tensor_arpack_target})
 endif()
 if(TENSOR_USE_LAPACK)
-  target_link_libraries(tensor PRIVATE ${TENSOR_LAPACK_TARGET})
+  target_link_libraries(tensor PRIVATE ${tensor_lapack_target})
 endif()
-target_link_libraries(tensor PUBLIC ${TENSOR_BLAS_TARGET})
+target_link_libraries(tensor PUBLIC ${tensor_blas_target})
 add_subdirectory(include)
 add_subdirectory(src)
 
