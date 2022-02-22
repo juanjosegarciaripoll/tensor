@@ -69,14 +69,14 @@ CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
     vl = tensor_pointer(*L);
     jobvl[0] = 'V';
   } else {
-    vl = NULL;
+    vl = nullptr;
   }
   if (R) {
     (*R) = CTensor::empty(n, n);
     vr = tensor_pointer(*R);
     jobvr[0] = 'V';
   } else {
-    vr = NULL;
+    vr = nullptr;
   }
 
   ldvl = ldvr = n;

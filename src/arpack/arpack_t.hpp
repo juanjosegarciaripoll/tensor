@@ -28,7 +28,7 @@ const char *eigenvalue_selector(enum EigType _t);
 
 template <>
 inline const char *eigenvalue_selector<double>(enum EigType _t) {
-  static const char *whichs[6] = {"LM", "SM", "LA", "SA", NULL, NULL};
+  static const char *whichs[6] = {"LM", "SM", "LA", "SA", nullptr, nullptr};
   if (_t == LargestImaginary) {
     std::cerr << "Cannot use LargestImaginary eigenvalue selector with real "
                  "problems.\n";

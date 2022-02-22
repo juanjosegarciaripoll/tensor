@@ -65,7 +65,7 @@ Job::dataset Job::open_dataset(const std::string &filename) const {
   if (sdf::file_exists(dataset_record_name)) {
     std::cout << "File " << dataset_record_name << " already exists"
               << std::endl;
-    output = NULL;
+    output = nullptr;
   } else {
     output =
         new sdf::OutDataFile(dataset_record_name, sdf::DataFile::SDF_PARANOID);

@@ -48,7 +48,7 @@ CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
 CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
                    CTensor *eigenvectors, bool *converged) {
   CTensor vectors;
-  CTensor values = eig(A, NULL, eigenvectors ? &vectors : 0);
+  CTensor values = eig(A, nullptr, eigenvectors ? &vectors : 0);
   Indices ndx = RArpack::sort_values(values, eig_type);
   Indices ndx_out(neig);
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());

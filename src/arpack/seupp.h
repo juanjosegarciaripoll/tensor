@@ -155,7 +155,7 @@ inline void gen_eupp(bool rvec, char HowMny, double d[], double Z[],
 {
   blas::integer irvec = (int)rvec;
   auto iselect = std::make_unique<logical[]>(ncv);
-  double* iZ = (Z == NULL) ? &V[0] : Z;
+  double* iZ = (Z == nullptr) ? &V[0] : Z;
 
   F77NAME(dseupd)
   (&irvec, &HowMny, iselect.get(), d, iZ, &ldz, &sigma, &bmat, &n, which, &nev,

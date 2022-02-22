@@ -230,7 +230,7 @@ inline void neupp(bool rvec, char HowMny, double dr[], double di[], double Z[],
 {
   int irvec = (int)rvec;
   auto iselect = std::make_unique<logical[]>(ncv);
-  double* iZ = (Z == NULL) ? &V[0] : Z;
+  double* iZ = (Z == nullptr) ? &V[0] : Z;
 
   F77NAME(dneupd)
   (&irvec, &HowMny, iselect.get(), dr, di, iZ, &ldz, &sigmar, &sigmai,

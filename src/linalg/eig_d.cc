@@ -50,7 +50,7 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   char jobvl[2] = "N";
   char jobvr[2] = "N";
   blas::integer lda, ldvl, ldvr, lwork, info;
-  double *vl = NULL, *vr = NULL, *wr, *wi;
+  double *vl = nullptr, *vr = nullptr, *wr, *wi;
   RTensor aux(A);
   double *a = tensor_pointer(aux);
   blas::integer n = blas::tensor_rows(A);

@@ -50,7 +50,7 @@ void rand_reseed() {
     rand_uint seed[SEED_SIZE];
   } r;
   int ok = 0;
-  if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+  if (CryptAcquireContext(&hCryptProv, nullptr, nullptr, PROV_RSA_FULL, 0)) {
     ok = CryptGenRandom(hCryptProv, sizeof(r.seed), r.data);
     CryptReleaseContext(hCryptProv, 0);
   }
