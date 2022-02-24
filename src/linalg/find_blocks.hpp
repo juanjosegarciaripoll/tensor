@@ -63,7 +63,7 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
   column_block.reserve(M);
 
   index nblocks = 0;
-  auto data = A.begin_const();
+  auto data = A.cbegin();
   for (index col = 0; col < M; col++) {
     // For each col, we see what rowumns it is linked to. If some of these
     // rowumns belongs to a block, and the current block is not set, we

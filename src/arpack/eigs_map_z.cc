@@ -81,7 +81,7 @@ CTensor eigs(const InPlaceLinearMap<CTensor> &A, size_t n, EigType eig_type,
   CArpack data(n, eig_type, neig);
 
   if (eigenvectors && eigenvectors->size() >= n)
-    data.set_start_vector(eigenvectors->begin_const());
+    data.set_start_vector(eigenvectors->cbegin());
 
   while (data.update() < data.Finished) {
     A(data.get_x(), data.get_y());

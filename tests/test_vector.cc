@@ -29,7 +29,7 @@ using tensor::Vector;
 TEST(VectorTest, DefaultConstructor) {
   const Vector<int> r;
   EXPECT_EQ(0, r.size());
-  EXPECT_EQ(0, r.begin_const());
+  EXPECT_EQ(0, r.cbegin());
 #ifdef TENSOR_REFCOUNT_H
   EXPECT_EQ(1, r.ref_count());
 #endif
@@ -75,7 +75,7 @@ TEST(VectorTest, TwoRefsCopyConstructor) {
   EXPECT_EQ(2, r1.size());
   EXPECT_EQ(2, r1.ref_count());
   EXPECT_EQ(2, r2.size());
-  EXPECT_EQ(r1.begin_const(), r2.begin_const());
+  EXPECT_EQ(r1.cbegin(), r2.cbegin());
 }
 
 // The destructor frees the data as soon as the reference count goes to zero.
@@ -99,7 +99,7 @@ TEST(VectorTest, Assigning) {
   Vector<int> ref(size_t(5));
   Vector<int> r2 = ref;
 
-  EXPECT_EQ(ref.begin_const(), r2.begin_const());
+  EXPECT_EQ(ref.cbegin(), r2.cbegin());
 }
 
 // Operator= works when a refpointer is copied onto itself
@@ -115,12 +115,12 @@ TEST(VectorTest, ConstantAccess) {
   Vector<int> ref(2);
   const Vector<int> const_ref(ref);
 
-  const int *start = ref.begin_const();
-  const int *end = ref.end_const();
+  const int *start = ref.cbegin();
+  const int *end = ref.cend();
 
-  EXPECT_EQ(start, const_ref.begin_const());
+  EXPECT_EQ(start, const_ref.cbegin());
   EXPECT_EQ(start, const_ref.begin());
-  EXPECT_EQ(end, const_ref.end_const());
+  EXPECT_EQ(end, const_ref.cend());
   EXPECT_EQ(end, const_ref.end());
 }
 
@@ -132,27 +132,27 @@ TEST(VectorTest, NonConstAccess) {
   Vector<int> end_ref(ref);
 
   // intially, all pointers point to the same position
-  EXPECT_EQ(ref.begin_const(), start_ref.begin_const());
-  EXPECT_EQ(ref.end_const(), end_ref.end_const());
+  EXPECT_EQ(ref.cbegin(), start_ref.cbegin());
+  EXPECT_EQ(ref.cend(), end_ref.cend());
   EXPECT_EQ(3, ref.ref_count());
 
   // now this changes.
-  EXPECT_NE(ref.begin_const(), start_ref.begin());
+  EXPECT_NE(ref.cbegin(), start_ref.begin());
   EXPECT_EQ(2, ref.ref_count());
-  EXPECT_NE(ref.end_const(), end_ref.end());
+  EXPECT_NE(ref.cend(), end_ref.end());
   EXPECT_EQ(1, ref.ref_count());
 
   // and all the data was of course copied.
-  EXPECT_NE(ref.end_const(), start_ref.end_const());
-  EXPECT_NE(ref.begin_const(), end_ref.begin_const());
+  EXPECT_NE(ref.cend(), start_ref.cend());
+  EXPECT_NE(ref.cbegin(), end_ref.cbegin());
 }
 
 // For a single object, no data is copied ever.
 TEST(VectorTest, SingleReference) {
   Vector<int> r(2);
-  const int *p = r.begin_const();
+  const int *p = r.cbegin();
 
   EXPECT_EQ(p, r.begin());
-  EXPECT_EQ(p, r.begin_const());
+  EXPECT_EQ(p, r.cbegin());
   EXPECT_EQ(1, r.ref_count());
 }

@@ -72,7 +72,7 @@ CTensor eigs_gen(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
 
   if (eigenvectors && eigenvectors->size() >= n) {
     RTensor aux = real(*eigenvectors);
-    data.set_start_vector(aux.begin_const());
+    data.set_start_vector(aux.cbegin());
   } else {
     data.set_random_start_vector();
   }

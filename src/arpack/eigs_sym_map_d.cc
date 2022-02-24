@@ -82,7 +82,7 @@ RTensor eigs(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
   Arpack<double, true> data(n, eig_type, neig);
 
   if (eigenvectors && eigenvectors->size() >= n) {
-    data.set_start_vector(eigenvectors->begin_const());
+    data.set_start_vector(eigenvectors->cbegin());
   } else {
     data.set_random_start_vector();
   }

@@ -34,7 +34,7 @@ void test_ones(int n) {
     Tensor<elt_t> M = Tensor<elt_t>::ones(n);
     EXPECT_EQ(1, M.rank());
     EXPECT_EQ(n, M.dimension(0));
-    size_t ones = std::count(M.begin_const(), M.end_const(), one);
+    size_t ones = std::count(M.cbegin(), M.cend(), one);
     EXPECT_EQ(M.size(), ones);
     EXPECT_EQ(1, M.ref_count());
   }
@@ -45,7 +45,7 @@ void test_ones(int n) {
       EXPECT_EQ(2, M.rank());
       EXPECT_EQ(i, M.rows());
       EXPECT_EQ(n, M.columns());
-      size_t ones = std::count(M.begin_const(), M.end_const(), one);
+      size_t ones = std::count(M.cbegin(), M.cend(), one);
       EXPECT_EQ(M.size(), ones);
       EXPECT_EQ(1, M.ref_count());
     }
@@ -54,7 +54,7 @@ void test_ones(int n) {
       EXPECT_EQ(2, M.rank());
       EXPECT_EQ(n, M.rows());
       EXPECT_EQ(i, M.columns());
-      size_t ones = std::count(M.begin_const(), M.end_const(), one);
+      size_t ones = std::count(M.cbegin(), M.cend(), one);
       EXPECT_EQ(M.size(), ones);
       EXPECT_EQ(1, M.ref_count());
     }
@@ -69,7 +69,7 @@ void test_zeros(int n) {
     Tensor<elt_t> M = Tensor<elt_t>::zeros(n);
     EXPECT_EQ(1, M.rank());
     EXPECT_EQ(n, M.dimension(0));
-    size_t zeros = std::count(M.begin_const(), M.end_const(), zero);
+    size_t zeros = std::count(M.cbegin(), M.cend(), zero);
     EXPECT_EQ(M.size(), zeros);
     EXPECT_EQ(1, M.ref_count());
   }
@@ -80,7 +80,7 @@ void test_zeros(int n) {
       EXPECT_EQ(2, M.rank());
       EXPECT_EQ(i, M.rows());
       EXPECT_EQ(n, M.columns());
-      size_t zeros = std::count(M.begin_const(), M.end_const(), zero);
+      size_t zeros = std::count(M.cbegin(), M.cend(), zero);
       EXPECT_EQ(M.size(), zeros);
       EXPECT_EQ(1, M.ref_count());
     }
@@ -89,7 +89,7 @@ void test_zeros(int n) {
       EXPECT_EQ(2, M.rank());
       EXPECT_EQ(n, M.rows());
       EXPECT_EQ(i, M.columns());
-      size_t zeros = std::count(M.begin_const(), M.end_const(), zero);
+      size_t zeros = std::count(M.cbegin(), M.cend(), zero);
       EXPECT_EQ(M.size(), zeros);
       EXPECT_EQ(1, M.ref_count());
     }

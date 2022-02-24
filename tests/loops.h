@@ -36,7 +36,7 @@ using namespace tensor;
 template <class Tensor>
 void unchanged(const Tensor &t1, const Tensor &t2, size_t expected_refs = 2) {
   if ((t1.size() + t2.size()) == 0) return;
-  EXPECT_EQ(t1.begin_const(), t2.begin_const());
+  EXPECT_EQ(t1.cbegin(), t2.cbegin());
   EXPECT_EQ(expected_refs, t1.ref_count());
   EXPECT_EQ(expected_refs, t2.ref_count());
 }

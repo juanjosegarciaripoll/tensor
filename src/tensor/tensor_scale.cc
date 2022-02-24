@@ -59,7 +59,7 @@ void scale_inplace(Tensor<elt_t> &t, int ndx, const Vector<double> &v) {
               << " of the scale vector" << std::endl;
     abort();
   }
-  doscale(t.begin(), v.begin_const(), d1, d2, d3);
+  doscale(t.begin(), v.cbegin(), d1, d2, d3);
 }
 
 //

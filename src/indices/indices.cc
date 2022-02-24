@@ -33,8 +33,7 @@ template class Vector<index>;
 template class SimpleVector<index>;
 
 bool all_equal(const Indices &a, const Indices &b) {
-  return (a.size() == b.size()) &&
-         std::equal(a.begin_const(), a.end_const(), b.begin_const());
+  return (a.size() == b.size()) && std::equal(a.cbegin(), a.cend(), b.cbegin());
 }
 
 index Dimensions::compute_total_size(const SimpleVector<index> &dims) {

@@ -409,7 +409,7 @@ bool operator==(const tensor::Indices &v2,
                 const tensor::StaticVector<tensor::index, n> &v1) {
   tensor::Indices v0(v1);
   if (v0.size() != v2.size()) return false;
-  return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
+  return std::equal(v0.cbegin(), v0.cend(), v2.cbegin());
 }
 
 template <size_t n>
@@ -417,7 +417,7 @@ bool operator==(const tensor::StaticVector<tensor::index, n> &v1,
                 const tensor::Indices &v2) {
   tensor::Indices v0(v1);
   if (v0.size() != v2.size()) return false;
-  return std::equal(v0.begin_const(), v0.end_const(), v2.begin_const());
+  return std::equal(v0.cbegin(), v0.cend(), v2.cbegin());
 }
 
 }  // namespace tensor

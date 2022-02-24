@@ -30,7 +30,7 @@ double matrix_norminf(const CTensor &m) {
   // aux[i] = sum_j abs(A(i,j))
 
   SimpleVector<double> aux(static_cast<size_t>(r));
-  auto p = m.begin_const();
+  auto p = m.cbegin();
   for (index i = 0; i < r; i++, ++p) {
     aux.at(i) = std::abs(*p);
   }

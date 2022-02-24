@@ -302,13 +302,13 @@ class Tensor {
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
   /**Iterator at the beginning.*/
-  const_iterator begin() const { return data_.begin_const(); }
+  const_iterator begin() const { return data_.cbegin(); }
   /**Iterator at the beginning for const objects.*/
-  const_iterator begin_const() const { return data_.begin_const(); }
+  const_iterator cbegin() const { return data_.cbegin(); }
   /**Iterator at the end for const objects.*/
-  const_iterator end_const() const { return data_.end_const(); }
+  const_iterator cend() const { return data_.cend(); }
   /**Iterator at the end for const objects.*/
-  const_iterator end() const { return data_.end_const(); }
+  const_iterator end() const { return data_.cend(); }
   /**Iterator at the end.*/
   iterator end() { return data_.end(); }
 

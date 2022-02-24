@@ -28,11 +28,11 @@ class Booleans;
 const ListGenerator<bool> bgen = {};
 
 bool all_of(const Booleans& b) {
-  return std::count(b.begin_const(), b.end_const(), true) == b.ssize();
+  return std::count(b.cbegin(), b.cend(), true) == b.ssize();
 }
 
 bool any_of(const Booleans& b) {
-  return std::find(b.begin_const(), b.end_const(), true) != b.end_const();
+  return std::find(b.cbegin(), b.cend(), true) != b.cend();
 }
 
 }  // namespace tensor

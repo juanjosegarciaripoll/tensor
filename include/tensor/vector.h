@@ -104,9 +104,9 @@ class Vector {
 
   iterator begin() { return appropriate(); }
   const_iterator begin() const { return base_; }
-  const_iterator begin_const() const { return base_; }
-  const_iterator end_const() const { return begin_const() + size_; }
-  const_iterator end() const { return begin_const() + size_; }
+  const_iterator cbegin() const { return base_; }
+  const_iterator cend() const { return cbegin() + size_; }
+  const_iterator end() const { return cbegin() + size_; }
   iterator end() { return begin() + size_; }
 
   // Only for testing purposes

@@ -38,7 +38,7 @@ RTensor scale(const RTensor &t, int a_ndx, const RTensor &v) {
               << " of the scale vector" << std::endl;
     abort();
   }
-  doscale(output.begin(), t.begin_const(), v.begin_const(), d1, d2, d3);
+  doscale(output.begin(), t.cbegin(), v.cbegin(), d1, d2, d3);
   return output;
 }
 
@@ -53,7 +53,7 @@ void scale_inplace(RTensor &t, int ndx, const RTensor &v) {
               << " of the scale vector" << std::endl;
     abort();
   }
-  doscale(t.begin(), v.begin_const(), d1, d2, d3);
+  doscale(t.begin(), v.cbegin(), d1, d2, d3);
 }
 
 }  // namespace tensor

@@ -23,7 +23,7 @@ namespace tensor {
 
 double max(const RTensor &r) {
   assert(r.size());
-  return *(std::max_element(r.begin_const(), r.end_const()));
+  return *(std::max_element(r.cbegin(), r.cend()));
 }
 
 }  // namespace tensor

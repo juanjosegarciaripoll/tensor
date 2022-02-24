@@ -31,7 +31,7 @@ void test_empty_constructor() {
     // In a default constructor, the content of the pointer is unknown
     // hence we do not know the reference count.
     /* EXPECT_EQ(1, P.ref_count()); */
-    EXPECT_EQ(P.end_const(), P.begin_const());
+    EXPECT_EQ(P.cend(), P.cbegin());
   }
   {
     SCOPED_TRACE("1D");
@@ -39,7 +39,7 @@ void test_empty_constructor() {
     EXPECT_EQ(0, P.size());
     EXPECT_EQ(1, P.rank());
     EXPECT_EQ(1, P.ref_count());
-    EXPECT_EQ(P.end_const(), P.begin_const());
+    EXPECT_EQ(P.cend(), P.cbegin());
   }
   {
     SCOPED_TRACE("2D");
@@ -47,7 +47,7 @@ void test_empty_constructor() {
     EXPECT_EQ(0, P.size());
     EXPECT_EQ(2, P.rank());
     EXPECT_EQ(1, P.ref_count());
-    EXPECT_EQ(P.end_const(), P.begin_const());
+    EXPECT_EQ(P.cend(), P.cbegin());
   }
 }
 
