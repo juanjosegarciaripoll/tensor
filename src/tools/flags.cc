@@ -38,7 +38,9 @@ class Flags &Flags::set(unsigned int code, double value) {
   return *this;
 }
 
+#ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
 unsigned int Flags::create_key(double value) {
   auto size = _values.size();
   _values.resize(size + 1, value);
