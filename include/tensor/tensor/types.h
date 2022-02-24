@@ -50,11 +50,12 @@ template <typename elt>
 class Tensor {
  public:
   typedef elt elt_t;
+  typedef elt value_type;
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
   /**Constructs an empty Tensor.*/
-  Tensor() : data_(), dims_() {}
+  Tensor() noexcept = default;
 
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
   explicit Tensor(const Dimensions &new_dims)
@@ -70,7 +71,7 @@ class Tensor {
   Tensor(const Vector<elt_t> &data) : data_(data), dims_{data_.size()} {}
 
   /**Constructs a 1-D Tensor from a vector (move version for temporaries).*/
-  Tensor(Vector<elt_t> &&data)
+  Tensor(Vector<elt_t> &&data) noexcept
       : data_(std::move(data)), dims_({data_.size()}) {}
 
   /**Constructs a 1-D Tensor from a vector.*/
@@ -83,7 +84,7 @@ class Tensor {
   Tensor(const Tensor &other) = default;
 
   /**Optimized move constructor. */
-  Tensor(Tensor &&other) = default;
+  Tensor(Tensor &&other) noexcept = default;
 
   /**Implicit coercion. */
   template <typename e2>
@@ -140,16 +141,16 @@ class Tensor {
   Tensor &operator=(Tensor<elt_t> &&other) = default;
 
   /**Returns total number of elements in Tensor.*/
-  size_t size() const { return data_.size(); }
+  size_t size() const noexcept { return data_.size(); }
   /**Returns total number of elements in Tensor (signed type).*/
-  index ssize() const { return data_.ssize(); }
+  index ssize() const noexcept { return data_.ssize(); }
   /**Does the tensor have elements?*/
-  bool is_empty() const { return size() == 0; }
+  bool is_empty() const noexcept { return size() == 0; }
 
   /**Number of Tensor indices.*/
-  index rank() const { return dims_.rank(); }
+  index rank() const noexcept { return dims_.rank(); }
   /**Return Tensor dimensions.*/
-  const Dimensions &dimensions() const { return dims_; }
+  const Dimensions &dimensions() const noexcept { return dims_; }
   /**Length of a given Tensor index.*/
   index dimension(index which) const {
     assert(rank() > which);
@@ -173,10 +174,10 @@ class Tensor {
   }
 
   /**Return the i-th element, accessed in column major order.*/
-  inline const elt_t &operator[](index i) const { return data_[i]; };
+  inline const elt_t &operator[](index i) const noexcept { return data_[i]; };
   /**Return an element of a Tensor based on one or more indices.*/
   template <typename... index_like>
-  inline const elt_t &operator()(index i0, index_like... irest) const {
+  inline const elt_t &operator()(index i0, index_like... irest) const noexcept {
     return data_[dims_.column_major_position(i0, irest...)];
   }
 
@@ -189,14 +190,16 @@ class Tensor {
   }
 
   /**Fill with an element.*/
-  Tensor<elt_t> &fill_with(const elt_t &e) {
+  Tensor<elt_t> &fill_with(const elt_t &e) noexcept {
     std::fill(begin(), end(), e);
     return *this;
   }
   /**Fill with zeros.*/
-  Tensor<elt_t> &fill_with_zeros() { return fill_with(number_zero<elt_t>()); }
+  Tensor<elt_t> &fill_with_zeros() noexcept {
+    return fill_with(number_zero<elt_t>());
+  }
   /**Fills with random numbers.*/
-  Tensor<elt_t> &randomize() {
+  Tensor<elt_t> &randomize() noexcept {
     for (auto &x : *this) {
       x = rand<elt_t>();
     }
@@ -205,12 +208,13 @@ class Tensor {
 
   /**N-dimensional tensor one or more dimensions, filled with random numbers.*/
   template <typename... index_like>
-  static inline Tensor<elt_t> random(index d0, index_like... next_dimensions) {
+  static inline Tensor<elt_t> random(index d0,
+                                     index_like... next_dimensions) noexcept {
     return Tensor<elt_t>::empty(d0, next_dimensions...).randomize();
   }
 
   /**N-dimensional tensor filled with random numbers.*/
-  static inline Tensor<elt_t> random(const Dimensions &dimensions) {
+  static inline Tensor<elt_t> random(const Dimensions &dimensions) noexcept {
     return Tensor<elt_t>(dimensions).randomize();
   };
 
@@ -299,21 +303,22 @@ class Tensor {
     return Tensor<elt_t>(dimensions).fill_with(number_one<elt_t>());
   };
 
+  /* TODO: Make begin() noexcept when we remove copy-on-write */
   /**Iterator at the beginning.*/
   iterator begin() { return data_.begin(); }
   /**Iterator at the beginning.*/
-  const_iterator begin() const { return data_.cbegin(); }
+  const_iterator begin() const noexcept { return data_.cbegin(); }
   /**Iterator at the beginning for const objects.*/
-  const_iterator cbegin() const { return data_.cbegin(); }
+  const_iterator cbegin() const noexcept { return data_.cbegin(); }
   /**Iterator at the end for const objects.*/
-  const_iterator cend() const { return data_.cend(); }
+  const_iterator cend() const noexcept { return data_.cend(); }
   /**Iterator at the end for const objects.*/
-  const_iterator end() const { return data_.cend(); }
+  const_iterator end() const noexcept { return data_.cend(); }
   /**Iterator at the end.*/
   iterator end() { return data_.end(); }
 
   // Only for testing purposes
-  index ref_count() const { return data_.ref_count(); }
+  index ref_count() const noexcept { return data_.ref_count(); }
 
   /**Take a diagonal from a tensor.*/
   const Tensor<elt_t> diag(int which = 0, int ndx1 = 0, int ndx2 = -1) {
@@ -321,8 +326,8 @@ class Tensor {
   }
 
  private:
-  Vector<elt_t> data_;
-  Dimensions dims_;
+  Vector<elt_t> data_{};
+  Dimensions dims_{};
 };
 //
 // Tensor slicing

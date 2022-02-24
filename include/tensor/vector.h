@@ -54,19 +54,22 @@ template <typename elt>
 class Vector {
  public:
   typedef elt elt_t;
+  typedef elt value_type;
+  typedef size_t size_type;
+  typedef index difference_type;
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
-  Vector() : size_{0}, base_{nullptr}, data_{} {}
+  Vector() noexcept = default;
 
-  explicit Vector(size_t size)
+  explicit Vector(size_type size)
       : size_{size},
         base_{size ? new elt_t[size] : nullptr},
         data_(base_, std::default_delete<elt_t[]>()) {}
 
-  static inline Vector<elt_t> empty(size_t size) { return Vector(size); }
+  static inline Vector<elt_t> empty(size_type size) { return Vector(size); }
 
-  static inline Vector<elt_t> empty(index size) {
+  static inline Vector<elt_t> empty(difference_type size) {
     return Vector(safe_size_t(size));
   }
 
@@ -89,33 +92,46 @@ class Vector {
   Vector &operator=(const Vector<elt_t> &v) = default;
 
   /* Move semantics. */
-  Vector(Vector<elt_t> &&v) = default;
-  Vector &operator=(Vector<elt_t> &&v) = default;
+  Vector(Vector<elt_t> &&v) noexcept = default;
+  Vector &operator=(Vector<elt_t> &&v) noexcept = default;
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */
-  Vector(size_t size, elt_t *data) : size_{size}, base_{data}, data_{} {}
+  Vector(size_type size, elt_t *data) : size_{size}, base_{data}, data_{} {}
 
-  constexpr size_t size() const { return size_; }
-  constexpr index ssize() const { return static_cast<index>(size_); }
+  constexpr size_type size() const noexcept { return size_; }
+  constexpr difference_type ssize() const noexcept {
+    return static_cast<difference_type>(size_);
+  }
 
-  const elt_t &operator[](index pos) const { return *(begin() + pos); }
-  elt_t &at(index pos) { return *(begin() + pos); }
+  /* TODO: Add operator[] for non-const once we remove copy-on-write */
 
+  const elt_t &operator[](difference_type pos) const noexcept {
+    return *(cbegin() + pos);
+  }
+  elt_t &at(difference_type pos) { return *(begin() + pos); }
+  const elt_t &at(difference_type pos) const noexcept {
+    return *(cbegin() + pos);
+  }
+
+  elt_t *data() { return begin(); }
+  const elt_t *data() const noexcept { return cbegin(); }
+
+  /* TODO: Make begin() and end() no except when we remove copy-on-write. */
   iterator begin() { return appropriate(); }
-  const_iterator begin() const { return base_; }
-  const_iterator cbegin() const { return base_; }
-  const_iterator cend() const { return cbegin() + size_; }
-  const_iterator end() const { return cbegin() + size_; }
+  const_iterator begin() const noexcept { return base_; }
+  const_iterator cbegin() const noexcept { return base_; }
+  const_iterator cend() const noexcept { return cbegin() + size_; }
+  const_iterator end() const noexcept { return cbegin() + size_; }
   iterator end() { return begin() + size_; }
 
   // Only for testing purposes
-  index ref_count() const { return data_.use_count(); }
+  size_type ref_count() const noexcept { return data_.use_count(); }
 
  private:
-  size_t size_;
-  elt_t *base_;
-  std::shared_ptr<elt_t> data_;
+  size_type size_{0};
+  elt_t *base_{nullptr};
+  std::shared_ptr<elt_t> data_{};
 
   elt_t *appropriate() {
     if (data_.use_count() > 1) {
@@ -146,14 +162,17 @@ template <typename elt>
 class SimpleVector {
  public:
   typedef elt elt_t;
+  typedef elt value_type;
+  typedef size_t size_type;
+  typedef index difference_type;
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
-  SimpleVector() : size_{0}, base_(nullptr) {}
+  SimpleVector() noexcept = default;
 
-  explicit SimpleVector(size_t size) : size_{size}, base_(new elt_t[size]) {}
+  explicit SimpleVector(size_type size) : size_{size}, base_(new elt_t[size]) {}
 
-  explicit SimpleVector(index size)
+  explicit SimpleVector(difference_type size)
       : size_{safe_size_t(size)}, base_(new elt_t[size]) {}
 
   template <size_t n>
@@ -186,24 +205,37 @@ class SimpleVector {
   SimpleVector(SimpleVector<elt_t> &&v) = default;
   SimpleVector &operator=(SimpleVector<elt_t> &&v) = default;
 
-  static SimpleVector<elt_t> empty(size_t size) {
+  static SimpleVector<elt_t> empty(size_type size) {
     return SimpleVector<elt_t>(size);
   }
 
-  constexpr size_t size() const { return size_; }
-  constexpr index ssize() const { return static_cast<index>(size_); }
+  constexpr size_type size() const noexcept { return size_; }
+  constexpr difference_type ssize() const noexcept {
+    return static_cast<difference_type>(size_);
+  }
 
-  const elt_t &operator[](index pos) const { return *(begin() + pos); }
-  elt_t &at(index pos) { return *(begin() + pos); }
+  elt_t &operator[](difference_type pos) noexcept { return *(begin() + pos); }
+  const elt_t &operator[](difference_type pos) const noexcept {
+    return *(cbegin() + pos);
+  }
+  const elt_t &at(difference_type pos) const noexcept {
+    return *(cbegin() + pos);
+  }
+  elt_t &at(difference_type pos) noexcept { return *(begin() + pos); }
 
-  iterator begin() { return base_.get(); }
-  const_iterator begin() const { return base_.get(); }
-  const_iterator end() const { return base_.get() + size_; }
-  iterator end() { return base_.get() + size_; }
+  elt_t *data() noexcept { return begin(); }
+  const elt_t *data() const noexcept { return cbegin(); }
+
+  iterator begin() noexcept { return base_.get(); }
+  const_iterator begin() const noexcept { return base_.get(); }
+  const_iterator end() const noexcept { return base_.get() + size_; }
+  const_iterator cbegin() const noexcept { return base_.get(); }
+  const_iterator cend() const noexcept { return base_.get() + size_; }
+  iterator end() noexcept { return base_.get() + size_; }
 
  private:
-  size_t size_;
-  std::unique_ptr<elt_t[]> base_;
+  size_t size_{0};
+  std::unique_ptr<elt_t[]> base_{};
 };
 
 }  // namespace tensor
