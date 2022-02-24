@@ -53,7 +53,7 @@ template <typename elt_t>
 void scale_inplace(Tensor<elt_t> &t, int ndx, const Vector<double> &v) {
   index d1, d2, d3;
   surrounding_dimensions(t.get_dims(), t.normal_index(ndx), &d1, &d2, &d3);
-  if (d2 != v.size()) {
+  if (d2 != v.ssize()) {
     std::cerr << "In scale() the dimension " << ndx
               << " of the tensor does not match the length " << v.size()
               << " of the scale vector" << std::endl;
