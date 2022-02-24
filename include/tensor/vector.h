@@ -202,10 +202,10 @@ class SimpleVector {
   };
 
   /* Move semantics. */
-  SimpleVector(SimpleVector<elt_t> &&v) = default;
-  SimpleVector &operator=(SimpleVector<elt_t> &&v) = default;
+  SimpleVector(SimpleVector<elt_t> &&v) noexcept = default;
+  SimpleVector &operator=(SimpleVector<elt_t> &&v) noexcept = default;
 
-  static SimpleVector<elt_t> empty(size_type size) {
+  static inline SimpleVector<elt_t> empty(size_type size) {
     return SimpleVector<elt_t>(size);
   }
 
