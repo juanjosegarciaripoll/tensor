@@ -16,7 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "arpack_t.cc"
+#include "arpack_t.hpp"
 
 namespace linalg {
 template class Arpack<double, true>;
