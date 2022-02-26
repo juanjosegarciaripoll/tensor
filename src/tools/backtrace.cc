@@ -32,11 +32,11 @@
 #include <execinfo.h>
 #endif
 
-#if !defined(HAVE_BACKTRACE) && defined(HAVE___BUILTIN_RETURN_ADDRESS)
+#if !defined(HAVE_BACKTRACE) && defined(HAVE___BUILTIN_RETURN_ADDRESS) && \
+    defined(HAVE_BACKTRACE_SYMBOLS)
 #define HAVE_BACKTRACE
 static int backtrace(void **buffer, int n) {
   int nframes = (n > 32) ? 32 : n;
-  int i;
   switch (nframes) {
     case 32:
       buffer[31] = __builtin_return_address(31);
