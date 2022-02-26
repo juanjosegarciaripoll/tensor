@@ -164,16 +164,16 @@ target_include_directories(tensor
   PRIVATE
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/config_aux>
   )
-target_link_libraries(tensor PUBLIC ${TENSOR_BLAS_TARGET})
-if(TENSOR_USE_LAPACK)
-  target_link_libraries(tensor PRIVATE ${TENSOR_LAPACK_TARGET})
+if(TENSOR_FFTW)
+  target_link_libraries(tensor PRIVATE ${TENSOR_FFTW_TARGET})
 endif()
 if(TENSOR_ARPACK)
   target_link_libraries(tensor PUBLIC ${TENSOR_ARPACK_TARGET})
 endif()
-if(TENSOR_FFTW)
-  target_link_libraries(tensor PRIVATE ${TENSOR_FFTW_TARGET})
+if(TENSOR_USE_LAPACK)
+  target_link_libraries(tensor PRIVATE ${TENSOR_LAPACK_TARGET})
 endif()
+target_link_libraries(tensor PUBLIC ${TENSOR_BLAS_TARGET})
 add_subdirectory(include)
 add_subdirectory(src)
 
