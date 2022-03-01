@@ -37,12 +37,14 @@ const enum DataFile::endianness DataFile::endian = LITTLE_ENDIAN_FILE;
 #endif
 const unsigned int DataFile::var_name_size = 64;
 
+#if defined(_MSC_VER) || defined(__MINGW32__)
+static int get_lock(char const * /*lockname*/, bool /*wait*/) { return 1; }
+static void giveup_lock(int /*fd*/, char const * /*lockName*/) {}
+
+#else
 /* Try to get lock. Return its file descriptor or -1 if failed.
  */
 static int get_lock(char const *lockName, bool wait) {
-#if defined(_MSC_VER) || defined(__MINGW32__)
-  return 1;
-#else
   do {
     mode_t m = umask(0);
     int fd = open(lockName, O_RDWR | O_CREAT, 0666);
@@ -59,18 +61,16 @@ static int get_lock(char const *lockName, bool wait) {
     if (fd > 0 || !wait) return fd;
     sleep(1);
   } while (1);
-#endif
 }
 
 /* Release the lock obtained with tryGetLock( lockName ).
  */
 static void giveup_lock(int fd, char const *lockName) {
-#if !defined(_MSC_VER) && !defined(__MINGW32__)
   if (fd < 0) return;
   std::remove(lockName);
   close(fd);
-#endif
 }
+#endif
 
 DataFile::DataFile(const std::string &a_filename, int a_flags)
     : _actual_filename(a_filename),
@@ -117,11 +117,11 @@ void DataFile::close() {
   }
 }
 
-const char *DataFile::tag_to_name(size_t tag) {
+const char *DataFile::tag_to_name(tensor::index tag) {
   static const char *names[] = {"RTensor", "CTensor", "Real MPS",
                                 "Complex MPS"};
 
-  if (tag > 4 /* || tag < 0 */) {
+  if (tag > 4 || tag < 0) {
     std::cerr << "Not a valid tag code, " << tag << " found in " << _filename;
   }
   return names[tag];
