@@ -98,7 +98,7 @@ RTensor eigs(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return RTensor::zeros(static_cast<size_t>(neig));
+      return RTensor::zeros(static_cast<tensor::index>(neig));
     } else {
       abort();
     }
