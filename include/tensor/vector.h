@@ -126,7 +126,7 @@ class Vector {
   iterator end() { return begin() + size_; }
 
   // Only for testing purposes
-  size_type ref_count() const noexcept { return data_.use_count(); }
+  difference_type ref_count() const noexcept { return data_.use_count(); }
 
  private:
   size_type size_{0};
