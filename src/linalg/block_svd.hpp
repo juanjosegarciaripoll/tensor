@@ -37,7 +37,7 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
   if (!find_blocks<Tensor>(A, row_indices, column_indices)) {
     return svd(A, pU, pVT, economic);
   }
-  index nblocks = row_indices.size();
+  index nblocks = ssize(row_indices);
   RTensor s = RTensor::zeros(minrc);
   if (pU) {
     *pU = Tensor::zeros(rows, economic ? minrc : rows);
@@ -48,36 +48,51 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
 
   RTensor stemp;
   Tensor Utemp, Vtemp;
-  Tensor *pUtemp = pU ? &Utemp : 0;
-  Tensor *pVtemp = pVT ? &Vtemp : 0;
+  Tensor *pUtemp = pU ? &Utemp : nullptr;
+  Tensor *pVtemp = pVT ? &Vtemp : nullptr;
   for (index b = 0, sndx = 0; b < nblocks; b++) {
-    Tensor m = A(range(row_indices[b]), range(column_indices[b]));
-    if (m.size() > 1) {
-      stemp = svd(m, pUtemp, pVtemp, economic);
+    const auto &block_rows = row_indices[static_cast<size_t>(b)];
+    auto M = block_rows.ssize();
+    if (M) {
+      const auto &block_columns = column_indices[static_cast<size_t>(b)];
+      auto N = block_columns.ssize();
+      // The first indices are for the empty rows and columns. We do not need
+      // to compute the SVD in this case, or when the block is a column or
+      // row vector.
+      if (M > 1 && N > 1 && b > 0) {
+        Tensor m = A(range(block_rows), range(block_columns));
+        stemp = svd(m, pUtemp, pVtemp, economic);
+      } else {
+        auto L = std::min(M, N);
+        stemp = RTensor::zeros(L);
+        if (pU) {
+          Utemp = Tensor::eye(M, economic ? L : M);
+        }
+        if (pVT) {
+          Vtemp = Tensor::eye(economic ? L : N, N);
+        }
+        if (b > 0) {
+          // The singular value is non-negative. We assign the remaining
+          // phases to the VT matrix.
+          auto z = A(block_rows[0], block_columns[0]);
+          double singular_value = abs(z);
+          stemp.at(0) = singular_value;
+          if (pVT) {
+            Vtemp *= z / singular_value;
+          }
+        }
+      }
       index slast = sndx + stemp.ssize() - 1;
       s.at(range(sndx, slast)) = stemp;
       if (pU) {
-        (*pU).at(range(row_indices[b]), range(sndx, slast)) = Utemp;
+        (*pU).at(range(block_rows), range(sndx, slast)) = Utemp;
       }
       if (pVT) {
-        (*pVT).at(range(sndx, slast), range(column_indices[b])) = Vtemp;
+        (*pVT).at(range(sndx, slast), range(block_columns)) = Vtemp;
       }
       sndx = slast + 1;
-    } else {
-      index row = row_indices[b][0];
-      index col = column_indices[b][0];
-      double aux = abs(m[0]);
-      s.at(sndx) = aux;
-      if (pU) {
-        (*pU).at(row, sndx) = 1.0;
-      }
-      if (pVT) {
-        (*pVT).at(sndx, col) = m[0] / aux;
-      }
-      ++sndx;
     }
   }
-
   Indices ndx = sort_indices(s, true);
   s = s(range(ndx));
   if (pU) *pU = (*pU)(_, range(ndx));
