@@ -62,7 +62,9 @@ inline void gemm(char op1, char op2, index m, index n, index k,
                  const tensor::cdouble &alpha, const tensor::cdouble *A,
                  index lda, const tensor::cdouble *B, index ldb,
                  const tensor::cdouble &beta, tensor::cdouble *C, index ldc) {
+#ifdef _MSC_VER
 #pragma warning(disable : 4127)
+#endif
   if (sizeof(index) < sizeof(tensor::index)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
     if (m > limit || n > limit || lda > limit || ldb > limit || ldc > limit) {
