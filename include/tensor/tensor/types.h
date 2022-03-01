@@ -407,11 +407,11 @@ class MutableTensorView {
 
   TensorIterator<elt_t> begin() {
     return TensorIterator<elt_t>(RangeIterator::begin(ranges_), data_.begin(),
-                                 data_.size());
+                                 data_.ssize());
   }
   TensorIterator<elt_t> end() {
     return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin(),
-                                 data_.size());
+                                 data_.ssize());
   }
   TensorConstIterator<elt_t> begin() const {
     return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),
