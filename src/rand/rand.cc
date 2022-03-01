@@ -55,7 +55,8 @@ void rand_reseed() {
     CryptReleaseContext(hCryptProv, 0);
   }
   if (!ok) {
-    init_genrand((uint32_t)clock() ^ (uint32_t)time(0));
+    init_genrand(static_cast<uint32_t>(clock()) ^
+                 static_cast<uint32_t>(time(0)));
   }
 #else
   // Sleep one second at least to get a different value on each call.
@@ -81,7 +82,7 @@ void rand_reseed() {
       fclose(fp);
       init_by_array(seed, SEED_SIZE);
     } else {
-      int aseed = time(0);
+      auto aseed = static_cast<uint64_t>(time(0));
       init_genrand(static_cast<uint64_t>(aseed));
     }
   }
