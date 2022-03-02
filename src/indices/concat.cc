@@ -25,8 +25,8 @@ namespace tensor {
    *
    * Example:
    * \code
-   * Indices i1 = igen << 1 << 2;   // vector with elements (1,2)
-   * Indices i2 = igen << 3 << 4;   // vector with elements (3,4)
+   * Indices i1{1,2};   // vector with elements (1,2)
+   * Indices i2{3,4};   // vector with elements (3,4)
    * Indice itot = i1 << i2;        // vector with elements (1,2,3,4)
    * \endcode
    */

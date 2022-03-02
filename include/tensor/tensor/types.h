@@ -95,7 +95,7 @@ class Tensor {
 
   /**Create a one-dimensional tensor from data created with "gen" expressions.*/
   template <size_t n>
-  Tensor(const StaticVector<elt_t, n> &t) : data_(t), dims_(igen << t.size()) {}
+  Tensor(const StaticVector<elt_t, n> &t) : data_(t), dims_({t.size()}) {}
 
   /**Create a general tensor from data created with "gen" expressions.*/
   template <size_t n>

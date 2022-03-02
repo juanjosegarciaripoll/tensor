@@ -213,7 +213,7 @@ Sparse<elt_t> Sparse<elt_t>::eye(index rows, index columns) {
   for (index i = 0; i <= rows; i++) {
     row_start.at(i) = std::min(i, nel);
   }
-  return Sparse(igen << rows << columns,
+  return Sparse({rows, columns},
                 row_start,                   // row_start
                 Indices::range(0, nel - 1),  // columns
                 data);

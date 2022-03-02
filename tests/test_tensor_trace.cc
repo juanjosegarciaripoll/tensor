@@ -39,7 +39,7 @@ void test_matrix_trace() {
     for (index cols = 1; cols <= 4; cols++) {
       Tensor<elt_t> A = Tensor<elt_t>::random(rows, cols);
       elt_t t = slow_trace(A);
-      Tensor<elt_t> T = Tensor<elt_t>(igen << 1, gen(t));
+      Tensor<elt_t> T{gen(t)};
       EXPECT_EQ(trace(A), t);
       EXPECT_TRUE(all_equal(trace(A, 0, -1), T));
       EXPECT_TRUE(all_equal(trace(reshape(A, 1, rows, cols), 1, 2), T));
