@@ -68,7 +68,7 @@ struct dimensions_mismatch : public std::out_of_range {
 #define tensor_noexcept
 #else
 #define tensor_assert2(expression, condition)
-#define tensor_noexcept
+#define tensor_noexcept noexcept
 #endif
 
 }  // namespace tensor
