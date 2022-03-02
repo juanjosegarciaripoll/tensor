@@ -76,19 +76,13 @@ class Dimensions {
 
   static inline index normalize_index(index i, index dimension) {
     if (i < 0) i += dimension;
-#if 1
-    if ((i > dimension) || (i < 0)) {
-      throw out_of_bounds_index();
-    }
-#endif
+    tensor_assert2((i < dimension) && (i >= 0), out_of_bounds_index());
     return i;
   }
 
   static inline index normalize_index_safe(index i, index dimension) {
     if (i < 0) i += dimension;
-    if ((i > dimension) || (i < 0)) {
-      throw out_of_bounds_index();
-    }
+    tensor_assert2((i < dimension) && (i >= 0), out_of_bounds_index());
     return i;
   }
 
@@ -212,15 +206,11 @@ class Range {
   Range(index first, index last) : Range(first, last, 1) {}
   Range(index first, index last, index step)
       : first_{first}, step_{step}, last_{last}, dimension_{-1} {
-    if (step == 0) {
-      throw std::invalid_argument("Invalid step sie in Range()");
-    }
+    tensor_assert2(step != 0, std::invalid_argument("Range() with zero step"));
   }
   Range(index first, index last, index step, index dimension)
       : first_{first}, step_{step}, last_{last}, dimension_{-1} {
-    if (step == 0) {
-      throw std::invalid_argument("Invalid step sie in Range()");
-    }
+    tensor_assert2(step != 0, std::invalid_argument("Range() with zero step"));
     set_dimension(dimension);
   }
   Range(Indices indices);
@@ -327,22 +317,21 @@ class TensorIterator {
 
   TensorIterator(RangeIterator &&it, elt_t *base, index size = 0)
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
-#ifdef NDEBUG
-  elt_t &operator*() { return base_[iterator_.get_position()]; }
-#else
-  elt_t &operator*() {
-    index n = iterator_.get_position();
-    if (n < 0 || n >= size_) {
-      throw iterator_overflow();
-    }
-    return base_[n];
+
+  elt_t &operator*() tensor_noexcept {
+    index tensor_iterator_position = iterator_.get_position();
+    tensor_assert((tensor_iterator_position >= 0) &&
+                  (tensor_iterator_position < size_));
+    return base_[tensor_iterator_position];
   }
-#endif
+
   elt_t &operator->() { return this->operator*(); }
+
   TensorIterator<elt_t> &operator++() {
     ++iterator_;
     return *this;
   }
+
   bool operator!=(const TensorIterator<elt_t> &other) const {
     return iterator_ != other.iterator_;
   }

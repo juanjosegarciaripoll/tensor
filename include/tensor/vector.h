@@ -35,15 +35,12 @@ namespace tensor {
 template <typename elt_t>
 class SimpleVector;
 
-inline size_t safe_size_t(index s) {
-  if (s < 0) {
-    throw std::length_error("Negative length");
-  }
-  return static_cast<size_t>(s);
+inline size_t safe_size_t(index size_value) tensor_noexcept {
+  tensor_assert(size_value >= 0) return static_cast<size_t>(size_value);
 }
 
 template <typename sequence>
-index ssize(const sequence &s) {
+constexpr index ssize(const sequence &s) tensor_noexcept {
   return static_cast<index>(s.size());
 }
 

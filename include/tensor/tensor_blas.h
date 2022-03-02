@@ -172,18 +172,14 @@ inline double real(cdouble &z) {
 }
 
 inline blas::integer index_to_blas(tensor::index value) {
-  constexpr auto limit = std::numeric_limits<blas::integer>::max();
-  if (value > limit) {
-    throw blas_integer_overflow();
-  }
+  tensor_assert2(value <= std::numeric_limits<blas::integer>::max(),
+                 blas_integer_overflow());
   return static_cast<blas::integer>(value);
 }
 
 inline blas::integer size_t_to_blas(size_t value) {
-  constexpr auto limit = std::numeric_limits<blas::integer>::max();
-  if (value > limit) {
-    throw blas_integer_overflow();
-  }
+  tensor_assert2(value <= std::numeric_limits<blas::integer>::max(),
+                 blas_integer_overflow());
   return static_cast<blas::integer>(value);
 }
 

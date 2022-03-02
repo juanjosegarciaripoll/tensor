@@ -23,9 +23,9 @@
 using namespace sdf;
 
 static std::streamsize safe_streamsize(size_t size) {
-  if (size > static_cast<size_t>(std::numeric_limits<std::streamsize>::max())) {
-    throw std::overflow_error("Data record too large for std::istream");
-  }
+  tensor_assert2(
+      size <= static_cast<size_t>(std::numeric_limits<std::streamsize>::max()),
+      std::overflow_error("SDF record exceeds std::streamsize"));
   return static_cast<std::streamsize>(size);
 }
 

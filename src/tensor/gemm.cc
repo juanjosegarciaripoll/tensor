@@ -37,9 +37,9 @@ inline void gemm(char op1, char op2, index m, index n, index k, double alpha,
 #endif
   if (sizeof(index) < sizeof(tensor::index)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
-    if (m > limit || n > limit || lda > limit || ldb > limit || ldc > limit) {
-      throw blas_integer_overflow();
-    }
+    tensor_assert2(m <= limit && n <= limit && lda <= limit && ldb <= limit &&
+                       ldc <= limit,
+                   blas_integer_overflow());
   }
 #ifdef TENSOR_USE_ESSL
   dgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
@@ -67,9 +67,9 @@ inline void gemm(char op1, char op2, index m, index n, index k,
 #endif
   if (sizeof(index) < sizeof(tensor::index)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
-    if (m > limit || n > limit || lda > limit || ldb > limit || ldc > limit) {
-      throw blas_integer_overflow();
-    }
+    tensor_assert2(m <= limit && n <= limit && lda <= limit && ldb <= limit &&
+                       ldc <= limit,
+                   blas_integer_overflow());
   }
 #ifdef TENSOR_USE_ESSL
   zgemm(&op1, &op2, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);

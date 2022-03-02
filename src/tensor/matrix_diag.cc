@@ -35,15 +35,13 @@ inline Tensor<n> do_diag(const Tensor<n> &a, int which, index rows,
     c0 = which;
   }
   index l = std::min<index>(rows - r0, cols - c0);
-  if (l < 0) {
-    throw std::invalid_argument(
-        "In diag(a,which,...) the value of WHICH exceeds the size of "
-        "the matrix");
-  }
-  if (l != a.ssize()) {
-    throw std::invalid_argument(
-        "In diag(a,...) the vector A has too few/many elements.");
-  }
+  tensor_assert2(
+      l >= 0, std::invalid_argument(
+                  "In diag(a,which,...) the value of WHICH exceeds the size of "
+                  "the matrix"));
+  tensor_assert2(l == a.ssize(),
+                 std::invalid_argument(
+                     "In diag(A,...) the vector a has too few/many elements."));
   for (index i = 0; i < l; i++) {
     output.at(r0 + i, c0 + i) = a[i];
   }
