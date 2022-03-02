@@ -71,8 +71,8 @@ template <
     typename t1, typename t2,
     typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator+(const t1 &a, const t2 &b) {
-  // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
-  assert(a.size() == b.size());
+  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(
       a.begin(), a.end(), b.begin(), output.begin(),
@@ -84,8 +84,8 @@ template <
     typename t1, typename t2,
     typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator-(const t1 &a, const t2 &b) {
-  // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
-  assert(a.size() == b.size());
+  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(
       a.begin(), a.end(), b.begin(), output.begin(),
@@ -96,8 +96,8 @@ template <
     typename t1, typename t2,
     typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator*(const t1 &a, const t2 &b) {
-  // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
-  assert(a.size() == b.size());
+  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(
       a.begin(), a.end(), b.begin(), output.begin(),
@@ -108,8 +108,8 @@ template <
     typename t1, typename t2,
     typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator/(const t1 &a, const t2 &b) {
-  // This should be: assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
-  assert(a.size() == b.size());
+  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(
       a.begin(), a.end(), b.begin(), output.begin(),
@@ -208,7 +208,7 @@ tensor_common_t<t1, t2> operator/(t1 a, const t2 &b) {
 //
 template <typename t1, typename t2>
 Tensor<t1> &operator+=(Tensor<t1> &a, const Tensor<t2> &b) {
-  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   std::transform(a.begin(), a.end(), b.begin(), a.begin(),
                  [](t1 &x, t2 y) { return x + y; });
   return a;
@@ -216,7 +216,7 @@ Tensor<t1> &operator+=(Tensor<t1> &a, const Tensor<t2> &b) {
 
 template <typename t1, typename t2>
 Tensor<t1> &operator-=(Tensor<t1> &a, const Tensor<t2> &b) {
-  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   std::transform(a.begin(), a.end(), b.begin(), a.begin(),
                  [](t1 &x, t2 y) { return x - y; });
   return a;
@@ -224,7 +224,7 @@ Tensor<t1> &operator-=(Tensor<t1> &a, const Tensor<t2> &b) {
 
 template <typename t1, typename t2>
 Tensor<t1> &operator*=(Tensor<t1> &a, const Tensor<t2> &b) {
-  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   std::transform(a.begin(), a.end(), b.begin(), a.begin(),
                  [](t1 &x, t2 y) { return x * y; });
   return a;
@@ -232,7 +232,7 @@ Tensor<t1> &operator*=(Tensor<t1> &a, const Tensor<t2> &b) {
 
 template <typename t1, typename t2>
 Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t2> &b) {
-  assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   std::transform(a.begin(), a.end(), b.begin(), a.begin(),
                  [](t1 &x, t2 y) { return x / y; });
   return a;

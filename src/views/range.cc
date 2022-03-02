@@ -16,9 +16,9 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
 #include <stdexcept>
 #include <algorithm>
+#include <tensor/exceptions.h>
 #include <tensor/indices.h>
 #include <tensor/io.h>
 

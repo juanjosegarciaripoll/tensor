@@ -36,8 +36,8 @@ void permute_12(Tensor<n> &b, const Tensor<n> &a, index a1, index a2,
     for (index j = a2; j--; jk_b++) {
       typename Tensor<n>::iterator ijk_b = jk_b;
       for (index i = a1; i--; ijk_a++, ijk_b += a2) {
-        //assert(ijk_a >= a.begin() && ijk_a < a.end());
-        //assert(ijk_b >= b.begin() && ijk_b < b.end());
+        //tensor_assert(ijk_a >= a.begin() && ijk_a < a.end());
+        //tensor_assert(ijk_b >= b.begin() && ijk_b < b.end());
         *ijk_b = *ijk_a;
       }
     }
@@ -64,8 +64,8 @@ void permute_23(Tensor<n> &b, const Tensor<n> &a, index a1, index a2, index a3,
       for (index j = a2; j--; kjl_b += a13) {
         typename Tensor<n>::iterator ikjl_b = kjl_b;
         for (index i = a1; i--; ijkl_a++, ikjl_b++) {
-          //assert(ijkl_a >= a.begin() && ijkl_a < a.end());
-          //assert(ikjl_b >= b.begin() && ikjl_b < b.end());
+          //tensor_assert(ijkl_a >= a.begin() && ijkl_a < a.end());
+          //tensor_assert(ikjl_b >= b.begin() && ikjl_b < b.end());
           *ikjl_b = *ijkl_a;
         }
       }
@@ -96,8 +96,8 @@ void permute_24(Tensor<n> &b, const Tensor<n> &a, index a1, index a2, index a3,
         for (index j = a2; j--; lkjm_b += a143) {
           typename Tensor<n>::iterator ilkjm_b = lkjm_b;
           for (index i = a1; i--; ijklm_a++, ilkjm_b++) {
-            //assert(ilkjm_b < b.begin() || b.end() <= ilkjm_b);
-            //assert(ijklm_a < a.begin() || a.end() <= ijklm_a);
+            //tensor_assert(ilkjm_b < b.begin() || b.end() <= ilkjm_b);
+            //tensor_assert(ijklm_a < a.begin() || a.end() <= ijklm_a);
             *ilkjm_b = *ijklm_a;
           }
         }
@@ -126,8 +126,8 @@ void permute_13(Tensor<n> &b, const Tensor<n> &a, index a1, index a2, index a3,
       for (index j = a2; j--; kjl_b += a3) {
         typename Tensor<n>::iterator kjil_b = kjl_b;
         for (index i = a1; i--; ijkl_a++, kjil_b += a32) {
-          //assert(kjil_b < b.begin() || b.end() <= kjil_b);
-          //assert(ijkl_a < a.begin() || a.end() <= ijkl_a);
+          //tensor_assert(kjil_b < b.begin() || b.end() <= kjil_b);
+          //tensor_assert(ijkl_a < a.begin() || a.end() <= ijkl_a);
           *kjil_b = *ijkl_a;
         }
       }

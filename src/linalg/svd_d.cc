@@ -53,9 +53,9 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
       }
     */
 
-  assert(A.rows() > 0);
-  assert(A.columns() > 0);
-  assert(A.rank() == 2);
+  tensor_assert(A.rows() > 0);
+  tensor_assert(A.columns() > 0);
+  tensor_assert(A.rank() == 2);
 
   blas::integer m = blas::tensor_rows(A);
   blas::integer n = blas::tensor_columns(A);

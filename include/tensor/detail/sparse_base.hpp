@@ -23,8 +23,8 @@
 #ifndef TENSOR_DETAIL_SPARSE_BASE_HPP
 #define TENSOR_DETAIL_SPARSE_BASE_HPP
 
-#include <cassert>
 #include <algorithm>
+#include <tensor/exceptions.h>
 #include <tensor/rand.h>
 
 namespace tensor {
@@ -38,7 +38,7 @@ static inline size_t safe_size(index nonzero, index rows, index cols) {
   if (rows == 0 || cols == 0) {
     return 0;
   }
-  assert((nonzero / rows) <= cols);
+  tensor_assert((nonzero / rows) <= cols);
   return safe_size_t(nonzero);
 }
 
@@ -72,7 +72,7 @@ template <typename elt_t>
 Sparse<elt_t>::Sparse(const Indices &dims, const Indices &row_start,
                       const Indices &column, const Tensor<elt_t> &data)
     : dims_(dims), row_start_(row_start), column_(column), data_(data) {
-  assert(row_start.ssize() == dims[0] + 1);
+  tensor_assert(row_start.ssize() == dims[0] + 1);
 }
 
 template <typename elt_t>
@@ -84,8 +84,8 @@ template <typename elt_t>
 Sparse<elt_t> make_sparse(const Indices &rows, const Indices &cols,
                           const Tensor<elt_t> &data, index nrows, index ncols) {
   index i, j, last_row, last_col, l = rows.ssize();
-  assert(cols.ssize() == l);
-  assert(data.ssize() == l);
+  tensor_assert(cols.ssize() == l);
+  tensor_assert(data.ssize() == l);
 
   /* Organize data in sparse_triplets (row,column,value), sorted in the
      * same order in which we store data in Sparse
@@ -196,7 +196,7 @@ const Tensor<elt_t> full(const Sparse<elt_t> &s) {
 
 template <typename elt_t>
 index Sparse<elt_t>::dimension(int dimension) const {
-  assert(dimension < 2);
+  tensor_assert(dimension < 2);
   return dimension ? columns() : rows();
 }
 

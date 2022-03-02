@@ -16,8 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
-#define TENSOR_LOAD_IMPL
+#include <tensor/exceptions.h>
 #include <tensor/tensor.h>
 
 namespace tensor_test {
@@ -32,7 +31,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_22_12(
   index a1, a2, b1, b2;
   A.get_dimensions(&a1, &a2);
   B.get_dimensions(&b1, &b2);
-  assert(a2 == b1);
+  tensor_assert(a2 == b1);
 
   auto output = Tensor<n3>::empty(a1, b2);
 

@@ -22,7 +22,7 @@ namespace tensor {
 
 template <typename n>
 static const n do_trace(const Tensor<n> &matrix) {
-  assert(matrix.rank() == 2);
+  tensor_assert(matrix.rank() == 2);
   n output = number_zero<n>();
   const index r = matrix.rows();
   const index c = matrix.columns();

@@ -22,7 +22,7 @@
 namespace tensor {
 
 double matrix_norminf(const CTensor &m) {
-  assert(m.rank() == 2);
+  tensor_assert(m.rank() == 2);
 
   auto r = m.rows();
   auto c = m.columns();

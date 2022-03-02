@@ -274,7 +274,7 @@ tensor::index Job::compute_number_of_jobs() const {
 }
 
 void Job::select_job(tensor::index which) {
-  assert(which >= 0);
+  tensor_assert(which >= 0);
   tensor::index i = this_job_ = which;
   if (which <= number_of_jobs_) {
     for (var_list::iterator it = variables_.begin(); it != variables_.end();

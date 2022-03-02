@@ -31,7 +31,7 @@ CTensor fftshift(const CTensor& input, int direction) {
 }
 
 CTensor fftshift(const CTensor& input, index dim, int direction) {
-  assert(dim >= 0 && dim < input.rank());
+  tensor_assert(dim >= 0 && dim < input.rank());
 
   index before, size_dim, after;
   surrounding_dimensions(input.dimensions(), dim, &before, &size_dim, &after);
@@ -70,7 +70,7 @@ CTensor fftshift(const CTensor& input, index dim, int direction) {
 }
 
 CTensor fftshift(const CTensor& input, const Booleans& convert, int direction) {
-  assert(input.rank() == convert.ssize());
+  tensor_assert(input.rank() == convert.ssize());
 
   CTensor output(input);
   for (index dim = 0; dim < input.rank(); dim++) {

@@ -43,8 +43,8 @@ static double exp2(double n) { return exp(log((double)2.0) * n); }
    \ingroup Linalg
 */
 CTensor expm(const CTensor &Aunorm, unsigned int order) {
-  assert(Aunorm.rank() == 2);
-  assert(Aunorm.columns() == Aunorm.rows());
+  tensor_assert(Aunorm.rank() == 2);
+  tensor_assert(Aunorm.columns() == Aunorm.rows());
 
   // Scale A until the norm is < 1/2
   double val = log2(matrix_norminf(Aunorm));

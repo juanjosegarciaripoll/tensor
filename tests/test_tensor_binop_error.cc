@@ -26,31 +26,25 @@ namespace tensor_test {
 //
 template <typename elt_t, typename elt_t2, typename elt_t3>
 void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
-#ifndef NDEBUG
+#ifdef TENSOR_DEBUG
   if (P.size()) {
     {
       Tensor<elt_t2> Paux;
       EXPECT_EQ(0, Paux.rank());
-      EXPECT_DEATH(P + Paux, "a.size.. == b.size..")
-          << P.dimensions() << "," << Paux.dimensions();
-      EXPECT_DEATH(Paux + P, ".*")
-          << P.dimensions() << "," << Paux.dimensions();
+      EXPECT_THROW(P + Paux, ::tensor::invalid_assertion);
+      EXPECT_THROW(Paux + P, ::tensor::invalid_assertion);
     }
     {
       Indices dims = P.dimensions();
       dims.at(P.rank() - 1) += 1;
       Tensor<elt_t2> Paux(dims);
-      EXPECT_DEATH(P + Paux, ".*")
-          << P.dimensions() << "," << Paux.dimensions();
-      EXPECT_DEATH(Paux + P, ".*")
-          << P.dimensions() << "," << Paux.dimensions();
+      EXPECT_THROW(P + Paux, ::tensor::invalid_assertion);
+      EXPECT_THROW(Paux + P, ::tensor::invalid_assertion);
     }
     {
       Tensor<elt_t2> Paux = Tensor<elt_t2>::empty(P.dimension(0) + 1);
-      EXPECT_DEATH(Paux + P, ".*")
-          << P.dimensions() << "," << Paux.dimensions();
-      EXPECT_DEATH(P + Paux, ".*")
-          << P.dimensions() << "," << Paux.dimensions();
+      EXPECT_THROW(Paux + P, ::tensor::invalid_assertion);
+      EXPECT_THROW(P + Paux, ::tensor::invalid_assertion);
     }
   }
 #endif

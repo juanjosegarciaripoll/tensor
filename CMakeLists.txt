@@ -40,6 +40,11 @@ include(TensorOpenBLAS)
 #
 
 # Configuration options
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" ON)
+else()
+  option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" OFF)
+endif()
 option(TENSOR_FFTW "Enable support for FFTW" OFF)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)

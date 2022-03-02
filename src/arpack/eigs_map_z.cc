@@ -27,7 +27,7 @@ CTensor eigs(const LinearMap<CTensor> &A, size_t n, EigType eig_type,
   return eigs(
       [&](const CTensor &input, CTensor &output) -> void {
         CTensor aux = A(input);
-        assert(aux.dimensions() == output.dimensions());
+        tensor_assert(aux.dimensions() == output.dimensions());
         std::copy(aux.begin(), aux.end(), output.begin());
       },
       n, eig_type, neig, eigenvectors, converged);

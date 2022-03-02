@@ -16,8 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
-#define TENSOR_LOAD_IMPL
+#include <tensor/exceptions.h>
 #include <tensor/tensor.h>
 
 namespace tensor_test {
@@ -32,7 +31,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_11_11(
   index a1, b1;
   A.get_dimensions(&a1);
   B.get_dimensions(&b1);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(1);
   n3 x = number_zero<n3>();
@@ -50,7 +49,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_12_11(
   index a1, b1, b2;
   A.get_dimensions(&a1);
   B.get_dimensions(&b1, &b2);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(b2);
   for (index j = 0; j < b2; j++) {
@@ -70,7 +69,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_13_11(
   index a1, b1, b2, b3;
   A.get_dimensions(&a1);
   B.get_dimensions(&b1, &b2, &b3);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(b2, b3);
   for (index k = 0; k < b3; k++) {
@@ -92,7 +91,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_21_11(
   index a1, a2, b1;
   A.get_dimensions(&a1, &a2);
   B.get_dimensions(&b1);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(a2);
 
@@ -113,7 +112,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_22_11(
   index a1, a2, b1, b2;
   A.get_dimensions(&a1, &a2);
   B.get_dimensions(&b1, &b2);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(a2, b2);
 
@@ -136,7 +135,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_23_11(
   index a1, a2, b1, b2, b3;
   A.get_dimensions(&a1, &a2);
   B.get_dimensions(&b1, &b2, &b3);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(a2, b2, b3);
 
@@ -161,7 +160,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_31_11(
   index a1, a2, a3, b1;
   A.get_dimensions(&a1, &a2, &a3);
   B.get_dimensions(&b1);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(a2, a3);
 
@@ -184,7 +183,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_32_11(
   index a1, a2, a3, b1, b2;
   A.get_dimensions(&a1, &a2, &a3);
   B.get_dimensions(&b1, &b2);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(a2, a3, b2);
 
@@ -209,7 +208,7 @@ Tensor<typename std::common_type<n1, n2>::type> fold_33_11(
   index a1, a2, a3, b1, b2, b3;
   A.get_dimensions(&a1, &a2, &a3);
   B.get_dimensions(&b1, &b2, &b3);
-  assert(a1 == b1);
+  tensor_assert(a1 == b1);
 
   auto output = Tensor<n3>::empty(a2, a3, b2, b3);
 
@@ -237,7 +236,7 @@ Tensor<typename std::common_type<n1, n2>::type> slow_fold(Tensor<n1> A,
   if (ndx1 > A.rank()) {
     ndx1 = A.rank() + ndx1;
   }
-  assert(ndx1 >= 0);
+  tensor_assert(ndx1 >= 0);
   while (ndx1 > 0) {
     A = permute(A, ndx1 - 1, ndx1);
     ndx1--;
@@ -245,7 +244,7 @@ Tensor<typename std::common_type<n1, n2>::type> slow_fold(Tensor<n1> A,
   if (ndx2 > B.rank()) {
     ndx2 = B.rank() + ndx2;
   }
-  assert(ndx2 >= 0);
+  tensor_assert(ndx2 >= 0);
   while (ndx2 > 0) {
     B = permute(B, ndx2 - 1, ndx2);
     ndx2--;

@@ -64,7 +64,7 @@ TEST(TensorTrace, RMatrix) { test_matrix_trace<double>(); }
 
 #if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
 TEST(TensorTrace, MatrixTraceExpectsRMatrix) {
-  ASSERT_DEATH(trace(RTensor::zeros(1, 1, 1)), ".*");
+  ASSERT_THROW(trace(RTensor::zeros(1, 1, 1)), ::tensor::invalid_assertion);
 }
 #endif
 
@@ -76,7 +76,7 @@ TEST(TensorTrace, CMatrix) { test_matrix_trace<cdouble>(); }
 
 #if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
 TEST(TensorTrace, MatrixTraceExpectsCMatrix) {
-  ASSERT_DEATH(trace(CTensor::zeros(1, 1, 1)), ".*");
+  ASSERT_THROW(trace(CTensor::zeros(1, 1, 1)), ::tensor::invalid_assertion);
 }
 #endif
 

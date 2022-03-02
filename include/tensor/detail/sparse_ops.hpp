@@ -23,11 +23,11 @@
 #ifndef TENSOR_DETAIL_SPARSE_OPS_HPP
 #define TENSOR_DETAIL_SPARSE_OPS_HPP
 
-#include <cassert>
 #include <functional>
 #include <algorithm>
 #include <type_traits>
 #include <tensor/io.h>
+#include <tensor/exceptions.h>
 
 namespace tensor {
 
@@ -76,7 +76,7 @@ const Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
   size_t rows = m1.rows();
   size_t cols = m1.columns();
 
-  assert(rows == m2.rows() && cols == m2.columns());
+  tensor_assert(rows == m2.rows() && cols == m2.columns());
 
   if (rows == 0 || cols == 0) return Sparse<T3>(rows, cols);
 

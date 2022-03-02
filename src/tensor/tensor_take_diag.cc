@@ -51,9 +51,9 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
                                          tensor::index ndx1,
                                          tensor::index ndx2) {
   if (ndx1 < 0) ndx1 += a.rank();
-  assert((ndx1 < a.rank()) && (ndx1 >= 0));
+  tensor_assert((ndx1 < a.rank()) && (ndx1 >= 0));
   if (ndx2 < 0) ndx2 += a.rank();
-  assert((ndx2 < a.rank()) && (ndx2 >= 0));
+  tensor_assert((ndx2 < a.rank()) && (ndx2 >= 0));
 
   tensor::index new_rank = std::max(a.rank() - 1, tensor::index(1));
   tensor::Indices new_dims(static_cast<size_t>(new_rank));

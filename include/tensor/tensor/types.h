@@ -22,8 +22,8 @@
 /** Flag defining the order of elements in the arrays. */
 #define TENSOR_COLUMN_MAJOR_ORDER 1
 
-#include <cassert>
 #include <vector>
+#include <tensor/exceptions.h>
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
 #include <tensor/indices.h>
@@ -63,7 +63,7 @@ class Tensor {
   /**Constructs an N-D Tensor with given initial data.*/
   Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other)
       : data_(other.data_), dims_(new_dims) {
-    assert(dims_.total_size() == ssize());
+    tensor_assert(dims_.total_size() == ssize());
   }
 
   /**Constructs a 1-D Tensor from a vector.*/
@@ -141,8 +141,8 @@ class Tensor {
   const Dimensions &dimensions() const noexcept { return dims_; }
   /**Length of a given Tensor index.*/
   index dimension(index which) const {
-    assert(rank() > which);
-    assert(which >= 0);
+    tensor_assert(rank() > which);
+    tensor_assert(which >= 0);
     return dims_[which];
   }
   /**Query the size of 2nd index.*/
@@ -157,7 +157,7 @@ class Tensor {
 
   /**Change the dimensions, while keeping the data. */
   void reshape(const Dimensions &new_dimensions) {
-    assert(new_dimensions.total_size() == ssize());
+    tensor_assert(new_dimensions.total_size() == ssize());
     dims_ = new_dimensions;
   }
 
@@ -379,12 +379,12 @@ class MutableTensorView {
 
   void operator=(const TensorView<elt_t> &t) {
     /* TODO: ensure matching dimensions */
-    assert(t.size() == size());
+    tensor_assert(t.size() == size());
     std::copy(t.begin(), t.end(), begin());
   }
   void operator=(const Tensor<elt_t> &t) {
     /* TODO: ensure matching dimensions */
-    assert(t.size() == size());
+    tensor_assert(t.size() == size());
     std::copy(t.begin(), t.end(), begin());
   }
   void operator=(elt_t v) { std::fill(begin(), end(), v); }

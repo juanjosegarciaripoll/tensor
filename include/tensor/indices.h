@@ -20,7 +20,6 @@
 #ifndef TENSOR_INDICES_H
 #define TENSOR_INDICES_H
 
-#include <cassert>
 #include <iterator>
 #include <algorithm>
 #include <tensor/vector.h>
@@ -95,13 +94,13 @@ class Dimensions {
 
   template <typename... index_like>
   index column_major_position(index i0, index_like... in) const {
-    assert(rank() == sizeof...(in) + 1);
+    tensor_assert(rank() == sizeof...(in) + 1);
     return column_major_inner(0, i0, in...);
   }
 
   template <typename... index_like>
   void get_values(index_like *...in) const {
-    assert(rank() == sizeof...(in));
+    tensor_assert(rank() == sizeof...(in));
     index n = 0;
     auto ignored = {(*(in) = dimensions_[n++], 1)...};
   }

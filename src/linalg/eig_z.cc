@@ -44,9 +44,9 @@ using namespace lapack;
      \ingroup Linalg
   */
 CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
-  assert(A.rows() > 0);
-  assert(A.rank() == 2);
-  assert(A.rows() == A.columns());
+  tensor_assert(A.rows() > 0);
+  tensor_assert(A.rank() == 2);
+  tensor_assert(A.rows() == A.columns());
 
   char jobvl[2] = "N";
   char jobvr[2] = "N";

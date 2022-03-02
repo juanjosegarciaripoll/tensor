@@ -33,8 +33,9 @@ using namespace linalg;
 template <class Matrix>
 void test_eigs_eye(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(eigs(Matrix::eye(n, n), LargestMagnitude, 1), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(eigs(Matrix::eye(n, n), LargestMagnitude, 1),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }

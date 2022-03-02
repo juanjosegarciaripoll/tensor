@@ -283,7 +283,7 @@ elt_t *Arpack<elt_t, is_symmetric>::get_x_vector() {
   }
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   auto ndx = ipntr[1 - 1] - 1;
-  assert((ndx >= 0) && (ndx < 3 * n));
+  tensor_assert((ndx >= 0) && (ndx < 3 * n));
   return &workd[static_cast<size_t>(ndx)];
 }
 
@@ -295,7 +295,7 @@ elt_t *Arpack<elt_t, is_symmetric>::get_y_vector() {
   }
   // IPNTR[2] has a FORTRAN index, which is one-based, instead of zero-based
   auto ndx = ipntr[2 - 1] - 1;
-  assert((ndx >= 0) && (ndx < 3 * n));
+  tensor_assert((ndx >= 0) && (ndx < 3 * n));
   return &workd[static_cast<size_t>(ndx)];
 }
 
@@ -303,7 +303,7 @@ template <typename elt_t, bool is_symmetric>
 const tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_x() {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   auto ndx = ipntr[1 - 1] - 1;
-  assert((ndx >= 0) && (ndx < 3 * n) && (ndx % n == 0));
+  tensor_assert((ndx >= 0) && (ndx < 3 * n) && (ndx % n == 0));
   return work_vectors[static_cast<size_t>(ndx / n)];
 }
 
@@ -311,7 +311,7 @@ template <typename elt_t, bool is_symmetric>
 tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_y() {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   auto ndx = ipntr[2 - 1] - 1;
-  assert((ndx >= 0) && (ndx < 3 * n) && (ndx % n == 0));
+  tensor_assert((ndx >= 0) && (ndx < 3 * n) && (ndx % n == 0));
   return work_vectors[static_cast<size_t>(ndx / n)];
 }
 

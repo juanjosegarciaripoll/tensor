@@ -70,8 +70,9 @@ CTensor pauli_exponential(double theta, double phi, CTensor *pexponent) {
 template <typename elt_t>
 void test_expm_diag(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(linalg::expm(Tensor<elt_t>(Dimensions{0})), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(linalg::expm(Tensor<elt_t>(Dimensions{0})),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }

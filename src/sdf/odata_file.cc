@@ -124,32 +124,32 @@ void OutDataFile::close() {
 }
 
 void OutDataFile::write_raw(const char *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const int *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const tensor::index *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const size_t *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const double *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const cdouble *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, reinterpret_cast<const double *>(data), 2 * n);
 }
 

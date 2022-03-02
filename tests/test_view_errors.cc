@@ -51,7 +51,7 @@ void test_view_error(const Tensor<elt_t> &P) {
 // REAL SPECIALIZATIONS
 //
 
-#ifndef NDEBUG
+#ifdef TENSOR_DEBUG
 // death by assert
 
 TEST(SliceTestError, SliceRTensorError0D) { test_view_error(RTensor()); }

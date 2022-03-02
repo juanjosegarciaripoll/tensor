@@ -16,7 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
+#include <tensor/exceptions.h>
 #include <tensor/tensor.h>
 
 namespace tensor {
@@ -36,15 +36,13 @@ inline Tensor<n> do_diag(const Tensor<n> &a, int which, index rows,
   }
   index l = std::min<index>(rows - r0, cols - c0);
   if (l < 0) {
-    std::cerr << "In diag(a,which,...) the value of WHICH exceeds the size of "
-                 "the matrix"
-              << std::endl;
-    abort();
+    throw std::invalid_argument(
+        "In diag(a,which,...) the value of WHICH exceeds the size of "
+        "the matrix");
   }
   if (l != a.ssize()) {
-    std::cerr << "In diag(a,...) the vector A has too few/many elements."
-              << std::endl;
-    abort();
+    throw std::invalid_argument(
+        "In diag(a,...) the vector A has too few/many elements.");
   }
   for (index i = 0; i < l; i++) {
     output.at(r0 + i, c0 + i) = a[i];

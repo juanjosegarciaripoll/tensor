@@ -32,8 +32,9 @@ using namespace tensor;
 template <typename elt_t>
 void test_eye_eig(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(linalg::eig(Tensor<elt_t>::eye(n, n)), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(linalg::eig(Tensor<elt_t>::eye(n, n)),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }
@@ -47,8 +48,9 @@ void test_eye_eig(int n) {
 template <typename elt_t>
 void test_random_eig(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(linalg::eig(Tensor<elt_t>::eye(n, n)), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(linalg::eig(Tensor<elt_t>::eye(n, n)),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }

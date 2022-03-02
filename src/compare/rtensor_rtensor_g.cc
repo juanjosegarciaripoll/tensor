@@ -22,7 +22,7 @@
 namespace tensor {
 
 Booleans operator>(const RTensor &a, const RTensor &b) {
-  assert(a.size() == b.size());
+  tensor_assert(a.size() == b.size());
   Booleans c(a.size());
   Booleans::iterator ic = c.begin();
   for (RTensor::const_iterator ia = a.begin(), ib = b.begin(); ia != a.end();

@@ -21,6 +21,11 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 
 * A new constant `tensor::_` can be used to represent all elements in a range, as in `A(_, range(0))`.
 
+* A new flag `TENSOR_DEBUG` determines whether the library is built in "debug" mode. In particular, this activates some costly assertions that verify the user's input.
+
+* Assertions no longer rely on `<cassert>`. Instead, when assertions are activated (`TENSOR_DEBUG` is `ON`) and are not satisfied, the library raises an exception, which may change depending on the type of assertion. Generally, it will be a child of `std::logic_error`, such as `std::out_of_range` or `tensor::invalid_assertion`.
+
+
 ## Incompatible changes
 
 * When creating views, as in `A(range(0), range(0,2), range(0,0))`, now there is a guarantee that the library will remove dimensions of size 1 only if a single-argument range was used. In this case, the output is a rank-12tensor (a vector) with 3 components: the first index is removed because `range(0)` is there, but the last dimension is not removed because a two-argument range was used `range(0,0)`, even if it only has dimension 1. This option may be removed with the CMake flag `TENSOR_RANGE_SQUEEZE`.

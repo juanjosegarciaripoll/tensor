@@ -47,9 +47,9 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
       return block_svd(A, U, VT, economic);
     }
     */
-  assert(A.rows() > 0);
-  assert(A.columns() > 0);
-  assert(A.rank() == 2);
+  tensor_assert(A.rows() > 0);
+  tensor_assert(A.columns() > 0);
+  tensor_assert(A.rank() == 2);
 
   // TODO: Optimize m = 1 or n = 1 cases
 

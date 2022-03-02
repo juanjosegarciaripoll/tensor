@@ -21,7 +21,7 @@
 #else
 #define TENSOR_DETAIL_TENSOR_KRON_HPP
 
-#include <cassert>
+#include <tensor/exceptions.h>
 
 namespace tensor {
 
@@ -32,8 +32,8 @@ namespace tensor {
 template <typename elt_t>
 static inline Tensor<elt_t> do_kron(const Tensor<elt_t> &b,
                                     const Tensor<elt_t> &a) {
-  assert(b.rank() == a.rank());
-  assert(b.rank() <= 2);
+  tensor_assert(b.rank() == a.rank());
+  tensor_assert(b.rank() <= 2);
   if (a.rank() == 1) {
     // FIXME! CHAPUZA!
     return reshape(kron(reshape(b, b.ssize(), 1), reshape(a, a.ssize(), 1)),
@@ -77,8 +77,8 @@ static inline Tensor<elt_t> do_kron(const Tensor<elt_t> &b,
 template <typename elt_t>
 const Tensor<elt_t> do_kron2_sum(const Tensor<elt_t> &a,
                                  const Tensor<elt_t> &b) {
-  assert(a.rank() == b.rank());
-  assert(a.rank() <= 2);
+  tensor_assert(a.rank() == b.rank());
+  tensor_assert(a.rank() <= 2);
   if (a.rank() == 1) {
     // FIXME! CHAPUZA!
     index a1 = a.ssize();
