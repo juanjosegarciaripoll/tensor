@@ -17,8 +17,6 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 
 * `Tensor::at(n)` only works for 1-D tensors, unlike before, where it allowed accessing all elements sequentially.
 
-* To avoid ambiguities, all constructors of the form `Tensor(index i0, index i1 ...)` have been eliminated. Use `Tensor::empty(i0, i1, ...)` instead.
-
 * Tensor views rely on a new iteration mechanism, built on top of `RangeIterator`, a class that, given a set of ranges and dimensions, produces a sequence of integers corresponding to the positions in a tensor corresponding to that view.
 
 * A new constant `tensor::_` can be used to represent all elements in a range, as in `A(_, range(0))`.
@@ -28,3 +26,9 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 * When creating views, as in `A(range(0), range(0,2), range(0,0))`, now there is a guarantee that the library will remove dimensions of size 1 only if a single-argument range was used. In this case, the output is a rank-12tensor (a vector) with 3 components: the first index is removed because `range(0)` is there, but the last dimension is not removed because a two-argument range was used `range(0,0)`, even if it only has dimension 1. This option may be removed with the CMake flag `TENSOR_RANGE_SQUEEZE`.
 
 * The `Vector` and `SimpleVector` classes now have `cbegin()` and `cend()` methods that replace the former `begin_const()` and `end_const()`.
+
+* The previous static initializers `igen`, `rgen`, `cgen` and `gen<value_type>` no longer exist. They became obsolete with the introduction of `std::initializer_list` and pollute the space of constructors.
+
+* To avoid ambiguities, all constructors of the form `Tensor(index i0, index i1 ...)` have been eliminated. Use `Tensor::empty(i0, i1, ...)` instead.
+
+* Similarly, `Indices` and `Booleans` no longer have a scalar constructor indicating the reserved size. Use the static function `Indices::empty` instead.

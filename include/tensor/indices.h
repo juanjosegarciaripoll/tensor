@@ -25,7 +25,6 @@
 #include <algorithm>
 #include <tensor/vector.h>
 #include <tensor/exceptions.h>
-#include <tensor/gen.h>
 #include <iostream>
 
 /*!\addtogroup Tensors */
@@ -41,8 +40,6 @@ class Indices : public Vector<index> {
  public:
   Indices() : Vector<index>() {}
   Indices(const Vector<index> &v) : Vector<index>(v) {}
-  template <size_t n>
-  Indices(StaticVector<index, n> v) : Vector<index>(v) {}
   Indices(const Dimensions &dims);
 
   template <typename other_elt>
@@ -69,10 +66,6 @@ class Dimensions {
   template <typename other_elt>
   Dimensions(const std::initializer_list<other_elt> &l)
       : dimensions_(l), total_size_{compute_total_size(dimensions_)} {}
-
-  template <size_t n>
-  Dimensions(const StaticVector<index, n> &v)
-      : dimensions_(v), total_size_{compute_total_size(dimensions_)} {}
 
   index total_size() const { return total_size_; }
   index rank() const { return dimensions_.ssize(); }
@@ -153,6 +146,7 @@ class Booleans : public Vector<bool> {
  public:
   Booleans() : Vector<bool>() {}
   Booleans(const Booleans &b) : Vector<bool>(b) {}
+  Booleans(const std::initializer_list<bool> &l) : Vector<bool>(l) {}
   explicit Booleans(size_t size) : Vector<bool>(size) {}
 };
 
@@ -402,22 +396,6 @@ inline Range range() { return Range::full(); }
 /**Return a vector of integers from 'start' to 'end' (included) in 'steps'. */
 inline Indices iota(index start, index end, index step = 1) {
   return Indices::range(start, end, step);
-}
-
-template <size_t n>
-bool operator==(const tensor::Indices &v2,
-                const tensor::StaticVector<tensor::index, n> &v1) {
-  tensor::Indices v0(v1);
-  if (v0.size() != v2.size()) return false;
-  return std::equal(v0.cbegin(), v0.cend(), v2.cbegin());
-}
-
-template <size_t n>
-bool operator==(const tensor::StaticVector<tensor::index, n> &v1,
-                const tensor::Indices &v2) {
-  tensor::Indices v0(v1);
-  if (v0.size() != v2.size()) return false;
-  return std::equal(v0.cbegin(), v0.cend(), v2.cbegin());
 }
 
 }  // namespace tensor

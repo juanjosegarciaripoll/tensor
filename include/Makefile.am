@@ -10,7 +10,6 @@ nobase_include_HEADERS = \
 	tensor/detail/sparse_ops.hpp \
 	tensor/detail/tensor_ops.hpp \
 	tensor/flags.h \
-	tensor/gen.h \
 	tensor/indices.h \
 	tensor/io.h \
 	tensor/jobs.h \

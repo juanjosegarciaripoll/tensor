@@ -35,7 +35,6 @@ endmacro()
 
 package_add_test(test_booleans test_booleans.cc)
 package_add_test(test_fold test_fold.cc)
-package_add_test(test_index test_index.cc)
 package_add_test(test_jobs test_jobs.cc)
 package_add_test(test_linalg_cgs test_linalg_cgs.cc)
 package_add_test(test_linalg_eig test_linalg_eig.cc)

@@ -24,10 +24,6 @@
 
 namespace tensor {
 
-const ListGenerator<index> igen = {};
-const ListGenerator<double> rgen = {};
-const ListGenerator<cdouble> cgen = {};
-
 template class Vector<index>;
 
 template class SimpleVector<index>;

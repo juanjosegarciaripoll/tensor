@@ -32,11 +32,6 @@ test_fftw_SOURCES = test_fftw.cc
 test_fftw_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 endif
 
-TESTS += test_index
-check_PROGRAMS += test_index
-test_index_SOURCES = test_index.cc
-test_index_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
-
 TESTS += test_booleans
 check_PROGRAMS += test_booleans
 test_booleans_SOURCES = test_booleans.cc

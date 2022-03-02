@@ -19,8 +19,6 @@
 #ifndef TENSOR_LINSPACE_HPP
 #define TENSOR_LINSPACE_HPP
 
-#include <tensor/gen.h>
-
 namespace tensor {
 
 template <typename elt_t>

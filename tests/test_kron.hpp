@@ -29,23 +29,23 @@ class kron_2d_fixture : public std::vector<Tensor<elt_t> > {
     this->push_back(RTensor::empty(1, 0));
     this->push_back(RTensor::empty(0, 0));
 
-    this->emplace_back(Dimensions{1, 1}, gen<elt_t>(1));
-    this->emplace_back(Dimensions{1, 1}, gen<elt_t>(-2));
-    this->emplace_back(Dimensions{1, 1}, gen<elt_t>(-2));
+    this->emplace_back(Dimensions{1, 1}, std::initializer_list<elt_t>{1});
+    this->emplace_back(Dimensions{1, 1}, std::initializer_list<elt_t>{-2});
+    this->emplace_back(Dimensions{1, 1}, std::initializer_list<elt_t>{-2});
 
-    this->emplace_back(Dimensions{1, 2}, gen<elt_t>(1) << 2);
-    this->emplace_back(Dimensions{2, 3}, gen<elt_t>(1)
-                                             << 7 << 3 << 9 << 5 << 11);
-    this->emplace_back(Dimensions{2, 6}, gen<elt_t>(1)
-                                             << 7 << 3 << 9 << 5 << 11 << 2
-                                             << 14 << 6 << 18 << 10 << 22);
+    this->emplace_back(Dimensions{1, 2}, std::initializer_list<elt_t>{1, 2});
+    this->emplace_back(Dimensions{2, 3},
+                       std::initializer_list<elt_t>{1, 7, 3, 9, 5, 11});
+    this->emplace_back(
+        Dimensions{2, 6},
+        std::initializer_list<elt_t>{1, 7, 3, 9, 5, 11, 2, 14, 6, 18, 10, 22});
 
-    this->emplace_back(Dimensions{2, 1}, gen<elt_t>(1) << 2);
-    this->emplace_back(Dimensions{2, 3}, gen<elt_t>(1)
-                                             << 7 << 3 << 9 << 5 << 11);
-    this->emplace_back(Dimensions{4, 3}, gen<elt_t>(1)
-                                             << 7 << 2 << 14 << 3 << 9 << 6
-                                             << 18 << 5 << 11 << 10 << 22);
+    this->emplace_back(Dimensions{2, 1}, std::initializer_list<elt_t>{1, 2});
+    this->emplace_back(Dimensions{2, 3},
+                       std::initializer_list<elt_t>{1, 7, 3, 9, 5, 11});
+    this->emplace_back(
+        Dimensions{4, 3},
+        std::initializer_list<elt_t>{1, 7, 2, 14, 3, 9, 6, 18, 5, 11, 10, 22});
 #undef add
   }
 };

@@ -28,9 +28,6 @@
 
 namespace tensor {
 
-template <typename elt_t, size_t n>
-class StaticVector;
-
 //////////////////////////////////////////////////////////////////////
 // VECTOR CLASS WITH SHARED DATA
 //
@@ -71,11 +68,6 @@ class Vector {
 
   static inline Vector<elt_t> empty(difference_type size) {
     return Vector(safe_size_t(size));
-  }
-
-  template <size_t n>
-  Vector(const StaticVector<elt_t, n> &v) : Vector(v.size()) {
-    v.push(base_);
   }
 
   template <typename other_elt>
@@ -174,11 +166,6 @@ class SimpleVector {
 
   explicit SimpleVector(difference_type size)
       : size_{safe_size_t(size)}, base_(new elt_t[size]) {}
-
-  template <size_t n>
-  SimpleVector(const StaticVector<elt_t, n> &v) : SimpleVector(v.size()) {
-    v.push(base_.get());
-  }
 
   template <typename other_elt>
   SimpleVector(const std::initializer_list<other_elt> &l)

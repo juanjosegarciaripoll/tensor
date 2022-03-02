@@ -29,134 +29,131 @@ namespace tensor_test {
 TEST(TensorCompare, RTensorRTensorEqual) {
   EXPECT_EQ(Booleans(), RTensor() == RTensor());
 
-  EXPECT_EQ(bgen << true, (rgen << 1.0) == (rgen << 1.0));
-  EXPECT_EQ(bgen << false, (rgen << 1.0) == (rgen << 0.0));
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0} == RTensor{1.0}));
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0} == RTensor{0.0}));
 
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) == (rgen << 1.0 << 2.0));
-  EXPECT_EQ(bgen << true << false,
-            (rgen << 1.0 << 2.0) == (rgen << 1.0 << 1.0));
-  EXPECT_EQ(bgen << false << true,
-            (rgen << 1.0 << 2.0) == (rgen << 2.0 << 2.0));
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) == (rgen << 2.0 << 1.0));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0} == RTensor{1.0, 2.0}));
+  EXPECT_EQ((Booleans{true, false}), (RTensor{1.0, 2.0} == RTensor{1.0, 1.0}));
+  EXPECT_EQ((Booleans{false, true}), (RTensor{1.0, 2.0} == RTensor{2.0, 2.0}));
+  EXPECT_EQ((Booleans{false, false}), (RTensor{1.0, 2.0} == RTensor{2.0, 1.0}));
 
-  EXPECT_EQ(bgen << true << true << true << true,
+  EXPECT_EQ((Booleans{true, true, true, true}),
             RTensor::ones(2, 2) == RTensor::ones(2, 2));
 }
 
 TEST(TensorCompare, RTensorRTensorNotEqual) {
   EXPECT_EQ(Booleans(), RTensor() != RTensor());
 
-  EXPECT_EQ(bgen << false, (rgen << 1.0) != (rgen << 1.0));
-  EXPECT_EQ(bgen << true, (rgen << 1.0) != (rgen << 0.0));
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) != (RTensor{1.0}));
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) != (RTensor{0.0}));
 
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) != (rgen << 1.0 << 2.0));
-  EXPECT_EQ(bgen << false << true,
-            (rgen << 1.0 << 2.0) != (rgen << 1.0 << 1.0));
-  EXPECT_EQ(bgen << true << false,
-            (rgen << 1.0 << 2.0) != (rgen << 2.0 << 2.0));
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) != (rgen << 2.0 << 1.0));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) != (RTensor{1.0, 2.0}));
+  EXPECT_EQ((Booleans{false, true}),
+            (RTensor{1.0, 2.0}) != (RTensor{1.0, 1.0}));
+  EXPECT_EQ((Booleans{true, false}),
+            (RTensor{1.0, 2.0}) != (RTensor{2.0, 2.0}));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) != (RTensor{2.0, 1.0}));
 
-  EXPECT_EQ(bgen << false << false << false << false,
+  EXPECT_EQ((Booleans{false, false, false, false}),
             RTensor::ones(2, 2) != RTensor::ones(2, 2));
 }
 
 TEST(TensorCompare, RTensorRTensorLess) {
   EXPECT_EQ(Booleans(), RTensor() < RTensor());
 
-  EXPECT_EQ(bgen << false, (rgen << 1.0) < (rgen << 1.0));
-  EXPECT_EQ(bgen << false, (rgen << 1.0) < (rgen << 0.0));
-  EXPECT_EQ(bgen << true, (rgen << 1.0) < (rgen << 2.0));
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) < (RTensor{1.0}));
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) < (RTensor{0.0}));
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) < (RTensor{2.0}));
 
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) < (rgen << 1.0 << 2.0));
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) < (rgen << 1.0 << 1.0));
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) < (rgen << 0.0 << 2.0));
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) < (rgen << 0.0 << 0.0));
-  EXPECT_EQ(bgen << true << false, (rgen << 1.0 << 2.0) < (rgen << 2.0 << 1.0));
-  EXPECT_EQ(bgen << false << true, (rgen << 1.0 << 2.0) < (rgen << 1.0 << 3.0));
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) < (rgen << 2.0 << 3.0));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) < (RTensor{1.0, 2.0}));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) < (RTensor{1.0, 1.0}));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) < (RTensor{0.0, 2.0}));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) < (RTensor{0.0, 0.0}));
+  EXPECT_EQ((Booleans{true, false}), (RTensor{1.0, 2.0}) < (RTensor{2.0, 1.0}));
+  EXPECT_EQ((Booleans{false, true}), (RTensor{1.0, 2.0}) < (RTensor{1.0, 3.0}));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) < (RTensor{2.0, 3.0}));
 
-  EXPECT_EQ(bgen << true << true << true << true,
+  EXPECT_EQ((Booleans{true, true, true, true}),
             RTensor::ones(2, 2) < 2.0 * RTensor::ones(2, 2));
-  EXPECT_EQ(bgen << false << false << false << false,
+  EXPECT_EQ((Booleans{false, false, false, false}),
             RTensor::ones(2, 2) < RTensor::ones(2, 2));
 }
 
 TEST(TensorCompare, RTensorRTensorGreater) {
   EXPECT_EQ(Booleans(), RTensor() > RTensor());
 
-  EXPECT_EQ(bgen << false, (rgen << 1.0) > (rgen << 1.0));
-  EXPECT_EQ(bgen << true, (rgen << 1.0) > (rgen << 0.0));
-  EXPECT_EQ(bgen << false, (rgen << 1.0) > (rgen << 2.0));
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) > (RTensor{1.0}));
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) > (RTensor{0.0}));
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) > (RTensor{2.0}));
 
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) > (rgen << 1.0 << 2.0));
-  EXPECT_EQ(bgen << false << true, (rgen << 1.0 << 2.0) > (rgen << 1.0 << 1.0));
-  EXPECT_EQ(bgen << true << false, (rgen << 1.0 << 2.0) > (rgen << 0.0 << 2.0));
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) > (rgen << 0.0 << 0.0));
-  EXPECT_EQ(bgen << false << true, (rgen << 1.0 << 2.0) > (rgen << 2.0 << 1.0));
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) > (rgen << 1.0 << 3.0));
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) > (rgen << 2.0 << 3.0));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) > (RTensor{1.0, 2.0}));
+  EXPECT_EQ((Booleans{false, true}), (RTensor{1.0, 2.0}) > (RTensor{1.0, 1.0}));
+  EXPECT_EQ((Booleans{true, false}), (RTensor{1.0, 2.0}) > (RTensor{0.0, 2.0}));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) > (RTensor{0.0, 0.0}));
+  EXPECT_EQ((Booleans{false, true}), (RTensor{1.0, 2.0}) > (RTensor{2.0, 1.0}));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) > (RTensor{1.0, 3.0}));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) > (RTensor{2.0, 3.0}));
 
-  EXPECT_EQ(bgen << true << true << true << true,
+  EXPECT_EQ((Booleans{true, true, true, true}),
             2.0 * RTensor::ones(2, 2) > RTensor::ones(2, 2));
-  EXPECT_EQ(bgen << false << false << false << false,
+  EXPECT_EQ((Booleans{false, false, false, false}),
             RTensor::ones(2, 2) > RTensor::ones(2, 2));
 }
 
 TEST(TensorCompare, RTensorRTensorLessEqual) {
   EXPECT_EQ(Booleans(), RTensor() <= RTensor());
 
-  EXPECT_EQ(bgen << true, (rgen << 1.0) <= (rgen << 1.0));
-  EXPECT_EQ(bgen << false, (rgen << 1.0) <= (rgen << 0.0));
-  EXPECT_EQ(bgen << true, (rgen << 1.0) <= (rgen << 2.0));
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) <= (RTensor{1.0}));
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) <= (RTensor{0.0}));
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) <= (RTensor{2.0}));
 
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) <= (rgen << 1.0 << 2.0));
-  EXPECT_EQ(bgen << true << false,
-            (rgen << 1.0 << 2.0) <= (rgen << 1.0 << 1.0));
-  EXPECT_EQ(bgen << false << true,
-            (rgen << 1.0 << 2.0) <= (rgen << 0.0 << 2.0));
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) <= (rgen << 0.0 << 0.0));
-  EXPECT_EQ(bgen << true << false,
-            (rgen << 1.0 << 2.0) <= (rgen << 2.0 << 1.0));
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) <= (rgen << 1.0 << 3.0));
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) <= (rgen << 2.0 << 3.0));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) <= (RTensor{1.0, 2.0}));
+  EXPECT_EQ((Booleans{true, false}),
+            (RTensor{1.0, 2.0}) <= (RTensor{1.0, 1.0}));
+  EXPECT_EQ((Booleans{false, true}),
+            (RTensor{1.0, 2.0}) <= (RTensor{0.0, 2.0}));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) <= (RTensor{0.0, 0.0}));
+  EXPECT_EQ((Booleans{true, false}),
+            (RTensor{1.0, 2.0}) <= (RTensor{2.0, 1.0}));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) <= (RTensor{1.0, 3.0}));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) <= (RTensor{2.0, 3.0}));
 
-  EXPECT_EQ(bgen << true << true << true << true,
+  EXPECT_EQ((Booleans{true, true, true, true}),
             RTensor::ones(2, 2) <= 2.0 * RTensor::ones(2, 2));
-  EXPECT_EQ(bgen << true << true << true << true,
+  EXPECT_EQ((Booleans{true, true, true, true}),
             RTensor::ones(2, 2) <= RTensor::ones(2, 2));
 }
 
 TEST(TensorCompare, RTensorRTensorGreaterEqual) {
   EXPECT_EQ(Booleans(), RTensor() >= RTensor());
 
-  EXPECT_EQ(bgen << true, (rgen << 1.0) >= (rgen << 1.0));
-  EXPECT_EQ(bgen << true, (rgen << 1.0) >= (rgen << 0.0));
-  EXPECT_EQ(bgen << false, (rgen << 1.0) >= (rgen << 2.0));
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) >= (RTensor{1.0}));
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) >= (RTensor{0.0}));
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) >= (RTensor{2.0}));
 
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) >= (rgen << 1.0 << 2.0));
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) >= (rgen << 1.0 << 1.0));
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) >= (rgen << 0.0 << 2.0));
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) >= (rgen << 0.0 << 0.0));
-  EXPECT_EQ(bgen << false << true,
-            (rgen << 1.0 << 2.0) >= (rgen << 2.0 << 1.0));
-  EXPECT_EQ(bgen << true << false,
-            (rgen << 1.0 << 2.0) >= (rgen << 1.0 << 3.0));
-  EXPECT_EQ(bgen << false << false,
-            (rgen << 1.0 << 2.0) >= (rgen << 2.0 << 3.0));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) >= (RTensor{1.0, 2.0}));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) >= (RTensor{1.0, 1.0}));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) >= (RTensor{0.0, 2.0}));
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) >= (RTensor{0.0, 0.0}));
+  EXPECT_EQ((Booleans{false, true}),
+            (RTensor{1.0, 2.0}) >= (RTensor{2.0, 1.0}));
+  EXPECT_EQ((Booleans{true, false}),
+            (RTensor{1.0, 2.0}) >= (RTensor{1.0, 3.0}));
+  EXPECT_EQ((Booleans{false, false}),
+            (RTensor{1.0, 2.0}) >= (RTensor{2.0, 3.0}));
 
-  EXPECT_EQ(bgen << true << true << true << true,
+  EXPECT_EQ((Booleans{true, true, true, true}),
             2.0 * RTensor::ones(2, 2) >= RTensor::ones(2, 2));
-  EXPECT_EQ(bgen << true << true << true << true,
+  EXPECT_EQ((Booleans{true, true, true, true}),
             RTensor::ones(2, 2) >= RTensor::ones(2, 2));
 }
 
@@ -167,102 +164,95 @@ TEST(TensorCompare, RTensorRTensorGreaterEqual) {
 TEST(TensorCompare, RTensorDoubleEqual) {
   EXPECT_EQ(Booleans(), RTensor() == 0.0);
 
-  EXPECT_EQ(bgen << true, (rgen << 1.0) == 1.0);
-  EXPECT_EQ(bgen << false, (rgen << 1.0) == 0.0);
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) == 1.0);
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) == 0.0);
 
-  EXPECT_EQ(bgen << true << false, (rgen << 1.0 << 2.0) == 1.0);
-  EXPECT_EQ(bgen << false << false, (rgen << 1.0 << 2.0) == 0.0);
-  EXPECT_EQ(bgen << false << true, (rgen << 1.0 << 2.0) == 2.0);
+  EXPECT_EQ((Booleans{true, false}), (RTensor{1.0, 2.0}) == 1.0);
+  EXPECT_EQ((Booleans{false, false}), (RTensor{1.0, 2.0}) == 0.0);
+  EXPECT_EQ((Booleans{false, true}), (RTensor{1.0, 2.0}) == 2.0);
 
-  EXPECT_EQ(bgen << true << true << true << true, RTensor::ones(2, 2) == 1.0);
+  EXPECT_EQ((Booleans{true, true, true, true}), RTensor::ones(2, 2) == 1.0);
 }
 
 TEST(TensorCompare, RTensorDoubleNotEqual) {
   EXPECT_EQ(Booleans(), RTensor() != 0.0);
 
-  EXPECT_EQ(bgen << false, (rgen << 1.0) != 1.0);
-  EXPECT_EQ(bgen << true, (rgen << 1.0) != 0.0);
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) != 1.0);
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) != 0.0);
 
-  EXPECT_EQ(bgen << false << true, (rgen << 1.0 << 2.0) != 1.0);
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) != 0.0);
-  EXPECT_EQ(bgen << true << false, (rgen << 1.0 << 2.0) != 2.0);
+  EXPECT_EQ((Booleans{false, true}), (RTensor{1.0, 2.0}) != 1.0);
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) != 0.0);
+  EXPECT_EQ((Booleans{true, false}), (RTensor{1.0, 2.0}) != 2.0);
 
-  EXPECT_EQ(bgen << false << false << false << false,
-            RTensor::ones(2, 2) != 1.0);
+  EXPECT_EQ((Booleans{false, false, false, false}), RTensor::ones(2, 2) != 1.0);
 }
 
 TEST(TensorCompare, RTensorDoubleLess) {
   EXPECT_EQ(Booleans(), RTensor() < 1.0);
 
-  EXPECT_EQ(bgen << false, (rgen << 1.0) < 0.0);
-  EXPECT_EQ(bgen << false, (rgen << 1.0) < 1.0);
-  EXPECT_EQ(bgen << true, (rgen << 1.0) < 2.0);
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) < 0.0);
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) < 1.0);
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) < 2.0);
 
-  EXPECT_EQ(bgen << false << false, (rgen << 1.0 << 2.0) < 0.0);
-  EXPECT_EQ(bgen << false << false, (rgen << 1.0 << 2.0) < 1.0);
-  EXPECT_EQ(bgen << true << false, (rgen << 1.0 << 2.0) < 2.0);
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) < 3.0);
+  EXPECT_EQ((Booleans{false, false}), (RTensor{1.0, 2.0}) < 0.0);
+  EXPECT_EQ((Booleans{false, false}), (RTensor{1.0, 2.0}) < 1.0);
+  EXPECT_EQ((Booleans{true, false}), (RTensor{1.0, 2.0}) < 2.0);
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) < 3.0);
 
-  EXPECT_EQ(bgen << false << false << false << false,
-            RTensor::ones(2, 2) < 0.0);
-  EXPECT_EQ(bgen << false << false << false << false,
-            RTensor::ones(2, 2) < 1.0);
-  EXPECT_EQ(bgen << true << true << true << true, RTensor::ones(2, 2) < 2.0);
+  EXPECT_EQ((Booleans{false, false, false, false}), RTensor::ones(2, 2) < 0.0);
+  EXPECT_EQ((Booleans{false, false, false, false}), RTensor::ones(2, 2) < 1.0);
+  EXPECT_EQ((Booleans{true, true, true, true}), RTensor::ones(2, 2) < 2.0);
 }
 
 TEST(TensorCompare, RTensorDoubleGreater) {
   EXPECT_EQ(Booleans(), RTensor() > 1.0);
 
-  EXPECT_EQ(bgen << true, (rgen << 1.0) > 0.0);
-  EXPECT_EQ(bgen << false, (rgen << 1.0) > 1.0);
-  EXPECT_EQ(bgen << false, (rgen << 1.0) > 2.0);
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) > 0.0);
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) > 1.0);
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) > 2.0);
 
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) > 0.0);
-  EXPECT_EQ(bgen << false << true, (rgen << 1.0 << 2.0) > 1.0);
-  EXPECT_EQ(bgen << false << false, (rgen << 1.0 << 2.0) > 2.0);
-  EXPECT_EQ(bgen << false << false, (rgen << 1.0 << 2.0) > 3.0);
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) > 0.0);
+  EXPECT_EQ((Booleans{false, true}), (RTensor{1.0, 2.0}) > 1.0);
+  EXPECT_EQ((Booleans{false, false}), (RTensor{1.0, 2.0}) > 2.0);
+  EXPECT_EQ((Booleans{false, false}), (RTensor{1.0, 2.0}) > 3.0);
 
-  EXPECT_EQ(bgen << true << true << true << true, RTensor::ones(2, 2) > 0.0);
-  EXPECT_EQ(bgen << false << false << false << false,
-            RTensor::ones(2, 2) > 1.0);
-  EXPECT_EQ(bgen << false << false << false << false,
-            RTensor::ones(2, 2) > 2.0);
+  EXPECT_EQ((Booleans{true, true, true, true}), RTensor::ones(2, 2) > 0.0);
+  EXPECT_EQ((Booleans{false, false, false, false}), RTensor::ones(2, 2) > 1.0);
+  EXPECT_EQ((Booleans{false, false, false, false}), RTensor::ones(2, 2) > 2.0);
 }
 
 TEST(TensorCompare, RTensorDoubleLessEqual) {
   EXPECT_EQ(Booleans(), RTensor() <= 1.0);
 
-  EXPECT_EQ(bgen << false, (rgen << 1.0) <= 0.0);
-  EXPECT_EQ(bgen << true, (rgen << 1.0) <= 1.0);
-  EXPECT_EQ(bgen << true, (rgen << 1.0) <= 2.0);
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) <= 0.0);
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) <= 1.0);
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) <= 2.0);
 
-  EXPECT_EQ(bgen << false << false, (rgen << 1.0 << 2.0) <= 0.0);
-  EXPECT_EQ(bgen << true << false, (rgen << 1.0 << 2.0) <= 1.0);
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) <= 2.0);
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) <= 3.0);
+  EXPECT_EQ((Booleans{false, false}), (RTensor{1.0, 2.0}) <= 0.0);
+  EXPECT_EQ((Booleans{true, false}), (RTensor{1.0, 2.0}) <= 1.0);
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) <= 2.0);
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) <= 3.0);
 
-  EXPECT_EQ(bgen << false << false << false << false,
-            RTensor::ones(2, 2) <= 0.0);
-  EXPECT_EQ(bgen << true << true << true << true, RTensor::ones(2, 2) <= 1.0);
-  EXPECT_EQ(bgen << true << true << true << true, RTensor::ones(2, 2) <= 2.0);
+  EXPECT_EQ((Booleans{false, false, false, false}), RTensor::ones(2, 2) <= 0.0);
+  EXPECT_EQ((Booleans{true, true, true, true}), RTensor::ones(2, 2) <= 1.0);
+  EXPECT_EQ((Booleans{true, true, true, true}), RTensor::ones(2, 2) <= 2.0);
 }
 
 TEST(TensorCompare, RTensorDoubleGreaterEqual) {
   EXPECT_EQ(Booleans(), RTensor() >= 1.0);
 
-  EXPECT_EQ(bgen << true, (rgen << 1.0) >= 0.0);
-  EXPECT_EQ(bgen << true, (rgen << 1.0) >= 1.0);
-  EXPECT_EQ(bgen << false, (rgen << 1.0) >= 2.0);
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) >= 0.0);
+  EXPECT_EQ((Booleans{true}), (RTensor{1.0}) >= 1.0);
+  EXPECT_EQ((Booleans{false}), (RTensor{1.0}) >= 2.0);
 
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) >= 0.0);
-  EXPECT_EQ(bgen << true << true, (rgen << 1.0 << 2.0) >= 1.0);
-  EXPECT_EQ(bgen << false << true, (rgen << 1.0 << 2.0) >= 2.0);
-  EXPECT_EQ(bgen << false << false, (rgen << 1.0 << 2.0) >= 3.0);
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) >= 0.0);
+  EXPECT_EQ((Booleans{true, true}), (RTensor{1.0, 2.0}) >= 1.0);
+  EXPECT_EQ((Booleans{false, true}), (RTensor{1.0, 2.0}) >= 2.0);
+  EXPECT_EQ((Booleans{false, false}), (RTensor{1.0, 2.0}) >= 3.0);
 
-  EXPECT_EQ(bgen << true << true << true << true, RTensor::ones(2, 2) >= 0.0);
-  EXPECT_EQ(bgen << true << true << true << true, RTensor::ones(2, 2) >= 1.0);
-  EXPECT_EQ(bgen << false << false << false << false,
-            RTensor::ones(2, 2) >= 2.0);
+  EXPECT_EQ((Booleans{true, true, true, true}), RTensor::ones(2, 2) >= 0.0);
+  EXPECT_EQ((Booleans{true, true, true, true}), RTensor::ones(2, 2) >= 1.0);
+  EXPECT_EQ((Booleans{false, false, false, false}), RTensor::ones(2, 2) >= 2.0);
 }
 
 }  // namespace tensor_test

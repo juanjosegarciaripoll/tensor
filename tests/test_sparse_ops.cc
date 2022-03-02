@@ -82,13 +82,13 @@ TEST(RSparseTest, BinopSmall) {
   // old code.
   {
     RSparse A(RTensor::zeros(1, 1));
-    RSparse B(RTensor(Dimensions{1, 1}, rgen << 0.958326));
+    RSparse B(RTensor(Dimensions{1, 1}, {0.958326}));
     EXPECT_TRUE(all_equal(full(A + B), full(A) + full(B)));
     EXPECT_TRUE(all_equal(full(A - B), full(A) - full(B)));
     EXPECT_TRUE(all_equal(full(A * B), full(A) * full(B)));
   }
   {
-    RSparse A(RTensor(Dimensions{2, 1}, rgen << 0.958326 << 0.0));
+    RSparse A(RTensor(Dimensions{2, 1}, {0.958326, 0.0}));
     RSparse B(RTensor::zeros(2, 1));
     EXPECT_TRUE(all_equal(full(A + B), full(A) + full(B)));
     EXPECT_TRUE(all_equal(full(A - B), full(A) - full(B)));

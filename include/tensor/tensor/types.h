@@ -26,7 +26,6 @@
 #include <vector>
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
-#include <tensor/gen.h>
 #include <tensor/indices.h>
 #include <tensor/initializer.h>
 #include <tensor/rand.h>
@@ -91,17 +90,6 @@ class Tensor {
   Tensor(const Tensor<e2> &other)
       : data_(other.size()), dims_(other.dimensions()) {
     std::copy(other.begin(), other.end(), begin());
-  }
-
-  /**Create a one-dimensional tensor from data created with "gen" expressions.*/
-  template <size_t n>
-  Tensor(const StaticVector<elt_t, n> &t) : data_(t), dims_({t.size()}) {}
-
-  /**Create a general tensor from data created with "gen" expressions.*/
-  template <size_t n>
-  Tensor(const StaticVector<elt_t, n> &t, const Dimensions &d)
-      : data_(t), dims_(d) {
-    assert(data_.size() == d.total_size());
   }
 
   /**Create a Tensor from a vector initializer list {1, 2, 3}. */

@@ -57,27 +57,27 @@ void test_view_error(const Tensor<elt_t> &P) {
 TEST(SliceTestError, SliceRTensorError0D) { test_view_error(RTensor()); }
 
 TEST(SliceTestError, SliceRTensorError1D) {
-  test_view_error(RTensor(rgen << 3));
+  test_view_error(RTensor(Dimensions{3}));
 }
 
 TEST(SliceTestError, SliceRTensorError2D) {
-  test_view_error(RTensor(rgen << 3 << 5));
+  test_view_error(RTensor(Dimensions{3, 5}));
 }
 
 TEST(SliceTestError, SliceRTensorError3D) {
-  test_view_error(RTensor(rgen << 2 << 4 << 5));
+  test_view_error(RTensor(Dimensions{2, 4, 5}));
 }
 
 TEST(SliceTestError, SliceRTensorError4D) {
-  test_view_error(RTensor(rgen << 2 << 3 << 1 << 5));
+  test_view_error(RTensor(Dimensions{2, 3, 1, 5}));
 }
 
 TEST(SliceTestError, SliceRTensorError5D) {
-  test_view_error(RTensor(rgen << 2 << 1 << 4 << 3 << 5));
+  test_view_error(RTensor(Dimensions{2, 4, 1, 3, 5}));
 }
 
 TEST(SliceTestError, SliceRTensorError6D) {
-  test_view_error(RTensor(rgen << 5 << 3 << 1 << 4 << 2 << 5));
+  test_view_error(RTensor(Dimensions{2, 1, 3, 5, 2, 4}));
 }
 
 //
@@ -87,27 +87,27 @@ TEST(SliceTestError, SliceRTensorError6D) {
 TEST(SliceTestError, SliceCTensorError0D) { test_view_error(CTensor()); }
 
 TEST(SliceTestError, SliceCTensorError1D) {
-  test_view_error(CTensor(cgen << 3));
+  test_view_error(CTensor(Dimensions{3}));
 }
 
 TEST(SliceTestError, SliceCTensorError2D) {
-  test_view_error(CTensor(cgen << 3 << 5));
+  test_view_error(CTensor(Dimensions{3, 5}));
 }
 
 TEST(SliceTestError, SliceCTensorError3D) {
-  test_view_error(CTensor(cgen << 2 << 4 << 5));
+  test_view_error(CTensor(Dimensions{2, 4, 5}));
 }
 
 TEST(SliceTestError, SliceCTensorError4D) {
-  test_view_error(CTensor(cgen << 2 << 3 << 1 << 5));
+  test_view_error(CTensor(Dimensions{2, 3, 1, 5}));
 }
 
 TEST(SliceTestError, SliceCTensorError5D) {
-  test_view_error(CTensor(cgen << 2 << 1 << 4 << 3 << 5));
+  test_view_error(CTensor(Dimensions{2, 4, 1, 3, 5}));
 }
 
 TEST(SliceTestError, SliceCTensorError6D) {
-  test_view_error(CTensor(cgen << 5 << 3 << 1 << 4 << 2 << 5));
+  test_view_error(CTensor(Dimensions{2, 1, 3, 5, 2, 4}));
 }
 
 #endif
