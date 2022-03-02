@@ -31,58 +31,42 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
   index rows = A.rows();
   index cols = A.columns();
   if (rows != cols && !economic) return svd(A, pU, pVT, economic);
-  index minrc = std::min(rows, cols);
 
   std::vector<Indices> row_indices, column_indices;
   if (!find_blocks<Tensor>(A, row_indices, column_indices)) {
     return svd(A, pU, pVT, economic);
   }
-  index nblocks = ssize(row_indices);
-  RTensor s = RTensor::zeros(minrc);
+  index L = std::min(rows, cols);
+  RTensor s = RTensor::zeros(L);
   if (pU) {
-    *pU = Tensor::zeros(rows, economic ? minrc : rows);
+    *pU = Tensor::zeros(rows, economic ? L : rows);
   }
   if (pVT) {
-    *pVT = Tensor::zeros(economic ? minrc : cols, cols);
+    *pVT = Tensor::zeros(economic ? L : cols, cols);
   }
 
   RTensor stemp;
   Tensor Utemp, Vtemp;
   Tensor *pUtemp = pU ? &Utemp : nullptr;
   Tensor *pVtemp = pVT ? &Vtemp : nullptr;
-  for (index b = 0, sndx = 0; b < nblocks; b++) {
+  for (index nblocks = ssize(row_indices), b = 0, sndx = 0; b < nblocks; b++) {
     const auto &block_rows = row_indices[static_cast<size_t>(b)];
     auto M = block_rows.ssize();
-    if (M) {
-      const auto &block_columns = column_indices[static_cast<size_t>(b)];
-      auto N = block_columns.ssize();
+    const auto &block_columns = column_indices[static_cast<size_t>(b)];
+    auto N = block_columns.ssize();
+    if (M != 0 && N != 0) {
+      L = std::min(M, N);
       // The first indices are for the empty rows and columns. We do not need
-      // to compute the SVD in this case, or when the block is a column or
-      // row vector.
-      if (M > 1 && N > 1 && b > 0) {
-        Tensor m = A(range(block_rows), range(block_columns));
-        stemp = svd(m, pUtemp, pVtemp, economic);
-      } else {
-        auto L = std::min(M, N);
+      // to compute the SVD in this case
+      if (b == 0) {
         stemp = RTensor::zeros(L);
-        if (pU) {
-          Utemp = Tensor::eye(M, economic ? L : M);
-        }
-        if (pVT) {
-          Vtemp = Tensor::eye(economic ? L : N, N);
-        }
-        if (b > 0) {
-          // The singular value is non-negative. We assign the remaining
-          // phases to the VT matrix.
-          auto z = A(block_rows[0], block_columns[0]);
-          double singular_value = abs(z);
-          stemp.at(0) = singular_value;
-          if (pVT) {
-            Vtemp *= z / singular_value;
-          }
-        }
+        Utemp = Tensor::eye(M, economic ? L : M);
+        Vtemp = Tensor::eye(economic ? L : N, N);
+      } else {
+        stemp = svd(A(range(block_rows), range(block_columns)), pUtemp, pVtemp,
+                    economic);
       }
-      index slast = sndx + stemp.ssize() - 1;
+      index slast = sndx + L - 1;
       s.at(range(sndx, slast)) = stemp;
       if (pU) {
         (*pU).at(range(block_rows), range(sndx, slast)) = Utemp;

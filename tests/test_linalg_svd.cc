@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 #include <tensor/tensor.h>
 #include <tensor/linalg.h>
+#include "../src/linalg/find_blocks.hpp"
 
 namespace tensor_test {
 
@@ -36,9 +37,8 @@ Tensor<elt_t> random_svd_matrix(int n, int m, RTensor &s) {
     Tensor<elt_t> V = random_unitary<elt_t>(m);
     EXPECT_TRUE(unitaryp(U));
     EXPECT_TRUE(unitaryp(V));
-    s = RTensor(igen << std::min(n, m));
-    s.randomize();
-    s = abs(s);  // Just in case we change our mind and make rand < 0
+    s = abs(RTensor::random(
+        std::min(n, m)));  // Just in case we change our mind and make rand < 0
     return mmult(U, mmult(diag(s, 0, n, m), V));
   }
 }
@@ -46,6 +46,28 @@ Tensor<elt_t> random_svd_matrix(int n, int m, RTensor &s) {
 //////////////////////////////////////////////////////////////////////
 // SINGULAR VALUE DECOMPOSITIONS
 //
+template <typename Tensor>
+void test_svd(const Tensor &A, const RTensor &exact_s, const Tensor &exact_U,
+              const Tensor &exact_Vt, bool block, bool economic) {
+  Tensor U, Vt;
+  RTensor s;
+  const char *scopes[2][2] = {
+      {"normal svd, full matrices", "normal svd, economic"},
+      {"block svd, full matrices", "block svd, economic"}};
+  SCOPED_TRACE(scopes[block][economic]);
+  s = block ? linalg::block_svd(A, &U, &Vt, economic)
+            : linalg::svd(A, &U, &Vt, economic);
+  ASSERT_TRUE(all_equal(abs(U), abs(exact_U)));
+  if (!all_equal(abs(Vt), abs(exact_Vt))) {
+    std::cerr << "A=" << A << "\nVt=" << Vt << "\nexact_Vt=" << exact_Vt
+              << '\n';
+  }
+  ASSERT_TRUE(all_equal(abs(Vt), abs(exact_Vt)));
+  ASSERT_TRUE(all_equal(s, exact_s));
+  auto reconstructed_A =
+      mmult(U, mmult(diag(s, 0, U.columns(), Vt.rows()), Vt));
+  EXPECT_TRUE(approx_eq(A, reconstructed_A));
+}
 
 template <typename elt_t, bool block>
 void test_eye_svd(int n) {
@@ -56,23 +78,20 @@ void test_eye_svd(int n) {
     return;
   }
   for (int m = 1; m < n; m++) {
-    Tensor<elt_t> Imn = Tensor<elt_t>::eye(m, n);
-    Tensor<elt_t> Imm = Tensor<elt_t>::eye(m, m);
-    Tensor<elt_t> Inn = Tensor<elt_t>::eye(n, n);
-    RTensor s1 = RTensor::ones(std::min(m, n));
-    Tensor<elt_t> U, V;
-    RTensor s;
-
-    s = block ? linalg::block_svd(Imn, &U, &V, false)
-              : linalg::svd(Imn, &U, &V, false);
-    EXPECT_TRUE(all_equal(Imm, U));
-    EXPECT_TRUE(all_equal(Inn, V));
-    EXPECT_TRUE(all_equal(s, s1));
-    s = block ? linalg::block_svd(Imn, &U, &V, true)
-              : linalg::svd(Imn, &U, &V, true);
-    EXPECT_TRUE(all_equal(U, m < n ? Imm : Imn));
-    EXPECT_TRUE(all_equal(V, m < n ? Imn : Inn));
-    EXPECT_TRUE(all_equal(s, s1));
+    Tensor<elt_t> A = Tensor<elt_t>::eye(m, n);
+    RTensor exact_s = RTensor::ones(std::min(m, n));
+    {
+      auto exact_U = Tensor<elt_t>::eye(m, m);
+      auto exact_V = Tensor<elt_t>::eye(n, n);
+      bool economic = false;
+      test_svd(A, exact_s, exact_U, exact_V, block, economic);
+    }
+    {
+      auto exact_U = Tensor<elt_t>::eye(m, exact_s.size());
+      auto exact_V = Tensor<elt_t>::eye(exact_s.size(), n);
+      bool economic = true;
+      test_svd(A, exact_s, exact_U, exact_V, block, economic);
+    }
   }
 }
 
@@ -104,9 +123,18 @@ void test_random_svd(int n) {
       EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s, 0, m, n), Vt))));
 
       EXPECT_TRUE(approx_eq(true_s, s));
+      auto A2 = A;
 
       RTensor s2 = block ? linalg::block_svd(A, &U, &Vt, true)
                          : linalg::svd(A, &U, &Vt, true);
+      if (!approx_eq(s, s2)) {
+        std::vector<Indices> rows, cols;
+        std::cerr << "find_blocks=" << linalg::find_blocks(A, rows, cols, 0.0)
+                  << '\n';
+        std::cerr << "block=" << block << '\n';
+        std::cerr << "s=" << s << '\n' << "s2=" << s2 << '\n';
+        std::cerr << "A=" << A << '\n' << "A2=" << A2 << '\n';
+      }
       EXPECT_TRUE(approx_eq(s, s2));
       EXPECT_TRUE(unitaryp(U));
       EXPECT_TRUE(unitaryp(Vt));
@@ -121,6 +149,17 @@ void test_random_svd(int n) {
 
 TEST(RMatrixTest, EyeSvdTest) {
   test_over_integers(0, 32, test_eye_svd<double, false>);
+}
+
+TEST(RMatrixTest, RowTest) {
+  bool block, economic;
+  double z = 1 / sqrt(2.0);
+  RTensor A{{z, z, 0.0}};
+  RTensor exact_s{1.0};
+  RTensor exact_U = RTensor::eye(1);
+  RTensor exact_V{{z, z, 0.0}};
+  test_svd(A, exact_s, exact_U, exact_V, block = false, economic = true);
+  test_svd(A, exact_s, exact_U, exact_V, block = true, economic = true);
 }
 
 TEST(RMatrixTest, RandomSvdTest) {

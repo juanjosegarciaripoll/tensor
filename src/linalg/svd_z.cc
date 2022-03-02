@@ -51,6 +51,8 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   assert(A.columns() > 0);
   assert(A.rank() == 2);
 
+  // TODO: Optimize m = 1 or n = 1 cases
+
   blas::integer m = blas::tensor_rows(A);
   blas::integer n = blas::tensor_columns(A);
   blas::integer k = std::min(m, n);
