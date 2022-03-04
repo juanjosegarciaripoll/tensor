@@ -52,9 +52,8 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
     i_len *= di;
   }
   l_len = a.dimension(i++);
-  if (l_len == 0) {
-    throw dimensions_mismatch(a.dimensions(), b.dimensions(), ndx1, ndx2);
-  }
+  tensor_assert2(l_len != 0, dimensions_mismatch(
+                                 "Mismatch in tensor dimensions in fold()"));
   for (j_len = 1; i < ranka; i++) {
     index di = a.dimension(i);
     new_dims.at(rank++) = di;
@@ -65,9 +64,10 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
     new_dims.at(rank++) = di;
     k_len *= di;
   }
-  if (l_len != b.dimension(i++)) {
-    throw dimensions_mismatch(a.dimensions(), b.dimensions(), ndx1, ndx2);
-  }
+  tensor_assert2(
+      l_len == b.dimension(i),
+      dimensions_mismatch("Mismatch in tensor dimensions in fold()"));
+  ++i;
   for (m_len = 1; i < rankb; i++) {
     index di = b.dimension(i);
     new_dims.at(rank++) = di;

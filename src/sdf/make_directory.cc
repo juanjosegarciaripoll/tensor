@@ -27,7 +27,6 @@
 namespace sdf {
 
 bool make_directory(const std::string &dirname, int mode) {
-  std::cout << dirname << std::endl;
   return !mkdir(dirname.c_str(), mode);
 }
 

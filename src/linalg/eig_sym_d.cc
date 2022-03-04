@@ -40,9 +40,9 @@ using namespace lapack;
      \ingroup Linalg
   */
 RTensor eig_sym(const RTensor &A, RTensor *V) {
-  assert(A.rows() > 0);
-  assert(A.rank() == 2);
-  assert(A.rows() == A.columns());
+  tensor_assert(A.rows() > 0);
+  tensor_assert(A.rank() == 2);
+  tensor_assert(A.rows() == A.columns());
 
   blas::integer n = tensor_rows(A);
   if (n != A.columns()) {

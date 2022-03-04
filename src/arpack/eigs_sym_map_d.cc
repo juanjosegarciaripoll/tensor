@@ -28,7 +28,7 @@ RTensor eigs(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
   return eigs(
       [&](const RTensor &input, RTensor &output) {
         RTensor aux = A(input);
-        assert(aux.dimensions() == output.dimensions());
+        tensor_assert(aux.dimensions() == output.dimensions());
         std::copy(aux.begin(), aux.end(), output.begin());
       },
       n, eig_type, neig, eigenvectors, converged);
@@ -98,7 +98,7 @@ RTensor eigs(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
     std::cerr << "eigs: " << data.error_message() << '\n';
     if (converged) {
       *converged = false;
-      return RTensor::zeros(static_cast<size_t>(neig));
+      return RTensor::zeros(static_cast<tensor::index>(neig));
     } else {
       abort();
     }

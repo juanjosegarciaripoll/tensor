@@ -25,6 +25,13 @@
 
 namespace tensor {
 
+struct invalid_assertion : public std::logic_error {
+  invalid_assertion(const char *message, const char *a_filename, int a_fileno)
+      : std::logic_error(message), filename{a_filename}, fileno{a_fileno} {}
+  const char *filename = "";
+  int fileno{};
+};
+
 struct invalid_dimension : public std::invalid_argument {
   invalid_dimension()
       : std::invalid_argument(
@@ -49,6 +56,20 @@ struct dimensions_mismatch : public std::out_of_range {
   dimensions_mismatch(const Dimensions &d1, const Dimensions &d2, index which1,
                       index which2);
 };
+
+#define tensor_assert(assertion) \
+  tensor_assert2((assertion),    \
+                 ::tensor::invalid_assertion(#assertion, __FILE__, __LINE__))
+#ifdef TENSOR_DEBUG
+#define tensor_assert2(expression, condition) \
+  if (!(expression)) {                        \
+    throw condition;                          \
+  }
+#define tensor_noexcept
+#else
+#define tensor_assert2(expression, condition)
+#define tensor_noexcept noexcept
+#endif
 
 }  // namespace tensor
 

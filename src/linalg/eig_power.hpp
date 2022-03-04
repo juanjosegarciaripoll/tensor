@@ -31,7 +31,7 @@ elt_t eig_power_loop(const LinearMap<Tensor<elt_t>> &A, size_t dims,
   if (tol <= 0) {
     tol = 1e-11;
   }
-  assert(vector);
+  tensor_assert(vector);
   Tensor<elt_t> &v = *vector;
   if (v.size() != dims) {
     v = 0.5 - Tensor<elt_t>::random(static_cast<tensor::index>(dims));

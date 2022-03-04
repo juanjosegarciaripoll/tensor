@@ -24,10 +24,6 @@
 
 namespace tensor {
 
-const ListGenerator<index> igen = {};
-const ListGenerator<double> rgen = {};
-const ListGenerator<cdouble> cgen = {};
-
 template class Vector<index>;
 
 template class SimpleVector<index>;
@@ -41,8 +37,8 @@ index Dimensions::compute_total_size(const SimpleVector<index> &dims) {
     index total_dimension = 1,
           maximum_dimension = std::numeric_limits<index>::max();
     for (index dimension : dims) {
-      assert(dimension >= 0);
-      assert(dimension < maximum_dimension);
+      tensor_assert(dimension >= 0);
+      tensor_assert(dimension < maximum_dimension);
       total_dimension *= dimension;
       if (dimension) {
         maximum_dimension /= dimension;

@@ -19,8 +19,6 @@
 #ifndef TENSOR_LINSPACE_HPP
 #define TENSOR_LINSPACE_HPP
 
-#include <tensor/gen.h>
-
 namespace tensor {
 
 template <typename elt_t>
@@ -42,7 +40,7 @@ static inline const Tensor<elt_t> do_linspace(const Tensor<elt_t> &min,
   if (d == 1)
     return reshape(output, n);
   else
-    return reshape(output, min.dimensions() << (igen << n));
+    return reshape(output, min.dimensions() << Indices{n});
 }
 
 }  // namespace tensor

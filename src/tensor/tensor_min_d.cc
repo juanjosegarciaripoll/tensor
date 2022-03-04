@@ -22,7 +22,7 @@
 namespace tensor {
 
 double min(const RTensor &r) {
-  assert(r.size());
+  tensor_assert(r.size());
   return *(std::min_element(r.cbegin(), r.cend()));
 }
 

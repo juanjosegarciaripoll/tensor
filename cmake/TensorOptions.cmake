@@ -2,6 +2,7 @@ option(TENSOR_DEFAULT_WARNINGS "Add known default compiler warnings" ON)
 option(TENSOR_OPTIMIZED_BUILD "Add well known optimization arguments" ON)
 option(TENSOR_CLANG_TIDY "Enable running clang-tidy if found" OFF)
 option(WARNINGS_AS_ERRORS "Compilation and analysis warnings become errors" OFF)
+option(TENSOR_ADD_SANITIZERS "Compile and link with address sanitizers if in Debug mode" OFF)
 
 function(make_tensor_options)
     add_library(tensor_options INTERFACE)
@@ -21,6 +22,29 @@ function(make_tensor_options)
 
     if (TENSOR_CLANG_TIDY)
         tensor_enable_clang_tidy()
+    endif()
+
+    if (TENSOR_ADD_SANITIZERS)
+        tensor_add_sanitizers()
+    endif()
+endfunction()
+
+function(tensor_add_sanitizers)
+    if(CMAKE_BUILD_TYPE MATCHES "Debug" OR CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+        if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" OR CMAKE_CXX_COMPILER STREQUAL "GNU")
+            target_compile_options(tensor_options INTERFACE -fsanitize=address)
+            target_link_options(tensor_options INTERFACE -fsanitize=address)
+        else()
+            string(FIND "$ENV{VSINSTALLDIR}" "$ENV{PATH}" index_of_vs_install_dir)
+            if("index_of_vs_install_dir" STREQUAL "-1")
+            message(
+                SEND_ERROR
+                "Using MSVC sanitizers requires setting the MSVC environment before building the project. Please manually open the MSVC command prompt and rebuild the project."
+            )
+            endif()
+            target_compile_options(tensor_options INTERFACE /fsanitize=address /Zi /INCREMENTAL:NO)
+            target_link_options(tensor_options INTERFACE /INCREMENTAL:NO)
+        endif()
     endif()
 endfunction()
 

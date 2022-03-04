@@ -16,6 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <cmath>
 #include <algorithm>
 #include <tensor/tensor.h>
 #include <tensor/linalg.h>
@@ -43,13 +44,13 @@ static double exp2(double n) { return exp(log((double)2.0) * n); }
    \ingroup Linalg
 */
 RTensor expm(const RTensor &Aunorm, unsigned int order) {
-  assert(Aunorm.rank() == 2);
-  assert(Aunorm.columns() == Aunorm.rows());
+  tensor_assert(Aunorm.rank() == 2);
+  tensor_assert(Aunorm.columns() == Aunorm.rows());
 
   // Scale A until the norm is < 1/2
   double val = log2(matrix_norminf(Aunorm));
-  int e = (int)floor(val);
-  size_t j = std::max((int)0, (int)(e + 1));
+  int e = static_cast<int>(floor(val));
+  auto j = std::max(0, e + 1);
 
   // Pade approximation for exp(A)
   double c = 1.0 / 2;
@@ -59,7 +60,8 @@ RTensor expm(const RTensor &Aunorm, unsigned int order) {
   RTensor X = A;
 
   for (size_t k = 2; k <= order; k++) {
-    c = (c * (order - k + 1)) / (k * (2 * order - k + 1));
+    c = (c * static_cast<double>(order - k + 1)) /
+        static_cast<double>(k * (2 * order - k + 1));
     X = mmult(A, X);
     RTensor cX = c * X;
     N = N + cX;
@@ -70,7 +72,7 @@ RTensor expm(const RTensor &Aunorm, unsigned int order) {
     }
   }
   X = solve(D, N);
-  for (size_t k = 1; k <= j; k++) {
+  for (int k = 1; k <= j; k++) {
     X = mmult(X, X);
   }
   return X;

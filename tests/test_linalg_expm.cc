@@ -29,8 +29,8 @@ namespace tensor_test {
 
 using namespace tensor;
 
-static const RTensor sx(igen << 2 << 2, rgen << 0.0 << 1.0 << 1.0 << 0.0);
-static const RTensor sz(igen << 2 << 2, rgen << 1.0 << 0.0 << 0.0 << -1.0);
+static const RTensor sx{{0.0, 1.0}, {1.0, 0.0}};
+static const RTensor sz{{1.0, 0.0}, {0.0, -1.0}};
 static const RTensor id = RTensor::eye(2);
 
 //////////////////////////////////////////////////////////////////////
@@ -70,8 +70,9 @@ CTensor pauli_exponential(double theta, double phi, CTensor *pexponent) {
 template <typename elt_t>
 void test_expm_diag(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(linalg::expm(Tensor<elt_t>(Dimensions{0})), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(linalg::expm(Tensor<elt_t>(Dimensions{0})),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }

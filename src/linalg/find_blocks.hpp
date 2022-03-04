@@ -98,8 +98,11 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
     std::cout << "*** find_blocks: nxm=" << N << "x" << M
               << ", n_blocks=" << nblocks << std::endl;
   }
-  if (nblocks <= 1) {
-    return false;
+  if (nblocks == 1) {
+    if (std::count(std::begin(column_block), std::end(column_block), empty) ==
+        0) {
+      return false;
+    }
   }
 
   std::vector<index> buffer;
@@ -119,12 +122,15 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
         buffer.push_back(ndx);
       }
     }
-    assert(count);
     Indices output = Indices::empty(count);
     std::copy(std::begin(buffer), std::end(buffer), std::begin(output));
     return output;
   };
 
+  // The first two vectors contain the block of empty rows and columns
+  column_indices.push_back(extract_positions(column_block, 0, empty));
+  row_indices.push_back(extract_positions(row_block, 0, empty));
+  // The next ones contain useful blocks
   for (index start = 0; start < static_cast<index>(column_block.size());
        ++start) {
     auto block = column_block[start];
@@ -133,8 +139,8 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
       row_indices.push_back(extract_positions(row_block, 0, block));
     }
   }
-  assert(ssize(column_indices) == nblocks);
-  assert(ssize(row_indices) == nblocks);
+  tensor_assert(ssize(column_indices) == nblocks + 1);
+  tensor_assert(ssize(row_indices) == nblocks + 1);
   return true;
 }
 

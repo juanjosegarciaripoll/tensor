@@ -20,12 +20,10 @@
 #ifndef TENSOR_INDICES_H
 #define TENSOR_INDICES_H
 
-#include <cassert>
 #include <iterator>
 #include <algorithm>
 #include <tensor/vector.h>
 #include <tensor/exceptions.h>
-#include <tensor/gen.h>
 #include <iostream>
 
 /*!\addtogroup Tensors */
@@ -41,8 +39,6 @@ class Indices : public Vector<index> {
  public:
   Indices() : Vector<index>() {}
   Indices(const Vector<index> &v) : Vector<index>(v) {}
-  template <size_t n>
-  Indices(StaticVector<index, n> v) : Vector<index>(v) {}
   Indices(const Dimensions &dims);
 
   template <typename other_elt>
@@ -70,10 +66,6 @@ class Dimensions {
   Dimensions(const std::initializer_list<other_elt> &l)
       : dimensions_(l), total_size_{compute_total_size(dimensions_)} {}
 
-  template <size_t n>
-  Dimensions(const StaticVector<index, n> &v)
-      : dimensions_(v), total_size_{compute_total_size(dimensions_)} {}
-
   index total_size() const { return total_size_; }
   index rank() const { return dimensions_.ssize(); }
 
@@ -84,31 +76,25 @@ class Dimensions {
 
   static inline index normalize_index(index i, index dimension) {
     if (i < 0) i += dimension;
-#if 1
-    if ((i > dimension) || (i < 0)) {
-      throw out_of_bounds_index();
-    }
-#endif
+    tensor_assert2((i < dimension) && (i >= 0), out_of_bounds_index());
     return i;
   }
 
   static inline index normalize_index_safe(index i, index dimension) {
     if (i < 0) i += dimension;
-    if ((i > dimension) || (i < 0)) {
-      throw out_of_bounds_index();
-    }
+    tensor_assert2((i < dimension) && (i >= 0), out_of_bounds_index());
     return i;
   }
 
   template <typename... index_like>
   index column_major_position(index i0, index_like... in) const {
-    assert(rank() == sizeof...(in) + 1);
+    tensor_assert(rank() == sizeof...(in) + 1);
     return column_major_inner(0, i0, in...);
   }
 
   template <typename... index_like>
   void get_values(index_like *...in) const {
-    assert(rank() == sizeof...(in));
+    tensor_assert(rank() == sizeof...(in));
     index n = 0;
     auto ignored = {(*(in) = dimensions_[n++], 1)...};
   }
@@ -153,6 +139,7 @@ class Booleans : public Vector<bool> {
  public:
   Booleans() : Vector<bool>() {}
   Booleans(const Booleans &b) : Vector<bool>(b) {}
+  Booleans(const std::initializer_list<bool> &l) : Vector<bool>(l) {}
   explicit Booleans(size_t size) : Vector<bool>(size) {}
 };
 
@@ -219,15 +206,11 @@ class Range {
   Range(index first, index last) : Range(first, last, 1) {}
   Range(index first, index last, index step)
       : first_{first}, step_{step}, last_{last}, dimension_{-1} {
-    if (step == 0) {
-      throw std::invalid_argument("Invalid step sie in Range()");
-    }
+    tensor_assert2(step != 0, std::invalid_argument("Range() with zero step"));
   }
   Range(index first, index last, index step, index dimension)
       : first_{first}, step_{step}, last_{last}, dimension_{-1} {
-    if (step == 0) {
-      throw std::invalid_argument("Invalid step sie in Range()");
-    }
+    tensor_assert2(step != 0, std::invalid_argument("Range() with zero step"));
     set_dimension(dimension);
   }
   Range(Indices indices);
@@ -334,22 +317,21 @@ class TensorIterator {
 
   TensorIterator(RangeIterator &&it, elt_t *base, index size = 0)
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
-#ifdef NDEBUG
-  elt_t &operator*() { return base_[iterator_.get_position()]; }
-#else
-  elt_t &operator*() {
-    index n = iterator_.get_position();
-    if (n < 0 || n >= size_) {
-      throw iterator_overflow();
-    }
-    return base_[n];
+
+  elt_t &operator*() tensor_noexcept {
+    index tensor_iterator_position = iterator_.get_position();
+    tensor_assert((tensor_iterator_position >= 0) &&
+                  (tensor_iterator_position < size_));
+    return base_[tensor_iterator_position];
   }
-#endif
+
   elt_t &operator->() { return this->operator*(); }
+
   TensorIterator<elt_t> &operator++() {
     ++iterator_;
     return *this;
   }
+
   bool operator!=(const TensorIterator<elt_t> &other) const {
     return iterator_ != other.iterator_;
   }
@@ -402,22 +384,6 @@ inline Range range() { return Range::full(); }
 /**Return a vector of integers from 'start' to 'end' (included) in 'steps'. */
 inline Indices iota(index start, index end, index step = 1) {
   return Indices::range(start, end, step);
-}
-
-template <size_t n>
-bool operator==(const tensor::Indices &v2,
-                const tensor::StaticVector<tensor::index, n> &v1) {
-  tensor::Indices v0(v1);
-  if (v0.size() != v2.size()) return false;
-  return std::equal(v0.cbegin(), v0.cend(), v2.cbegin());
-}
-
-template <size_t n>
-bool operator==(const tensor::StaticVector<tensor::index, n> &v1,
-                const tensor::Indices &v2) {
-  tensor::Indices v0(v1);
-  if (v0.size() != v2.size()) return false;
-  return std::equal(v0.cbegin(), v0.cend(), v2.cbegin());
 }
 
 }  // namespace tensor

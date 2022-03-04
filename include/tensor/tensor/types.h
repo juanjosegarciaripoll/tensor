@@ -22,11 +22,10 @@
 /** Flag defining the order of elements in the arrays. */
 #define TENSOR_COLUMN_MAJOR_ORDER 1
 
-#include <cassert>
 #include <vector>
+#include <tensor/exceptions.h>
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
-#include <tensor/gen.h>
 #include <tensor/indices.h>
 #include <tensor/initializer.h>
 #include <tensor/rand.h>
@@ -64,7 +63,7 @@ class Tensor {
   /**Constructs an N-D Tensor with given initial data.*/
   Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other)
       : data_(other.data_), dims_(new_dims) {
-    assert(dims_.total_size() == ssize());
+    tensor_assert(dims_.total_size() == ssize());
   }
 
   /**Constructs a 1-D Tensor from a vector.*/
@@ -91,17 +90,6 @@ class Tensor {
   Tensor(const Tensor<e2> &other)
       : data_(other.size()), dims_(other.dimensions()) {
     std::copy(other.begin(), other.end(), begin());
-  }
-
-  /**Create a one-dimensional tensor from data created with "gen" expressions.*/
-  template <size_t n>
-  Tensor(const StaticVector<elt_t, n> &t) : data_(t), dims_(igen << t.size()) {}
-
-  /**Create a general tensor from data created with "gen" expressions.*/
-  template <size_t n>
-  Tensor(const StaticVector<elt_t, n> &t, const Dimensions &d)
-      : data_(t), dims_(d) {
-    assert(data_.size() == d.total_size());
   }
 
   /**Create a Tensor from a vector initializer list {1, 2, 3}. */
@@ -153,8 +141,8 @@ class Tensor {
   const Dimensions &dimensions() const noexcept { return dims_; }
   /**Length of a given Tensor index.*/
   index dimension(index which) const {
-    assert(rank() > which);
-    assert(which >= 0);
+    tensor_assert(rank() > which);
+    tensor_assert(which >= 0);
     return dims_[which];
   }
   /**Query the size of 2nd index.*/
@@ -169,7 +157,7 @@ class Tensor {
 
   /**Change the dimensions, while keeping the data. */
   void reshape(const Dimensions &new_dimensions) {
-    assert(new_dimensions.total_size() == ssize());
+    tensor_assert(new_dimensions.total_size() == ssize());
     dims_ = new_dimensions;
   }
 
@@ -391,12 +379,12 @@ class MutableTensorView {
 
   void operator=(const TensorView<elt_t> &t) {
     /* TODO: ensure matching dimensions */
-    assert(t.size() == size());
+    tensor_assert(t.size() == size());
     std::copy(t.begin(), t.end(), begin());
   }
   void operator=(const Tensor<elt_t> &t) {
     /* TODO: ensure matching dimensions */
-    assert(t.size() == size());
+    tensor_assert(t.size() == size());
     std::copy(t.begin(), t.end(), begin());
   }
   void operator=(elt_t v) { std::fill(begin(), end(), v); }
@@ -407,11 +395,11 @@ class MutableTensorView {
 
   TensorIterator<elt_t> begin() {
     return TensorIterator<elt_t>(RangeIterator::begin(ranges_), data_.begin(),
-                                 data_.size());
+                                 data_.ssize());
   }
   TensorIterator<elt_t> end() {
     return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin(),
-                                 data_.size());
+                                 data_.ssize());
   }
   TensorConstIterator<elt_t> begin() const {
     return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),

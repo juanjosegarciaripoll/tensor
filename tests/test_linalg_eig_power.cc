@@ -32,8 +32,9 @@ using namespace tensor;
 template <typename elt_t>
 void test_eye_eig_power_right(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(linalg::eig_power_right(Tensor<elt_t>::eye(n, n), 0), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(linalg::eig_power_right(Tensor<elt_t>::eye(n, n), 0),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }
@@ -46,8 +47,9 @@ void test_eye_eig_power_right(int n) {
 template <typename elt_t>
 void test_eye_eig_power_left(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(linalg::eig_power_left(Tensor<elt_t>::eye(n, n), 0), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(linalg::eig_power_left(Tensor<elt_t>::eye(n, n), 0),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }
@@ -70,8 +72,9 @@ Tensor<elt_t> random_Hermitian_with_gap(int n, double largest = 10.0) {
 template <typename elt_t>
 void test_random_eig_power_right(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(linalg::eig_power_right(Tensor<elt_t>::eye(n, n), 0), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(linalg::eig_power_right(Tensor<elt_t>::eye(n, n), 0),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }
@@ -86,8 +89,9 @@ void test_random_eig_power_right(int n) {
 template <typename elt_t>
 void test_random_eig_power_left(int n) {
   if (n == 0) {
-#ifndef NDEBUG
-    ASSERT_DEATH(linalg::eig_power_left(Tensor<elt_t>::eye(n, n), 0), ".*");
+#ifdef TENSOR_DEBUG
+    ASSERT_THROW(linalg::eig_power_left(Tensor<elt_t>::eye(n, n), 0),
+                 ::tensor::invalid_assertion);
 #endif
     return;
   }

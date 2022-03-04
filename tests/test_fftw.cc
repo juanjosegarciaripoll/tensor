@@ -94,7 +94,7 @@ RTensor build_permutation_matrix(tensor::index N, int direction) {
 // fftshift along a single dimension
 CTensor single_fft_shift(const CTensor& input, int dim, int direction) {
   CTensor permutation =
-    build_permutation_matrix(input.dimension(dim), direction);
+      build_permutation_matrix(input.dimension(dim), direction);
 
   return foldin(permutation, 1, input, dim);
 }
@@ -159,7 +159,7 @@ TEST(FFTWTest, OutOfPlaceFFTTest) {
   }
 }
 
-#ifndef NDEBUG
+#ifdef TENSOR_DEBUG
 // death by assert
 
 TEST(FFTWTest, OutOfPlaceDeathTest) {
@@ -167,10 +167,13 @@ TEST(FFTWTest, OutOfPlaceDeathTest) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
       CTensor input = CTensor::random(*iter);
 
-      ASSERT_DEATH(fftw(input, -1, FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftw(input, rank, FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftw(input, Booleans(rank + 1), FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftw(input, Booleans(rank - 1), FFTW_FORWARD), ".*");
+      ASSERT_THROW(fftw(input, -1, FFTW_FORWARD), ::tensor::invalid_assertion);
+      ASSERT_THROW(fftw(input, rank, FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
+      ASSERT_THROW(fftw(input, Booleans(rank + 1), FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
+      ASSERT_THROW(fftw(input, Booleans(rank - 1), FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
     }
   }
 }
@@ -225,17 +228,21 @@ TEST(FFTWTest, InPlaceFFTTest) {
   }
 }
 
-#ifndef NDEBUG
+#ifdef TENSOR_DEBUG
 // death by assert
 TEST(FFTWTest, InPlaceDeathTest) {
   for (int rank = 1; rank < 3; rank++) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
       CTensor input = CTensor::random(*iter);
 
-      ASSERT_DEATH(fftw_inplace(input, -1, FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftw_inplace(input, rank, FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftw_inplace(input, Booleans(rank + 1), FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftw_inplace(input, Booleans(rank - 1), FFTW_FORWARD), ".*");
+      ASSERT_THROW(fftw_inplace(input, -1, FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
+      ASSERT_THROW(fftw_inplace(input, rank, FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
+      ASSERT_THROW(fftw_inplace(input, Booleans(rank + 1), FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
+      ASSERT_THROW(fftw_inplace(input, Booleans(rank - 1), FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
     }
   }
 }
@@ -270,17 +277,21 @@ TEST(FFTWTest, fftShiftTest) {
   }
 }
 
-#ifndef NDEBUG
+#ifdef TENSOR_DEBUG
 // death by assert
 TEST(FFTWTest, fftShiftDeathTest) {
   for (int rank = 1; rank < 3; rank++) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
       CTensor input = CTensor::random(*iter);
 
-      ASSERT_DEATH(fftshift(input, -1, FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftshift(input, rank, FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftshift(input, Booleans(rank + 1), FFTW_FORWARD), ".*");
-      ASSERT_DEATH(fftshift(input, Booleans(rank - 1), FFTW_FORWARD), ".*");
+      ASSERT_THROW(fftshift(input, -1, FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
+      ASSERT_THROW(fftshift(input, rank, FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
+      ASSERT_THROW(fftshift(input, Booleans(rank + 1), FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
+      ASSERT_THROW(fftshift(input, Booleans(rank - 1), FFTW_FORWARD),
+                   ::tensor::invalid_assertion);
     }
   }
 }

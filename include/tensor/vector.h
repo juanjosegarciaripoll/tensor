@@ -28,9 +28,6 @@
 
 namespace tensor {
 
-template <typename elt_t, size_t n>
-class StaticVector;
-
 //////////////////////////////////////////////////////////////////////
 // VECTOR CLASS WITH SHARED DATA
 //
@@ -38,15 +35,12 @@ class StaticVector;
 template <typename elt_t>
 class SimpleVector;
 
-inline size_t safe_size_t(index s) {
-  if (s < 0) {
-    throw std::length_error("Negative length");
-  }
-  return static_cast<size_t>(s);
+inline size_t safe_size_t(index size_value) tensor_noexcept {
+  tensor_assert(size_value >= 0) return static_cast<size_t>(size_value);
 }
 
 template <typename sequence>
-index ssize(const sequence &s) {
+constexpr index ssize(const sequence &s) tensor_noexcept {
   return static_cast<index>(s.size());
 }
 
@@ -71,11 +65,6 @@ class Vector {
 
   static inline Vector<elt_t> empty(difference_type size) {
     return Vector(safe_size_t(size));
-  }
-
-  template <size_t n>
-  Vector(const StaticVector<elt_t, n> &v) : Vector(v.size()) {
-    v.push(base_);
   }
 
   template <typename other_elt>
@@ -126,7 +115,7 @@ class Vector {
   iterator end() { return begin() + size_; }
 
   // Only for testing purposes
-  size_type ref_count() const noexcept { return data_.use_count(); }
+  difference_type ref_count() const noexcept { return data_.use_count(); }
 
  private:
   size_type size_{0};
@@ -174,11 +163,6 @@ class SimpleVector {
 
   explicit SimpleVector(difference_type size)
       : size_{safe_size_t(size)}, base_(new elt_t[size]) {}
-
-  template <size_t n>
-  SimpleVector(const StaticVector<elt_t, n> &v) : SimpleVector(v.size()) {
-    v.push(base_.get());
-  }
 
   template <typename other_elt>
   SimpleVector(const std::initializer_list<other_elt> &l)

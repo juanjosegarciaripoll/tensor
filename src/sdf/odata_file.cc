@@ -16,15 +16,16 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <limits>
 #include <cstring>
 #include <tensor/sdf.h>
 
 using namespace sdf;
 
 static std::streamsize safe_streamsize(size_t size) {
-  if (size > static_cast<size_t>(std::numeric_limits<std::streamsize>::max())) {
-    throw std::overflow_error("Data record too large for std::istream");
-  }
+  tensor_assert2(
+      size <= static_cast<size_t>(std::numeric_limits<std::streamsize>::max()),
+      std::overflow_error("SDF record exceeds std::streamsize"));
   return static_cast<std::streamsize>(size);
 }
 
@@ -123,32 +124,32 @@ void OutDataFile::close() {
 }
 
 void OutDataFile::write_raw(const char *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const int *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const tensor::index *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const size_t *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const double *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
 
 void OutDataFile::write_raw(const cdouble *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   write_raw_with_endian(_stream, reinterpret_cast<const double *>(data), 2 * n);
 }
 

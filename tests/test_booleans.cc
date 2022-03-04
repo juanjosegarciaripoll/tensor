@@ -73,11 +73,13 @@ TEST(BooleansTest, checkLogicalOr) {
   }
 }
 
-#ifndef NDEBUG
+#ifdef TENSOR_DEBUG
 // death by assert
 TEST(BooleansTest, deathOnWrongSizes) {
-  ASSERT_DEATH(randomBoolean(10) && randomBoolean(11), ".*");
-  ASSERT_DEATH(randomBoolean(10) || randomBoolean(11), ".*");
+  ASSERT_THROW(randomBoolean(10) && randomBoolean(11),
+               ::tensor::invalid_assertion);
+  ASSERT_THROW(randomBoolean(10) || randomBoolean(11),
+               ::tensor::invalid_assertion);
 }
 #endif
 

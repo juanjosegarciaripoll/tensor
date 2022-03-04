@@ -25,8 +25,6 @@ template class Vector<bool>;
 
 class Booleans;
 
-const ListGenerator<bool> bgen = {};
-
 bool all_of(const Booleans& b) {
   return std::count(b.cbegin(), b.cend(), true) == b.ssize();
 }

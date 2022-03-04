@@ -53,12 +53,15 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
       }
     */
 
-  assert(A.rows() > 0);
-  assert(A.columns() > 0);
-  assert(A.rank() == 2);
+  tensor_assert(A.rows() > 0);
+  tensor_assert(A.columns() > 0);
+  tensor_assert(A.rank() == 2);
 
   blas::integer m = blas::tensor_rows(A);
   blas::integer n = blas::tensor_columns(A);
+
+  // TODO: Optimize m = 1 or n = 1 cases
+
   blas::integer k = std::min(m, n);
   blas::integer lwork, ldu, lda, ldv, info;
   RTensor output = RTensor::empty(k);

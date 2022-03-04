@@ -16,10 +16,9 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <algorithm>
-#include <cassert>
 #include <functional>
 #include <type_traits>
+#include <tensor/exceptions.h>
 #include <tensor/sparse.h>
 
 namespace tensor {
@@ -32,7 +31,7 @@ Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
   index rows = m1.rows();
   index cols = m1.columns();
 
-  assert(rows == m2.rows() && cols == m2.columns());
+  tensor_assert(rows == m2.rows() && cols == m2.columns());
 
   if (rows == 0 || cols == 0) return Sparse<T3>(rows, cols);
 

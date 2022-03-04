@@ -31,53 +31,52 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
   index rows = A.rows();
   index cols = A.columns();
   if (rows != cols && !economic) return svd(A, pU, pVT, economic);
-  index minrc = std::min(rows, cols);
 
   std::vector<Indices> row_indices, column_indices;
   if (!find_blocks<Tensor>(A, row_indices, column_indices)) {
     return svd(A, pU, pVT, economic);
   }
-  index nblocks = row_indices.size();
-  RTensor s = RTensor::zeros(minrc);
+  index L = std::min(rows, cols);
+  RTensor s = RTensor::zeros(L);
   if (pU) {
-    *pU = Tensor::zeros(rows, economic ? minrc : rows);
+    *pU = Tensor::zeros(rows, economic ? L : rows);
   }
   if (pVT) {
-    *pVT = Tensor::zeros(economic ? minrc : cols, cols);
+    *pVT = Tensor::zeros(economic ? L : cols, cols);
   }
 
   RTensor stemp;
   Tensor Utemp, Vtemp;
-  Tensor *pUtemp = pU ? &Utemp : 0;
-  Tensor *pVtemp = pVT ? &Vtemp : 0;
-  for (index b = 0, sndx = 0; b < nblocks; b++) {
-    Tensor m = A(range(row_indices[b]), range(column_indices[b]));
-    if (m.size() > 1) {
-      stemp = svd(m, pUtemp, pVtemp, economic);
-      index slast = sndx + stemp.ssize() - 1;
+  Tensor *pUtemp = pU ? &Utemp : nullptr;
+  Tensor *pVtemp = pVT ? &Vtemp : nullptr;
+  for (index nblocks = ssize(row_indices), b = 0, sndx = 0; b < nblocks; b++) {
+    const auto &block_rows = row_indices[static_cast<size_t>(b)];
+    auto M = block_rows.ssize();
+    const auto &block_columns = column_indices[static_cast<size_t>(b)];
+    auto N = block_columns.ssize();
+    if (M != 0 && N != 0) {
+      L = std::min(M, N);
+      // The first indices are for the empty rows and columns. We do not need
+      // to compute the SVD in this case
+      if (b == 0) {
+        stemp = RTensor::zeros(L);
+        Utemp = Tensor::eye(M, economic ? L : M);
+        Vtemp = Tensor::eye(economic ? L : N, N);
+      } else {
+        stemp = svd(A(range(block_rows), range(block_columns)), pUtemp, pVtemp,
+                    economic);
+      }
+      index slast = sndx + L - 1;
       s.at(range(sndx, slast)) = stemp;
       if (pU) {
-        (*pU).at(range(row_indices[b]), range(sndx, slast)) = Utemp;
+        (*pU).at(range(block_rows), range(sndx, slast)) = Utemp;
       }
       if (pVT) {
-        (*pVT).at(range(sndx, slast), range(column_indices[b])) = Vtemp;
+        (*pVT).at(range(sndx, slast), range(block_columns)) = Vtemp;
       }
       sndx = slast + 1;
-    } else {
-      index row = row_indices[b][0];
-      index col = column_indices[b][0];
-      double aux = abs(m[0]);
-      s.at(sndx) = aux;
-      if (pU) {
-        (*pU).at(row, sndx) = 1.0;
-      }
-      if (pVT) {
-        (*pVT).at(sndx, col) = m[0] / aux;
-      }
-      ++sndx;
     }
   }
-
   Indices ndx = sort_indices(s, true);
   s = s(range(ndx));
   if (pU) *pU = (*pU)(_, range(ndx));

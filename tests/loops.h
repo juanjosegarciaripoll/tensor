@@ -190,7 +190,7 @@ class fixed_rank_iterator {
         max_dimension_(max_dimension),
         indices_(rank),
         finished_(false) {
-    assert((rank >= 0) && (max_dimension >= 0));
+    tensor_assert((rank >= 0) && (max_dimension >= 0));
     reset();
   }
   int rank() const { return rank_; }
@@ -401,17 +401,6 @@ class BooleansIterator {
   Booleans base_booleans_;
   bool more_;
 };
-
-#ifdef TENSOR_USE_THREADSAFE_DEATH_TEST
-#undef ASSERT_DEATH
-#define ASSERT_DEATH(statement, regex)                    \
-  ::testing::GTEST_FLAG(death_test_style) = "threadsafe"; \
-  ASSERT_EXIT(statement, ::testing::internal::ExitedUnsuccessfully, regex)
-#undef EXPECT_DEATH
-#define EXPECT_DEATH(statement, regex)                    \
-  ::testing::GTEST_FLAG(death_test_style) = "threadsafe"; \
-  EXPECT_EXIT(statement, ::testing::internal::ExitedUnsuccessfully, regex)
-#endif
 
 }  // namespace tensor_test
 

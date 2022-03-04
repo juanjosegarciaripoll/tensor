@@ -66,7 +66,7 @@ class DataFile {
 
   DataFile(const std::string &a_filename, int flags = SDF_SHARED);
   ~DataFile();
-  const char *tag_to_name(size_t tag);
+  const char *tag_to_name(tensor::index tag);
   void close();
   bool is_open() { return _open; }
   bool is_locked() { return _lock; }

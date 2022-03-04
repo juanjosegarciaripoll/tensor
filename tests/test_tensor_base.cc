@@ -139,30 +139,33 @@ void test_get_dimensions_errors() {
 
     auto P = Tensor<elt_t>::empty(Dimensions(dimensions));
 
-    ASSERT_DEATH(P.dimension(-1), ".*");
-    ASSERT_DEATH(P.dimension(i), ".*");
+    ASSERT_THROW(P.dimension(-1), ::tensor::invalid_assertion);
+    ASSERT_THROW(P.dimension(i), ::tensor::invalid_assertion);
 
     for (size_t j = 0; j != i; j++) {
       Indices::elt_t a[6];
       switch (j) {
         case 6:
-          ASSERT_DEATH(P.get_dimensions(a, a + 1, a + 2, a + 3, a + 4, a + 5),
-                       ".*");
+          ASSERT_THROW(P.get_dimensions(a, a + 1, a + 2, a + 3, a + 4, a + 5),
+                       ::tensor::invalid_assertion);
           break;
         case 5:
-          ASSERT_DEATH(P.get_dimensions(a, a + 1, a + 2, a + 3, a + 4), ".*");
+          ASSERT_THROW(P.get_dimensions(a, a + 1, a + 2, a + 3, a + 4),
+                       ::tensor::invalid_assertion);
           break;
         case 4:
-          ASSERT_DEATH(P.get_dimensions(a, a + 1, a + 2, a + 3), ".*");
+          ASSERT_THROW(P.get_dimensions(a, a + 1, a + 2, a + 3),
+                       ::tensor::invalid_assertion);
           break;
         case 3:
-          ASSERT_DEATH(P.get_dimensions(a, a + 1, a + 2), ".*");
+          ASSERT_THROW(P.get_dimensions(a, a + 1, a + 2),
+                       ::tensor::invalid_assertion);
           break;
         case 2:
-          ASSERT_DEATH(P.get_dimensions(a, a + 1), ".*");
+          ASSERT_THROW(P.get_dimensions(a, a + 1), ::tensor::invalid_assertion);
           break;
         case 1:
-          ASSERT_DEATH(P.get_dimensions(a), ".*");
+          ASSERT_THROW(P.get_dimensions(a), ::tensor::invalid_assertion);
           break;
       }
     }

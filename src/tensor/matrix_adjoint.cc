@@ -16,14 +16,14 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
+#include <tensor/exceptions.h>
 #include <tensor/tensor.h>
 
 namespace tensor {
 
 template <typename n>
 inline Tensor<n> do_adjoint(const Tensor<n> &a) {
-  assert(a.rank() == 2);
+  tensor_assert(a.rank() == 2);
   index rows = a.rows();
   index cols = a.columns();
   auto b = Tensor<n>::empty(cols, rows);
@@ -33,8 +33,8 @@ inline Tensor<n> do_adjoint(const Tensor<n> &a) {
     for (index j = cols; j--; j_b++) {
       typename Tensor<n>::iterator ji_b = j_b;
       for (index i = rows; i--; ij_a++, ji_b += cols) {
-        //assert(ij_a >= a.begin() && ij_a < a.end());
-        //assert(ji_b >= b.begin() && ji_b < b.end());
+        //tensor_assert(ij_a >= a.begin() && ij_a < a.end());
+        //tensor_assert(ji_b >= b.begin() && ji_b < b.end());
         *ji_b = tensor::conj(*ij_a);
       }
     }

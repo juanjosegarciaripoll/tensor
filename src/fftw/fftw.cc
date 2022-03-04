@@ -35,7 +35,7 @@ CTensor fftw(const CTensor &in, int direction) {
 }
 
 CTensor fftw(const CTensor &in, index dim, int direction) {
-  assert(dim >= 0 && dim < in.rank());
+  tensor_assert(dim >= 0 && dim < in.rank());
   CTensor out(in.dimensions());
 
   fftw_complex *pin = const_cast<fftw_complex *>(
@@ -47,7 +47,7 @@ CTensor fftw(const CTensor &in, index dim, int direction) {
 }
 
 CTensor fftw(const CTensor &in, const Booleans &convert, int direction) {
-  assert(convert.ssize() == in.rank());
+  tensor_assert(convert.ssize() == in.rank());
   CTensor out(in.dimensions());
 
   fftw_complex *pin = const_cast<fftw_complex *>(

@@ -39,7 +39,7 @@ void test_matrix_trace() {
     for (index cols = 1; cols <= 4; cols++) {
       Tensor<elt_t> A = Tensor<elt_t>::random(rows, cols);
       elt_t t = slow_trace(A);
-      Tensor<elt_t> T = Tensor<elt_t>(igen << 1, gen(t));
+      Tensor<elt_t> T{t};
       EXPECT_EQ(trace(A), t);
       EXPECT_TRUE(all_equal(trace(A, 0, -1), T));
       EXPECT_TRUE(all_equal(trace(reshape(A, 1, rows, cols), 1, 2), T));
@@ -64,7 +64,7 @@ TEST(TensorTrace, RMatrix) { test_matrix_trace<double>(); }
 
 #if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
 TEST(TensorTrace, MatrixTraceExpectsRMatrix) {
-  ASSERT_DEATH(trace(RTensor::zeros(1, 1, 1)), ".*");
+  ASSERT_THROW(trace(RTensor::zeros(1, 1, 1)), ::tensor::invalid_assertion);
 }
 #endif
 
@@ -76,7 +76,7 @@ TEST(TensorTrace, CMatrix) { test_matrix_trace<cdouble>(); }
 
 #if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
 TEST(TensorTrace, MatrixTraceExpectsCMatrix) {
-  ASSERT_DEATH(trace(CTensor::zeros(1, 1, 1)), ".*");
+  ASSERT_THROW(trace(CTensor::zeros(1, 1, 1)), ::tensor::invalid_assertion);
 }
 #endif
 

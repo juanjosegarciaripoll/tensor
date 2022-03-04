@@ -20,3 +20,4 @@ profile/report.html
 profile/report
 CMakeSettings.json
 .vscode
+.cache

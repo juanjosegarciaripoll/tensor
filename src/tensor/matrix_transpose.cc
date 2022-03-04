@@ -16,14 +16,14 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <cassert>
+#include <tensor/exceptions.h>
 #include "tensor_permute.cc"
 
 namespace tensor {
 
 template <typename n>
 inline Tensor<n> do_transpose(const Tensor<n> &a) {
-  assert(a.rank() == 2);
+  tensor_assert(a.rank() == 2);
   index rows = a.rows();
   index cols = a.columns();
   auto b = Tensor<n>::empty(cols, rows);

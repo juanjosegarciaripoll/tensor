@@ -29,7 +29,7 @@ namespace linalg {
   */
 double eig_power_right(const RTensor &O, RTensor *vector, size_t iter,
                        double tol) {
-  assert(O.rows() == O.columns());
+  tensor_assert(O.rows() == O.columns());
   return eig_power([&O](const RTensor &x) -> RTensor { return mmult(O, x); },
                    static_cast<size_t>(O.columns()), vector, iter, tol);
 }
@@ -43,7 +43,7 @@ double eig_power_right(const RTensor &O, RTensor *vector, size_t iter,
   */
 double eig_power_left(const RTensor &O, RTensor *vector, size_t iter,
                       double tol) {
-  assert(O.rows() == O.columns());
+  tensor_assert(O.rows() == O.columns());
   auto OT = transpose(O);
   return eig_power([&OT](const RTensor &x) -> RTensor { return mmult(OT, x); },
                    static_cast<size_t>(O.columns()), vector, iter, tol);

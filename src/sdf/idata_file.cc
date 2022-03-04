@@ -22,9 +22,9 @@
 using namespace sdf;
 
 static std::streamsize safe_streamsize(size_t size) {
-  if (size > static_cast<size_t>(std::numeric_limits<std::streamsize>::max())) {
-    throw std::overflow_error("Data record too large for std::istream");
-  }
+  tensor_assert2(
+      size <= static_cast<size_t>(std::numeric_limits<std::streamsize>::max()),
+      std::overflow_error("SDF record exceeds std::streamsize"));
   return static_cast<std::streamsize>(size);
 }
 
@@ -97,32 +97,32 @@ InDataFile::InDataFile(const std::string &a_filename, int a_flags)
 }
 
 void InDataFile::read_raw(char *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
 void InDataFile::read_raw(int *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
 void InDataFile::read_raw(tensor::index *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
 void InDataFile::read_raw(size_t *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
 void InDataFile::read_raw(double *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
 
 void InDataFile::read_raw(cdouble *data, size_t n) {
-  assert(is_open());
+  tensor_assert(is_open());
   read_raw_with_endian(_stream, reinterpret_cast<double *>(data), 2 * n);
 }
 
