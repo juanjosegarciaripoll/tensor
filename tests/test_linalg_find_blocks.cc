@@ -27,6 +27,7 @@
 namespace tensor_test {
 
 using namespace tensor;
+using tensor::index;
 
 template <class Tensor>
 void test_find_blocks(const Tensor &A,
