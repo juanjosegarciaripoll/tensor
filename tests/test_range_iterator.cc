@@ -233,7 +233,7 @@ TEST(RangeIteratorTest, RangeIterator2DEmptyA) {
   Range r1 = Range::empty(), r2(/*start*/ 0, /*end*/ 0);  // = []
   r1.set_dimension(3);
   r2.set_dimension(3);
-  RangeIterator it = RangeIterator::make_range_iterators({r1, r2});
+  RangeIterator it = RangeIterator::begin({r1, r2});
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*(++it), 0);
@@ -244,7 +244,7 @@ TEST(RangeIteratorTest, RangeIterator2DEmptyB) {
   Range r1(/*start*/ 0, /*end*/ 0), r2 = Range::empty();  // = []
   r1.set_dimension(3);
   r2.set_dimension(3);
-  RangeIterator it = RangeIterator::make_range_iterators({r1, r2});
+  RangeIterator it = RangeIterator::begin({r1, r2});
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*(++it), 0);  // We do not run past the limit
@@ -254,7 +254,7 @@ TEST(RangeIteratorTest, RangeIterator2DEmptyB) {
 TEST(RangeIteratorTest, RangeIterator2DSize1x1) {
   Range r1(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 1);
   Range r2(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 1);  // = [[0, 0]]
-  RangeIterator it = RangeIterator::make_range_iterators({r1, r2});
+  RangeIterator it = RangeIterator::begin({r1, r2});
   ASSERT_FALSE(it.finished());
   ASSERT_EQ(*it, 0);
   ++it;
@@ -268,7 +268,7 @@ TEST(RangeIteratorTest, RangeIterator2DSize1x1) {
 TEST(RangeIteratorTest, RangeIterator2DSize1x1Dim3x4) {
   Range r1(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 3);
   Range r2(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 4);
-  RangeIterator it = RangeIterator::make_range_iterators({r1, r2});
+  RangeIterator it = RangeIterator::begin({r1, r2});
   ASSERT_FALSE(it.finished());
   ASSERT_EQ(*it, 0);
   ++it;
@@ -282,7 +282,7 @@ TEST(RangeIteratorTest, RangeIterator2DSize1x1Dim3x4) {
 TEST(RangeIteratorTest, RangeIterator2DSize2x2Dim3x4) {
   Range r1(/*start*/ 0, /*end*/ 1, /*step*/ 1, /*dimension*/ 3);
   Range r2(/*start*/ 0, /*end*/ 1, /*step*/ 1, /*dimension*/ 4);
-  RangeIterator it = RangeIterator::make_range_iterators({r1, r2});
+  RangeIterator it = RangeIterator::begin({r1, r2});
   ASSERT_FALSE(it.finished());
   ASSERT_EQ(*it, 0);
   ASSERT_FALSE(it.finished());

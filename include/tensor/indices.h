@@ -261,10 +261,9 @@ class RangeIterator {
   typedef Range *range_ptr_t;
   typedef enum { range_begin = 0, range_end = 1 } end_flag_t;
 
-  static RangeIterator make_range_iterators(const SimpleVector<Range> &ranges,
-                                            end_flag_t flag = range_begin);
   RangeIterator(const Range &r, index factor = 1, end_flag_t flag = range_begin,
                 next_t next = nullptr);
+
   index operator*() const { return get_position(); };
   RangeIterator &operator++() {
     if (++counter_ >= limit_) {
@@ -282,10 +281,10 @@ class RangeIterator {
     return other.counter_ == counter_;
   }
   static RangeIterator begin(const SimpleVector<Range> &ranges) {
-    return make_range_iterators(ranges, range_begin);
+    return make_range_iterators(RangeSpan(ranges), range_begin);
   }
   static RangeIterator end(const SimpleVector<Range> &ranges) {
-    return make_range_iterators(ranges, range_end);
+    return make_range_iterators(RangeSpan(ranges), range_end);
   }
   index get_position() const;
   index counter() const { return counter_; }
@@ -298,13 +297,27 @@ class RangeIterator {
   const Indices &indices() const { return indices_; }
 
  private:
-  index counter_, limit_, step_, offset_, factor_, start_;
-  Indices indices_;
-  next_t next_;
+  index counter_{}, limit_{}, step_{}, offset_{}, factor_{}, start_{};
+  Indices indices_{};
+  next_t next_{};
+
+  struct RangeSpan {
+    const Range *begin_;
+    const Range *end_;
+    RangeSpan(const SimpleVector<Range> &v)
+        : begin_{v.begin()}, end_{v.end()} {}
+    bool more() { return begin_ != end_; }
+    bool empty_ranges() const;
+    bool valid_ranges() const;
+    Range next_range();
+  };
+
+  static RangeIterator make_range_iterators(RangeSpan &&ranges,
+                                            end_flag_t flag = range_begin);
+
   void advance_next();
   static RangeIterator make_next_iterator(
-      const Range *ranges, index left, index factor,
-      end_flag_t end_flagflag = range_begin);
+      RangeSpan &ranges, index factor, end_flag_t end_flagflag = range_begin);
 };
 
 template <typename elt_t>

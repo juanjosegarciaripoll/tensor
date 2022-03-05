@@ -18,6 +18,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <functional>
 #include <tensor/exceptions.h>
 #include <tensor/indices.h>
 #include <tensor/io.h>
@@ -217,35 +218,44 @@ void Range::set_dimension(index new_dimension) {
 
 const Range RangeIterator::empty_range = Range::empty();
 
-RangeIterator RangeIterator::make_range_iterators(
-    const SimpleVector<Range> &ranges, end_flag_t end_flag) {
-  if (ranges.size() == 0 ||
-      std::any_of(ranges.begin(), ranges.end(),
-                  [](const Range &s) { return s.size() == 0; })) {
-    return RangeIterator(Range::empty(0), 1, end_flag);
+Range RangeIterator::RangeSpan::next_range() {
+  Range r = *begin_;
+  ++begin_;
+  while (begin_ != end_ && r.maybe_combine(*begin_)) {
+    ++begin_;
   }
-  if (std::any_of(ranges.begin(), ranges.end(),
-                  [](const Range &s) { return s.dimension() < 0; })) {
-    throw std::invalid_argument(
-        "Invalid dimension size in Range found when creating RangeIterator");
-  }
-  return make_next_iterator(ranges.begin(), ranges.ssize(), 1, end_flag);
+  return r;
 }
 
-RangeIterator RangeIterator::make_next_iterator(const Range *ranges,
-                                                index ranges_left, index factor,
-                                                end_flag_t end_flag) {
-  Range r = *ranges;
-  ++ranges;
-  --ranges_left;
-  while (ranges_left && r.maybe_combine(*ranges)) {
-    --ranges_left;
-    ++ranges;
+bool RangeIterator::RangeSpan::empty_ranges() const {
+  auto nonempty_range = [](const Range &range) { return range.size() != 0; };
+  return std::none_of(begin_, end_, nonempty_range);
+}
+
+bool RangeIterator::RangeSpan::valid_ranges() const {
+  auto valid_range = [](const Range &range) { return range.dimension() >= 0; };
+  return std::all_of(begin_, end_, valid_range);
+}
+
+RangeIterator RangeIterator::make_range_iterators(RangeSpan &&ranges,
+                                                  end_flag_t end_flag) {
+  if (ranges.empty_ranges()) {
+    return RangeIterator(Range::empty(0), 1, end_flag);
   }
+  tensor_assert2(
+      ranges.valid_ranges(),
+      std::invalid_argument(
+          "Invalid dimension size in Range found when creating RangeIterator"));
+  return make_next_iterator(ranges, 1, end_flag);
+}
+
+RangeIterator RangeIterator::make_next_iterator(RangeSpan &ranges, index factor,
+                                                end_flag_t end_flag) {
+  Range r = ranges.next_range();
   RangeIterator *next = nullptr;
-  if (ranges_left && end_flag != range_end) {
-    next = new RangeIterator(make_next_iterator(
-        ranges, ranges_left, factor * r.dimension(), end_flag));
+  if (ranges.more() && end_flag != range_end) {
+    next = new RangeIterator(
+        make_next_iterator(ranges, factor * r.dimension(), end_flag));
   }
   return RangeIterator(r, factor, end_flag, next_t(next));
 }
