@@ -249,6 +249,16 @@ RangeIterator RangeIterator::make_range_iterators(RangeSpan &&ranges,
   return make_next_iterator(ranges, 1, end_flag);
 }
 
+RangeIterator::RangeIterator(const RangeIterator &r)
+    : counter_{r.counter_},
+      limit_{r.limit_},
+      step_{r.step_},
+      offset_{r.offset_},
+      factor_{r.factor_},
+      start_{r.start_},
+      indices_(r.indices_),
+      next_{r.next_ ? new RangeIterator(*r.next_) : nullptr} {}
+
 RangeIterator RangeIterator::make_next_iterator(RangeSpan &ranges, index factor,
                                                 end_flag_t end_flag) {
   Range r = ranges.next_range();

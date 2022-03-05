@@ -263,6 +263,11 @@ class RangeIterator {
 
   RangeIterator(const Range &r, index factor = 1, end_flag_t flag = range_begin,
                 next_t next = nullptr);
+  RangeIterator() = default;
+  RangeIterator(RangeIterator &&r) = default;
+  RangeIterator(const RangeIterator &r);
+  RangeIterator &operator=(const RangeIterator &r) = delete;
+  RangeIterator &operator=(RangeIterator &&r) = default;
 
   index operator*() const { return get_position(); };
   RangeIterator &operator++() {
