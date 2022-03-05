@@ -71,8 +71,8 @@ template <typename elt_t>
 void test_expm_diag(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
-    ASSERT_THROW(linalg::expm(Tensor<elt_t>(Dimensions{0})),
-                 ::tensor::invalid_assertion);
+    ASSERT_THROW_DEBUG(linalg::expm(Tensor<elt_t>(Dimensions{0})),
+                       ::tensor::invalid_assertion);
 #endif
     return;
   }

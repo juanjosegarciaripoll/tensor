@@ -74,7 +74,8 @@ class Dimensions {
   const_iterator end() const { return dimensions_.end(); }
   const SimpleVector<index> &get_vector() const { return dimensions_; }
 
-  static inline index normalize_index(index i, index dimension) {
+  static inline index normalize_index(index i,
+                                      index dimension) tensor_noexcept {
     if (i < 0) i += dimension;
     tensor_assert2((i < dimension) && (i >= 0), out_of_bounds_index());
     return i;
@@ -351,9 +352,14 @@ class TensorConstIterator {
   typedef const elt_t *pointer;
   typedef std::input_iterator_tag iterator_category;
 
-  TensorConstIterator(RangeIterator &&it, const elt_t *base)
-      : iterator_{std::move(it)}, base_{base} {}
-  const elt_t &operator*() { return base_[iterator_.get_position()]; }
+  TensorConstIterator(RangeIterator &&it, const elt_t *base, index size = 0)
+      : iterator_{std::move(it)}, base_{base}, size_{size} {}
+  const elt_t &operator*() {
+    index tensor_iterator_position = iterator_.get_position();
+    tensor_assert((tensor_iterator_position >= 0) &&
+                  (tensor_iterator_position < size_));
+    return base_[tensor_iterator_position];
+  }
   const elt_t &operator->() { return this->operator*(); }
   TensorConstIterator<elt_t> &operator++() {
     ++iterator_;
@@ -366,6 +372,7 @@ class TensorConstIterator {
  private:
   RangeIterator iterator_;
   const elt_t *base_;
+  index size_;
 };
 
 /**Create a Range which only contains one index. \sa \ref sec_tensor_view*/

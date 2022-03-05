@@ -31,19 +31,19 @@ template <typename elt_t>
 void test_view_error(const Tensor<elt_t> &P) {
   EXPECT_EQ(P(_).size(), P.size());
   if (P.rank() != 2) {
-    ASSERT_THROW(P(_, _), std::out_of_range);
+    ASSERT_THROW_DEBUG(P(_, _), std::out_of_range);
   }
   if (P.rank() != 3) {
-    ASSERT_THROW(P(_, _, _), std::out_of_range);
+    ASSERT_THROW_DEBUG(P(_, _, _), std::out_of_range);
   }
   if (P.rank() != 4) {
-    ASSERT_THROW(P(_, _, _, _), std::out_of_range);
+    ASSERT_THROW_DEBUG(P(_, _, _, _), std::out_of_range);
   }
   if (P.rank() != 5) {
-    ASSERT_THROW(P(_, _, _, _, _), std::out_of_range);
+    ASSERT_THROW_DEBUG(P(_, _, _, _, _), std::out_of_range);
   }
   if (P.rank() != 6) {
-    ASSERT_THROW(P(_, _, _, _, _, _), std::out_of_range);
+    ASSERT_THROW_DEBUG(P(_, _, _, _, _, _), std::out_of_range);
   }
 }
 

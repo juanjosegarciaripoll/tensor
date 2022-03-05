@@ -34,8 +34,8 @@ template <class Matrix>
 void test_eigs_eye(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
-    ASSERT_THROW(eigs(Matrix::eye(n, n), LargestMagnitude, 1),
-                 ::tensor::invalid_assertion);
+    ASSERT_THROW_DEBUG(eigs(Matrix::eye(n, n), LargestMagnitude, 1),
+                       ::tensor::invalid_assertion);
 #endif
     return;
   }

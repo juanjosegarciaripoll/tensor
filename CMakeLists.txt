@@ -42,6 +42,7 @@ include(TensorOpenBLAS)
 # Configuration options
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" ON)
+  set(TENSOR_OPTIMIZED_BUILD OFF)
 else()
   option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" OFF)
 endif()
@@ -50,6 +51,7 @@ option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 option(TENSOR_BENCHMARK "Enable benchmarking code after building" OFF)
 option(TENSOR_RANGE_SQUEEZE "Selecting ranges from a tensor can remove dimensions" ON)
+option(TENSOR_COPY_ON_WRITE "Tensor data is stored and shared using a copy-on-write model" ON)
 set(TENSOR_BLAS "OpenBLAS" CACHE STRING "BLAS backend to use. Values are OpenBLAS (default) or MKL (also brings LAPACK backend)")
 
 # Compiler settings and other tooling

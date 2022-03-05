@@ -87,7 +87,7 @@ void test_fold_throws() {
           dB.at(j) = 0;
           Tensor<n1> A(dA);
           Tensor<n2> B(dB);
-          ASSERT_THROW(fold(A, i, B, j), tensor::dimensions_mismatch);
+          ASSERT_THROW_DEBUG(fold(A, i, B, j), tensor::dimensions_mismatch);
         }
       }
     }

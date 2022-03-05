@@ -33,8 +33,8 @@ template <typename elt_t>
 void test_eye_eig_sym(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
-    ASSERT_THROW(linalg::eig_sym(Tensor<elt_t>::eye(n, n)),
-                 ::tensor::invalid_assertion);
+    ASSERT_THROW_DEBUG(linalg::eig_sym(Tensor<elt_t>::eye(n, n)),
+                       ::tensor::invalid_assertion);
 #endif
     return;
   }
@@ -51,8 +51,8 @@ template <typename elt_t>
 void test_random_eig_sym(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
-    ASSERT_THROW(linalg::eig_sym(Tensor<elt_t>::eye(n, n)),
-                 ::tensor::invalid_assertion);
+    ASSERT_THROW_DEBUG(linalg::eig_sym(Tensor<elt_t>::eye(n, n)),
+                       ::tensor::invalid_assertion);
 #endif
     return;
   }

@@ -167,13 +167,14 @@ TEST(FFTWTest, OutOfPlaceDeathTest) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
       CTensor input = CTensor::random(*iter);
 
-      ASSERT_THROW(fftw(input, -1, FFTW_FORWARD), ::tensor::invalid_assertion);
-      ASSERT_THROW(fftw(input, rank, FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
-      ASSERT_THROW(fftw(input, Booleans(rank + 1), FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
-      ASSERT_THROW(fftw(input, Booleans(rank - 1), FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftw(input, -1, FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftw(input, rank, FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftw(input, Booleans(rank + 1), FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftw(input, Booleans(rank - 1), FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
     }
   }
 }
@@ -235,14 +236,14 @@ TEST(FFTWTest, InPlaceDeathTest) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
       CTensor input = CTensor::random(*iter);
 
-      ASSERT_THROW(fftw_inplace(input, -1, FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
-      ASSERT_THROW(fftw_inplace(input, rank, FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
-      ASSERT_THROW(fftw_inplace(input, Booleans(rank + 1), FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
-      ASSERT_THROW(fftw_inplace(input, Booleans(rank - 1), FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftw_inplace(input, -1, FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftw_inplace(input, rank, FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftw_inplace(input, Booleans(rank + 1), FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftw_inplace(input, Booleans(rank - 1), FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
     }
   }
 }
@@ -284,14 +285,14 @@ TEST(FFTWTest, fftShiftDeathTest) {
     for (DimensionIterator iter(rank, 6); iter; ++iter) {
       CTensor input = CTensor::random(*iter);
 
-      ASSERT_THROW(fftshift(input, -1, FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
-      ASSERT_THROW(fftshift(input, rank, FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
-      ASSERT_THROW(fftshift(input, Booleans(rank + 1), FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
-      ASSERT_THROW(fftshift(input, Booleans(rank - 1), FFTW_FORWARD),
-                   ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftshift(input, -1, FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftshift(input, rank, FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftshift(input, Booleans(rank + 1), FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(fftshift(input, Booleans(rank - 1), FFTW_FORWARD),
+                         ::tensor::invalid_assertion);
     }
   }
 }

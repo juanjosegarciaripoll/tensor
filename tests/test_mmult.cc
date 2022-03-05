@@ -43,8 +43,8 @@ void test_mmult(index max_dim) {
     }
   }
   std::cout << std::endl;
-  ASSERT_THROW(mmult(Tensor<n1>::eye(1, 0), Tensor<n2>::ones(0, 3)),
-               dimensions_mismatch);
+  ASSERT_THROW_DEBUG(mmult(Tensor<n1>::eye(1, 0), Tensor<n2>::ones(0, 3)),
+                     dimensions_mismatch);
 }
 
 //////////////////////////////////////////////////////////////////////

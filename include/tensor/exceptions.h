@@ -57,6 +57,7 @@ struct dimensions_mismatch : public std::out_of_range {
                       index which2);
 };
 
+#define tensor_expects(expression) tensor_assert(expression)
 #define tensor_assert(assertion) \
   tensor_assert2((assertion),    \
                  ::tensor::invalid_assertion(#assertion, __FILE__, __LINE__))
@@ -67,7 +68,10 @@ struct dimensions_mismatch : public std::out_of_range {
   }
 #define tensor_noexcept
 #else
-#define tensor_assert2(expression, condition)
+#define tensor_assert2(expression, condition) \
+  if (!(expression)) {                        \
+    std::terminate();                         \
+  }
 #define tensor_noexcept noexcept
 #endif
 

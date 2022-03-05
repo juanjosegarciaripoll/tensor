@@ -19,10 +19,13 @@
 
 #define EPSILON 1e-14
 
-#ifdef NDEBUG
-#define ONLY_IN_DEBUG(x)
+#ifdef TENSOR_DEBUG
+#define ONLY_IN_DEBUG(x) (x)
+#define ASSERT_THROW_DEBUG(x, y) ASSERT_THROW(x, y)
 #else
-#define ONLY_IN_DEBUG(x) x
+#error "Not in Debug!"
+#define ONLY_IN_DEBUG(x)
+#define ASSERT_THROW_DEBUG(x, y) ASSERT_DEATH(x, ".*")
 #endif
 
 namespace tensor_test {

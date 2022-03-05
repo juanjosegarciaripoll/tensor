@@ -73,7 +73,7 @@ template <typename elt_t, bool block>
 void test_eye_svd(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
-    ASSERT_THROW(linalg::svd(Tensor<elt_t>::eye(n, n)),
+    ASSERT_THROW_DEBUG(linalg::svd(Tensor<elt_t>::eye(n, n)),
                  ::tensor::invalid_assertion);
 #endif
     return;
@@ -100,7 +100,7 @@ template <typename elt_t, bool block>
 void test_random_svd(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
-    ASSERT_THROW(linalg::svd(Tensor<elt_t>::eye(n, n)),
+    ASSERT_THROW_DEBUG(linalg::svd(Tensor<elt_t>::eye(n, n)),
                  ::tensor::invalid_assertion);
 #endif
     return;

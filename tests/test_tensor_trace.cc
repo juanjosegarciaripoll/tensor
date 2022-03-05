@@ -62,11 +62,10 @@ void test_matrix_trace() {
 
 TEST(TensorTrace, RMatrix) { test_matrix_trace<double>(); }
 
-#if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
 TEST(TensorTrace, MatrixTraceExpectsRMatrix) {
-  ASSERT_THROW(trace(RTensor::zeros(1, 1, 1)), ::tensor::invalid_assertion);
+  ASSERT_THROW_DEBUG(trace(RTensor::zeros(1, 1, 1)),
+                     ::tensor::invalid_assertion);
 }
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // COMPLEX SPECIALIZATIONS
@@ -74,10 +73,9 @@ TEST(TensorTrace, MatrixTraceExpectsRMatrix) {
 
 TEST(TensorTrace, CMatrix) { test_matrix_trace<cdouble>(); }
 
-#if defined(GTEST_HAS_DEATH_TEST) && !defined(NDEBUG)
 TEST(TensorTrace, MatrixTraceExpectsCMatrix) {
-  ASSERT_THROW(trace(CTensor::zeros(1, 1, 1)), ::tensor::invalid_assertion);
+  ASSERT_THROW_DEBUG(trace(CTensor::zeros(1, 1, 1)),
+                     ::tensor::invalid_assertion);
 }
-#endif
 
 }  // namespace tensor_test

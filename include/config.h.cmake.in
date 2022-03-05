@@ -27,6 +27,7 @@
 #cmakedefine HAVE_GETTIMEOFDAY
 #cmakedefine TENSOR_BIGENDIAN
 #cmakedefine TENSOR_DEBUG
+#cmakedefine TENSOR_COPY_ON_WRITE
 
 #cmakedefine TENSOR_64BITS
 

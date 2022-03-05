@@ -52,6 +52,11 @@ class Tensor {
   typedef elt value_type;
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
+#ifdef TENSOR_COPY_ON_WRITE
+  typedef Vector<elt_t> vector_type;
+#else
+  typedef SimpleVector<elt_t> vector_type;
+#endif
 
   /**Constructs an empty Tensor.*/
   Tensor() noexcept = default;
@@ -67,10 +72,10 @@ class Tensor {
   }
 
   /**Constructs a 1-D Tensor from a vector.*/
-  Tensor(const Vector<elt_t> &data) : data_(data), dims_{data_.size()} {}
+  Tensor(const vector_type &data) : data_(data), dims_{data_.size()} {}
 
   /**Constructs a 1-D Tensor from a vector (move version for temporaries).*/
-  Tensor(Vector<elt_t> &&data) noexcept
+  Tensor(vector_type &&data) noexcept
       : data_(std::move(data)), dims_({data_.size()}) {}
 
   /**Constructs a 1-D Tensor from a vector.*/
@@ -120,7 +125,7 @@ class Tensor {
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
 #endif
 
-  explicit operator Vector<elt_t>() const { return data_; }
+  explicit operator vector_type() const { return data_; }
 
   /**Assignment operator.*/
   Tensor &operator=(const Tensor<elt_t> &other) = default;
@@ -211,14 +216,14 @@ class Tensor {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
     r.set_dimension(ssize());
-    return TensorView<elt_t>(dims_, data_, SimpleVector<Range>{std::move(r)});
+    return TensorView<elt_t>(*this, SimpleVector<Range>{std::move(r)});
   }
 
   /**Extracts a slice from an N-dimensional Tensor. */
   template <typename... RangeLike>
   inline TensorView<elt_t> operator()(Range r1, RangeLike... rnext) const {
     return TensorView<elt_t>(
-        dims_, data_, SimpleVector<Range>{std::move(r1), std::move(rnext)...});
+        *this, SimpleVector<Range>{std::move(r1), std::move(rnext)...});
   }
 
   /**Extracts a slice from a 1D Tensor. */
@@ -226,15 +231,14 @@ class Tensor {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
     r.set_dimension(ssize());
-    return MutableTensorView<elt_t>(dims_, data_,
-                                    SimpleVector<Range>{std::move(r)});
+    return MutableTensorView<elt_t>(*this, SimpleVector<Range>{std::move(r)});
   }
 
   /**Extracts a slice from an N-dimensional Tensor. */
   template <typename... RangeLike>
   inline MutableTensorView<elt_t> at(Range r1, RangeLike... rnext) {
     return MutableTensorView<elt_t>(
-        dims_, data_, SimpleVector<Range>{std::move(r1), std::move(rnext)...});
+        *this, SimpleVector<Range>{std::move(r1), std::move(rnext)...});
   }
 
   //
@@ -314,7 +318,7 @@ class Tensor {
   }
 
  private:
-  Vector<elt_t> data_{};
+  vector_type data_{};
   Dimensions dims_{};
 };
 //
@@ -333,11 +337,10 @@ class TensorView {
   TensorView(const TensorView<elt_t> &other) = default;
   TensorView(TensorView<elt_t> &&other) = default;
 
-  TensorView(const Dimensions &parent_dims, const Vector<elt_t> &parent_data,
-             SimpleVector<Range> &&ranges)
-      : data_(parent_data),
+  TensorView(const Tensor<elt_t> &tensor, SimpleVector<Range> &&ranges)
+      : tensor_(tensor),
         ranges_(std::move(ranges)),
-        dims_(dimensions_from_ranges(ranges_, parent_dims)) {}
+        dims_(dimensions_from_ranges(ranges_, tensor.dimensions())) {}
 
   size_t size() const { return static_cast<size_t>(dims_.total_size()); }
   index ssize() const { return dims_.total_size(); }
@@ -345,11 +348,11 @@ class TensorView {
 
   TensorConstIterator<elt_t> begin() const {
     return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),
-                                      data_.begin());
+                                      tensor_.begin(), tensor_.ssize());
   }
   TensorConstIterator<elt_t> end() const {
     return TensorConstIterator<elt_t>(RangeIterator::end(ranges_),
-                                      data_.begin());
+                                      tensor_.begin(), tensor_.ssize());
   }
 
   Tensor<elt_t> copy() const {
@@ -359,7 +362,7 @@ class TensorView {
   }
 
  private:
-  const Vector<elt_t> &data_;
+  const Tensor<elt_t> &tensor_;
   SimpleVector<Range> ranges_;
   Dimensions dims_;
 };
@@ -371,11 +374,10 @@ class MutableTensorView {
   MutableTensorView(const MutableTensorView<elt_t> &other) = default;
   MutableTensorView(MutableTensorView<elt_t> &&other) = default;
 
-  MutableTensorView(const Dimensions &parent_dims, Vector<elt_t> &parent_data,
-                    SimpleVector<Range> &&ranges)
-      : data_(parent_data),
+  MutableTensorView(Tensor<elt_t> &tensor, SimpleVector<Range> &&ranges)
+      : tensor_(tensor),
         ranges_(std::move(ranges)),
-        dims_(dimensions_from_ranges(ranges_, parent_dims)) {}
+        dims_(dimensions_from_ranges(ranges_, tensor.dimensions())) {}
 
   void operator=(const TensorView<elt_t> &t) {
     /* TODO: ensure matching dimensions */
@@ -394,20 +396,20 @@ class MutableTensorView {
   const Dimensions &dimensions() const { return dims_; }
 
   TensorIterator<elt_t> begin() {
-    return TensorIterator<elt_t>(RangeIterator::begin(ranges_), data_.begin(),
-                                 data_.ssize());
+    return TensorIterator<elt_t>(RangeIterator::begin(ranges_), tensor_.begin(),
+                                 tensor_.ssize());
   }
   TensorIterator<elt_t> end() {
-    return TensorIterator<elt_t>(RangeIterator::end(ranges_), data_.begin(),
-                                 data_.ssize());
+    return TensorIterator<elt_t>(RangeIterator::end(ranges_), tensor_.begin(),
+                                 tensor_.ssize());
   }
   TensorConstIterator<elt_t> begin() const {
     return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),
-                                      data_.begin());
+                                      tensor_.begin());
   }
   TensorConstIterator<elt_t> end() const {
     return TensorConstIterator<elt_t>(RangeIterator::end(ranges_),
-                                      data_.begin());
+                                      tensor_.begin());
   }
   Tensor<elt_t> copy() const {
     Tensor<elt_t> output(dimensions());
@@ -416,7 +418,7 @@ class MutableTensorView {
   }
 
  private:
-  Vector<elt_t> &data_;
+  Tensor<elt_t> &tensor_;
   SimpleVector<Range> ranges_;
   Dimensions dims_;
 };

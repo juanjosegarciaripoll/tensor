@@ -129,8 +129,8 @@ void test_diag(int n) {
   }
   SCOPED_TRACE("errors");
 #ifdef TENSOR_DEBUG
-  ASSERT_THROW(diag(d, -n - 1, n, n), std::invalid_argument);
-  ASSERT_THROW(diag(d, n + 1, n, n), std::invalid_argument);
+  ASSERT_THROW_DEBUG(diag(d, -n - 1, n, n), std::invalid_argument);
+  ASSERT_THROW_DEBUG(diag(d, n + 1, n, n), std::invalid_argument);
 #endif
 }
 

@@ -76,10 +76,10 @@ TEST(BooleansTest, checkLogicalOr) {
 #ifdef TENSOR_DEBUG
 // death by assert
 TEST(BooleansTest, deathOnWrongSizes) {
-  ASSERT_THROW(randomBoolean(10) && randomBoolean(11),
-               ::tensor::invalid_assertion);
-  ASSERT_THROW(randomBoolean(10) || randomBoolean(11),
-               ::tensor::invalid_assertion);
+  ASSERT_THROW_DEBUG(randomBoolean(10) && randomBoolean(11),
+                     ::tensor::invalid_assertion);
+  ASSERT_THROW_DEBUG(randomBoolean(10) || randomBoolean(11),
+                     ::tensor::invalid_assertion);
 }
 #endif
 
