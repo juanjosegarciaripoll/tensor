@@ -40,26 +40,42 @@ Dimensions squeeze_dimensions(const Dimensions &dims) {
   return dims;
 }
 
-Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
-                                  const Dimensions &parent_dimensions) {
-  if (ranges.ssize() != parent_dimensions.rank()) {
-    if (ranges.size() == 1) {
+Range RangeSpan::next_range() {
+  Range r = *begin_;
+  ++begin_;
+  while (begin_ != end_ && r.maybe_combine(*begin_)) {
+    ++begin_;
+  }
+  return r;
+}
+
+bool RangeSpan::empty_ranges() const {
+  auto nonempty_range = [](const Range &range) { return range.size() != 0; };
+  return std::none_of(begin_, end_, nonempty_range);
+}
+
+bool RangeSpan::valid_ranges() const {
+  auto valid_range = [](const Range &range) { return range.dimension() >= 0; };
+  return std::all_of(begin_, end_, valid_range);
+}
+
+Dimensions RangeSpan::get_dimensions(const Dimensions &parent_dimensions) {
+  if (ssize() != parent_dimensions.rank()) {
+    if (ssize() == 1) {
       // If we only provide one range, it is as if we were flattening the tensor
       // prior to iteration.
-      return dimensions_from_ranges(ranges,
-                                    Dimensions{parent_dimensions.total_size()});
+      return get_dimensions(Dimensions{parent_dimensions.total_size()});
     }
     throw std::out_of_range("Number of _ exceeds Tensor rank.");
   }
 #ifdef TENSOR_RANGE_SQUEEZE
-  index removed_dimensions =
-      std::count_if(std::begin(ranges), std::end(ranges),
-                    [](const Range &r) { return r.squeezed(); });
-  index final_size = ranges.ssize() - removed_dimensions;
+  index removed_dimensions = std::count_if(
+      begin(), end(), [](const Range &r) { return r.squeezed(); });
+  index final_size = ssize() - removed_dimensions;
   index total_size = 1;
   SimpleVector<index> output(final_size);
-  for (index i = 0, j = 0; i < ranges.ssize(); ++i) {
-    Range &r = ranges.at(i);
+  for (index i = 0, j = 0; i < ssize(); ++i) {
+    Range &r = at(i);
     r.set_dimension(parent_dimensions[i]);
     if (!r.squeezed()) {
       index s = r.size();
@@ -72,9 +88,9 @@ Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
   }
 #else
 #error "TENSOR_RANGE_SQUEEZE is outdated!"
-  SimpleVector<index> output(ranges.size());
-  for (index i = 0, j = 0; i < ranges.ssize(); ++i) {
-    Range &r = ranges.at(i);
+  SimpleVector<index> output(size());
+  for (index i = 0, j = 0; i < ssize(); ++i) {
+    Range &r = at(i);
     r.set_dimension(parent_dimensions[i]);
     output.at(j++) = r.size();
   }
@@ -218,26 +234,25 @@ void Range::set_dimension(index new_dimension) {
 
 const Range RangeIterator::empty_range = Range::empty();
 
-Range RangeIterator::RangeSpan::next_range() {
-  Range r = *begin_;
-  ++begin_;
-  while (begin_ != end_ && r.maybe_combine(*begin_)) {
-    ++begin_;
+bool RangeIterator::same_iterator(const RangeIterator &r) const {
+  if ((counter_ != r.counter_) or (limit_ != r.limit_) or
+      (start_ != r.start_) or (step_ != r.step_) or (factor_ != r.factor_) or
+      (has_indices() != r.has_indices()) or (bool(next_) != bool(r.next_)))
+    return false;
+  if (has_indices() && !all_equal(indices_, r.indices_)) return false;
+  if (next_) {
+    return next_->same_iterator(*r.next_);
   }
-  return r;
+  return true;
 }
 
-bool RangeIterator::RangeSpan::empty_ranges() const {
-  auto nonempty_range = [](const Range &range) { return range.size() != 0; };
-  return std::none_of(begin_, end_, nonempty_range);
+RangeIterator RangeIterator::make_end_iterator() const {
+  RangeIterator output;
+  output.counter_ = output.limit_ = limit_;
+  return output;
 }
 
-bool RangeIterator::RangeSpan::valid_ranges() const {
-  auto valid_range = [](const Range &range) { return range.dimension() >= 0; };
-  return std::all_of(begin_, end_, valid_range);
-}
-
-RangeIterator RangeIterator::make_range_iterators(RangeSpan &&ranges,
+RangeIterator RangeIterator::make_range_iterators(RangeSpan &ranges,
                                                   end_flag_t end_flag) {
   if (ranges.empty_ranges()) {
     return RangeIterator(Range::empty(0), 1, end_flag);

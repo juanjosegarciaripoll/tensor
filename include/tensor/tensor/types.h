@@ -23,6 +23,7 @@
 #define TENSOR_COLUMN_MAJOR_ORDER 1
 
 #include <vector>
+#include <array>
 #include <tensor/exceptions.h>
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
@@ -215,30 +216,34 @@ class Tensor {
   inline TensorView<elt_t> operator()(Range r) const {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
-    r.set_dimension(ssize());
-    return TensorView<elt_t>(*this, SimpleVector<Range>{std::move(r)});
+    std::array<Range, 1> ranges{std::move(r)};
+    ranges.begin()->set_dimension(ssize());
+    return TensorView<elt_t>(*this, ranges);
   }
 
   /**Extracts a slice from an N-dimensional Tensor. */
   template <typename... RangeLike>
   inline TensorView<elt_t> operator()(Range r1, RangeLike... rnext) const {
-    return TensorView<elt_t>(
-        *this, SimpleVector<Range>{std::move(r1), std::move(rnext)...});
+    std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
+                                                   std::move(rnext)...};
+    return TensorView<elt_t>(*this, ranges);
   }
 
   /**Extracts a slice from a 1D Tensor. */
   inline MutableTensorView<elt_t> at(Range r) {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
-    r.set_dimension(ssize());
-    return MutableTensorView<elt_t>(*this, SimpleVector<Range>{std::move(r)});
+    std::array<Range, 1> ranges{std::move(r)};
+    ranges.begin()->set_dimension(ssize());
+    return MutableTensorView<elt_t>(*this, ranges);
   }
 
   /**Extracts a slice from an N-dimensional Tensor. */
   template <typename... RangeLike>
   inline MutableTensorView<elt_t> at(Range r1, RangeLike... rnext) {
-    return MutableTensorView<elt_t>(
-        *this, SimpleVector<Range>{std::move(r1), std::move(rnext)...});
+    std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
+                                                   std::move(rnext)...};
+    return MutableTensorView<elt_t>(*this, ranges);
   }
 
   //
@@ -337,21 +342,21 @@ class TensorView {
   TensorView(const TensorView<elt_t> &other) = default;
   TensorView(TensorView<elt_t> &&other) = default;
 
-  TensorView(const Tensor<elt_t> &tensor, SimpleVector<Range> &&ranges)
+  TensorView(const Tensor<elt_t> &tensor, RangeSpan ranges)
       : tensor_(tensor),
-        ranges_(std::move(ranges)),
-        dims_(dimensions_from_ranges(ranges_, tensor.dimensions())) {}
+        dims_(ranges.get_dimensions(tensor.dimensions())),
+        range_iterator_begin_(RangeIterator::begin(ranges)) {}
 
   size_t size() const { return static_cast<size_t>(dims_.total_size()); }
   index ssize() const { return dims_.total_size(); }
   const Dimensions &dimensions() const { return dims_; }
 
   TensorConstIterator<elt_t> begin() const {
-    return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),
-                                      tensor_.begin(), tensor_.ssize());
+    return TensorConstIterator<elt_t>(range_iterator_begin_, tensor_.begin(),
+                                      tensor_.ssize());
   }
   TensorConstIterator<elt_t> end() const {
-    return TensorConstIterator<elt_t>(RangeIterator::end(ranges_),
+    return TensorConstIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
                                       tensor_.begin(), tensor_.ssize());
   }
 
@@ -363,8 +368,8 @@ class TensorView {
 
  private:
   const Tensor<elt_t> &tensor_;
-  SimpleVector<Range> ranges_;
   Dimensions dims_;
+  RangeIterator range_iterator_begin_;
 };
 
 template <typename elt_t>
@@ -374,10 +379,10 @@ class MutableTensorView {
   MutableTensorView(const MutableTensorView<elt_t> &other) = default;
   MutableTensorView(MutableTensorView<elt_t> &&other) = default;
 
-  MutableTensorView(Tensor<elt_t> &tensor, SimpleVector<Range> &&ranges)
+  MutableTensorView(Tensor<elt_t> &tensor, RangeSpan ranges)
       : tensor_(tensor),
-        ranges_(std::move(ranges)),
-        dims_(dimensions_from_ranges(ranges_, tensor.dimensions())) {}
+        dims_(ranges.get_dimensions(tensor.dimensions())),
+        range_iterator_begin_(RangeIterator::begin(ranges)) {}
 
   void operator=(const TensorView<elt_t> &t) {
     /* TODO: ensure matching dimensions */
@@ -396,19 +401,18 @@ class MutableTensorView {
   const Dimensions &dimensions() const { return dims_; }
 
   TensorIterator<elt_t> begin() {
-    return TensorIterator<elt_t>(RangeIterator::begin(ranges_), tensor_.begin(),
+    return TensorIterator<elt_t>(range_iterator_begin_, tensor_.begin(),
                                  tensor_.ssize());
   }
   TensorIterator<elt_t> end() {
-    return TensorIterator<elt_t>(RangeIterator::end(ranges_), tensor_.begin(),
-                                 tensor_.ssize());
+    return TensorIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
+                                 tensor_.begin(), tensor_.ssize());
   }
   TensorConstIterator<elt_t> begin() const {
-    return TensorConstIterator<elt_t>(RangeIterator::begin(ranges_),
-                                      tensor_.begin());
+    return TensorConstIterator<elt_t>(range_iterator_begin_, tensor_.begin());
   }
   TensorConstIterator<elt_t> end() const {
-    return TensorConstIterator<elt_t>(RangeIterator::end(ranges_),
+    return TensorConstIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
                                       tensor_.begin());
   }
   Tensor<elt_t> copy() const {
@@ -419,8 +423,8 @@ class MutableTensorView {
 
  private:
   Tensor<elt_t> &tensor_;
-  SimpleVector<Range> ranges_;
   Dimensions dims_;
+  RangeIterator range_iterator_begin_;
 };
 
 extern template class Tensor<double>;

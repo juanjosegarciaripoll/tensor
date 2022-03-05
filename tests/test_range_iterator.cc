@@ -47,8 +47,12 @@ std::ostream &operator<<(std::ostream &out, const std::vector<elt_t> &v) {
 }
 
 SimpleVector<Range> make_ranges(SimpleVector<Range> l, Dimensions d) {
-  dimensions_from_ranges(l, d);
+  RangeSpan(l).get_dimensions(d);
   return l;
+}
+
+Dimensions dimensions_from_ranges(SimpleVector<Range> &l, const Dimensions &d) {
+  return RangeSpan(l).get_dimensions(d);
 }
 
 /////////////////////////////////////////////////////////////////////

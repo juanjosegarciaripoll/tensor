@@ -251,8 +251,24 @@ class Range {
 
 extern const Range _;
 
-Dimensions dimensions_from_ranges(SimpleVector<Range> &ranges,
-                                  const Dimensions &parent_dimensions);
+class RangeSpan {
+  Range *begin_;
+  Range *end_;
+
+ public:
+  template <size_t N>
+  RangeSpan(std::array<Range, N> &v) : begin_{&v[0]}, end_{begin_ + N} {}
+  RangeSpan(SimpleVector<Range> &v) : begin_{v.begin()}, end_{v.end()} {}
+  bool more() { return begin_ != end_; }
+  bool empty_ranges() const;
+  bool valid_ranges() const;
+  Range next_range();
+  Range &at(index i) { return begin_[i]; }
+  const Range *begin() const { return begin_; }
+  const Range *end() const { return end_; }
+  index ssize() const { return end_ - begin_; }
+  Dimensions get_dimensions(const Dimensions &parent_dimensions);
+};
 
 class RangeIterator {
  public:
@@ -285,12 +301,21 @@ class RangeIterator {
   bool operator==(const RangeIterator &other) const {
     return other.counter_ == counter_;
   }
-  static RangeIterator begin(const SimpleVector<Range> &ranges) {
-    return make_range_iterators(RangeSpan(ranges), range_begin);
+  static RangeIterator begin(RangeSpan &ranges) {
+    return make_range_iterators(ranges, range_begin);
   }
-  static RangeIterator end(const SimpleVector<Range> &ranges) {
-    return make_range_iterators(RangeSpan(ranges), range_end);
+  static RangeIterator end(RangeSpan &ranges) {
+    return begin(ranges).make_end_iterator();
   }
+  static RangeIterator begin(SimpleVector<Range> ranges) {
+    auto span = RangeSpan(ranges);
+    return begin(span);
+  }
+  static RangeIterator end(SimpleVector<Range> ranges) {
+    auto span = RangeSpan(ranges);
+    return end(span);
+  }
+  RangeIterator make_end_iterator() const;
   index get_position() const;
   index counter() const { return counter_; }
   index offset() const { return offset_; }
@@ -300,29 +325,19 @@ class RangeIterator {
   const RangeIterator &next() const { return *next_; }
   bool has_indices() const { return indices_.size() != 0; }
   const Indices &indices() const { return indices_; }
+  bool same_iterator(const RangeIterator &it) const;
 
  private:
   index counter_{}, limit_{}, step_{}, offset_{}, factor_{}, start_{};
   Indices indices_{};
   next_t next_{};
 
-  struct RangeSpan {
-    const Range *begin_;
-    const Range *end_;
-    RangeSpan(const SimpleVector<Range> &v)
-        : begin_{v.begin()}, end_{v.end()} {}
-    bool more() { return begin_ != end_; }
-    bool empty_ranges() const;
-    bool valid_ranges() const;
-    Range next_range();
-  };
-
-  static RangeIterator make_range_iterators(RangeSpan &&ranges,
+  static RangeIterator make_range_iterators(RangeSpan &ranges,
                                             end_flag_t flag = range_begin);
 
   void advance_next();
-  static RangeIterator make_next_iterator(
-      RangeSpan &ranges, index factor, end_flag_t end_flagflag = range_begin);
+  static RangeIterator make_next_iterator(RangeSpan &ranges, index factor,
+                                          end_flag_t end_flag = range_begin);
 };
 
 template <typename elt_t>
@@ -334,7 +349,7 @@ class TensorIterator {
   typedef elt_t *pointer;
   typedef std::input_iterator_tag iterator_category;
 
-  TensorIterator(RangeIterator &&it, elt_t *base, index size = 0)
+  TensorIterator(RangeIterator it, elt_t *base, index size = 0)
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
 
   elt_t &operator*() tensor_noexcept {
@@ -370,7 +385,7 @@ class TensorConstIterator {
   typedef const elt_t *pointer;
   typedef std::input_iterator_tag iterator_category;
 
-  TensorConstIterator(RangeIterator &&it, const elt_t *base, index size = 0)
+  TensorConstIterator(RangeIterator it, const elt_t *base, index size = 0)
       : iterator_{std::move(it)}, base_{base}, size_{size} {}
   const elt_t &operator*() {
     index tensor_iterator_position = iterator_.get_position();
