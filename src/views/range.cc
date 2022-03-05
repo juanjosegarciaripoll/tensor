@@ -243,7 +243,7 @@ RangeIterator RangeIterator::make_next_iterator(const Range *ranges,
     ++ranges;
   }
   RangeIterator *next = nullptr;
-  if (ranges_left) {
+  if (ranges_left && end_flag != range_end) {
     next = new RangeIterator(make_next_iterator(
         ranges, ranges_left, factor * r.dimension(), end_flag));
   }
