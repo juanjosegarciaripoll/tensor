@@ -21,3 +21,4 @@ profile/report
 CMakeSettings.json
 .vscode
 .cache
+*.json
