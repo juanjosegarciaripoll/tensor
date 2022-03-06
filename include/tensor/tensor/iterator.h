@@ -33,12 +33,10 @@ class TensorConstIterator {
   typedef const elt_t *pointer;
   typedef std::input_iterator_tag iterator_category;
 
-  TensorConstIterator(RangeIterator it, const elt_t *base, index size = 0)
-      : iterator_{std::move(it)}, base_{base}, size_{size} {}
+  TensorConstIterator(RangeIterator it, const elt_t *base)
+      : iterator_{std::move(it)}, base_{base} {}
   const elt_t &operator*() {
     index tensor_iterator_position = iterator_.get_position();
-    tensor_assert((tensor_iterator_position >= 0) &&
-                  (tensor_iterator_position < size_));
     return base_[tensor_iterator_position];
   }
   const elt_t &operator->() { return this->operator*(); }
@@ -53,7 +51,6 @@ class TensorConstIterator {
  private:
   RangeIterator iterator_;
   const elt_t *base_;
-  index size_;
 };
 
 template <typename elt_t>
@@ -65,13 +62,11 @@ class TensorIterator {
   typedef elt_t *pointer;
   typedef std::input_iterator_tag iterator_category;
 
-  TensorIterator(RangeIterator it, elt_t *base, index size = 0)
-      : iterator_{std::move(it)}, base_{base}, size_{size} {}
+  TensorIterator(RangeIterator it, elt_t *base)
+      : iterator_{std::move(it)}, base_{base} {}
 
   elt_t &operator*() tensor_noexcept {
     index tensor_iterator_position = iterator_.get_position();
-    tensor_assert((tensor_iterator_position >= 0) &&
-                  (tensor_iterator_position < size_));
     return base_[tensor_iterator_position];
   }
 
@@ -89,7 +84,6 @@ class TensorIterator {
  private:
   RangeIterator iterator_;
   elt_t *base_;
-  index size_;
 };
 
 }  // namespace tensor

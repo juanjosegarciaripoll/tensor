@@ -354,12 +354,11 @@ class TensorView {
   const Dimensions &dimensions() const { return dims_; }
 
   TensorConstIterator<elt_t> begin() const {
-    return TensorConstIterator<elt_t>(range_iterator_begin_, tensor_.begin(),
-                                      tensor_.ssize());
+    return TensorConstIterator<elt_t>(range_iterator_begin_, tensor_.begin());
   }
   TensorConstIterator<elt_t> end() const {
     return TensorConstIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
-                                      tensor_.begin(), tensor_.ssize());
+                                      tensor_.begin());
   }
 
   Tensor<elt_t> copy() const {
@@ -403,12 +402,11 @@ class MutableTensorView {
   const Dimensions &dimensions() const { return dims_; }
 
   TensorIterator<elt_t> begin() {
-    return TensorIterator<elt_t>(range_iterator_begin_, tensor_.begin(),
-                                 tensor_.ssize());
+    return TensorIterator<elt_t>(range_iterator_begin_, tensor_.begin());
   }
   TensorIterator<elt_t> end() {
     return TensorIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
-                                 tensor_.begin(), tensor_.ssize());
+                                 tensor_.begin());
   }
   TensorConstIterator<elt_t> begin() const {
     return TensorConstIterator<elt_t>(range_iterator_begin_, tensor_.begin());
