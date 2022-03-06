@@ -30,6 +30,8 @@
 #include <tensor/indices.h>
 #include <tensor/initializer.h>
 #include <tensor/rand.h>
+#include <tensor/ranges.h>
+#include <tensor/tensor/iterator.h>
 
 /*!\addtogroup Tensors*/
 /* @{ */

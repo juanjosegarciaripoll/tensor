@@ -21,6 +21,7 @@
 #include <functional>
 #include <tensor/exceptions.h>
 #include <tensor/indices.h>
+#include <tensor/ranges.h>
 #include <tensor/io.h>
 
 namespace tensor {
@@ -252,16 +253,15 @@ RangeIterator RangeIterator::make_end_iterator() const {
   return output;
 }
 
-RangeIterator RangeIterator::make_range_iterators(RangeSpan &ranges,
-                                                  end_flag_t end_flag) {
+RangeIterator RangeIterator::make_range_iterators(RangeSpan &ranges) {
   if (ranges.empty_ranges()) {
-    return RangeIterator(Range::empty(0), 1, end_flag);
+    return RangeIterator(Range::empty(0), 1);
   }
   tensor_assert2(
       ranges.valid_ranges(),
       std::invalid_argument(
           "Invalid dimension size in Range found when creating RangeIterator"));
-  return make_next_iterator(ranges, 1, end_flag);
+  return make_next_iterator(ranges, 1);
 }
 
 RangeIterator::RangeIterator(const RangeIterator &r)
@@ -274,20 +274,20 @@ RangeIterator::RangeIterator(const RangeIterator &r)
       indices_(r.indices_),
       next_{r.next_ ? new RangeIterator(*r.next_) : nullptr} {}
 
-RangeIterator RangeIterator::make_next_iterator(RangeSpan &ranges, index factor,
-                                                end_flag_t end_flag) {
+RangeIterator RangeIterator::make_next_iterator(RangeSpan &ranges,
+                                                index factor) {
   Range r = ranges.next_range();
   RangeIterator *next = nullptr;
-  if (ranges.more() && end_flag != range_end) {
-    next = new RangeIterator(
-        make_next_iterator(ranges, factor * r.dimension(), end_flag));
+  if (ranges.more()) {
+    next =
+        new RangeIterator(make_next_iterator(ranges, factor * r.dimension()));
   }
-  return RangeIterator(r, factor, end_flag, next_t(next));
+  return RangeIterator(r, factor, next);
 }
 
-RangeIterator::RangeIterator(const Range &r, index factor, end_flag_t end_flag,
-                             next_t next)
-    : offset_{next ? next->get_position() : 0},
+RangeIterator::RangeIterator(const Range &r, index factor, RangeIterator *next)
+    : counter_{0},
+      offset_{next ? next->get_position() : 0},
       factor_{factor},
       indices_(r.indices()),
       next_{next} {
@@ -313,11 +313,6 @@ RangeIterator::RangeIterator(const Range &r, index factor, end_flag_t end_flag,
     step_ = r.step() * factor;
     limit_ = r.size();
     offset_ += start_;
-  }
-  if (end_flag == range_end) {
-    counter_ = limit_;
-  } else {
-    counter_ = 0;
   }
 }
 

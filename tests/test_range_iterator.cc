@@ -111,7 +111,7 @@ TEST(RangeIteratorTest, OptimizesSize1) {
 
 TEST(RangeIteratorTest, EmptyRangeIterator) {
   Range r = Range::empty(0);  // = []
-  RangeIterator it(r, 1);
+  RangeIterator it = RangeIterator::begin({r});
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*it, 0);
@@ -120,7 +120,7 @@ TEST(RangeIteratorTest, EmptyRangeIterator) {
 
 TEST(RangeIteratorTest, RangeIterator1DSize0) {
   Range r(/*start*/ -1, /*end*/ -2, /*step*/ 1, /*dimension*/ 1);  // = []
-  RangeIterator it(r, 1);
+  RangeIterator it = RangeIterator::begin({r});
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ++it;
@@ -131,7 +131,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize0) {
 TEST(RangeIteratorTest, RangeIterator1DSize1) {
   Range r(/*start*/ 0, /*end*/ 0);  // = [0]
   r.set_dimension(3);
-  RangeIterator it(r, 1);
+  RangeIterator it = RangeIterator::begin({r});
   index last;
   ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
@@ -147,7 +147,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize1Start1) {
   Range r(/*start*/ 1, /*end*/ 1);  // = [1, 1]
   r.set_dimension(3);
   index last;
-  RangeIterator it(r, 1);
+  RangeIterator it = RangeIterator::begin({r});
   ASSERT_EQ(last = *it, 1);
   ASSERT_FALSE(it.finished());
   ++it;
@@ -162,7 +162,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize2) {
   Range r(/*start*/ 0, /*end*/ 1);  // = [0, 1]
   r.set_dimension(3);
   index last;
-  RangeIterator it(r, 1);
+  RangeIterator it = RangeIterator::begin({r});
   ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
@@ -180,7 +180,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize1Step2) {
   Range r(/*start*/ 0, /*end*/ 0, /*step*/ 2);  // = [0]
   r.set_dimension(3);
   index last;
-  RangeIterator it(r, 1);
+  RangeIterator it = RangeIterator::begin({r});
   ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
@@ -194,7 +194,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize1Step2) {
 TEST(RangeIteratorTest, RangeIterator1DSize2Step2) {
   Range r(/*start*/ 0, /*end*/ 1, /*step*/ 2, /*dimension*/ 2);  // = [0]
   index last;
-  RangeIterator it(r, 1);
+  RangeIterator it = RangeIterator::begin({r});
   ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
@@ -211,7 +211,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize2Step2) {
 
 TEST(RangeIteratorTest, RangeIterator1DNegativeStep) {
   Range r(/*start*/ 1, /*end*/ 0, /*step*/ -1, /*dimension*/ 2);  // = [1, 0]
-  RangeIterator it(r, 1);
+  RangeIterator it = RangeIterator::begin({r});
   index last;
   ASSERT_EQ(*it, 1);
   ++it;
