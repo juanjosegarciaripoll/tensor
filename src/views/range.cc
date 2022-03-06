@@ -186,51 +186,45 @@ bool Range::maybe_combine(const Range &other) {
   return false;
 }
 
+static void normalize_all_indices(Indices &indices, index dimension) {
+  for (auto x : indices) {
+    x = Dimensions::normalize_index_safe(x, dimension);
+  }
+}
+
 void Range::set_dimension(index new_dimension) {
   /* The description of a range is incomplete until we set its dimension, which
   can only be done when it references a tensor. */
-  if (new_dimension < 0) {
-    throw invalid_dimension();
-  } else if (new_dimension == 0) {
-    if (has_indices() || (first_ != 0 && first_ != -1)) {
-      throw out_of_bounds_index();
-    } else {
-      *this = Range::empty(0);
-      return;
-    }
-  } else if (dimension_ >= 0 && new_dimension != dimension_) {
-    throw std::invalid_argument("Cannot reset dimension of a range");
-  } else if (has_indices()) {
-    // Verify that all positions are within range for the selected indices
-    for (auto x : indices()) {
-      x = Dimensions::normalize_index_safe(x, new_dimension);
-    }
-  } else {
-    /* We reinterpret start_ and last_ when they have negative values
-     * as relative to one past the last element (i.e. -1 = last element).
-     * We then make the intersection between [start_,last_] and
-     * [0, new_dimension].
-     */
-    if (first_ < 0) {
-      first_ = first_ + new_dimension;
-    }
-    if (first_ < 0 || first_ >= new_dimension) {
-      throw out_of_bounds_index();
-    }
-    if (last_ < 0) {
-      last_ = last_ + new_dimension;
-    }
-    last_ = std::max<index>(-1, std::min<index>(last_, new_dimension - 1));
-    index delta = last_ - first_;
-    if (delta * step_ < 0) {
-      // When the range limits (first, last) have a direction
-      // opposite to step, the range is empty.
-      *this = Range::empty(new_dimension);
-      return;
-    }
-    last_ = first_ + step_ * (delta / step_);
-  }
+  tensor_expects(new_dimension >= 0);
+  tensor_expects(dimension_undefined() || dimension() == new_dimension);
   dimension_ = new_dimension;
+  if (has_indices()) {
+    normalize_all_indices(indices_, dimension_);
+    return;
+  }
+  if (dimension_ == 0) {
+    tensor_expects(first() == 0 || first() == -1);
+    *this = Range::empty(0);
+    return;
+  }
+  /* We reinterpret start_ and last_ when they have negative values
+   * as relative to one past the last element (i.e. -1 = last element).
+   * We then make the intersection between [start_,last_] and
+   * [0, new_dimension].
+   */
+  first_ = Dimensions::normalize_index_safe(first_, dimension_);
+  if (last_ < 0) {
+    last_ = last_ + new_dimension;
+  }
+  last_ = std::max<index>(-1, std::min<index>(last_, dimension_ - 1));
+  index delta = last_ - first_;
+  if (delta * step_ < 0) {
+    // When the range limits (first, last) have a direction
+    // opposite to step, the range is empty.
+    *this = Range::empty(new_dimension);
+    return;
+  }
+  last_ = first_ + step_ * (delta / step_);
 }
 
 const Range RangeIterator::empty_range = Range::empty();

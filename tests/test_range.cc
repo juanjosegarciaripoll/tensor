@@ -39,6 +39,12 @@ TEST(RangeTest, EmptyRange) {
   ASSERT_EQ(r.size(), 0);
 }
 
+TEST(RangeTest, CannotChangeDimension) {
+  Range r = Range::full();
+  ASSERT_NO_THROW(r.set_dimension(4));
+  ASSERT_THROW(r.set_dimension(50), ::tensor::invalid_assertion);
+}
+
 TEST(RangeTest, Range1D) {
   Range r(0, 4, 1);
   ASSERT_EQ(r.first(), 0);
@@ -89,7 +95,6 @@ TEST(RangeTest, RangeIndicesSize1) {
   ASSERT_EQ(r.size(), 1);
   ASSERT_NO_THROW(r.set_dimension(3));
   ASSERT_EQ(r.size(), 1);
-  ASSERT_THROW_DEBUG(r.set_dimension(5), std::invalid_argument);
 }
 
 TEST(RangeTest, RangeIndicesSize2) {
@@ -101,7 +106,6 @@ TEST(RangeTest, RangeIndicesSize2) {
   ASSERT_EQ(r.size(), 2);
   ASSERT_NO_THROW(r.set_dimension(4));
   ASSERT_EQ(r.size(), 2);
-  ASSERT_THROW_DEBUG(r.set_dimension(5), std::invalid_argument);
 }
 
 TEST(RangeTest, RangeIndices) {
@@ -110,9 +114,10 @@ TEST(RangeTest, RangeIndices) {
   ASSERT_EQ(r.last(), 2);
   ASSERT_EQ(r.step(), 1);
   ASSERT_EQ(r.size(), 3);
-  ASSERT_THROW_DEBUG(r.set_dimension(2), std::out_of_range);
-  ASSERT_NO_THROW(r.set_dimension(4));
-  ASSERT_THROW_DEBUG(r.set_dimension(5), std::invalid_argument);
+  Range r2 = r;
+  ASSERT_THROW(r2.set_dimension(2), ::tensor::out_of_bounds_index);
+  Range r3 = r;
+  ASSERT_NO_THROW(r3.set_dimension(4));
 }
 
 /////////////////////////////////////////////////////////////////

@@ -95,6 +95,7 @@ class Range {
   index first_{-1}, step_{1}, last_{-2}, dimension_{-1};
   Indices indices_;
   bool squeezed_{false};
+  bool dimension_undefined() const { return dimension_ < 0; }
 };
 
 extern const Range _;
