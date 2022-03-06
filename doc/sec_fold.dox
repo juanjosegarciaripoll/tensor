@@ -7,7 +7,7 @@ All functions, like the whole rest of the code, reside in the tensor namespace.
 Consequently, you either have to prepend all functions here with "tensor::", or import them or the whole tensor namespace with a using-directive.
 
 
-\section sec_tensor_shape Modifying the shape of tensors
+\section sec_tensor_reshape Modifying the shape of tensors
 
 In some applications, the actual shape of a tensor should be modified without modifying the content.
 Similar to their Matlab counterparts, the reshape() function gives a tensor an arbitrary shape, and squeeze() removes dimensions of size 1.
