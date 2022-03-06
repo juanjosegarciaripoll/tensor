@@ -190,6 +190,23 @@ add_subdirectory(src)
 add_subdirectory("profile")
 
 ############################################################
+# DOCUMENTATION
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  message(STATUS "Adding target for Doxygen documentation")
+  set(DOXYGEN_GENERATE_HTML YES)
+  set(DOXYGEN_GENERATE_LATEX NO)
+  set(DOXYGEN_USE_MATHJAX YES)
+  set(DOXYGEN_HAVE_DOT NO)
+  doxygen_add_docs(
+      doxygen
+      ${CMAKE_CURRENT_SOURCE_DIR}/doc ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src
+      ALL # Add to the complete build
+      COMMENT "Generate documentation"
+  )
+endif()
+
+############################################################
 # TESTING
 #
 if(TENSOR_TEST)
