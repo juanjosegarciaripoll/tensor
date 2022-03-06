@@ -6,9 +6,5 @@ target_sources(tensor
     jobs.cc
     jobs_save.cc
     jobs_dataset.cc
-    map_d.cc
-    map_z.cc
-    map_sp_d.cc
-    map_sp_z.cc
     tictoc.cc
     )
