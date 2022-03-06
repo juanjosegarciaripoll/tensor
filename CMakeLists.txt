@@ -209,7 +209,7 @@ if(DOXYGEN_FOUND)
   doxygen_add_docs(
       doxygen
       ${CMAKE_CURRENT_SOURCE_DIR}/doc ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src
-      ALL # Add to the complete build
+      #ALL # Uncomment to make doxygen run on every build
       COMMENT "Generate documentation"
   )
 endif()
