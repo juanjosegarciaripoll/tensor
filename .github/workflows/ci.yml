@@ -21,3 +21,4 @@ jobs:
         run: ./scripts/build-and-test.sh --build
       - name: test
         run: ./scripts/build-and-test.sh --test
+        timeout-minutes: 5
