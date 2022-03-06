@@ -25,6 +25,9 @@
 namespace tensor {
 
 template <typename elt_t>
+class TensorIterator;
+
+template <typename elt_t>
 class TensorConstIterator {
  public:
   typedef const elt_t value_type;
@@ -48,6 +51,25 @@ class TensorConstIterator {
     return iterator_ != other.iterator_;
   }
 
+  friend class TensorIterator<elt_t>;
+
+  template <typename it>
+  void copy_to_contiguous_iterator(it destination) {
+    if (iterator_.contiguous()) {
+      for (const auto size = iterator_.limit(); iterator_.counter() != size;
+           iterator_.advance_next()) {
+        auto origin_begin = base_ + iterator_.offset();
+        std::copy(origin_begin, origin_begin + size, destination);
+        destination += size;
+      }
+    } else {
+      for (const auto limit = iterator_.limit(); iterator_.counter() != limit;
+           ++iterator_, ++destination) {
+        *destination = base_[iterator_.get_position()];
+      }
+    }
+  }
+
  private:
   RangeIterator iterator_;
   const elt_t *base_;
@@ -65,20 +87,71 @@ class TensorIterator {
   TensorIterator(RangeIterator it, elt_t *base)
       : iterator_{std::move(it)}, base_{base} {}
 
-  elt_t &operator*() tensor_noexcept {
+  elt_t &operator*() noexcept {
     index tensor_iterator_position = iterator_.get_position();
     return base_[tensor_iterator_position];
   }
 
-  elt_t &operator->() { return this->operator*(); }
+  elt_t &operator->() noexcept { return this->operator*(); }
 
-  TensorIterator<elt_t> &operator++() {
+  TensorIterator<elt_t> &operator++() noexcept {
     ++iterator_;
     return *this;
   }
 
-  bool operator!=(const TensorIterator<elt_t> &other) const {
+  bool operator!=(const TensorIterator<elt_t> &other) const noexcept {
     return iterator_ != other.iterator_;
+  }
+
+  void copy_from(TensorConstIterator<elt_t> origin) noexcept {
+    auto &origin_it = origin.iterator_;
+    if (iterator_.contiguous() && origin_it.contiguous() &&
+        iterator_.limit() == origin_it.limit()) {
+      for (const auto size = iterator_.limit(); iterator_.counter() != size;
+           iterator_.advance_next(), origin_it.advance_next()) {
+        auto destination_begin = base_ + iterator_.offset();
+        auto origin_begin = origin.base_ + origin_it.offset();
+        std::copy(origin_begin, origin_begin + size, destination_begin);
+      }
+    } else {
+      for (const auto limit = iterator_.limit(); iterator_.counter() != limit;
+           ++iterator_, ++origin) {
+        base_[iterator_.get_position()] = *origin;
+      }
+    }
+  }
+
+  template <typename it>
+  void copy_from_contiguous_iterator(it origin) noexcept {
+    if (iterator_.contiguous()) {
+      for (const auto size = iterator_.limit(); iterator_.counter() != size;
+           iterator_.advance_next()) {
+        auto destination_begin = base_ + iterator_.offset();
+        auto origin_end = origin + size;
+        std::copy(origin, origin_end, destination_begin);
+        origin = origin_end;
+      }
+    } else {
+      for (const auto limit = iterator_.limit(); iterator_.counter() != limit;
+           ++iterator_, ++origin) {
+        base_[iterator_.get_position()] = *origin;
+      }
+    }
+  }
+
+  void fill(elt_t value) noexcept {
+    if (iterator_.contiguous()) {
+      for (const auto size = iterator_.limit(); iterator_.counter() != size;
+           iterator_.advance_next()) {
+        auto destination_begin = base_ + iterator_.offset();
+        std::fill(destination_begin, destination_begin + size, value);
+      }
+    } else {
+      for (const auto limit = iterator_.limit(); iterator_.counter() != limit;
+           ++iterator_) {
+        base_[iterator_.get_position()] = value;
+      }
+    }
   }
 
  private:

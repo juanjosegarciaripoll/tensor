@@ -159,17 +159,25 @@ class RangeIterator {
     auto span = RangeSpan(ranges);
     return begin(span).make_end_iterator();
   }
-  RangeIterator make_end_iterator() const;
-  index get_position() const;
-  index counter() const { return counter_; }
-  index offset() const { return offset_; }
-  index limit() const { return limit_; }
-  index step() const { return step_; }
-  bool has_next() const { return next_ != nullptr; }
-  const RangeIterator &next() const { return *next_; }
-  bool has_indices() const { return indices_.size() != 0; }
-  const Indices &indices() const { return indices_; }
-  bool same_iterator(const RangeIterator &it) const;
+  RangeIterator make_end_iterator() const noexcept;
+  index get_position() const noexcept {
+    if (has_indices()) {
+      return offset_ + factor_ * indices()[counter_];
+    } else {
+      return offset_;
+    }
+  };
+  index counter() const noexcept { return counter_; }
+  index offset() const noexcept { return offset_; }
+  index limit() const noexcept { return limit_; }
+  index step() const noexcept { return step_; }
+  bool has_next() const noexcept { return next_ != nullptr; }
+  const RangeIterator &next() const noexcept { return *next_; }
+  void advance_next() noexcept;
+  bool has_indices() const noexcept { return indices_.size() != 0; }
+  const Indices &indices() const noexcept { return indices_; }
+  bool same_iterator(const RangeIterator &it) const noexcept;
+  bool contiguous() const noexcept { return !has_indices() && step_ == 1; }
 
  private:
   index counter_{}, limit_{}, step_{}, offset_{}, factor_{}, start_{};
@@ -180,7 +188,6 @@ class RangeIterator {
                 RangeIterator *next = nullptr);
   static RangeIterator make_range_iterators(RangeSpan &ranges);
 
-  void advance_next();
   static RangeIterator make_next_iterator(RangeSpan &ranges, index factor);
 };
 

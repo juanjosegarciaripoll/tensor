@@ -235,7 +235,7 @@ void Range::set_dimension(index new_dimension) {
 
 const Range RangeIterator::empty_range = Range::empty();
 
-bool RangeIterator::same_iterator(const RangeIterator &r) const {
+bool RangeIterator::same_iterator(const RangeIterator &r) const noexcept {
   if ((counter_ != r.counter_) or (limit_ != r.limit_) or
       (start_ != r.start_) or (step_ != r.step_) or (factor_ != r.factor_) or
       (has_indices() != r.has_indices()) or (bool(next_) != bool(r.next_)))
@@ -247,7 +247,7 @@ bool RangeIterator::same_iterator(const RangeIterator &r) const {
   return true;
 }
 
-RangeIterator RangeIterator::make_end_iterator() const {
+RangeIterator RangeIterator::make_end_iterator() const noexcept {
   RangeIterator output;
   output.counter_ = output.limit_ = limit_;
   return output;
@@ -316,15 +316,17 @@ RangeIterator::RangeIterator(const Range &r, index factor, RangeIterator *next)
   }
 }
 
-index RangeIterator::get_position() const {
+#if 0
+index RangeIterator::get_position() const noexcept {
   if (has_indices()) {
     return offset_ + factor_ * indices()[counter_];
   } else {
     return offset_;
   }
 }
+#endif
 
-void RangeIterator::advance_next() {
+void RangeIterator::advance_next() noexcept {
   if (next_) {
     ++(*next_);
     if (!next_->finished()) {

@@ -334,12 +334,6 @@ class Tensor {
 template <typename elt_t>
 class TensorView {
  public:
-  operator Tensor<elt_t>() const {
-    Tensor<elt_t> output(dimensions());
-    std::copy(begin(), end(), output.begin());
-    return output;
-  }
-
   TensorView() = delete;
   TensorView(const TensorView<elt_t> &other) = default;
   TensorView(TensorView<elt_t> &&other) = default;
@@ -361,11 +355,13 @@ class TensorView {
                                       tensor_.begin());
   }
 
-  Tensor<elt_t> copy() const {
+  Tensor<elt_t> clone() const {
     Tensor<elt_t> output(dimensions());
-    std::copy(begin(), end(), output.begin());
+    begin().copy_to_contiguous_iterator(output.begin());
     return output;
   }
+
+  operator Tensor<elt_t>() const { return clone(); }
 
  private:
   const Tensor<elt_t> &tensor_;
@@ -388,14 +384,14 @@ class MutableTensorView {
   void operator=(const TensorView<elt_t> &t) {
     /* TODO: ensure matching dimensions */
     tensor_assert(t.size() == size());
-    std::copy(t.begin(), t.end(), begin());
+    begin().copy_from(t.begin());
   }
   void operator=(const Tensor<elt_t> &t) {
     /* TODO: ensure matching dimensions */
     tensor_assert(t.size() == size());
-    std::copy(t.begin(), t.end(), begin());
+    begin().copy_from_contiguous_iterator(t.begin());
   }
-  void operator=(elt_t v) { std::fill(begin(), end(), v); }
+  void operator=(elt_t v) { begin().fill(v); }
 
   size_t size() const { return static_cast<size_t>(dims_.total_size()); }
   index ssize() const { return dims_.total_size(); }
