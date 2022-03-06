@@ -12,12 +12,14 @@ builddir="$sourcedir/build-$os"
 logfile="$builddir/log"
 OPENBLAS_NUM_THREADS=4
 export OPENBLAS_NUM_THREADS
+CMAKE_BUILD_TYPE=Release
 for arg in $*; do
     case $arg in
         --no-test) do_test=no;;
         --no-profile) do_profile=no;;
         --continue) do_delete=no;;
-        --debug) set -x;;
+        --debug) CMAKE_BUILD_TYPE=Debug;;
+        --release) CMAKE_BUILD_TYPE=Release;;
     esac
 done
 if test -n `which ninja`; then
@@ -34,7 +36,7 @@ fi
 # Configure
 #
 test -d "$builddir" || mkdir "$builddir"
-CMAKE_FLAGS="-DTENSOR_ARPACK=ON -DTENSOR_FFTW=ON -DTENSOR_CLANG_TIDY=ON -DTENSOR_OPTIMIZED_BUILD=ON"
+CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DTENSOR_ARPACK=ON -DTENSOR_FFTW=ON -DTENSOR_OPTIMIZED_BUILD=ON"
 cmake -H"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
 if [ $? -ne 0 ]; then
     echo CMake configuration failed

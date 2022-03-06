@@ -1,0 +1,17 @@
+name: Tensor build checks
+
+on:
+  push:
+    branches: [cmake]
+  pull_request:
+    branches: [cmake]
+
+jobs:
+  LinuxBuild:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+      - name: install libraries
+        run: sudo apt install -y libarpack2-dev libfftw3-dev googletest libgtest-dev ninja-build libopenblas-openmp-dev
+      - name: build and test
+        run: ./scripts/build-and-test.sh --no-profile
