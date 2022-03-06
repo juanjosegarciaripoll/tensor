@@ -54,7 +54,7 @@ class Vector {
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
-  Vector() noexcept = default;
+  Vector() = default;
 
   explicit Vector(size_type size)
       : size_{size},
@@ -81,8 +81,8 @@ class Vector {
   Vector &operator=(const Vector<elt_t> &v) = default;
 
   /* Move semantics. */
-  Vector(Vector<elt_t> &&v) noexcept = default;
-  Vector &operator=(Vector<elt_t> &&v) noexcept = default;
+  Vector(Vector<elt_t> &&v) = default;
+  Vector &operator=(Vector<elt_t> &&v) = default;
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */
@@ -157,7 +157,7 @@ class SimpleVector {
   typedef elt_t *iterator;
   typedef const elt_t *const_iterator;
 
-  SimpleVector() noexcept = default;
+  SimpleVector() = default;
 
   explicit SimpleVector(size_type size) : size_{size}, base_(new elt_t[size]) {}
 
@@ -186,8 +186,8 @@ class SimpleVector {
   };
 
   /* Move semantics. */
-  SimpleVector(SimpleVector<elt_t> &&v) noexcept = default;
-  SimpleVector &operator=(SimpleVector<elt_t> &&v) noexcept = default;
+  SimpleVector(SimpleVector<elt_t> &&v) = default;
+  SimpleVector &operator=(SimpleVector<elt_t> &&v) = default;
 
   static inline SimpleVector<elt_t> empty(size_type size) {
     return SimpleVector<elt_t>(size);

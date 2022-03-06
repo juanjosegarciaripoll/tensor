@@ -62,7 +62,7 @@ class Tensor {
 #endif
 
   /**Constructs an empty Tensor.*/
-  Tensor() noexcept = default;
+  Tensor() = default;
 
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
   explicit Tensor(const Dimensions &new_dims)
@@ -91,7 +91,7 @@ class Tensor {
   Tensor(const Tensor &other) = default;
 
   /**Optimized move constructor. */
-  Tensor(Tensor &&other) noexcept = default;
+  Tensor(Tensor &&other) = default;
 
   /**Implicit coercion. */
   template <typename e2>
