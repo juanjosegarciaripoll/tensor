@@ -3,15 +3,15 @@ do_test=yes
 do_profile=yes
 do_delete=yes
 os=`uname -o`
+if [ -f /etc/os-release ]; then
+   os=`(. /etc/os-release; echo $ID)`
+fi
 threads=10
 sourcedir=`pwd`
 builddir="$sourcedir/build-$os"
 logfile="$builddir/log"
 OPENBLAS_NUM_THREADS=4
 export OPENBLAS_NUM_THREADS
-if [ -f /etc/os-release ]; then
-   os=`(. /etc/os-release; echo $ID)`
-fi
 for arg in $*; do
     case $arg in
         --no-test) do_test=no;;
