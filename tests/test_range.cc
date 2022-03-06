@@ -42,7 +42,7 @@ TEST(RangeTest, EmptyRange) {
 TEST(RangeTest, CannotChangeDimension) {
   Range r = Range::full();
   ASSERT_NO_THROW(r.set_dimension(4));
-  ASSERT_THROW(r.set_dimension(50), ::tensor::invalid_assertion);
+  ASSERT_THROW_DEBUG(r.set_dimension(50), ::tensor::invalid_assertion);
 }
 
 TEST(RangeTest, Range1D) {
@@ -115,7 +115,7 @@ TEST(RangeTest, RangeIndices) {
   ASSERT_EQ(r.step(), 1);
   ASSERT_EQ(r.size(), 3);
   Range r2 = r;
-  ASSERT_THROW(r2.set_dimension(2), ::tensor::out_of_bounds_index);
+  ASSERT_THROW_DEBUG(r2.set_dimension(2), ::tensor::out_of_bounds_index);
   Range r3 = r;
   ASSERT_NO_THROW(r3.set_dimension(4));
 }
