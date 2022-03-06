@@ -23,7 +23,6 @@
 #define ONLY_IN_DEBUG(x) (x)
 #define ASSERT_THROW_DEBUG(x, y) ASSERT_THROW(x, y)
 #else
-#error "Not in Debug!"
 #define ONLY_IN_DEBUG(x)
 #define ASSERT_THROW_DEBUG(x, y) ASSERT_DEATH(x, ".*")
 #endif
