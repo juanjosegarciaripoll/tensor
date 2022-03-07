@@ -1,11 +1,13 @@
+import sys
+from benchmark import BenchmarkSet, BenchmarkItemAggregate
+import glob
+import json
+from matplotlib.figure import Figure
 import os
 import webbrowser
+import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-import json
-import glob
-from benchmark import BenchmarkSet, BenchmarkItemAggregate
-import sys
+matplotlib.use('SVG')
 
 
 def load_report(filename: str) -> BenchmarkSet:
@@ -45,10 +47,62 @@ def disambiguate_benchmarks(benchmarks: list[BenchmarkSet]) -> list[BenchmarkSet
 
 HTML_REPORT_HEADER = """<html>
 <head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<title>Tensor C++ library benchmarks</title>
 </head>
-<body>"""
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+"""
 
 HTML_REPORT_FOOTER = "</body>\n</html>"
+
+
+def html_write_headers(f, benchmarks):
+    f.write(HTML_REPORT_HEADER)
+
+
+def html_group_selector(f, group_item_pairs):
+    groups = set([group for group, _ in group_item_pairs])
+    dropdown = {g: '' for g in groups}
+    output = []
+    for n, (group, item) in enumerate(group_item_pairs):
+        label = f'benchmark{n}'
+        button = f'<li><a class="dropdown-item" href="#{label}">{item}</a></li>\n'
+        dropdown[group] += button
+        output.append((group, item, label))
+    f.write('<div class="dropdown sticky-top">')
+    for n, (key, options) in enumerate(dropdown.items()):
+        button_label = f'dropdownMenuButton{n}'
+        f.write(f'<a class="btn btn-secondary dropdown-toggle" type="button"'
+                f'id="{button_label}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">'
+                f'{key}</a>')
+        f.write(
+            f'<ul class="dropdown-menu" aria-labelledby="{button_label}">\n')
+        f.write(options)
+        f.write('</ul>\n')
+    f.write('</div>\n')
+    return output
+
+
+def html_write_footer(f, benchmarks):
+    f.write("<div class='container fixed-bottom'>")
+    f.write('<footer>')
+    f.write("<ul>")
+    for b in benchmarks:
+        f.write(f"<li>{b.name} - {b.environment}</li>")
+    f.write("</ul>")
+    f.write('</footer>')
+    f.write("</div>")
+
+
+def produce_svg_image(agg, imagefile):
+    fig = plot_aggregate(agg)
+    fig.savefig(imagefile)
+    plt.close(fig)
 
 
 def html_report(filename: str, benchmarks: list[BenchmarkSet], browse: bool = True):
@@ -60,24 +114,23 @@ def html_report(filename: str, benchmarks: list[BenchmarkSet], browse: bool = Tr
         os.makedirs(imagedir)
     n = 0
     with open(filename, "w") as f:
-        f.write(HTML_REPORT_HEADER)
-        f.write("<h1>Benchmark report</h1>")
-        f.write("<ul>")
-        for b in benchmarks:
-            f.write(f"<li>{b.name} - {b.environment}</li>")
-        f.write("</ul>")
-        for group_name, item_name in BenchmarkSet.find_all_pairs(benchmarks):
-            agg = BenchmarkItemAggregate(benchmarks, group_name, item_name)
-            f.write(f"<h2>Benchmark {group_name}.{item_name}</h2>\n")
-
+        html_write_headers(f, benchmarks)
+        group_item_pairs = html_group_selector(f,
+                                               BenchmarkSet.find_all_pairs(benchmarks))
+        f.write("<h1 style='padding-top: 1em'>Benchmark report</h1>")
+        for group_name, item_name, label in group_item_pairs:
             imagefile = f"{imagedir}/figure-{n}.svg"
             imageuri = f"{os.path.basename(filename[:-5])}/figure-{n}.svg"
-            fig = plot_aggregate(
-                agg, doprint=(group_name == "RTensor" and item_name == "plus")
-            )
-            fig.savefig(imagefile)
-            plt.close(fig)
-            f.write(f'<img src="{imageuri}">')
+            agg = BenchmarkItemAggregate(benchmarks, group_name, item_name)
+            produce_svg_image(agg, imagefile)
+            f.write('<div class="container">\n')
+            f.write('<figure class="figure">\n')
+            f.write(
+                f'<img class="img-fluid text-center" src="{imageuri}" alt="{label}">\n')
+            f.write(
+                f'<figcaption id="{label}" class="figure-caption">{group_name} / {item_name}</figcaption>\n')
+            f.write('</figure>\n')
+            f.write('</div>\n')
             n = n + 1
         f.write(HTML_REPORT_FOOTER)
     if browse:
