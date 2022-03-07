@@ -34,7 +34,7 @@ def plot_aggregate(agg: BenchmarkItemAggregate, doprint: bool = False) -> Figure
 
 
 def disambiguate_benchmarks(benchmarks: list[BenchmarkSet]) -> list[BenchmarkSet]:
-    benchmarks.sort(key=lambda x: x.name + x.environment)
+    benchmarks.sort(key=lambda x: x.name + '\b' + x.environment)
     names = {}
     for b in benchmarks:
         names[b.name] = names.get(b.name, []) + [b]
@@ -56,6 +56,16 @@ HTML_REPORT_HEADER = """<html>
 </head>
 <body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" >
+    $(document).on('click', 'a[href^="#"]', function (event) {
+    event.preventDefault();
+
+    $('html, body').animate({
+        scrollTop: $($.attr(this, 'href')).offset().top
+    }, 200);
+    });
+</script>
 """
 
 HTML_REPORT_FOOTER = "</body>\n</html>"
@@ -74,10 +84,11 @@ def html_group_selector(f, group_item_pairs):
         button = f'<li><a class="dropdown-item" href="#{label}">{item}</a></li>\n'
         dropdown[group] += button
         output.append((group, item, label))
-    f.write('<div class="dropdown sticky-top">')
-    for n, (key, options) in enumerate(dropdown.items()):
+    f.write('<div style="padding:1em; background:#2e2929" class="container-fluid border-bottom shadow text-center dropdown sticky-top d-grid gap-2 d-md-block">')
+    for n, key in enumerate(sorted(dropdown)):
+        options = dropdown[key]
         button_label = f'dropdownMenuButton{n}'
-        f.write(f'<a class="btn btn-secondary dropdown-toggle" type="button"'
+        f.write(f'<a class="btn btn-sm btn-secondary dropdown-toggle" type="button"'
                 f'id="{button_label}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">'
                 f'{key}</a>')
         f.write(
@@ -89,20 +100,32 @@ def html_group_selector(f, group_item_pairs):
 
 
 def html_write_footer(f, benchmarks):
-    f.write("<div class='container fixed-bottom'>")
-    f.write('<footer>')
+    f.write("<div class='container-fluid border-top fixed-bottom small shadow' style='background:#ede7e7;padding-top:1em'>")
+    f.write('<footer class="container">')
     f.write("<ul>")
     for b in benchmarks:
         f.write(f"<li>{b.name} - {b.environment}</li>")
     f.write("</ul>")
     f.write('</footer>')
     f.write("</div>")
+    f.write(HTML_REPORT_FOOTER)
 
 
 def produce_svg_image(agg, imagefile):
     fig = plot_aggregate(agg)
     fig.savefig(imagefile)
     plt.close(fig)
+
+
+def html_display_plot_with_caption(f, group_name, item_name, label, imageuri):
+    f.write('<div class="row">\n')
+    f.write('<figure class="figure">\n')
+    f.write(
+        f'<img id="{label}" class="img-fluid text-center" src="{imageuri}" alt="{label}">\n')
+    f.write(
+        f'<figcaption class="figure-caption">{group_name} / {item_name}</figcaption>\n')
+    f.write('</figure>\n')
+    f.write('</div>\n')
 
 
 def html_report(filename: str, benchmarks: list[BenchmarkSet], browse: bool = True):
@@ -117,22 +140,22 @@ def html_report(filename: str, benchmarks: list[BenchmarkSet], browse: bool = Tr
         html_write_headers(f, benchmarks)
         group_item_pairs = html_group_selector(f,
                                                BenchmarkSet.find_all_pairs(benchmarks))
-        f.write("<h1 style='padding-top: 1em'>Benchmark report</h1>")
+        f.write('<div class="container" style="padding-top:1em">')
+        f.write("<h1>Benchmark report</h1>")
+        last_group = ''
         for group_name, item_name, label in group_item_pairs:
             imagefile = f"{imagedir}/figure-{n}.svg"
             imageuri = f"{os.path.basename(filename[:-5])}/figure-{n}.svg"
             agg = BenchmarkItemAggregate(benchmarks, group_name, item_name)
             produce_svg_image(agg, imagefile)
-            f.write('<div class="container">\n')
-            f.write('<figure class="figure">\n')
-            f.write(
-                f'<img class="img-fluid text-center" src="{imageuri}" alt="{label}">\n')
-            f.write(
-                f'<figcaption id="{label}" class="figure-caption">{group_name} / {item_name}</figcaption>\n')
-            f.write('</figure>\n')
-            f.write('</div>\n')
+            if group_name != last_group:
+                f.write(f'<h2>{group_name}</h2>')
+                last_group = group_name
+            html_display_plot_with_caption(
+                f, group_name, item_name, label, imageuri)
             n = n + 1
-        f.write(HTML_REPORT_FOOTER)
+        f.write('</div>')
+        html_write_footer(f, benchmarks)
     if browse:
         filename = os.path.abspath(filename)
         webbrowser.open("file:///" + filename, autoraise=True)

@@ -61,46 +61,51 @@ def apply_exp(A, B):
     return np.exp(A)
 
 
+def warmup(size, dtype=np.double):
+    for _ in range(10):
+        a2 = np.empty(size, dtype=dtype)
+
+
 def make_two_real_ndarrays(size: int) -> np.ndarray:
-    for _ in range(10):
-        a2 = np.empty(size, dtype=np.double)
+    warmup(size)
     return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
 
 
-def make_two_real_matrices(size: int) -> np.ndarray:
-    for _ in range(10):
-        a2 = np.empty(size, dtype=np.double)
-    size = int(np.sqrt(size))
-    size = (size, size)
-    return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
+def make_two_real_matrices(size: int, cols: int = 10) -> np.ndarray:
+    warmup(size)
+    return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)))
+
+
+def make_two_real_matrices_t(size: int, rows: int = 10) -> np.ndarray:
+    warmup(size)
+    return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)))
 
 
 def make_real_ndarray_and_number(size: int) -> np.ndarray:
-    for _ in range(10):
-        a2 = np.empty(size, dtype=np.double)
+    warmup(size)
     return (GENERATOR.normal(size=size), 3.0)
 
 
 def make_real_ndarray_and_one(size: int) -> np.ndarray:
-    for _ in range(10):
-        a2 = np.empty(size, dtype=np.double)
+    warmup(size)
     return (GENERATOR.normal(size=size), 1.0)
 
 
 def make_two_complex_ndarrays(size: int) -> np.ndarray:
+    warmup(size, np.complex128)
     a1, b1 = make_two_real_ndarrays(size)
     a2, b2 = make_two_real_ndarrays(size)
-    for _ in range(10):
-        a2 = np.empty(size, dtype=np.complex128)
     return (a1 + 1j * a2, b1 + 1j * b2)
 
 
-def make_two_complex_matrices(size: int) -> np.ndarray:
-    for _ in range(10):
-        a2 = np.empty(size, dtype=np.complex128)
-    size = int(np.sqrt(size))
-    size = (size, size)
-    return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
+def make_two_complex_matrices(size: int, cols: int = 20) -> np.ndarray:
+    warmup(size*cols, np.complex128)
+    return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)))
+
+
+def make_two_complex_matrices_t(size: int, rows: int = 20) -> np.ndarray:
+    warmup(size*rows, np.complex128)
+    return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)))
 
 
 def make_complex_ndarray_and_number(size: int) -> np.ndarray:
@@ -135,7 +140,7 @@ def run_all():
                     ("multiplies", multiplies, make_two_real_ndarrays),
                     ("divides", divides, make_two_real_ndarrays),
                     ("copy_column", copy_first_row, make_two_real_matrices),
-                    ("copy_row", copy_first_column, make_two_real_matrices),
+                    ("copy_row", copy_first_column, make_two_real_matrices_t),
                     ("sum", apply_sum, make_real_ndarray_and_number),
                     ("exp", apply_exp, make_real_ndarray_and_number),
                     ("cos", apply_cos, make_real_ndarray_and_number),
@@ -149,7 +154,7 @@ def run_all():
                     ("multiplies", multiplies, make_two_complex_ndarrays),
                     ("divides", divides, make_two_complex_ndarrays),
                     ("copy_column", copy_first_row, make_two_complex_matrices),
-                    ("copy_row", copy_first_column, make_two_complex_matrices),
+                    ("copy_row", copy_first_column, make_two_complex_matrices_t),
                     ("sum", apply_sum, make_complex_ndarray_and_one),
                     ("exp", apply_exp, make_complex_ndarray_and_one),
                     ("cos", apply_cos, make_complex_ndarray_and_one),
@@ -186,7 +191,8 @@ def run_all():
                         multiplies_inplace,
                         make_complex_ndarray_and_one,
                     ),
-                    ("dividesNinplace", divides_inplace, make_complex_ndarray_and_one),
+                    ("dividesNinplace", divides_inplace,
+                     make_complex_ndarray_and_one),
                 ],
             ),
         ],
