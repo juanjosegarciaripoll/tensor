@@ -132,6 +132,36 @@ void copy_first_row(std::tuple<T, T> &args) {
 }
 
 template <class T>
+void copy_first_column_index(std::tuple<T, T, Indices> &args) {
+  T &A = std::get<0>(args);
+  T &B = std::get<1>(args);
+  Indices &ndx = std::get<2>(args);
+  A.at(ndx, range(0)) = B(ndx, range(0));
+}
+
+template <class T>
+void copy_first_row_index(std::tuple<T, T, Indices> &args) {
+  T &A = std::get<0>(args);
+  T &B = std::get<1>(args);
+  Indices &ndx = std::get<2>(args);
+  A.at(range(0), ndx) = B(range(0), ndx);
+}
+
+template <class T>
+void extract_first_column(std::tuple<T, T> &args) {
+  T &A = std::get<0>(args);
+  T B = A(_, range(0));
+  force(B);
+}
+
+template <class T>
+void extract_first_row(std::tuple<T, T> &args) {
+  T &A = std::get<0>(args);
+  T B = A(range(0), _);
+  force(B);
+}
+
+template <class T>
 void warmup(size_t size) {
   for (int i = 0; i < 10; ++i) {
     std::unique_ptr<T> p{new T(Dimensions{size})};
@@ -169,12 +199,35 @@ std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
 }
 
 template <class T>
-std::tuple<T, T> make_two_matrices(size_t size) {
-  warmup<T>(size);
-  size = static_cast<size_t>(sqrt(static_cast<double>(size)));
+std::tuple<T, T> make_two_columns(size_t size) {
+  size_t columns = 100;
+  warmup<T>(size * columns);
   Dimensions d = {static_cast<tensor::index>(size),
+                  static_cast<tensor::index>(columns)};
+  return std::tuple<T, T>(T::random(d), T::random(d));
+}
+
+template <class T>
+std::tuple<T, T, Indices> make_two_columns_and_index(size_t size) {
+  auto aux = make_two_columns<T>(size);
+  Indices ndx = iota(0, size - 1, 2);
+  return std::tuple<T, T, Indices>(std::get<0>(aux), std::get<1>(aux), ndx);
+}
+
+template <class T>
+std::tuple<T, T> make_two_rows(size_t size) {
+  size_t rows = 100;
+  warmup<T>(size * rows);
+  Dimensions d = {static_cast<tensor::index>(rows),
                   static_cast<tensor::index>(size)};
   return std::tuple<T, T>(T::random(d), T::random(d));
+}
+
+template <class T>
+std::tuple<T, T, Indices> make_two_rows_and_index(size_t size) {
+  auto aux = make_two_rows<T>(size);
+  Indices ndx = iota(0, size - 1, 2);
+  return std::tuple<T, T, Indices>(std::get<0>(aux), std::get<1>(aux), ndx);
 }
 
 template <typename T>
@@ -182,20 +235,14 @@ void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
   typedef typename T::elt_t elt_t;
 
   {
-    BenchmarkGroup group(name);
-    group.add("copy_column", copy_first_column<T>, make_two_matrices<T>);
-    group.add("copy_row", copy_first_row<T>, make_two_matrices<T>);
-    group.add("plus", add<T, T>, make_two_vectors<T>);
-    group.add("minus", subtract<T, T>, make_two_vectors<T>);
-    group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
-    group.add("divides", divide<T, T>, make_two_vectors<T>);
-    group.add("sum", apply_sum<T>, make_vector<T>);
-    group.add("cos", apply_cos<T>, make_vector<T>);
-    group.add("exp", apply_exp<T>, make_vector<T>);
-    set << group;
-  }
-  {
     BenchmarkGroup group(name + " access");
+    group.add("extract_i0", extract_first_column<T>, make_two_columns<T>);
+    group.add("extract_0i", extract_first_row<T>, make_two_rows<T>);
+    group.add("copy_i0", copy_first_column<T>, make_two_columns<T>);
+    group.add("copy_0i", copy_first_row<T>, make_two_rows<T>);
+    group.add("copy_N0", copy_first_column_index<T>,
+              make_two_columns_and_index<T>);
+    group.add("copy_0N", copy_first_row_index<T>, make_two_rows_and_index<T>);
     group.add("const_indexed_read", vector_const_indexed_read<T>,
               make_vector_and_number<T>);
     group.add("indexed_read", vector_indexed_read<T>,
@@ -205,18 +252,25 @@ void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
     set << group;
   }
   {
-    BenchmarkGroup group(name + " with number");
-    group.add("plusN", add<T, elt_t>, make_vector_and_number<T>);
-    group.add("minusN", subtract<T, elt_t>, make_vector_and_number<T>);
-    group.add("multipliesN", multiply<T, elt_t>, make_vector_and_number<T>);
-    group.add("dividesN", divide<T, elt_t>, make_vector_and_number<T>);
-    group.add("plusNinplace", add_inplace<T, elt_t>, make_vector_and_one<T>);
-    group.add("minusNinplace", subtract_inplace<T, elt_t>,
+    BenchmarkGroup group(name);
+    group.add("plus", add<T, T>, make_two_vectors<T>);
+    group.add("minus", subtract<T, T>, make_two_vectors<T>);
+    group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
+    group.add("divides", divide<T, T>, make_two_vectors<T>);
+    group.add("plus_N", add<T, elt_t>, make_vector_and_number<T>);
+    group.add("minus_N", subtract<T, elt_t>, make_vector_and_number<T>);
+    group.add("multiplies_N", multiply<T, elt_t>, make_vector_and_number<T>);
+    group.add("divides_N", divide<T, elt_t>, make_vector_and_number<T>);
+    group.add("plus_N_inplace", add_inplace<T, elt_t>, make_vector_and_one<T>);
+    group.add("minus_N_inplace", subtract_inplace<T, elt_t>,
               make_vector_and_one<T>);
-    group.add("multipliesNinplace", multiply_inplace<T, elt_t>,
+    group.add("multiplies_N_inplace", multiply_inplace<T, elt_t>,
               make_vector_and_one<T>);
-    group.add("dividesNinplace", divide_inplace<T, elt_t>,
+    group.add("divides_N_inplace", divide_inplace<T, elt_t>,
               make_vector_and_number<T>);
+    group.add("sum", apply_sum<T>, make_vector<T>);
+    group.add("cos", apply_cos<T>, make_vector<T>);
+    group.add("exp", apply_exp<T>, make_vector<T>);
     set << group;
   }
 }

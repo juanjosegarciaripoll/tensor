@@ -41,12 +41,28 @@ def divides_inplace(A, B):
     return A
 
 
+def extract_first_column(A, B):
+    return B[:, 0].copy()
+
+
+def extract_first_row(A, B):
+    return B[0, :].copy()
+
+
 def copy_first_column(A, B):
     A[:, 0] = B[:, 0]
 
 
 def copy_first_row(A, B):
-    A[0, :] = A[0, :]
+    A[0, :] = B[0, :]
+
+
+def copy_first_column_index(A, B, ndx):
+    A[ndx, 0] = B[ndx, 0]
+
+
+def copy_first_row_index(A, B, ndx):
+    A[0, ndx] = B[0, ndx]
 
 
 def apply_sum(A, B):
@@ -71,14 +87,26 @@ def make_two_real_ndarrays(size: int) -> np.ndarray:
     return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
 
 
-def make_two_real_matrices(size: int, cols: int = 10) -> np.ndarray:
+def make_two_real_columns(size: int, cols: int = 100) -> np.ndarray:
     warmup(size)
     return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)))
 
 
-def make_two_real_matrices_t(size: int, rows: int = 10) -> np.ndarray:
+def make_two_real_rows(size: int, rows: int = 100) -> np.ndarray:
     warmup(size)
     return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)))
+
+
+def make_two_real_rows_and_index(size: int, rows: int = 100) -> np.ndarray:
+    warmup(size)
+    ndx = np.arange(0, size, 2)
+    return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)), ndx)
+
+
+def make_two_real_columns_and_index(size: int, cols: int = 100) -> np.ndarray:
+    warmup(size)
+    ndx = np.arange(0, size, 2)
+    return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)), ndx)
 
 
 def make_real_ndarray_and_number(size: int) -> np.ndarray:
@@ -98,27 +126,37 @@ def make_two_complex_ndarrays(size: int) -> np.ndarray:
     return (a1 + 1j * a2, b1 + 1j * b2)
 
 
-def make_two_complex_matrices(size: int, cols: int = 20) -> np.ndarray:
+def make_two_complex_columns(size: int, cols: int = 100) -> np.ndarray:
     warmup(size*cols, np.complex128)
     return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)))
 
 
-def make_two_complex_matrices_t(size: int, rows: int = 20) -> np.ndarray:
+def make_two_complex_rows(size: int, rows: int = 100) -> np.ndarray:
     warmup(size*rows, np.complex128)
     return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)))
 
 
+def make_two_complex_columns_and_index(size: int, cols: int = 100) -> np.ndarray:
+    warmup(size*cols, np.complex128)
+    ndx = np.arange(0, size, 2)
+    return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)), ndx)
+
+
+def make_two_complex_rows_and_index(size: int, rows: int = 100) -> np.ndarray:
+    warmup(size*rows, np.complex128)
+    ndx = np.arange(0, size, 2)
+    return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)), ndx)
+
+
 def make_complex_ndarray_and_number(size: int) -> np.ndarray:
-    a1, b1 = make_real_ndarray_and_number(size)
-    for _ in range(10):
-        a2 = np.empty(size, dtype=np.complex128)
+    warmup(size, np.complex128)
+    a1, a2 = make_two_real_ndarrays(size)
     return (a1 + 1j * a2, 3.0 + 0.0j)
 
 
 def make_complex_ndarray_and_one(size: int) -> np.ndarray:
-    a1, b1 = make_real_ndarray_and_number(size)
-    for _ in range(10):
-        a2 = np.empty(size, dtype=np.complex128)
+    warmup(size, np.complex128)
+    a1, a2 = make_two_real_ndarrays(size)
     return (a1 + 1j * a2, 1.0 + 0.0j)
 
 
@@ -133,14 +171,51 @@ def run_all():
         environment=system_version(),
         groups=[
             BenchmarkGroup.run(
+                name="CTensor access",
+                items=[
+                    ("copy_N0", copy_first_row_index,
+                     make_two_complex_rows_and_index),
+                    ("copy_0N", copy_first_column_index,
+                     make_two_complex_columns_and_index),
+                    ("extract_i0", extract_first_row, make_two_complex_rows),
+                    ("extract_0i", extract_first_column, make_two_complex_columns),
+                    ("copy_i0", copy_first_row, make_two_complex_rows),
+                    ("copy_0i", copy_first_column, make_two_complex_columns),
+                ],
+            ),
+            BenchmarkGroup.run(
+                name="RTensor access",
+                items=[
+                    ("copy_N0", copy_first_row_index,
+                     make_two_real_rows_and_index),
+                    ("copy_0N", copy_first_column_index,
+                     make_two_real_columns_and_index),
+                    ("extract_i0", extract_first_row, make_two_real_rows),
+                    ("extract_0i", extract_first_column, make_two_real_columns),
+                    ("copy_i0", copy_first_row, make_two_real_rows),
+                    ("copy_0i", copy_first_column, make_two_real_columns),
+                ],
+            ),
+            BenchmarkGroup.run(
                 name="RTensor",
                 items=[
                     ("plus", plus, make_two_real_ndarrays),
                     ("minus", minus, make_two_real_ndarrays),
                     ("multiplies", multiplies, make_two_real_ndarrays),
                     ("divides", divides, make_two_real_ndarrays),
-                    ("copy_column", copy_first_row, make_two_real_matrices),
-                    ("copy_row", copy_first_column, make_two_real_matrices_t),
+                    ("plus_N", plus, make_real_ndarray_and_number),
+                    ("minus_N", minus, make_real_ndarray_and_number),
+                    ("multiplies_N", multiplies, make_real_ndarray_and_number),
+                    ("divides_N", divides, make_real_ndarray_and_number),
+                    ("plus_N_inplace", plus_inplace, make_real_ndarray_and_one),
+                    ("minus_N_inplace", minus_inplace, make_real_ndarray_and_one),
+                    (
+                        "multiplies_N_inplace",
+                        multiplies_inplace,
+                        make_real_ndarray_and_one,
+                    ),
+                    ("divides_N_inplace", divides_inplace,
+                     make_real_ndarray_and_one),
                     ("sum", apply_sum, make_real_ndarray_and_number),
                     ("exp", apply_exp, make_real_ndarray_and_number),
                     ("cos", apply_cos, make_real_ndarray_and_number),
@@ -153,46 +228,23 @@ def run_all():
                     ("minus", minus, make_two_complex_ndarrays),
                     ("multiplies", multiplies, make_two_complex_ndarrays),
                     ("divides", divides, make_two_complex_ndarrays),
-                    ("copy_column", copy_first_row, make_two_complex_matrices),
-                    ("copy_row", copy_first_column, make_two_complex_matrices_t),
-                    ("sum", apply_sum, make_complex_ndarray_and_one),
-                    ("exp", apply_exp, make_complex_ndarray_and_one),
-                    ("cos", apply_cos, make_complex_ndarray_and_one),
-                ],
-            ),
-            BenchmarkGroup.run(
-                name="RTensor with number",
-                items=[
-                    ("plusN", plus, make_real_ndarray_and_number),
-                    ("minusN", minus, make_real_ndarray_and_number),
-                    ("multipliesN", multiplies, make_real_ndarray_and_number),
-                    ("dividesN", divides, make_real_ndarray_and_number),
-                    ("plusNinplace", plus_inplace, make_real_ndarray_and_one),
-                    ("minusNinplace", minus_inplace, make_real_ndarray_and_one),
+                    ("plus_N", plus, make_complex_ndarray_and_number),
+                    ("minus_N", minus, make_complex_ndarray_and_number),
+                    ("multiplies_N", multiplies, make_complex_ndarray_and_number),
+                    ("divides_N", divides, make_complex_ndarray_and_number),
+                    ("plus_N_inplace", plus_inplace, make_complex_ndarray_and_one),
+                    ("minus_N_inplace", minus_inplace,
+                     make_complex_ndarray_and_one),
                     (
-                        "multipliesNinplace",
-                        multiplies_inplace,
-                        make_real_ndarray_and_one,
-                    ),
-                    ("dividesNinplace", divides_inplace, make_real_ndarray_and_one),
-                ],
-            ),
-            BenchmarkGroup.run(
-                name="CTensor with number",
-                items=[
-                    ("plusN", plus, make_complex_ndarray_and_number),
-                    ("minusN", minus, make_complex_ndarray_and_number),
-                    ("multipliesN", multiplies, make_complex_ndarray_and_number),
-                    ("dividesN", divides, make_complex_ndarray_and_number),
-                    ("plusNinplace", plus_inplace, make_complex_ndarray_and_one),
-                    ("minusNinplace", minus_inplace, make_complex_ndarray_and_one),
-                    (
-                        "multipliesNinplace",
+                        "multiplies_N_inplace",
                         multiplies_inplace,
                         make_complex_ndarray_and_one,
                     ),
-                    ("dividesNinplace", divides_inplace,
+                    ("divides_N_inplace", divides_inplace,
                      make_complex_ndarray_and_one),
+                    ("sum", apply_sum, make_complex_ndarray_and_one),
+                    ("exp", apply_exp, make_complex_ndarray_and_one),
+                    ("cos", apply_cos, make_complex_ndarray_and_one),
                 ],
             ),
         ],

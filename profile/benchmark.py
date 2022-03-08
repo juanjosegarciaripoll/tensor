@@ -72,7 +72,8 @@ class BenchmarkItem:
             args = setup(s)
             timing = BenchmarkItem.autorange(lambda: function(*args), limit)
             times.append(timing)
-            print(f"Executing item {name} at size {s} took {timing:5g} seconds")
+            print(
+                f"Executing item {name} at size {s} took {timing:5g} seconds")
         return BenchmarkItem(name=name, sizes=sizes, times=times)
 
 
@@ -160,7 +161,7 @@ class BenchmarkSet:
                 for i in g.items:
                     output.add((g.name, i.name))
         output = list(output)
-        output.sort(key=lambda p: ".".join(p))
+        output.sort(key=lambda p: "\b".join(p))
         return output
 
 
