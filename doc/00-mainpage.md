@@ -15,5 +15,5 @@ Some of the conventions used in this library are heavily used by Matlab, because
 - [Sparse matrices](#sparse)
 - [Linear algebra](#linalg)
 
-[Numpy] https://numpy.org/doc/stable/
-[Yorick] http://yorick.sourceforge.net/
+[Numpy]: https://numpy.org/doc/stable/
+[Yorick]: http://yorick.sourceforge.net/
