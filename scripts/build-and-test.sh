@@ -29,6 +29,16 @@ function build () {
     fi
 }
 
+function docs () {
+    if [ $do_docs = yes ]; then
+        cmake --build "$builddir" --config Release --target doxygen -- 2>&1 | tee -a "$logfile"
+        if [ $? -ne 0 ]; then
+            echo CMake documentation build failed
+            exit 1
+        fi
+    fi
+}
+
 function profile () {
     if [ $do_profile = yes ]; then
         "$builddir/profile/profile" "$sourcedir/profile/benchmark_$os.json" 2>&1 | tee -a "$logfile"
@@ -71,6 +81,7 @@ do_configure=no
 do_build=no
 do_profile=no
 do_check=no
+do_docs=no
 for arg in $*; do
     case $arg in
         --clean) do_clean=yes;;
@@ -78,6 +89,7 @@ for arg in $*; do
         --build) do_build=yes;;
         --profile) do_profile=yes;;
         --test) do_check=yes;;
+        --docs) do_docs=yes;;
         --all) do_clean=yes; do_configure=yes; do_build=yes; do_profile=yes; do_check=yes;;
         --debug) CMAKE_BUILD_TYPE=Debug;;
         --release) CMAKE_BUILD_TYPE=Release;;
@@ -87,5 +99,6 @@ done
 clean
 configure
 build
+docs
 check
 profile
