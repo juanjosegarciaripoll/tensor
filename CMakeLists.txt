@@ -205,7 +205,11 @@ if(DOXYGEN_FOUND)
   set(DOXYGEN_SHOW_FILES NO)
   set(DOXYGEN_CLASS_DIAGRAMS NO)
   set(DOXYGEN_STRIP_FROM_INC_PATH "include")
-  set(DOXYGEN_LAYOUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/doc/DoxygenLayout.xml")
+  set(DOXYGEN_GENERATE_TREEVIEW YES)
+  set(DOXYGEN_MATHJAX_VERSION "MathJax_3")
+  set(DOXYGEN_MATHJAX_RELPATH "https://cdn.jsdelivr.net/npm/mathjax@3")
+  set(DOXYGEN_MATHJAX_EXTENSIONS "ams")
+  set(DOXYGEN_HTML_EXTRA_STYLESHEET "${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen-awesome.css" "${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen-awesome-sidebar-only.css")
   doxygen_add_docs(
       doxygen
       ${CMAKE_CURRENT_SOURCE_DIR}/doc ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src
