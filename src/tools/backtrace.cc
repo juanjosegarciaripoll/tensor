@@ -128,7 +128,7 @@ static char **backtrace_symbols(void **buffer, int nframes) {
 #endif /* !HAVE_BACKTRACE_SYMBOLS */
 
 #ifdef HAVE_BACKTRACE_SYMBOLS
-static void dump_backtrace(int size) {
+static void dump_backtrace() {
   {
     void *pointers[32];
     int nframes = backtrace(pointers, 32);
@@ -147,13 +147,13 @@ static void dump_backtrace(int size) {
   }
 }
 #else
-static void dump_backtrace(int) {}
+static void dump_backtrace() {}
 #endif
 
 #undef abort
 
 static void tensor_abort(int /*signal*/) {
-  dump_backtrace(32);
+  dump_backtrace();
   exit(-1);
 }
 

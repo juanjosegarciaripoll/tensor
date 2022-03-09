@@ -18,6 +18,7 @@
 
 #include <limits>
 #include <cstring>
+#include <limits>
 #include <tensor/sdf.h>
 
 using namespace sdf;

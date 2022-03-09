@@ -28,7 +28,7 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 
 ## Incompatible changes
 
-* When creating views, as in `A(range(0), range(0,2), range(0,0))`, now there is a guarantee that the library will remove dimensions of size 1 only if a single-argument range was used. In this case, the output is a rank-12tensor (a vector) with 3 components: the first index is removed because `range(0)` is there, but the last dimension is not removed because a two-argument range was used `range(0,0)`, even if it only has dimension 1. This option may be removed with the CMake flag `TENSOR_RANGE_SQUEEZE`.
+* When creating views, as in `A(range(0), range(0,2), range(0,0))`, there is now a guarantee that the library will remove dimensions of size 1 only if a single-argument range was used. In the example here, the output is a rank-2 tensor with 3 components: the first index is removed because `range(0)` is there, but the last dimension is not removed because a two-argument range was used `range(0,0)`, even if it only has size 1. This option may be toggled with the CMake flag `TENSOR_RANGE_SQUEEZE`.
 
 * The `Vector` and `SimpleVector` classes now have `cbegin()` and `cend()` methods that replace the former `begin_const()` and `end_const()`.
 

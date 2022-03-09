@@ -30,7 +30,7 @@ namespace tensor {
 static double now() {
 #if defined(HAVE_GETTIMEOFDAY)
   struct timeval tic_now;
-  gettimeofday(&tic_now, NULL);
+  gettimeofday(&tic_now, nullptr);
   double seconds = tic_now.tv_sec;
   double museconds = tic_now.tv_usec;
   return seconds + 1e-6 * museconds;

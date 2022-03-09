@@ -300,7 +300,7 @@ const Job::Variable *Job::find_variable(const std::string &name) const {
       return &(*it);
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 double Job::get_value(const std::string &name) const {

@@ -185,7 +185,7 @@ inline void gen_eupp(bool rvec, char HowMny, tensor::cdouble d[],
 
 {
   auto iselect = std::make_unique<logical[]>(ncv);
-  blas::cdouble* iZ = reinterpret_cast<blas::cdouble*>((Z == NULL) ? V : Z);
+  blas::cdouble* iZ = reinterpret_cast<blas::cdouble*>((Z == nullptr) ? V : Z);
   blas::integer thervec = rvec;
 
   F77NAME(zneupd)

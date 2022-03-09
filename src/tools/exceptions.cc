@@ -17,7 +17,7 @@
 */
 
 #include <string>
-#include <strstream>
+#include <sstream>
 #include <tensor/exceptions.h>
 #include <tensor/tensor_blas.h>
 #include <tensor/tensor.h>
@@ -38,7 +38,7 @@ dimensions_mismatch::dimensions_mismatch(const char *message)
 
 static std::string dimensions_mismatch_message(const Dimensions &d1,
                                                const Dimensions &d2) {
-  std::strstream out;
+  std::ostringstream out;
   out << "Unable to perform binary operation among tensors with dimensions\n"
       << d1 << " and " << d2;
   return out.str();
@@ -51,7 +51,7 @@ dimensions_mismatch::dimensions_mismatch(const Dimensions &d1,
 static std::string dimensions_mismatch_message(const Dimensions &d1,
                                                const Dimensions &d2,
                                                index which1, index which2) {
-  std::strstream out;
+  std::ostringstream out;
   out << "Unable to perform binary operation among tensors with dimensions\n"
       << d1 << " and " << d2 << "\nbecause indices " << which1 << " and "
       << which2 << " differ or are zero";

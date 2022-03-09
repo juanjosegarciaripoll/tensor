@@ -69,7 +69,7 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
     ldu = m;
   } else {
     jobu[0] = 'N';
-    u = NULL;
+    u = nullptr;
     ldu = 1;
   }
   if (VT) {
@@ -79,7 +79,7 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
     ldv = economic ? k : n;
   } else {
     jobv[0] = 'N';
-    v = NULL;
+    v = nullptr;
     ldv = 1;
   }
 #ifdef TENSOR_USE_ACML
