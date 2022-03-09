@@ -65,15 +65,15 @@ This is done with the function `fold()`, which takes four arguments, as in `fold
 The two arguments A and B are two tensors, while nA and nB represent the indices that are contracted.
 
 For instance, assuming that A has two and B three indices, the code @c C=fold(A,0,B,1) contracts the second and first index of tensors A and B, respectively, as given by the formula
-$$
+@f[
 C_{a_1 b_0 b_2} = \sum_j A_{j a_1} B_{b_0 j b_2}
-$$
+@f]
 Note that the indices of B are simply added to those of A, in that precise order.
 
 The other flavor is "internal" contraction, in which indices are replaced. Going back to the previous example, @c C=foldin(A,0,B,1) contracts tensors A and B according to the formula
-$$
+@f[
 C_{b_0 a_1 b_2} = \sum_j A_{j a_1} B_{b_0 j b_2}
-$$
+@f]
 Now the uncontracted indices of A appear in the place of the contracted index of B. This routine is very useful for applying transformations on certain indices of a tensor. Typically, A is a matrix describing an operator that only modifies the index / degree of freedom j.
 
 Various derivates of these functions exist. The routine `foldc()` uses the complex conjugate of A for the contraction.
@@ -85,17 +85,17 @@ This is useful to avoid expensive memory allocation if you already have a fittin
 Scaling is a case of Hadamard multiplication, where the values of two tensors that share some indices are multiplied whenever those indices coincide. This library only supports scaling a tensor by a vector, implemented by the functions `scale()` and `scale_inplace()`.
 
 Assuming a three-dimensional tensor `A` and a one-dimensional tensor (vector) V, the expression @c C=scale(A,2,V) scales A according to the formula
-$$
+@f[
 C_{a_0 a_1 a_2} = A_{a_0 a_1 a_2} V_{a_2}
-$$
+@f]
 A variant `scale_inplace()` exists that stores the result of the scaling directly in A.
 
 ### Tracing
 
 Tracing is the operation of summing two indices from the same tensor, to create a tensor with less indices. This is implemented by the function `trace()`. For a tensor `A` with three indices, the function @c C=trace(A,0,2) calculates C as
-$$
+@f[
 C_{k} = \sum_i A_{i k i}
-$$
+@f]
 
 ### Tensor reductions
 
@@ -103,9 +103,9 @@ Various functions allow the reduction of one or two tensors to a single value.
 The functions `sum()` and `mean()` return the expected sum or mean value of all tensor entries.
 
 The scalar product @c scprod(A,B) of two tensors A, B (interpreted as one-dimensional vectors of numbers) is given by
-$$
+@f[
 \sum_i A_i B_i^\ast
-$$
+@f]
 
 Two norms are provided: A maximum norm @c norm0(A) returns the entry of A with the largest absolute value.
 The usual L2-norm, @c norm2(A) is equivalent to the expression @c sqrt(scprod(A,A)).

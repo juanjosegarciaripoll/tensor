@@ -16,14 +16,18 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-#ifndef TENSOR_INITIALIZER_H
+#ifndef TENSOR_DETAIL_INITIALIZER_H
 #include <utility>
 #include <tensor/indices.h>
+
+/** \cond */
 
 namespace tensor {
 
 template <typename elt_t>
 class Tensor;
+
+namespace detail {
 
 template <size_t rank, typename item>
 struct nested_initializer_list {
@@ -135,6 +139,10 @@ class nested_list_initializer {
   }
 };
 
+/** \endcond */
+
+}  // namespace detail
+
 }  // namespace tensor
 
-#endif  // TENSOR_INITIALIZER_H
+#endif  // TENSOR_DETAIL_INITIALIZER_H

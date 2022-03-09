@@ -11,9 +11,9 @@ Even if you are familiar with C++ or scientific programming with Python or Matla
 ### Column vs row-major indices {#columnmajor}
 
 There are [two main conventions](https://en.wikipedia.org/wiki/Row-_and_column-major_order) for storing matrices and tensors in the programming world. They differ on how elements are arranged in memory, and which index is the most rapidly varying one when running over consecutive elements. Take for instance the following matrix
-$$
+@f[
 A = \begin{pmatrix} 1 & 2 \\\\ 3 & 4 \end{pmatrix}
-$$
+@f]
 This is a matrix or tensor with two indices whose elements we can access as `A[i,j]`. In *row-major order*, a matrix' elements are organized such that `A[i,j]` and `A[i,j+1]` would be arranged contiguously in memory. In the previous example, the matrix would point to a region in memory where data would be stored as
 ```
 A -> {1, 2, 3, 4}

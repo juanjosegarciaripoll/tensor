@@ -210,6 +210,8 @@ if(DOXYGEN_FOUND)
   set(DOXYGEN_MATHJAX_RELPATH "https://cdn.jsdelivr.net/npm/mathjax@3")
   set(DOXYGEN_MATHJAX_EXTENSIONS "ams")
   set(DOXYGEN_HTML_EXTRA_STYLESHEET "${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen-awesome.css" "${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen-awesome-sidebar-only.css")
+  set(DOXYGEN_EXTRACT_LOCAL_CLASSES NO)
+  set(DOXYGEN_EXCLUDE_PATTERNS "*/detail/*" "*/jobs.h" "*/arpack*.h" "*/tensor_blas.h" "*/tensor_lapack.h" "*/traits.h")
   doxygen_add_docs(
       doxygen
       ${CMAKE_CURRENT_SOURCE_DIR}/doc ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src

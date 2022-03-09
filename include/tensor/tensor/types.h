@@ -28,7 +28,7 @@
 #include <tensor/numbers.h>
 #include <tensor/vector.h>
 #include <tensor/indices.h>
-#include <tensor/initializer.h>
+#include <tensor/detail/initializer.h>
 #include <tensor/rand.h>
 #include <tensor/ranges.h>
 #include <tensor/tensor/iterator.h>
@@ -46,18 +46,24 @@ class MutableTensorView;
    numbers. Their behavior is similar to Matlab's arrays in that they can store
    only numbers, be accessed with one or more indices using the () or []
    syntaxes, reshaped, sliced, and all that with an automated memory management.
-   \see \ref sec_tensor
+   \see \ref tensor
 */
 template <typename elt>
 class Tensor {
  public:
+  /** The type of this tensor's elements */
   typedef elt elt_t;
+  /** The type of this tensor's elements */
   typedef elt value_type;
+  /** Random access iterator type */
   typedef elt_t *iterator;
+  /** Random access iterator type to const */
   typedef const elt_t *const_iterator;
 #ifdef TENSOR_COPY_ON_WRITE
+  /** Container for this tensor's data */
   typedef Vector<elt_t> vector_type;
 #else
+  /** Container for this tensor's data */
   typedef SimpleVector<elt_t> vector_type;
 #endif
 
@@ -87,13 +93,13 @@ class Tensor {
     std::copy(data.begin(), data.end(), begin());
   }
 
-  /**Optimized copy constructor (See \ref Copy "Optimal copy").*/
+  /**Optimized copy constructor.*/
   Tensor(const Tensor &other) = default;
 
   /**Optimized move constructor. */
   Tensor(Tensor &&other) = default;
 
-  /**Implicit coercion. */
+  /**Implicit coercion and transformation to a different type. */
   template <typename e2>
   Tensor(const Tensor<e2> &other)
       : data_(other.size()), dims_(other.dimensions()) {
@@ -101,17 +107,17 @@ class Tensor {
   }
 
   /**Create a Tensor from a vector initializer list {1, 2, 3}. */
-  Tensor(typename nested_initializer_list<1, elt_t>::type l)
-      : Tensor(nested_list_initializer<elt_t>::make_tensor(l)) {}
+  Tensor(typename detail::nested_initializer_list<1, elt_t>::type l)
+      : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a matrix braced initializer list of rows, e.g. {{1, 2, 3}, {3, 4, 5}}. */
-  Tensor(typename nested_initializer_list<2, elt_t>::type l)
-      : Tensor(nested_list_initializer<elt_t>::make_tensor(l)) {}
+  Tensor(typename detail::nested_initializer_list<2, elt_t>::type l)
+      : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a three-dimensional initializer list, e.g. {{{1}, {2}}, {{3}, {4}}, {{5}, {6}}}. */
-  Tensor(typename nested_initializer_list<3, elt_t>::type l)
-      : Tensor(nested_list_initializer<elt_t>::make_tensor(l)) {}
+  Tensor(typename detail::nested_initializer_list<3, elt_t>::type l)
+      : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a four-dimensional initializer list. */
-  Tensor(typename nested_initializer_list<4, elt_t>::type l)
-      : Tensor(nested_list_initializer<elt_t>::make_tensor(l)) {}
+  Tensor(typename detail::nested_initializer_list<4, elt_t>::type l)
+      : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
 
 #if 0
   /**Build a 1D Tensor or vector.*/
@@ -128,12 +134,13 @@ class Tensor {
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
 #endif
 
+  /**Explicit copy of this tensor's data as a vector.*/
   explicit operator vector_type() const { return data_; }
 
-  /**Assignment operator.*/
+  /**Assignment operator. Can result in both tensors sharing data.*/
   Tensor &operator=(const Tensor<elt_t> &other) = default;
 
-  /**Assignment move operator.*/
+  /**Assignment move operator. `other` tensor is emptied and this tensor acquires ownership of the data.*/
   Tensor &operator=(Tensor<elt_t> &&other) = default;
 
   /**Returns total number of elements in Tensor.*/
@@ -147,54 +154,54 @@ class Tensor {
   index rank() const noexcept { return dims_.rank(); }
   /**Return Tensor dimensions.*/
   const Dimensions &dimensions() const noexcept { return dims_; }
-  /**Length of a given Tensor index.*/
+  /**Length of a given Tensor index, for `0 <= which < rank()`. */
   index dimension(index which) const {
     tensor_assert(rank() > which);
     tensor_assert(which >= 0);
     return dims_[which];
   }
-  /**Query the size of 2nd index.*/
+  /**Query the size of 2nd index. Equivalent to `dimension(1)`.*/
   index columns() const { return dimension(1); }
-  /**Query then size of 1st index. */
+  /**Query then size of 1st index. Equivalent to `dimension(0)`. */
   index rows() const { return dimension(0); }
-  /**Query dimensions of Tensor, returned into the given pointers.*/
+  /**Query dimensions of Tensor, returned into the given pointers to variables.*/
   template <typename... index_like>
   void get_dimensions(index_like *...in) const {
     return dims_.get_values(in...);
   }
 
-  /**Change the dimensions, while keeping the data. */
+  /**Change the dimensions, while keeping the data. See \ref tensor_reshape */
   void reshape(const Dimensions &new_dimensions) {
     tensor_assert(new_dimensions.total_size() == ssize());
     dims_ = new_dimensions;
   }
 
-  /**Return the i-th element, accessed in column major order.*/
+  /**Return the i-th element, accessed in column major order. See \ref tensor_access*/
   inline const elt_t &operator[](index i) const noexcept { return data_[i]; };
-  /**Return an element of a Tensor based on one or more indices.*/
+  /**Return an element of a Tensor based on one or more indices. See \ref tensor_access*/
   template <typename... index_like>
   inline const elt_t &operator()(index i0, index_like... irest) const noexcept {
     return data_[dims_.column_major_position(i0, irest...)];
   }
 
-  /**Return a mutable reference to the i-th element of a Tensor, in column major order.*/
+  /**Return a mutable reference to the i-th element of a Tensor, in column major order.  See \ref tensor_access*/
   inline elt_t &at_seq(index i) { return data_.at(i); };
-  /**Return a mutable reference to an element of a Tensor based on one or more indices.*/
+  /**Return a mutable reference to an element of a Tensor based on one or more indices.  See \ref tensor_access*/
   template <typename... index_like>
   inline elt_t &at(index i0, index_like... irest) {
     return data_.at(dims_.column_major_position(i0, irest...));
   }
 
-  /**Fill with an element.*/
+  /**Destructively full this tensor with the given value. Consider using fill() instead.*/
   Tensor<elt_t> &fill_with(const elt_t &e) noexcept {
     std::fill(begin(), end(), e);
     return *this;
   }
-  /**Fill with zeros.*/
+  /**Destructively fill this tensor with zeros. Consider using zeros() instead.*/
   Tensor<elt_t> &fill_with_zeros() noexcept {
     return fill_with(number_zero<elt_t>());
   }
-  /**Fills with random numbers.*/
+  /**Destructively fill this tensor with random numbers. Consider using random() instead.*/
   Tensor<elt_t> &randomize() noexcept {
     for (auto &x : *this) {
       x = rand<elt_t>();
@@ -214,7 +221,7 @@ class Tensor {
     return Tensor<elt_t>(dimensions).randomize();
   };
 
-  /**Extracts a slice from a 1D Tensor. */
+  /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
   inline TensorView<elt_t> operator()(Range r) const {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
@@ -223,7 +230,7 @@ class Tensor {
     return TensorView<elt_t>(*this, ranges);
   }
 
-  /**Extracts a slice from an N-dimensional Tensor. */
+  /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
   template <typename... RangeLike>
   inline TensorView<elt_t> operator()(Range r1, RangeLike... rnext) const {
     std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
@@ -231,7 +238,7 @@ class Tensor {
     return TensorView<elt_t>(*this, ranges);
   }
 
-  /**Extracts a slice from a 1D Tensor. */
+  /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
   inline MutableTensorView<elt_t> at(Range r) {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
@@ -240,7 +247,7 @@ class Tensor {
     return MutableTensorView<elt_t>(*this, ranges);
   }
 
-  /**Extracts a slice from an N-dimensional Tensor. */
+  /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
   template <typename... RangeLike>
   inline MutableTensorView<elt_t> at(Range r1, RangeLike... rnext) {
     std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
@@ -251,7 +258,7 @@ class Tensor {
   //
   // Matrix operations
   //
-  /**Identity matrix.*/
+  /**Identity square matrix.*/
   static inline Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
   /**Rectangular identity matrix.*/
   static Tensor<elt_t> eye(index rows, index cols) {
@@ -266,11 +273,6 @@ class Tensor {
   /**N-dimensional tensor with undefined values. */
   static inline Tensor<elt_t> empty(const Dimensions &dimensions) {
     return Tensor<elt_t>(dimensions);
-  }
-
-  /**N-dimensional tensor with undefined values. */
-  static inline Tensor<elt_t> empty(const Indices &dimensions) {
-    return Tensor<elt_t>(Dimensions(dimensions));
   }
 
   /**Empty tensor one or more dimensions, with undetermined values.*/

@@ -8,7 +8,7 @@ In programming jargon, a `Tensor` is a multidimensional array of numbers. Mathem
 
 A tensor is formed essentially by three elements:
 - A `Vector` that contains all the values associated to the tensor in dynamically allocated memory.
-- The `Dimensions` of the tensor, which define the number of indices (the *rank*) and the limits of those indices (the *dimension size*).
+- The [dimensions](#tensor_dimensions) of the tensor, which define the number of indices (the *rank*) and the limits of those indices (the *dimension size*).
 - The mapping between tensor indices and positions into the tensor's data. In this library, the mapplin gis [column-major order](#columnmajor), as explained before.
 
 In this library, a tensor `T` is an object with certain invariants:
@@ -31,9 +31,9 @@ Some examples of how tensors are created and used:
 
 ### Dimensions {#tensor_dimensions}
 
-A `Dimensions` object `d` is an immutable instance that stores the dimensions of a tensor. The object is formed by a fixed number, the *rank* `d.rank()`, of non-negative integers. The size of a dimensions object is, in principle, unlimited. In practice, we cannot create tensor objects with more than 32 indices, because of memory constraints. Consider that in the simplest case in which each dimension has size 2, an object with `2**32` elements exceeds the memory size of most computers.
+A [Dimensions] object `d` is an immutable instance that stores the dimensions of a tensor. The object is formed by a fixed number, the *rank* `d.rank()`, of non-negative integers. The size of a dimensions object is, in principle, unlimited. In practice, we cannot create tensor objects with more than 32 indices, because of memory constraints. Consider that in the simplest case in which each dimension has size 2, an object with `2**32` elements exceeds the memory size of most computers.
 
-Dimensions are immutable by design, because we cannot change the shape of a tensor. However, dimensions object can be constructed using either braced initialization, or a vector of integers of type `Indices` (see [Indices](#Indices)), as shown below
+Dimensions are immutable by design, because we cannot change the shape of a tensor. However, dimensions object can be constructed using either braced initialization, or a vector of integers of type `Indices` ([see below](#Indices)), as shown below
 ```{.cc}
 Dimensions d {2, 3, 4};
 RTensor A(d);             // Create a 2 by 3 by 4 tensor with 24 elements
@@ -43,7 +43,7 @@ RTensor A(Dimensions(i)); // Same as above
 
 ### Constructors {#tensor_creation}
 
-To create a new tensor with uninitialized content, you can use a constructor that takes a `Dimensions` list or use the `empty()` static functions that takes a series of non-negative integers as dimension sizes:
+To create a new tensor with uninitialized content, you can use a constructor that takes a [Dimensions] object or use the `empty()` static functions that takes a series of non-negative integers as dimension sizes:
 ```{.cc}
 CTensor ca = CTensor(Dimensions{2, 3});    // creates a 2x3 matrix of complex doubles
 RTensor ra = RTensor(Dimensions{5, 4, 3)}; // creates a 5x4x3 tensor of doubles
@@ -248,7 +248,7 @@ Boolean x = (a == b);
 
 ### Vectors of indices {#Indices}
 
-We also provide a stable object called `Indices` that stores a collection of integers used for indexing, slicing and reshaping tensor objects. At its heart, an Indices object is just a fixed-sized vector of integer values.
+We also provide a stable object called [Indices] that stores a collection of integers used for indexing, slicing and reshaping tensor objects. At its heart, an Indices object is just a fixed-sized vector of integer values.
 It uses the same [memory model](#tensor_sharing) as the tensor class, providing `operator()` and `at()` member functions to read and write the vector's values.
 
 Indices can be constructed either by braced initialization or using static functions. The first case is the most recommended one
@@ -282,4 +282,5 @@ Boolean comp = (i1 == i2)         // Boolean{true, true, false}
 ```
 
 
-[Dimensions] @ref class Dimensions
+[Dimensions]: @ref tensor::Dimensions
+[Indices]:    @ref tensor::Indices
