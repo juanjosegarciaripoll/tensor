@@ -8,12 +8,12 @@ Tensor is a tensor algebra library for doing numerics with arrays of real and co
 
 Some of the conventions used in this library are heavily used by Matlab, because the software was developed well before Python and Numpy became standards for scientific computing, and also before Modern C++ (C++11, C++14 and so on) became a reality. The library is slowly evolving and growing to adapt to these new standards and conventions, also improving usability, portability and overall performance.
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [The tensor object](#tensor)
-- [Tensor operations](#operations)
-- [Sparse matrices](#sparse)
-- [Linear algebra](#linalg)
+- [Installation](installation.html)
+- [Usage](usage.html)
+- [The tensor object](tensor.html)
+- [Tensor operations](tensor_operations.html)
+- [Sparse matrices](sparse.html)
+- Linear algebra
 
 [Numpy]: https://numpy.org/doc/stable/
 [Yorick]: http://yorick.sourceforge.net/
