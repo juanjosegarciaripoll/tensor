@@ -116,8 +116,7 @@ def warmup(size, dtype=np.double):
 
 
 def make_random_real_array(*dimensions) -> np.ndarray:
-    print(dimensions)
-    return GENERATOR.random(size=dimensions)
+    return GENERATOR.normal(size=dimensions)
 
 
 def make_two_real_ndarrays(size: int) -> np.ndarray:
@@ -157,7 +156,7 @@ def make_real_ndarray_and_one(size: int) -> np.ndarray:
 
 
 def make_random_complex_array(*dimensions) -> np.ndarray:
-    return GENERATOR.random(size=dimensions) + 1j * GENERATOR.random(size=dimensions)
+    return GENERATOR.normal(size=dimensions) + 1j * GENERATOR.normal(size=dimensions)
 
 
 def make_two_complex_ndarrays(size: int) -> np.ndarray:
