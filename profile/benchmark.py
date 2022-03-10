@@ -32,30 +32,38 @@ class BenchmarkItem:
         )
 
     @classmethod
-    def timeit(cls, function: Callable, number: int):
+    def timeit(cls, function: Callable, number: int, withgc: bool = True):
         """Execute `function` a `number` of times and return time taken in seconds."""
-        gcold = gc.isenabled()
-        gc.disable()
-        try:
+        if withgc:
+            gc.collect()
             t = time.perf_counter()
             for _ in range(number):
                 function()
             t = time.perf_counter() - t
-        finally:
-            if gcold:
-                gc.enable()
+        else:
+            gcold = gc.isenabled()
+            gc.disable()
+            try:
+                t = time.perf_counter()
+                for _ in range(number):
+                    function()
+                t = time.perf_counter() - t
+            finally:
+                if gcold:
+                    gc.enable()
         return t
 
     @classmethod
     def autorange(self, function: Callable, limit: float = 0.2):
-        i: int = 1
-        while True:
-            for j in 1, 2, 5:
-                number = i * j
-                time_taken = self.timeit(function, number)
-                if time_taken >= limit:
-                    return time_taken / number
-            i *= 10
+        number: int = 1
+        for attempt in range(10):
+            time_taken = self.timeit(function, number)
+            # print(f"time_taken = {time_taken} vs limit = {limit}")
+            if time_taken >= limit:
+                break
+            number = max(round(1.5 * limit / time_taken * number), 1)
+            # print(f"trying again with number = {number}")
+        return time_taken / number
 
     @staticmethod
     def run(
@@ -66,14 +74,13 @@ class BenchmarkItem:
         limit: float = 0.2,
     ):
         if sizes == None:
-            sizes = [4 ** i for i in range(0, 12)]
+            sizes = [4**i for i in range(0, 12)]
         times = []
         for s in sizes:
             args = setup(s)
             timing = BenchmarkItem.autorange(lambda: function(*args), limit)
             times.append(timing)
-            print(
-                f"Executing item {name} at size {s} took {timing:5g} seconds")
+            print(f"Executing item {name} at size {s} took {timing:5g} seconds")
         return BenchmarkItem(name=name, sizes=sizes, times=times)
 
 
