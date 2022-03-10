@@ -1,3 +1,4 @@
+from typing import Optional
 from benchmark import BenchmarkSet, BenchmarkGroup
 import numpy as np
 import sys
@@ -77,87 +78,139 @@ def apply_exp(A, B):
     return np.exp(A)
 
 
+def fold_ij_jk(A, B):
+    return np.einsum("ji,kj->ik", A, B)
+
+
+def fold_ij_kj(A, B):
+    return np.einsum("ji,jk->ik", A, B)
+
+
+def fold_ji_jk(A, B):
+    return np.einsum("ij,kj->ik", A, B)
+
+
+def fold_ji_kj(A, B):
+    return np.einsum("ij,jk->ik", A, B)
+
+
+def mmult_N_N(A, B):
+    return A @ B
+
+
+def mmult_N_T(A, B):
+    return A @ B.T
+
+
+def mmult_T_N(A, B):
+    return A.T @ B
+
+
+def mmult_T_T(A, B):
+    return A.T @ B.T
+
+
 def warmup(size, dtype=np.double):
     for _ in range(10):
         a2 = np.empty(size, dtype=dtype)
 
 
+def make_random_real_array(*dimensions) -> np.ndarray:
+    print(dimensions)
+    return GENERATOR.random(size=dimensions)
+
+
 def make_two_real_ndarrays(size: int) -> np.ndarray:
-    warmup(size)
-    return (GENERATOR.normal(size=size), GENERATOR.normal(size=size))
+    return (make_random_real_array(size), make_random_real_array(size))
 
 
-def make_two_real_columns(size: int, cols: int = 100) -> np.ndarray:
-    warmup(size)
-    return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)))
+def make_two_real_columns(size: int, cols: int = 50) -> np.ndarray:
+    return (make_random_real_array(size, cols), make_random_real_array(size, cols))
 
 
-def make_two_real_rows(size: int, rows: int = 100) -> np.ndarray:
-    warmup(size)
-    return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)))
+def make_two_real_rows(size: int, rows: int = 50) -> np.ndarray:
+    return (make_random_real_array(rows, size), make_random_real_array(rows, size))
 
 
-def make_two_real_rows_and_index(size: int, rows: int = 100) -> np.ndarray:
-    warmup(size)
-    ndx = np.arange(0, size, 2)
-    return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)), ndx)
+def make_two_real_rows_and_index(size: int, rows: int = 50) -> np.ndarray:
+    return (
+        make_random_real_array(rows, size),
+        make_random_real_array(rows, size),
+        np.arange(0, size, 2),
+    )
 
 
-def make_two_real_columns_and_index(size: int, cols: int = 100) -> np.ndarray:
-    warmup(size)
-    ndx = np.arange(0, size, 2)
-    return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)), ndx)
+def make_two_real_columns_and_index(size: int, cols: int = 50) -> np.ndarray:
+    return (
+        make_random_real_array(size, cols),
+        make_random_real_array(size, cols),
+        np.arange(0, size, 2),
+    )
 
 
 def make_real_ndarray_and_number(size: int) -> np.ndarray:
-    warmup(size)
-    return (GENERATOR.normal(size=size), 3.0)
+    return (make_random_real_array(size), 3.0)
 
 
 def make_real_ndarray_and_one(size: int) -> np.ndarray:
-    warmup(size)
-    return (GENERATOR.normal(size=size), 1.0)
+    return (make_random_real_array(size), 1.0)
+
+
+def make_random_complex_array(*dimensions) -> np.ndarray:
+    return GENERATOR.random(size=dimensions) + 1j * GENERATOR.random(size=dimensions)
 
 
 def make_two_complex_ndarrays(size: int) -> np.ndarray:
-    warmup(size, np.complex128)
-    a1, b1 = make_two_real_ndarrays(size)
-    a2, b2 = make_two_real_ndarrays(size)
-    return (a1 + 1j * a2, b1 + 1j * b2)
+    return (make_random_complex_array(size), make_random_complex_array(size))
 
 
-def make_two_complex_columns(size: int, cols: int = 100) -> np.ndarray:
-    warmup(size*cols, np.complex128)
-    return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)))
+def make_two_complex_columns(size: int, cols: int = 50) -> np.ndarray:
+    return (
+        make_random_complex_array(size, cols),
+        make_random_complex_array(size, cols),
+    )
 
 
-def make_two_complex_rows(size: int, rows: int = 100) -> np.ndarray:
-    warmup(size*rows, np.complex128)
-    return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)))
+def make_two_complex_rows(size: int, rows: int = 50) -> np.ndarray:
+    return (
+        make_random_complex_array(rows, size),
+        make_random_complex_array(rows, size),
+    )
 
 
-def make_two_complex_columns_and_index(size: int, cols: int = 100) -> np.ndarray:
-    warmup(size*cols, np.complex128)
-    ndx = np.arange(0, size, 2)
-    return (GENERATOR.normal(size=(size, cols)), GENERATOR.normal(size=(size, cols)), ndx)
+def make_two_complex_rows_and_index(size: int, rows: int = 50) -> np.ndarray:
+    return (
+        make_random_complex_array(rows, size),
+        make_random_complex_array(rows, size),
+        np.arange(0, size, 2),
+    )
 
 
-def make_two_complex_rows_and_index(size: int, rows: int = 100) -> np.ndarray:
-    warmup(size*rows, np.complex128)
-    ndx = np.arange(0, size, 2)
-    return (GENERATOR.normal(size=(rows, size)), GENERATOR.normal(size=(rows, size)), ndx)
+def make_two_complex_columns_and_index(size: int, cols: int = 50) -> np.ndarray:
+    return (
+        make_random_complex_array(size, cols),
+        make_random_complex_array(size, cols),
+        np.arange(0, size, 2),
+    )
 
 
 def make_complex_ndarray_and_number(size: int) -> np.ndarray:
-    warmup(size, np.complex128)
-    a1, a2 = make_two_real_ndarrays(size)
-    return (a1 + 1j * a2, 3.0 + 0.0j)
+    return (make_random_complex_array(size), 3.0)
 
 
 def make_complex_ndarray_and_one(size: int) -> np.ndarray:
-    warmup(size, np.complex128)
-    a1, a2 = make_two_real_ndarrays(size)
-    return (a1 + 1j * a2, 1.0 + 0.0j)
+    return (make_random_complex_array(size), 1.0)
+
+
+def make_two_real_matrices(size: int) -> np.ndarray:
+    return (make_random_real_array(size, size), make_random_real_array(size, size))
+
+
+def make_two_complex_matrices(size: int) -> np.ndarray:
+    return (
+        make_random_complex_array(size, size),
+        make_random_complex_array(size, size),
+    )
 
 
 def system_version():
@@ -166,6 +219,8 @@ def system_version():
 
 
 def run_all():
+    small_sizes = [2**n for n in range(2, 12, 1)]
+    warmup(100 * 8 * 4194304)
     data = BenchmarkSet(
         name="Numpy",
         environment=system_version(),
@@ -173,27 +228,47 @@ def run_all():
             BenchmarkGroup.run(
                 name="CTensor access",
                 items=[
-                    ("copy_N0", copy_first_row_index,
-                     make_two_complex_rows_and_index),
-                    ("copy_0N", copy_first_column_index,
-                     make_two_complex_columns_and_index),
+                    ("copy_N0", copy_first_row_index, make_two_complex_rows_and_index),
+                    (
+                        "copy_0N",
+                        copy_first_column_index,
+                        make_two_complex_columns_and_index,
+                    ),
                     ("extract_i0", extract_first_row, make_two_complex_rows),
                     ("extract_0i", extract_first_column, make_two_complex_columns),
                     ("copy_i0", copy_first_row, make_two_complex_rows),
                     ("copy_0i", copy_first_column, make_two_complex_columns),
+                    ("fold_ij_jk", fold_ij_jk, make_two_complex_matrices, small_sizes),
+                    ("fold_ij_kj", fold_ij_kj, make_two_complex_matrices, small_sizes),
+                    ("fold_ji_jk", fold_ji_jk, make_two_complex_matrices, small_sizes),
+                    ("fold_ji_kj", fold_ji_kj, make_two_complex_matrices, small_sizes),
+                    ("mmult_N_N", mmult_N_N, make_two_complex_matrices, small_sizes),
+                    ("mmult_N_T", mmult_N_T, make_two_complex_matrices, small_sizes),
+                    ("mmult_T_N", mmult_T_N, make_two_complex_matrices, small_sizes),
+                    ("mmult_T_T", mmult_T_T, make_two_complex_matrices, small_sizes),
                 ],
             ),
             BenchmarkGroup.run(
                 name="RTensor access",
                 items=[
-                    ("copy_N0", copy_first_row_index,
-                     make_two_real_rows_and_index),
-                    ("copy_0N", copy_first_column_index,
-                     make_two_real_columns_and_index),
+                    ("copy_N0", copy_first_row_index, make_two_real_rows_and_index),
+                    (
+                        "copy_0N",
+                        copy_first_column_index,
+                        make_two_real_columns_and_index,
+                    ),
                     ("extract_i0", extract_first_row, make_two_real_rows),
                     ("extract_0i", extract_first_column, make_two_real_columns),
                     ("copy_i0", copy_first_row, make_two_real_rows),
                     ("copy_0i", copy_first_column, make_two_real_columns),
+                    ("fold_ij_jk", fold_ij_jk, make_two_real_matrices, small_sizes),
+                    ("fold_ij_kj", fold_ij_kj, make_two_real_matrices, small_sizes),
+                    ("fold_ji_jk", fold_ji_jk, make_two_real_matrices, small_sizes),
+                    ("fold_ji_kj", fold_ji_kj, make_two_real_matrices, small_sizes),
+                    ("mmult_N_N", mmult_N_N, make_two_real_matrices, small_sizes),
+                    ("mmult_N_T", mmult_N_T, make_two_real_matrices, small_sizes),
+                    ("mmult_T_N", mmult_T_N, make_two_real_matrices, small_sizes),
+                    ("mmult_T_T", mmult_T_T, make_two_real_matrices, small_sizes),
                 ],
             ),
             BenchmarkGroup.run(
@@ -214,8 +289,7 @@ def run_all():
                         multiplies_inplace,
                         make_real_ndarray_and_one,
                     ),
-                    ("divides_N_inplace", divides_inplace,
-                     make_real_ndarray_and_one),
+                    ("divides_N_inplace", divides_inplace, make_real_ndarray_and_one),
                     ("sum", apply_sum, make_real_ndarray_and_number),
                     ("exp", apply_exp, make_real_ndarray_and_number),
                     ("cos", apply_cos, make_real_ndarray_and_number),
@@ -233,15 +307,17 @@ def run_all():
                     ("multiplies_N", multiplies, make_complex_ndarray_and_number),
                     ("divides_N", divides, make_complex_ndarray_and_number),
                     ("plus_N_inplace", plus_inplace, make_complex_ndarray_and_one),
-                    ("minus_N_inplace", minus_inplace,
-                     make_complex_ndarray_and_one),
+                    ("minus_N_inplace", minus_inplace, make_complex_ndarray_and_one),
                     (
                         "multiplies_N_inplace",
                         multiplies_inplace,
                         make_complex_ndarray_and_one,
                     ),
-                    ("divides_N_inplace", divides_inplace,
-                     make_complex_ndarray_and_one),
+                    (
+                        "divides_N_inplace",
+                        divides_inplace,
+                        make_complex_ndarray_and_one,
+                    ),
                     ("sum", apply_sum, make_complex_ndarray_and_one),
                     ("exp", apply_exp, make_complex_ndarray_and_one),
                     ("cos", apply_cos, make_complex_ndarray_and_one),
