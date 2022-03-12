@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <ctime>
 #include <functional>
 #include <tensor/tools.h>
 #include <tensor/config.h>
@@ -168,14 +169,22 @@ struct BenchmarkGroup {
   }
 };
 
+std::vector<size_t> make_sizes(size_t start, size_t end, size_t factor = 2) {
+  std::vector<size_t> output;
+  while (start <= end) {
+    output.push_back(start);
+    start *= factor;
+  }
+  return output;
+}
+
 struct BenchmarkItem {
   std::string name{};
   std::vector<size_t> sizes{};
   std::vector<double> times{};
 
   static std::vector<size_t> default_sizes() {
-    return {1,    4,     16,    64,     256,     1024,
-            4096, 16384, 65536, 262144, 1048576, 4194304};
+    return make_sizes(1, 4194304, 4);
   };
 
   template <typename Functor>
@@ -189,18 +198,18 @@ struct BenchmarkItem {
 
   template <typename Functor>
   static double autorange(Functor f, double limit = 0.2) {
-    std::array<size_t, 3> multiples{1, 2, 5};
-    size_t i = 1;
-    while (true) {
-      for (auto j : multiples) {
-        auto repeats = i * j;
-        double time = timeit(f, repeats);
-        if (time >= limit) {
-          return time / static_cast<double>(repeats);
-        }
+    size_t repeats = 1;
+    double time = 0.0;
+    std::cerr.precision(17);
+    for (int attempts = 4; attempts; --attempts) {
+      time = timeit(f, repeats);
+      if (time >= limit) {
+        break;
       }
-      i *= 10;
+      repeats =
+          static_cast<size_t>(1.5 * limit * repeats / std::max(time, 1e-8));
     }
+    return time / static_cast<double>(repeats);
   }
 
   template <class args_tuple>
