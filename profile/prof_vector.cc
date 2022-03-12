@@ -162,6 +162,62 @@ void extract_first_row(std::tuple<T, T> &args) {
 }
 
 template <class T>
+void fold_ij_jk(std::tuple<T, T> &args) {
+  const T &A = std::get<0>(args);
+  const T &B = std::get<1>(args);
+  force(fold(A, -1, B, 0));
+}
+
+template <class T>
+void fold_ij_kj(std::tuple<T, T> &args) {
+  const T &A = std::get<0>(args);
+  const T &B = std::get<1>(args);
+  force(fold(A, -1, B, -1));
+}
+
+template <class T>
+void fold_ji_kj(std::tuple<T, T> &args) {
+  const T &A = std::get<0>(args);
+  const T &B = std::get<1>(args);
+  force(fold(A, 0, B, -1));
+}
+
+template <class T>
+void fold_ji_jk(std::tuple<T, T> &args) {
+  const T &A = std::get<0>(args);
+  const T &B = std::get<1>(args);
+  force(fold(A, 0, B, 0));
+}
+
+template <class T>
+void mmult_N_N(std::tuple<T, T> &args) {
+  const T &A = std::get<0>(args);
+  const T &B = std::get<1>(args);
+  force(mmult(A, B));
+}
+
+template <class T>
+void mmult_T_N(std::tuple<T, T> &args) {
+  const T &A = std::get<0>(args);
+  const T &B = std::get<1>(args);
+  force(mmult(transpose(A), B));
+}
+
+template <class T>
+void mmult_N_T(std::tuple<T, T> &args) {
+  const T &A = std::get<0>(args);
+  const T &B = std::get<1>(args);
+  force(mmult(A, transpose(B)));
+}
+
+template <class T>
+void mmult_T_T(std::tuple<T, T> &args) {
+  const T &A = std::get<0>(args);
+  const T &B = std::get<1>(args);
+  force(mmult(transpose(A), transpose(B)));
+}
+
+template <class T>
 void warmup(size_t size) {
   for (int i = 0; i < 10; ++i) {
     std::unique_ptr<T> p{new T(Dimensions{size})};
@@ -172,36 +228,31 @@ void warmup(size_t size) {
 template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_number(size_t size) {
   auto number = static_cast<typename T::elt_t>(3.0);
-  warmup<T>(size);
   return typename std::tuple<T, typename T::elt_t>(
       T::random(static_cast<tensor::index>(size)), number);
 }
 
 template <class T>
 std::tuple<T, T> make_two_vectors(size_t size) {
-  warmup<T>(size);
   return std::tuple<T, T>(T::random(static_cast<tensor::index>(size)),
                           T::random(static_cast<tensor::index>(size)) + 1.0);
 }
 
 template <class T>
 std::tuple<T> make_vector(size_t size) {
-  warmup<T>(size);
   return typename std::tuple<T>(T::random(static_cast<tensor::index>(size)));
 }
 
 template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
   auto number = static_cast<typename T::elt_t>(1.0);
-  warmup<T>(size);
   return typename std::tuple<T, typename T::elt_t>(
       T::random(static_cast<tensor::index>(size)), number);
 }
 
 template <class T>
 std::tuple<T, T> make_two_columns(size_t size) {
-  size_t columns = 100;
-  warmup<T>(size * columns);
+  size_t columns = 50;
   Dimensions d = {static_cast<tensor::index>(size),
                   static_cast<tensor::index>(columns)};
   return std::tuple<T, T>(T::random(d), T::random(d));
@@ -216,8 +267,7 @@ std::tuple<T, T, Indices> make_two_columns_and_index(size_t size) {
 
 template <class T>
 std::tuple<T, T> make_two_rows(size_t size) {
-  size_t rows = 100;
-  warmup<T>(size * rows);
+  size_t rows = 50;
   Dimensions d = {static_cast<tensor::index>(rows),
                   static_cast<tensor::index>(size)};
   return std::tuple<T, T>(T::random(d), T::random(d));
@@ -230,10 +280,19 @@ std::tuple<T, T, Indices> make_two_rows_and_index(size_t size) {
   return std::tuple<T, T, Indices>(std::get<0>(aux), std::get<1>(aux), ndx);
 }
 
+template <class T>
+std::tuple<T, T> make_two_matrices(size_t size) {
+  Dimensions d = {static_cast<tensor::index>(size),
+                  static_cast<tensor::index>(size)};
+  return std::tuple<T, T>(T::random(d), T::random(d));
+}
+
 template <typename T>
 void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
   typedef typename T::elt_t elt_t;
-
+  std::vector<size_t> small_sizes = make_sizes(1, 2048, 2);
+  // Warm up to largest occupied memory
+  warmup<T>(4194304 * 100);
   {
     BenchmarkGroup group(name + " access");
     group.add("extract_i0", extract_first_column<T>, make_two_columns<T>);
@@ -249,6 +308,14 @@ void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
               make_vector_and_number<T>);
     group.add("indexed_write", vector_indexed_write<T>,
               make_vector_and_number<T>);
+    group.add("fold_ij_jk", fold_ij_jk<T>, make_two_matrices<T>, small_sizes);
+    group.add("fold_ij_kj", fold_ij_kj<T>, make_two_matrices<T>, small_sizes);
+    group.add("fold_ji_jk", fold_ji_jk<T>, make_two_matrices<T>, small_sizes);
+    group.add("fold_ji_kj", fold_ji_kj<T>, make_two_matrices<T>, small_sizes);
+    group.add("mmult_N_N", mmult_N_N<T>, make_two_matrices<T>, small_sizes);
+    group.add("mmult_T_N", mmult_T_N<T>, make_two_matrices<T>, small_sizes);
+    group.add("mmult_N_T", mmult_N_T<T>, make_two_matrices<T>, small_sizes);
+    group.add("mmult_T_T", mmult_T_T<T>, make_two_matrices<T>, small_sizes);
     set << group;
   }
   {
@@ -273,7 +340,7 @@ void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
     group.add("exp", apply_exp<T>, make_vector<T>);
     set << group;
   }
-}
+}  // namespace benchmark
 
 void run_all(std::ostream &out, const std::string &version = "") {
   //
