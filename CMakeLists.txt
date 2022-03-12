@@ -81,7 +81,7 @@ if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT cblas_found))
     CONFIG_NAMES OpenBLAS
     IMPORT_TARGET OpenBLAS::OpenBLAS
     DEPENDENCIES TENSOR_DEPENDENCIES
-    PKGCONFIG_NAMES openblas openblas64
+    PKGCONFIG_NAMES openblas-pthread openblas-openmp openblas openblas64
     REQUIRED
   )
   set(cblas_found TRUE)
