@@ -290,7 +290,7 @@ std::tuple<T, T> make_two_matrices(size_t size) {
 template <typename T>
 void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
   typedef typename T::elt_t elt_t;
-  std::vector<size_t> small_sizes = make_sizes(1, 2048, 2);
+  std::vector<size_t> small_sizes = make_sizes(4, 2048, 2);
   // Warm up to largest occupied memory
   warmup<T>(4194304 * 100);
   {
