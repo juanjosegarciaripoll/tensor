@@ -25,6 +25,8 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 
 * Assertions no longer rely on `<cassert>`. Instead, when assertions are activated (`TENSOR_DEBUG` is `ON`) and are not satisfied, the library raises an exception, which may change depending on the type of assertion. Generally, it will be a child of `std::logic_error`, such as `std::out_of_range` or `tensor::invalid_assertion`.
 
+* `tic()` and `toc()` now use C++ high-precision `std::chrono` functions.
+
 
 ## Incompatible changes
 

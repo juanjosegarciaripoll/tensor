@@ -16,33 +16,21 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <chrono>
+#include <ratio>
 #include <tensor/config.h>
-#include <ctime>
-#ifdef HAVE_GETTIMEOFDAY
-#include <sys/time.h>
-#endif
 #include <tensor/tools.h>
 
 namespace tensor {
 
-/* TODO: Use C++ clock routines as in profile.cc */
-
-static double now() {
-#if defined(HAVE_GETTIMEOFDAY)
-  struct timeval tic_now;
-  gettimeofday(&tic_now, nullptr);
-  double seconds = tic_now.tv_sec;
-  double museconds = tic_now.tv_usec;
-  return seconds + 1e-6 * museconds;
-#else
-  return static_cast<double>(clock()) / static_cast<double>(CLOCKS_PER_SEC);
-#endif
-}
-
-static double sometime;
+static std::chrono::steady_clock inner_clock;
+static auto now = inner_clock.now();
 
 /**Reset the time counter.*/
-double tic() { return sometime = now(); }
+double tic() {
+  now = inner_clock.now();
+  return 0.0;
+}
 
 /**Output the time in seconds since last invocation of tic(). This function
      only counts the real time that the program has used since the last
@@ -52,7 +40,13 @@ double tic() { return sometime = now(); }
 
      Opposite to Matlab, toc() by itself does not produce any informative message.
   */
-double toc() { return now() - sometime; }
+double toc() {
+  auto duration = inner_clock.now() - now;
+  return std::chrono::duration_cast<std::chrono::duration<double, std::nano>>(
+             duration)
+             .count() *
+         1e-9;
+}
 
 /**Output the time in seconds since the given time. This function
      only counts the real time that the program has used since the last
@@ -62,6 +56,6 @@ double toc() { return now() - sometime; }
 
      Opposite to Matlab, toc() by itself does not produce any informative message.
   */
-double toc(double when) { return now() - when; }
+double toc(double when) { return toc() - when; }
 
 }  // namespace tensor
