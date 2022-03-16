@@ -207,7 +207,7 @@ struct BenchmarkItem {
         break;
       }
       repeats =
-          static_cast<size_t>(1.5 * limit * repeats / std::max(time, 1e-8));
+		static_cast<size_t>(1.5 * limit * static_cast<double>(repeats) / std::max(time, 1e-8));
     }
     return time / static_cast<double>(repeats);
   }

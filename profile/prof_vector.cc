@@ -261,7 +261,7 @@ std::tuple<T, T> make_two_columns(size_t size) {
 template <class T>
 std::tuple<T, T, Indices> make_two_columns_and_index(size_t size) {
   auto aux = make_two_columns<T>(size);
-  Indices ndx = iota(0, size - 1, 2);
+  Indices ndx = iota(0, static_cast<tensor::index>(size) - 1, 2);
   return std::tuple<T, T, Indices>(std::get<0>(aux), std::get<1>(aux), ndx);
 }
 
