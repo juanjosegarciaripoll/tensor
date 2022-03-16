@@ -27,6 +27,8 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 
 * `tic()` and `toc()` now use C++ high-precision `std::chrono` functions.
 
+* Random number generation is now implemented using STL C++ generators.
+
 
 ## Incompatible changes
 

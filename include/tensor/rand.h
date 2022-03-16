@@ -20,6 +20,9 @@
 #ifndef TENSOR_RAND_H
 #define TENSOR_RAND_H
 
+#include <limits>
+#include <type_traits>
+#include <random>
 #include <tensor/numbers.h>
 
 namespace tensor {
@@ -33,81 +36,80 @@ void rand_reseed();
 /** Explicitely sed the seed of the RNG. */
 void set_seed(unsigned long seed);
 
-/** Returns a random number. If the type is an integral one, the range
-    is the whole integer range; if the type is a complex or floating point
-    type, then the range is a n-dimensional cube with a corner on [0,...,0]
-    and extending along the positive axis without reaching value of 1 on
-    only direction.
+#ifdef TENSOR_64BITS
+using default_rng_t = std::mt19937;
+#else
+using default_rng_t = std::mt19937_64;
+#endif
+
+extern default_rng_t &default_rng();
+
+namespace detail {
+
+template <typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
+constexpr T rand_inner(T min, T max) {
+  std::uniform_int_distribution<T> dist(min, max);
+  return dist(default_rng());
+}
+
+template <typename T,
+          std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+constexpr T rand_inner(T min, T max) {
+  std::uniform_real_distribution<T> dist(min, max);
+  return dist(default_rng());
+}
+
+constexpr cdouble rand_inner(cdouble min, cdouble max) {
+  return cdouble(rand_inner(min.real(), max.real()),
+                 rand_inner(min.imag(), max.imag()));
+}
+
+template <typename T,
+          std::enable_if_t<!std::is_integral<T>::value, bool> = true>
+constexpr T rand_upper_limit() {
+  return T(1);
+}
+
+template <typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
+constexpr T rand_upper_limit() {
+  return T(std::numeric_limits<T>::max());
+}
+
+template <>
+constexpr cdouble rand_upper_limit<cdouble>() {
+  return cdouble(1.0, 1.0);
+}
+
+template <typename T>
+constexpr T rand_lower_limit() {
+  return T(0);
+}
+
+}  // namespace detail
+
+/** Returns a random number of the given T. If T is an integer type,
+	the value lays in the range [0, max], `max` included. If T is a
+	real type, the random number lays in the range [0, max), excluding
+	`max`. If T is a complex type, the real and imaginary parts are
+	random numbers created with the real and imaginary parts of `max`.
 */
-template <class number>
-number rand() {
-  return static_cast<number>(rand<double>());
+template <typename T>
+T rand(T max = detail::rand_upper_limit<T>()) {
+  return detail::rand_inner(detail::rand_lower_limit<T>(), max);
 }
 
-template <>
-int rand<int>();
-template <>
-unsigned int rand<unsigned int>();
-template <>
-long rand<long>();
-template <>
-unsigned long rand<unsigned long>();
-template <>
-float rand<float>();
-template <>
-double rand<double>();
-template <>
-cdouble rand<cdouble>();
-
-template <class real_number>
-inline real_number rand(real_number upper_limit) {
-  return static_cast<real_number>(upper_limit * rand<double>());
+/** Returns a random number of the given T. If T is an integer type,
+	the value lays in the range [min, max], `max` included. If T is a
+	real type, the random number lays in the range [min, max),
+	excluding `max`. If T is a complex type, the real and imaginary
+	parts are random numbers created with the real and imaginary parts
+	of `max`.
+*/
+template <typename T>
+T rand(T lower_bound, T upper_bound) {
+  return detail::rand_inner(lower_bound, upper_bound);
 }
 
-template <class real_number>
-inline real_number rand(real_number lower_limit, real_number upper_limit) {
-  return rand<real_number>(upper_limit - lower_limit) + lower_limit;
-}
-
-template <>
-inline int rand<int>(int upper) {
-  if (upper > 0) {
-    return static_cast<int>(rand<unsigned int>() %
-                            static_cast<unsigned int>(upper));
-  }
-  return 0;
-}
-
-template <>
-inline int rand<int>(int lower, int upper) {
-  return rand<int>(upper - lower) + lower;
-}
-
-template <>
-inline long rand<long>(long upper) {
-  if (upper > 0) {
-    return static_cast<long>(rand<unsigned long>() %
-                             static_cast<unsigned long>(upper));
-  }
-  return 0;
-}
-
-template <>
-inline long rand<long>(long lower, long upper) {
-  return rand<long>(upper - lower) + lower;
-}
-
-template <>
-inline unsigned long rand<unsigned long>(unsigned long upper) {
-  if (upper) return rand<unsigned long>() % upper;
-  return 0;
-}
-
-template <>
-inline unsigned long rand<unsigned long>(unsigned long lower,
-                                         unsigned long upper) {
-  return rand<unsigned long>(upper - lower) + lower;
-}
 }  // namespace tensor
 
 #endif  // !TENSOR_RAND_H

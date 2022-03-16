@@ -1,5 +1,1 @@
-if(${SIZEOF_LONG} EQUAL 8)
-  target_sources(tensor PRIVATE rand.cc rand64.cc)
-else()
-  target_sources(tensor PRIVATE rand.cc rand32.cc)
-endif()
+target_sources(tensor PRIVATE rand.cc)
