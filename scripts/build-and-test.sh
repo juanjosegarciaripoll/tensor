@@ -12,6 +12,9 @@ function configure () {
         test -d "$builddir" || mkdir "$builddir"
         CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DTENSOR_ARPACK=ON -DTENSOR_FFTW=ON -DTENSOR_OPTIMIZED_BUILD=ON"
 		CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+		if [ $do_sanitize = yes ]; then
+			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ADD_SANITIZERS=ON"
+		fi
         cmake -S"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
         if [ $? -ne 0 ]; then
             echo CMake configuration failed
@@ -83,6 +86,7 @@ do_build=no
 do_profile=no
 do_check=no
 do_docs=no
+do_sanitize=no
 for arg in $*; do
     case $arg in
         --clean) do_clean=yes;;
@@ -91,6 +95,7 @@ for arg in $*; do
         --profile) do_profile=yes;;
         --test) do_check=yes;;
         --docs) do_docs=yes;;
+		--sanitize) do_sanitize=yes;;
         --all) do_clean=yes; do_configure=yes; do_build=yes; do_profile=yes; do_check=yes;;
         --debug) CMAKE_BUILD_TYPE=Debug;;
         --release) CMAKE_BUILD_TYPE=Release;;
