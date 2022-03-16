@@ -125,8 +125,6 @@ class Dimensions {
   static index compute_total_size(const SimpleVector<index> &dims);
 };
 
-void surrounding_dimensions(const Indices &d, index ndx, index *d1, index *d2,
-                            index *d3);
 void surrounding_dimensions(const Dimensions &d, index ndx, index *d1,
                             index *d2, index *d3);
 Dimensions squeeze_dimensions(const Dimensions &d);

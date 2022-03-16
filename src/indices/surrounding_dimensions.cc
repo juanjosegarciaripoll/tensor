@@ -42,21 +42,6 @@ static inline void surrounding_dimensions(const index *d, index size, index ndx,
    * @param d3   the value at this pointer position is set to the product of all
    *             d[i] with \f$ i > ndx \f$
    */
-void surrounding_dimensions(const Indices &d, index ndx, index *d1, index *d2,
-                            index *d3) {
-  return surrounding_dimensions(d.begin(), d.ssize(), ndx, d1, d2, d3);
-}
-
-/** Calculates the number of elements before, at and after a given index.
-   *
-   * @param d    a dimension vector that is studied (usually, got by Tensor::dimensions())
-   * @param ndx  the index of an element of d.
-   * @param d1   the value of the pointer position is set to the product of all
-   *             d[i] with \f$ i < ndx \f$.
-   * @param d2   the value at this pointer position is set to i[ndx].
-   * @param d3   the value at this pointer position is set to the product of all
-   *             d[i] with \f$ i > ndx \f$
-   */
 void surrounding_dimensions(const Dimensions &d, index ndx, index *d1,
                             index *d2, index *d3) {
   return surrounding_dimensions(d.begin(), d.rank(), ndx, d1, d2, d3);
