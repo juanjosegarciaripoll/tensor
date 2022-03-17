@@ -56,7 +56,7 @@ function profile () {
 function check () {
     if [ $do_check = yes ]; then
         cd "$builddir"/tests
-		ctest -j $threads | tee -a "$logfile"
+		ctest -VV -j $threads | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake test failed
             exit -1
@@ -71,7 +71,6 @@ fi
 threads=10
 sourcedir=`pwd`
 builddir="$sourcedir/build-$os"
-logfile="$builddir/log"
 OPENBLAS_NUM_THREADS=4
 export OPENBLAS_NUM_THREADS
 CMAKE_BUILD_TYPE=Release
@@ -100,8 +99,12 @@ for arg in $*; do
         --all) do_clean=yes; do_configure=yes; do_build=yes; do_profile=yes; do_check=yes;;
         --debug) CMAKE_BUILD_TYPE=Debug;;
         --release) CMAKE_BUILD_TYPE=Release;;
+		*) builddir=$arg;;
     esac
 done
+logfile="$builddir/log"
+echo "Build directory $builddir"
+echo "Logging into $logfile"
 
 clean || exit -1
 configure || exit -1
