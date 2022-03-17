@@ -1,6 +1,3 @@
-# TODO: Use FetchContent as in https://sourceforge.net/p/wavepacket/cpp/git/ci/master/tree/dependencies/CMakeLists.txt
-# for sites where GTest might not be available, and to fix a certain version.
-
 include(GoogleTest)
 enable_testing()
 
