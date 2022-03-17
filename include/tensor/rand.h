@@ -48,7 +48,7 @@ namespace detail {
 
 template <typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
 constexpr T rand_inner(T min, T max) {
-  std::uniform_int_distribution<T> dist(min, max);
+  std::uniform_int_distribution<T> dist(min, max-1);
   return dist(default_rng());
 }
 
@@ -88,19 +88,17 @@ constexpr T rand_lower_limit() {
 }  // namespace detail
 
 /** Returns a random number of the given T. If T is an integer type,
-	the value lays in the range [0, max], `max` included. If T is a
-	real type, the random number lays in the range [0, max), excluding
-	`max`. If T is a complex type, the real and imaginary parts are
-	random numbers created with the real and imaginary parts of `max`.
+	the value lays in the range [0, max), excluding `max`. If T is a
+	complex type, the real and imaginary parts are random numbers
+	created with the real and imaginary parts of `max`.
 */
 template <typename T>
 T rand(T max = detail::rand_upper_limit<T>()) {
   return detail::rand_inner(detail::rand_lower_limit<T>(), max);
 }
 
-/** Returns a random number of the given T. If T is an integer type,
-	the value lays in the range [min, max], `max` included. If T is a
-	real type, the random number lays in the range [min, max),
+/** Returns a random number of the given T. If T is an integer or
+	floating point type, the value lays in the range [min, max),
 	excluding `max`. If T is a complex type, the real and imaginary
 	parts are random numbers created with the real and imaginary parts
 	of `max`.
