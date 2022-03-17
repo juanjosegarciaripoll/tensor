@@ -57,24 +57,12 @@ void test_svd(const Tensor &A, const RTensor &exact_s, const Tensor &exact_U,
   SCOPED_TRACE(scopes[block][economic]);
   s = block ? linalg::block_svd(A, &U, &Vt, economic)
             : linalg::svd(A, &U, &Vt, economic);
-  ASSERT_TRUE(all_equal(s, exact_s));
+  ASSERT_CEQ(s, exact_s);
   auto reconstructed_A =
       mmult(U, mmult(diag(s, 0, U.columns(), Vt.rows()), Vt));
-  EXPECT_TRUE(approx_eq(A, reconstructed_A));
-  if (!all_equal(abs(Vt), abs(exact_Vt))) {
-    std::cerr << "A=\n" << matrix_form(A)
-			  << "\nVt=\n" << matrix_form(Vt)
-			  << "\nexact_Vt=\n" << matrix_form(exact_Vt)
-              << std::endl;
-  }
-  if (!all_equal(abs(U), abs(exact_U))) {
-    std::cerr << "A=\n" << matrix_form(A)
-			  << "\nU=\n" << matrix_form(U)
-			  << "\nexact_U=\n" << matrix_form(exact_U)
-              << std::endl;
-  }
-  ASSERT_TRUE(all_equal(abs(U), abs(exact_U)));
-  ASSERT_TRUE(all_equal(abs(Vt), abs(exact_Vt)));
+  ASSERT_CEQ(A, reconstructed_A);
+  ASSERT_CEQ(abs(U), abs(exact_U));
+  ASSERT_CEQ(abs(Vt), abs(exact_Vt));
 }
 
 template <typename elt_t, bool block>
