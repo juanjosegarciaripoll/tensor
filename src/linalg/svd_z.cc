@@ -25,6 +25,30 @@ namespace linalg {
 
 using namespace lapack;
 
+static RTensor economic_row_svd(const CTensor &A, CTensor *U, CTensor *VT) {
+  RTensor s = RTensor::ones(1);
+  if (U != nullptr) {
+    *U = CTensor::ones(1, 1);
+  }
+  double n = s.at(0) = norm2(flatten(A));
+  if (VT != nullptr) {
+    *VT = A / n;
+  }
+  return s;
+}
+
+static RTensor economic_column_svd(const CTensor &A, CTensor *U, CTensor *VT) {
+  RTensor s = RTensor::ones(1);
+  if (VT != nullptr) {
+    *VT = CTensor::ones(1, 1);
+  }
+  double n = s.at(0) = norm2(flatten(A));
+  if (U != nullptr) {
+    *U = A / n;
+  }
+  return s;
+}
+
 /**Singular value decomposition of a complex matrix.
 
      The singular value decomposition of a matrix A, consists in finding two
@@ -38,7 +62,7 @@ using namespace lapack;
      \c MxM, V is \c NxN and the vector S will have \c min(M,N) elements. However
      if flag \c economic is different from zero, then we get smaller matrices,
      U being \c MxR, V being \c RxN and S will have \c R=min(M,N) elements.
-     
+
      \ingroup Linalg
   */
 RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
@@ -51,10 +75,17 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   tensor_assert(A.columns() > 0);
   tensor_assert(A.rank() == 2);
 
-  // TODO: Optimize m = 1 or n = 1 cases
-
   blas::integer m = blas::tensor_rows(A);
   blas::integer n = blas::tensor_columns(A);
+
+  if (m == 1) {
+    if (n == 1 || economic) {
+      return economic_row_svd(A, U, VT);
+    }
+  } else if (n == 1 && economic) {
+    return economic_column_svd(A, U, VT);
+  }
+
   blas::integer k = std::min(m, n);
   blas::integer lwork, ldu, ldv, info;
   RTensor output = RTensor::empty(k);

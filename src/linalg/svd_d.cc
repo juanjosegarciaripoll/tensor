@@ -30,6 +30,30 @@ using namespace lapack;
 
 bool accurate_svd = 0;
 
+static RTensor economic_row_svd(const RTensor &A, RTensor *U, RTensor *VT) {
+  RTensor s = RTensor::ones(1);
+  if (U != nullptr) {
+    *U = RTensor::ones(1, 1);
+  }
+  s.at(0) = norm2(flatten(A));
+  if (VT != nullptr) {
+    *VT = A / s.at(0);
+  }
+  return s;
+}
+
+static RTensor economic_column_svd(const RTensor &A, RTensor *U, RTensor *VT) {
+  RTensor s = RTensor::ones(1);
+  if (VT != nullptr) {
+    *VT = RTensor::ones(1, 1);
+  }
+  s.at(0) = norm2(flatten(A));
+  if (U != nullptr) {
+    *U = A / s.at(0);
+  }
+  return s;
+}
+
 /**Singular value decomposition of a real matrix.
 
      The singular value decomposition of a matrix A, consists in finding two
@@ -43,7 +67,7 @@ bool accurate_svd = 0;
      \c MxM, V is \c NxN and the vector S will have \c min(M,N) elements. However
      if flag \c economic is different from zero, then we get smaller matrices,
      U being \c MxR, V being \c RxN and S will have \c R=min(M,N) elements.
-     
+
      \ingroup Linalg
   */
 RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
@@ -60,7 +84,13 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
   blas::integer m = blas::tensor_rows(A);
   blas::integer n = blas::tensor_columns(A);
 
-  // TODO: Optimize m = 1 or n = 1 cases
+  if (m == 1) {
+    if (n == 1 || economic) {
+      return economic_row_svd(A, U, VT);
+    }
+  } else if (n == 1 && economic) {
+    return economic_column_svd(A, U, VT);
+  }
 
   blas::integer k = std::min(m, n);
   blas::integer lwork, ldu, lda, ldv, info;
