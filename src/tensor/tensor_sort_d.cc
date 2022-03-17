@@ -53,10 +53,10 @@ Indices sort_indices(const RTensor &v, bool reverse) {
     Indices output = iota(0, v.ssize() - 1);
     if (reverse) {
       CompareInv<double> c(v.begin());
-      std::sort(output.begin(), output.end(), c);
+      std::stable_sort(output.begin(), output.end(), c);
     } else {
       Compare<double> c(v.begin());
-      std::sort(output.begin(), output.end(), c);
+      std::stable_sort(output.begin(), output.end(), c);
     }
     return output;
   } else {
