@@ -70,6 +70,18 @@ bool simeq(elt_t1 a, elt_t2 b, double epsilon = 2 * EPSILON) {
 template <typename elt_t>
 bool simeq(const Tensor<elt_t> &a, const Tensor<elt_t> &b,
            double epsilon = 2 * EPSILON) {
+  if (a.rank() != b.rank()) {
+    std::cerr << "Comparing tensors of different ranks: " << a.rank() << " vs "
+              << b.rank() << '\n';
+    return false;
+  }
+
+  if (!all_equal(a.dimensions(), b.dimensions())) {
+    std::cerr << "Dimensions do not match:" << a.dimensions() << " vs. "
+              << b.dimensions() << '\n';
+    return false;
+  }
+
   for (typename Tensor<elt_t>::const_iterator ia = a.begin(), ib = b.begin();
        ia != a.end(); ia++, ib++) {
     double x = tensor::abs(*ia - *ib);
