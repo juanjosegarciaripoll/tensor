@@ -21,7 +21,7 @@
 int main(int narg, char *argv[]) {
   ::testing::InitGoogleTest(&narg, argv);
 
-  (void)RUN_ALL_TESTS();
+  int exit_code = RUN_ALL_TESTS();
 
-  return 0;
+  return exit_code;
 }
