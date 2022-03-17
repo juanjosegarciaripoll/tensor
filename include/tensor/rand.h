@@ -48,8 +48,12 @@ namespace detail {
 
 template <typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
 constexpr T rand_inner(T min, T max) {
-  std::uniform_int_distribution<T> dist(min, max-1);
-  return dist(default_rng());
+  if (max > min + 1) {
+    std::uniform_int_distribution<T> dist(min, max - 1);
+    return dist(default_rng());
+  } else {
+    return min;
+  }
 }
 
 template <typename T,
