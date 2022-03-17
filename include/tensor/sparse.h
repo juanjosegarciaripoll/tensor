@@ -61,10 +61,10 @@ class Sparse {
   /**Implicit conversion from other sparse types.*/
   template <typename e2>
   Sparse(const Sparse<e2> &other)
-      : dims_(other.dims_),
-        row_start_(other.row_start_),
-        column_(other.column_),
-        data_(other.data_) {}
+	: dims_(other.priv_dims()),
+	  row_start_(other.priv_row_start()),
+	  column_(other.priv_column()),
+	  data_(other.priv_data()) {}
 
   /**Return an element of the sparse matrix.*/
   elt_t operator()(index row, index col) const;
@@ -101,7 +101,7 @@ class Sparse {
   const Indices &priv_column() const { return column_; }
   const Tensor<elt> &priv_data() const { return data_; }
 
- public:
+ private:
   /** The dimensions (rows and columns) of the sparse matrix. */
   Dimensions dims_;
   /** Gives for each row of the matrix at which index the column_/data_ entries start. */
