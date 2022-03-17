@@ -19,6 +19,7 @@
 #include "loops.h"
 #include <gtest/gtest.h>
 #include <tensor/tensor.h>
+#include <tensor/io.h>
 
 namespace tensor_test {
 
@@ -40,11 +41,6 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
       Tensor<elt_t2> Paux(dims);
       EXPECT_THROW(P + Paux, ::tensor::invalid_assertion);
       EXPECT_THROW(Paux + P, ::tensor::invalid_assertion);
-    }
-    {
-      Tensor<elt_t2> Paux = Tensor<elt_t2>::empty(P.dimension(0) + 1);
-      EXPECT_THROW(Paux + P, ::tensor::invalid_assertion);
-      EXPECT_THROW(P + Paux, ::tensor::invalid_assertion);
     }
   }
 #endif
