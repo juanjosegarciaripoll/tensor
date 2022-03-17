@@ -304,8 +304,8 @@ class Tensor {
     return Tensor<elt_t>(dimensions).fill_with(number_one<elt_t>());
   };
 
-  /* TODO: Make begin() noexcept when we remove copy-on-write */
-  /**Iterator at the beginning.*/
+  /**Iterator at the beginning.
+   * \todo Make begin() noexcept when we remove copy-on-write*/
   iterator begin() { return data_.begin(); }
   /**Iterator at the beginning.*/
   const_iterator begin() const noexcept { return data_.cbegin(); }
@@ -384,13 +384,11 @@ class MutableTensorView {
         range_iterator_begin_(RangeIterator::begin(ranges)) {}
 
   void operator=(const TensorView<elt_t> &t) {
-    /* TODO: ensure matching dimensions */
-    tensor_assert(t.size() == size());
-    begin().copy_from(t.begin());
+	tensor_assert(verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
+	begin().copy_from(t.begin());
   }
   void operator=(const Tensor<elt_t> &t) {
-    /* TODO: ensure matching dimensions */
-    tensor_assert(t.size() == size());
+	tensor_assert(verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
     begin().copy_from_contiguous_iterator(t.begin());
   }
   void operator=(elt_t v) { begin().fill(v); }
