@@ -16,7 +16,7 @@ function configure () {
 			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ADD_SANITIZERS=ON"
 		fi
         cmake -S"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
-        if [ $? -ne 0 ]; then
+        if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake configuration failed
             exit 1
         fi
@@ -36,7 +36,7 @@ function build () {
 function docs () {
     if [ $do_docs = yes ]; then
         cmake --build "$builddir" --config Release --target doxygen -- 2>&1 | tee -a "$logfile"
-        if [ $? -ne 0 ]; then
+        if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake documentation build failed
             exit 1
         fi
@@ -46,7 +46,7 @@ function docs () {
 function profile () {
     if [ $do_profile = yes ]; then
         "$builddir/profile/profile" "$sourcedir/profile/benchmark_$os.json" 2>&1 | tee -a "$logfile"
-        if [ $? -ne 0 ]; then
+        if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake profile failed
             exit 1
         fi
@@ -55,9 +55,10 @@ function profile () {
 
 function check () {
     if [ $do_check = yes ]; then
-        cd "$builddir"/tests && ctest -j $threads | tee -a "$logfile"
-        if [ $? -ne 0 ]; then
-            echo CMake profile failed
+        cd "$builddir"/tests
+		ctest -j $threads | tee -a "$logfile"
+        if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+            echo CMake test failed
             exit -1
         fi
     fi
@@ -102,9 +103,9 @@ for arg in $*; do
     esac
 done
 
-clean
-configure
-build
-docs
-check
-profile
+clean || exit -1
+configure || exit -1
+build || exit -1
+docs || exit -1
+check || exit -1
+profile || exit -1
