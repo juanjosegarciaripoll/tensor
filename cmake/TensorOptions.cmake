@@ -5,6 +5,13 @@ option(TENSOR_CPPCHECK "Enable running cppcheck if found" OFF)
 option(WARNINGS_AS_ERRORS "Compilation and analysis warnings become errors" OFF)
 option(TENSOR_ADD_SANITIZERS "Compile and link with address sanitizers if in Debug mode" OFF)
 
+# The variables are not for ordinary users, so we hide them
+mark_as_advanced(TENSOR_DEFAULT_WARNINGS
+                 TENSOR_OPTIMIZED_BUILD
+                 TENSOR_CLANG_TIDY
+                 WARNINGS_AS_ERRORS
+                 TENSOR_ADD_SANITIZERS)
+
 function(make_tensor_options)
     add_library(tensor_options INTERFACE)
     if (TENSOR_OPTIMIZED_BUILD)
