@@ -56,7 +56,7 @@ function profile () {
 function check () {
     if [ $do_check = yes ]; then
         cd "$builddir"/tests
-		ctest -VV -j $threads | tee -a "$logfile"
+		ctest -j $threads --rerun-failed --output-on-failure | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake test failed
             exit -1
@@ -89,6 +89,7 @@ do_docs=no
 do_sanitize=no
 for arg in $*; do
     case $arg in
+		--threads=*) threads=${arg:10};;
         --clean) do_clean=yes;;
         --configure) do_configure=yes;;
         --build) do_build=yes;;
