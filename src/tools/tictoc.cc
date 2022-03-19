@@ -23,14 +23,28 @@
 
 namespace tensor {
 
-static std::chrono::steady_clock inner_clock;
-static auto now = inner_clock.now();
+struct Clock {
+  std::chrono::steady_clock inner_clock{};
+  std::chrono::time_point<std::chrono::steady_clock> now{inner_clock.now()};
+
+  double tic() {
+    now = inner_clock.now();
+    return 0.0;
+  }
+
+  double toc() {
+    auto duration = inner_clock.now() - now;
+    return std::chrono::duration_cast<std::chrono::duration<double>>(duration)
+        .count();
+  }
+
+  double toc(double when) { return toc() - when; }
+};
+
+static Clock inner_clock;  // NOLINT
 
 /**Reset the time counter.*/
-double tic() {
-  now = inner_clock.now();
-  return 0.0;
-}
+double tic() { return inner_clock.tic(); }
 
 /**Output the time in seconds since last invocation of tic(). This function
      only counts the real time that the program has used since the last
@@ -40,13 +54,7 @@ double tic() {
 
      Opposite to Matlab, toc() by itself does not produce any informative message.
   */
-double toc() {
-  auto duration = inner_clock.now() - now;
-  return std::chrono::duration_cast<std::chrono::duration<double, std::nano>>(
-             duration)
-             .count() *
-         1e-9;
-}
+double toc() { return inner_clock.toc(); }
 
 /**Output the time in seconds since the given time. This function
      only counts the real time that the program has used since the last
@@ -56,6 +64,6 @@ double toc() {
 
      Opposite to Matlab, toc() by itself does not produce any informative message.
   */
-double toc(double when) { return toc() - when; }
+double toc(double when) { return inner_clock.toc(when); }
 
 }  // namespace tensor
