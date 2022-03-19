@@ -25,7 +25,7 @@ function configure () {
 
 function build () {
     if [ $do_build = yes ]; then
-        cmake --build "$builddir" --config Release -j $threads -- 2>&1 | tee -a "$logfile"
+        cmake --build "$builddir" -j $threads -- 2>&1 | tee -a "$logfile"
         if [ $? -ne 0 ]; then
             echo CMake build failed
             exit 1
@@ -35,7 +35,7 @@ function build () {
 
 function docs () {
     if [ $do_docs = yes ]; then
-        cmake --build "$builddir" --config Release --target doxygen -- 2>&1 | tee -a "$logfile"
+        cmake --build "$builddir" --target doxygen -- 2>&1 | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake documentation build failed
             exit 1
