@@ -15,6 +15,9 @@ function configure () {
 		if [ $do_sanitize = yes ]; then
 			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ADD_SANITIZERS=ON"
 		fi
+		if [ $do_analyze = yes ]; then
+			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CLANG_TIDY=ON -DTENSOR_CPPCHECK=ON"
+		fi
         cmake -S"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake configuration failed
@@ -87,6 +90,7 @@ do_profile=no
 do_check=no
 do_docs=no
 do_sanitize=no
+do_analyze=no
 for arg in $*; do
     case $arg in
 		--threads=*) threads=${arg:10};;
@@ -97,6 +101,7 @@ for arg in $*; do
         --test) do_check=yes;;
         --docs) do_docs=yes;;
 		--sanitize) do_sanitize=yes;;
+		--analyze) do_analyze=yes;;
         --all) do_clean=yes; do_configure=yes; do_build=yes; do_profile=yes; do_check=yes;;
         --debug) CMAKE_BUILD_TYPE=Debug;;
         --release) CMAKE_BUILD_TYPE=Release;;
