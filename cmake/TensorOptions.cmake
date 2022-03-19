@@ -1,16 +1,12 @@
 option(TENSOR_DEFAULT_WARNINGS "Add known default compiler warnings" ON)
 option(TENSOR_OPTIMIZED_BUILD "Add well known optimization arguments" ON)
-option(TENSOR_CLANG_TIDY "Enable running clang-tidy if found" ON)
-option(TENSOR_CPPCHECK "Enable running cppcheck if found" ON)
+option(TENSOR_CLANG_TIDY "Enable running clang-tidy if found" OFF)
+option(TENSOR_CPPCHECK "Enable running cppcheck if found" OFF)
 option(WARNINGS_AS_ERRORS "Compilation and analysis warnings become errors" OFF)
 option(TENSOR_ADD_SANITIZERS "Compile and link with address sanitizers if in Debug mode" OFF)
 
 function(make_tensor_options)
     add_library(tensor_options INTERFACE)
-    target_precompile_headers(tensor_options
-        INTERFACE <algorithm> <cmath> <complex> <cstring> <functional>
-                  <memory> <iostream> <string> <vector>)
-
     if (TENSOR_OPTIMIZED_BUILD)
         if (NOT CMAKE_BUILD_TYPE MATCHES "Rel")
             tensor_add_optimizations()
@@ -31,6 +27,21 @@ function(make_tensor_options)
 
     if (TENSOR_ADD_SANITIZERS)
         tensor_add_sanitizers()
+    endif()
+
+	# Clang-tidy does not understand G++ precompiled headers
+	set(TENSOR_USE_PCH ON)
+	if (CLANGTIDY)
+	    message(STATUS "CMAKE_CXX_COMPILER_ID=${CMAKE_CXX_COMPILER_ID}")
+	    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+		    set(TENSOR_USE_PCH OFF)
+		endif()
+	endif()
+	if (TENSOR_USE_PCH)
+	    message(STATUS "Using precompiled headers")
+        target_precompile_headers(tensor_options
+            INTERFACE <algorithm> <cmath> <complex> <cstring> <functional>
+                      <memory> <iostream> <string> <vector>)
     endif()
 endfunction()
 
@@ -174,6 +185,7 @@ macro(tensor_enable_cppcheck)
           --template=${CPPCHECK_TEMPLATE}
           --enable=style,performance,warning,portability
           --inline-suppr
+		  --library=googletest
           # We cannot act on a bug/missing feature of cppcheck
           --suppress=internalAstError
           # if a file does not have an internalAstError, we get an unmatchedSuppression error
