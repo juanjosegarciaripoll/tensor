@@ -21,99 +21,11 @@
 #define TENSOR_SPARSE_H
 
 #include <tensor/tensor.h>
+#include <tensor/sparse/types.h>
+#include <tensor/sparse/csr_matrix.h>
 
 namespace tensor {
 
-/**A sparse matrix. A sparse matrix is a compact representation of
-     two-dimensional tensors that have a lot of zero elements. Our
-     implementation behaves much like Matlab's sparse matrices, in the sense
-     that one can build them up from 2D tensors, preallocate them, perform
-     matrix multiplication with mmult(), etc, etc.
-
-     \ingroup Tensors
-  */
-template <typename elt>
-class Sparse {
- public:
-  typedef elt elt_t;
-  typedef Tensor<elt> tensor;
-
-  /**Build an empty matrix.*/
-  Sparse();
-  /**Create a matrix with all elements set to zero.*/
-  Sparse(index rows, index cols, index nonzero = 0);
-  /**Create a sparse matrix from the coordinates and values. */
-  Sparse(const Indices &row_indices, const Indices &column_indices,
-         const Tensor<elt_t> &data, index rows = 0, index columns = 0);
-  /* Create a sparse matrix from its internal representation. */
-  Sparse(const Indices &dims, const Indices &row_start, const Indices &column,
-         const Tensor<elt_t> &data);
-  /**Convert a tensor to sparse form.*/
-  explicit Sparse(const Tensor<elt_t> &tensor);
-  /**Copy constructor.*/
-  Sparse(const Sparse<elt_t> &s) = default;
-  /**Move constructor.*/
-  Sparse(Sparse<elt_t> &&s) = default;
-  /**Assignment operator.*/
-  Sparse &operator=(const Sparse<elt_t> &s) = default;
-  /**Move assignment operator.*/
-  Sparse &operator=(Sparse<elt_t> &&s) = default;
-  /**Implicit conversion from other sparse types.*/
-  template <typename e2>
-  Sparse(const Sparse<e2> &other)
-	: dims_(other.priv_dims()),
-	  row_start_(other.priv_row_start()),
-	  column_(other.priv_column()),
-	  data_(other.priv_data()) {}
-
-  /**Return an element of the sparse matrix.*/
-  elt_t operator()(index row, index col) const;
-
-  /**Return Sparse matrix dimensions.*/
-  const Dimensions &dimensions() const { return dims_; }
-  /**Length of a given Sparse matrix index.*/
-  index dimension(int which) const;
-  /**Number of rows.*/
-  index rows() const { return dims_[0]; }
-  /**Number of columns*/
-  index columns() const { return dims_[1]; }
-  /**Number of nonzero elements.*/
-  index length() const {
-    index r = rows();
-    return r ? row_start_[r] : 0;
-  }
-
-  /**Empty matrix?*/
-  bool is_empty() const { return (rows() == 0) || (columns() == 0); }
-
-  /**Identity matrix in sparse form.*/
-  static Sparse<elt_t> eye(index rows, index cols);
-  /**Identity matrix in sparse form.*/
-  static Sparse<elt_t> eye(index rows) { return eye(rows, rows); }
-  /**Return a random sparse matrix.*/
-  static Sparse<elt_t> random(index rows, index columns, double density = 0.2);
-
-  template <typename t>
-  friend const Tensor<t> full(const Sparse<t> &s);
-
-  const Dimensions &priv_dims() const { return dims_; }
-  const Indices &priv_row_start() const { return row_start_; }
-  const Indices &priv_column() const { return column_; }
-  const Tensor<elt> &priv_data() const { return data_; }
-
- private:
-  /** The dimensions (rows and columns) of the sparse matrix. */
-  Dimensions dims_;
-  /** Gives for each row of the matrix at which index the column_/data_ entries start. */
-  Indices row_start_;
-  /** Gives for each data_ entry the column in the matrix. */
-  Indices column_;
-  /** The single data entries. */
-  Tensor<elt_t> data_;
-};
-
-typedef Sparse<double> RSparse;
-typedef Sparse<cdouble> CSparse;
 CSparse to_complex(const RSparse &s);
 inline const CSparse &to_complex(const CSparse &c) { return c; }
 
@@ -217,9 +129,5 @@ CSparse kron2(const CSparse &s1, const CSparse &s2);
 CSparse kron2_sum(const CSparse &s1, const CSparse &s2);
 
 }  // namespace tensor
-
-#ifdef TENSOR_LOAD_IMPL
-#include <tensor/detail/sparse_base.hpp>
-#endif
 
 #endif  // !TENSOR_SPARSE_H

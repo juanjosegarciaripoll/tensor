@@ -25,6 +25,6 @@ namespace tensor {
 // Explicitely instantiate an specialization of CSparse. This generates
 // all required code.
 //
-template class Sparse<cdouble>;
+template class CSRMatrix<cdouble>;
 
 }  // namespace tensor

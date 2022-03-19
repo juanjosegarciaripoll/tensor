@@ -29,6 +29,8 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 
 * Random number generation is now implemented using STL C++ generators.
 
+* Sparse<> is presently an alias for CSRMatrix<> a new class that makes it clear which implementation we use for the matrices. This means also separating functions into different headers in a `tensor/sparse/` folder, but everything can be accessed from `tensor/sparse.h`.
+
 
 ## Incompatible changes
 
@@ -41,3 +43,5 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 * To avoid ambiguities, all constructors of the form `Tensor(index i0, index i1 ...)` have been eliminated. Use `Tensor::empty(i0, i1, ...)` instead.
 
 * Similarly, `Indices` and `Booleans` no longer have a scalar constructor indicating the reserved size. Use the static function `Indices::empty` instead.
+
+* Member variables in class Sparse are now privated (the public declaration was a typo).

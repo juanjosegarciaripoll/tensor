@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110+1301 USA.
 */
 
-#include "../sparse/sparse_binop.hpp"
+#include <tensor/sparse/csr_operators.h>
 
 namespace tensor {
 

@@ -26,6 +26,6 @@ namespace tensor {
 // Explicitely instantiate an specialization of RSparse. This generates
 // all required code.
 //
-template class Sparse<double>;
+template class CSRMatrix<double>;
 
 }  // namespace tensor

@@ -1,3 +1,4 @@
+#pragma once
 /*
     Copyright (c) 2010 Juan Jose Garcia Ripoll
 
@@ -15,18 +16,60 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+#ifndef TENSOR_SPARSE_CSR_OPERATORS_H
+#define TENSOR_SPARSE_CSR_OPERATORS_H
 
 #include <functional>
+#include <algorithm>
 #include <type_traits>
 #include <tensor/exceptions.h>
-#include <tensor/sparse.h>
+#include <tensor/sparse/types.h>
+#include <tensor/sparse/csr_matrix.h>
 
 namespace tensor {
 
+//////////////////////////////////////////////////////////////////////
+// SPARSE MATRIX NEGATION
+//
+template <typename T>
+const CSRMatrix<T> operator-(const CSRMatrix<T> &s) {
+  return CSRMatrix<T>(s.dimensions(), s.priv_row_start(), s.priv_column(),
+                      -s.priv_data());
+}
+
+//////////////////////////////////////////////////////////////////////
+// MINIMAL ARITHMETICS WITH NUMBERS
+//
+
+template <typename T1, typename T2>
+const CSRMatrix<std::common_type_t<T1, T2>> operator*(const CSRMatrix<T1> &s,
+                                                      T2 b) {
+  return CSRMatrix<std::common_type_t<T1, T2>>(
+      s.dimensions(), s.priv_row_start(), s.priv_column(), s.priv_data() * b);
+}
+
+template <typename T1, typename T2>
+const CSRMatrix<std::common_type_t<T1, T2>> operator/(const CSRMatrix<T1> &s,
+                                                      T2 b) {
+  return CSRMatrix<std::common_type_t<T1, T2>>(
+      s.dimensions(), s.priv_row_start(), s.priv_column(), s.priv_data() / b);
+}
+
+template <typename T1, typename T2>
+const CSRMatrix<std::common_type_t<T1, T2>> operator*(T1 b,
+                                                      const CSRMatrix<T2> &s) {
+  return s * b;
+}
+
+//////////////////////////////////////////////////////////////////////
+// ARITHMETIC BETWEEN MATRICES
+//
+
 template <typename T1, typename T2, class binop>
-Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
-    const Sparse<T1> &m1, const Sparse<T2> &m2, binop op) {
-  typedef typename std::common_type<T1, T2>::type T3;
+Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
+                                                const Sparse<T2> &m2,
+                                                binop op) {
+  typedef std::common_type_t<T1, T2> T3;
 
   index rows = m1.rows();
   index cols = m1.columns();
@@ -40,18 +83,18 @@ Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
   Indices column(max_size);
   Indices row_start(static_cast<size_t>(rows) + 1);
 
-  typename Tensor<T3>::iterator out_data = data.begin();
-  typename Indices::iterator out_column = column.begin();
-  typename Indices::iterator out_row_start = row_start.begin();
-  typename Tensor<T3>::iterator out_begin = out_data;
+  auto out_data = data.begin();
+  auto out_column = column.begin();
+  auto out_row_start = row_start.begin();
+  auto out_begin = out_data;
 
-  typename Tensor<T1>::const_iterator m1_data = m1.priv_data().begin();
-  typename Indices::const_iterator m1_row_start = m1.priv_row_start().begin();
-  typename Indices::const_iterator m1_column = m1.priv_column().begin();
+  auto m1_data = m1.priv_data().begin();
+  auto m1_row_start = m1.priv_row_start().begin();
+  auto m1_column = m1.priv_column().begin();
 
-  typename Tensor<T2>::const_iterator m2_data = m2.priv_data().begin();
-  typename Indices::const_iterator m2_row_start = m2.priv_row_start().begin();
-  typename Indices::const_iterator m2_column = m2.priv_column().begin();
+  auto m2_data = m2.priv_data().begin();
+  auto m2_row_start = m2.priv_row_start().begin();
+  auto m2_column = m2.priv_column().begin();
 
   index j1 = *(m1_row_start++);     // data start for this row in M1
   index l1 = (*m1_row_start) - j1;  // # elements in this row in M1
@@ -120,4 +163,27 @@ Sparse<typename std::common_type<T1, T2>::type> sparse_binop(
   return Sparse<T3>(m1.dimensions(), row_start, the_column, the_data);
 }
 
+template <typename T1, typename T2>
+const CSRMatrix<std::common_type_t<T1, T2>> operator+(const CSRMatrix<T1> &m1,
+                                                      const CSRMatrix<T2> &m2) {
+  typedef std::common_type_t<T1, T2> T3;
+  return sparse_binop(m1, m2, std::plus<T3>());
+}
+
+template <typename T1, typename T2>
+const CSRMatrix<std::common_type_t<T1, T2>> operator-(const CSRMatrix<T1> &m1,
+                                                      const CSRMatrix<T2> &m2) {
+  typedef std::common_type_t<T1, T2> T3;
+  return sparse_binop(m1, m2, std::minus<T3>());
+}
+
+template <typename T1, typename T2>
+const CSRMatrix<std::common_type_t<T1, T2>> operator*(const CSRMatrix<T1> &m1,
+                                                      const CSRMatrix<T2> &m2) {
+  typedef std::common_type_t<T1, T2> T3;
+  return sparse_binop(m1, m2, std::multiplies<T3>());
+}
+
 }  // namespace tensor
+
+#endif  // !TENSOR_SPARSE_CSR_OPERATORS_H
