@@ -1,6 +1,7 @@
 option(TENSOR_DEFAULT_WARNINGS "Add known default compiler warnings" ON)
 option(TENSOR_OPTIMIZED_BUILD "Add well known optimization arguments" ON)
-option(TENSOR_CLANG_TIDY "Enable running clang-tidy if found" OFF)
+option(TENSOR_CLANG_TIDY "Enable running clang-tidy if found" ON)
+option(TENSOR_CPPCHECK "Enable running cppcheck if found" ON)
 option(WARNINGS_AS_ERRORS "Compilation and analysis warnings become errors" OFF)
 option(TENSOR_ADD_SANITIZERS "Compile and link with address sanitizers if in Debug mode" OFF)
 
@@ -22,6 +23,10 @@ function(make_tensor_options)
 
     if (TENSOR_CLANG_TIDY)
         tensor_enable_clang_tidy()
+    endif()
+
+    if (TENSOR_CPPCHECK)
+        tensor_enable_cppcheck()
     endif()
 
     if (TENSOR_ADD_SANITIZERS)
@@ -145,7 +150,7 @@ function(tensor_add_warnings)
 
 endfunction()
 
-function(tensor_enable_clang_tidy)
+macro(tensor_enable_clang_tidy)
     find_program(CLANGTIDY clang-tidy)
     if(CLANGTIDY)
         set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY})
@@ -155,8 +160,34 @@ function(tensor_enable_clang_tidy)
         if(WARNINGS_AS_ERRORS)
             list(APPEND CMAKE_CXX_CLANG_TIDY -warnings-as-errors=*)
         endif()
+		set(CMAKE_CXX_CLANG_TIDY ${CMAKE_CXX_CLANG_TIDY} PARENT_SCOPE)
         message(STATUS "clang-tidy enabled with options CMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
     else()
         message(WARNING "clang-tidy requested but not found")
     endif()
-endfunction()
+endmacro()
+
+macro(tensor_enable_cppcheck)
+    find_program(CPPCHECK cppcheck)
+    if(CPPCHECK)
+        set(CMAKE_CXX_CPPCHECK ${CPPCHECK}
+          --template=${CPPCHECK_TEMPLATE}
+          --enable=style,performance,warning,portability
+          --inline-suppr
+          # We cannot act on a bug/missing feature of cppcheck
+          --suppress=internalAstError
+          # if a file does not have an internalAstError, we get an unmatchedSuppression error
+          --suppress=unmatchedSuppression
+          --inconclusive)
+        if(${CMAKE_CXX_STANDARD})
+            set(CMAKE_CXX_CPPCHECK ${CMAKE_CXX_CPPCHECK} --std=c++${CMAKE_CXX_STANDARD})
+        endif()
+        if(WARNINGS_AS_ERRORS)
+            list(APPEND CMAKE_CXX_CPPCHECK -warnings-as-errors=*)
+        endif()
+        set(CMAKE_CXX_CPPCHECK ${CMAKE_CXX_CPPCHECK} PARENT_SCOPE)
+        message(STATUS "cppcheck enabled with options CMAKE_CXX_CPPCHECK=${CMAKE_CXX_CPPCHECK}")
+    else()
+        message(WARNING "cppcheck requested but not found")
+    endif()
+endmacro()
