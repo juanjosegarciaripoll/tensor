@@ -20,12 +20,13 @@
 
 namespace tensor {
 
-static default_rng_t default_rng_;
-
-default_rng_t &default_rng() { return default_rng_; }
+default_rng_t &default_rng() {
+  static default_rng_t default_rng_{};
+  return default_rng_;
+}
 
 void set_seed(unsigned long seed) {
-  default_rng_.seed(static_cast<default_rng_t::result_type>(seed));
+  default_rng().seed(static_cast<default_rng_t::result_type>(seed));
 }
 
 void rand_reseed() {
