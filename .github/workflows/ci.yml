@@ -22,3 +22,29 @@ jobs:
       - name: test
         run: ./scripts/build-and-test.sh --test --threads=2
         timeout-minutes: 5
+
+  ClangTidy:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+      - name: install libraries
+        run: sudo apt install -y libarpack2-dev libfftw3-dev googletest libgtest-dev ninja-build libopenblas-openmp-dev clang-tidy
+      - name: fix permisions
+        run: chmod u+x ./scripts/build-and-test.sh
+      - name: configure
+        run: ./scripts/build-and-test.sh --configure --sanitize --debug --clang-tidy
+      - name: build
+        run: ./scripts/build-and-test.sh --build --threads=2
+
+  CppCheck:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+      - name: install libraries
+        run: sudo apt install -y libarpack2-dev libfftw3-dev googletest libgtest-dev ninja-build libopenblas-openmp-dev cppcheck
+      - name: fix permisions
+        run: chmod u+x ./scripts/build-and-test.sh
+      - name: configure
+        run: ./scripts/build-and-test.sh --configure --sanitize --debug --cppcheck
+      - name: build
+        run: ./scripts/build-and-test.sh --build --threads=2
