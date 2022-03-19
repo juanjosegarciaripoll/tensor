@@ -22,7 +22,7 @@
 #include <tensor/tensor.h>
 #include <tensor/linalg.h>
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+static constexpr auto M_PI = 3.14159265358979323846;
 #endif
 
 namespace tensor_test {

@@ -22,6 +22,10 @@
 #include <tensor/tensor.h>
 #include <tensor/fftw.h>
 
+#ifndef M_PI
+static constexpr auto M_PI = 3.14159265358979323846;
+#endif
+
 namespace tensor_test {
 
 // Creates the matrix to do the DFT in the slow way.
