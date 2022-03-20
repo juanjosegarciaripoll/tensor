@@ -294,7 +294,8 @@ template <typename t1, typename t2,
                                       std::is_floating_point<t2>::value>>
 Booleans operator<(const Tensor<t1> &a, const Tensor<t2> &b) {
   return detail::compare_tensors(
-      a, b, [](const t1 &a, const t2 &b) { return a < b; });
+      a, b,
+      [](const t1 &a_value, const t2 &b_value) { return a_value < b_value; });
 }
 
 template <typename t1, typename t2,
@@ -302,19 +303,22 @@ template <typename t1, typename t2,
                                       std::is_floating_point<t2>::value>>
 Booleans operator>(const Tensor<t1> &a, const Tensor<t2> &b) {
   return detail::compare_tensors(
-      a, b, [](const t1 &a, const t2 &b) { return a > b; });
+      a, b,
+      [](const t1 &a_value, const t2 &b_value) { return a_value > b_value; });
 }
 
 template <typename t1, typename t2>
 Booleans operator==(const Tensor<t1> &a, const Tensor<t2> &b) {
   return detail::compare_tensors(
-      a, b, [](const t1 &a, const t2 &b) { return a == b; });
+      a, b,
+      [](const t1 &a_value, const t2 &b_value) { return a_value == b_value; });
 }
 
 template <typename t1, typename t2>
 Booleans operator!=(const Tensor<t1> &a, const Tensor<t2> &b) {
   return detail::compare_tensors(
-      a, b, [](const t1 &a, const t2 &b) { return a != b; });
+      a, b,
+      [](const t1 &a_value, const t2 &b_value) { return a_value != b_value; });
 }
 
 template <typename t1, typename t2,
@@ -322,7 +326,8 @@ template <typename t1, typename t2,
                                       std::is_floating_point<t2>::value>>
 Booleans operator<=(const Tensor<t1> &a, const Tensor<t2> &b) {
   return detail::compare_tensors(
-      a, b, [](const t1 &a, const t2 &b) { return a <= b; });
+      a, b,
+      [](const t1 &a_value, const t2 &b_value) { return a_value <= b_value; });
 }
 
 template <typename t1, typename t2,
@@ -330,7 +335,8 @@ template <typename t1, typename t2,
                                       std::is_floating_point<t2>::value>>
 Booleans operator>=(const Tensor<t1> &a, const Tensor<t2> &b) {
   return detail::compare_tensors(
-      a, b, [](const t1 &a, const t2 &b) { return a >= b; });
+      a, b,
+      [](const t1 &a_value, const t2 &b_value) { return a_value >= b_value; });
 }
 
 template <typename t1, typename t2>
@@ -346,35 +352,39 @@ bool all_equal(const Tensor<t1> &a, const Tensor<t2> &b) {
 template <typename t1,
           typename = std::enable_if_t<std::is_floating_point<t1>::value>>
 Booleans operator<(const Tensor<t1> &a, t1 b) {
-  return detail::test_tensor(a, [&](const t1 &a) { return a < b; });
+  return detail::test_tensor(a, [&](const t1 &a_value) { return a_value < b; });
 }
 
 template <typename t1,
           typename = std::enable_if_t<std::is_floating_point<t1>::value>>
 Booleans operator<=(const Tensor<t1> &a, t1 b) {
-  return detail::test_tensor(a, [&](const t1 &a) { return a <= b; });
+  return detail::test_tensor(a,
+                             [&](const t1 &a_value) { return a_value <= b; });
 }
 
 template <typename t1,
           typename = std::enable_if_t<std::is_floating_point<t1>::value>>
 Booleans operator>(const Tensor<t1> &a, t1 b) {
-  return detail::test_tensor(a, [&](const t1 &a) { return a > b; });
+  return detail::test_tensor(a, [&](const t1 &a_value) { return a_value > b; });
 }
 
 template <typename t1,
           typename = std::enable_if_t<std::is_floating_point<t1>::value>>
 Booleans operator>=(const Tensor<t1> &a, t1 b) {
-  return detail::test_tensor(a, [&](const t1 &a) { return a >= b; });
+  return detail::test_tensor(a,
+                             [&](const t1 &a_value) { return a_value >= b; });
 }
 
 template <typename t1>
 Booleans operator==(const Tensor<t1> &a, t1 b) {
-  return detail::test_tensor(a, [&](const t1 &a) { return a == b; });
+  return detail::test_tensor(a,
+                             [&](const t1 &a_value) { return a_value == b; });
 }
 
 template <typename t1>
 Booleans operator!=(const Tensor<t1> &a, t1 b) {
-  return detail::test_tensor(a, [&](const t1 &a) { return a != b; });
+  return detail::test_tensor(a,
+                             [&](const t1 &a_value) { return a_value != b; });
 }
 
 template <typename t1>
