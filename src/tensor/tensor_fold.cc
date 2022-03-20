@@ -77,7 +77,6 @@ void do_fold(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
      * Create the output tensor. Sometimes it is just a number.
      */
   if (rank == 0) {
-    rank = 1;
     new_dims.at(0) = 1;
   }
   output = Tensor<elt_t>(new_dims);

@@ -83,7 +83,7 @@ bool simeq(const Tensor<elt_t> &a, const Tensor<elt_t> &b,
   }
 
   for (typename Tensor<elt_t>::const_iterator ia = a.begin(), ib = b.begin();
-       ia != a.end(); ia++, ib++) {
+       ia != a.end(); ++ia, ++ib) {
     double x = tensor::abs(*ia - *ib);
     if (x > epsilon) {
       std::cout << x << std::endl;
@@ -140,7 +140,7 @@ bool unitaryp(const Tensor<elt_t> &U, double epsilon = EPSILON) {
    * Test over integers.
    */
 inline void test_over_integers(int min, int max, void test(int)) {
-  for (; min <= max; min++) {
+  for (; min <= max; ++min) {
     test(min);
   }
 }
@@ -150,7 +150,7 @@ inline void test_over_integers(int min, int max, void test(int)) {
    */
 inline Indices random_dimensions(int rank, int max_dim) {
   Indices dims(rank);
-  for (int i = 0; i < rank; i++) {
+  for (int i = 0; i < rank; ++i) {
     dims.at(i) = rand<int>(0, max_dim + 1);
   }
   return dims;
@@ -178,7 +178,7 @@ class DimensionIterator {
   }
 
   bool operator++() {
-    for (int i = 0; i < dims_.size(); i++) {
+    for (int i = 0; i < dims_.size(); ++i) {
       if (++dims_.at(i) < max_) {
         return more_ = true;
       }
@@ -215,7 +215,7 @@ class fixed_rank_iterator {
   void reset() { std::fill(indices_.begin(), indices_.end(), 0); }
   bool next() {
     if (!finished_) {
-      for (int i = 0; i < rank(); i++) {
+      for (int i = 0; i < rank(); ++i) {
         if (++indices_.at(i) < max_dimension()) {
           return true;
         }
@@ -272,7 +272,7 @@ void test_over_fixed_rank_pairs(binop test, int rank, int max_dimension = 6) {
 template <typename elt_t>
 void test_over_all_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
                            int max_dimension = 10) {
-  for (int rank = 0; rank <= max_rank; rank++) {
+  for (int rank = 0; rank <= max_rank; ++rank) {
     std::ostringstream rank_string;
     rank_string << "rank: " << rank;
     SCOPED_TRACE(rank_string.str());
@@ -283,14 +283,14 @@ void test_over_all_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
 template <typename elt_t>
 void test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
                        int max_dimension = 10, int max_times = 15) {
-  for (int rank = 0; rank <= max_rank; rank++) {
+  for (int rank = 0; rank <= max_rank; ++rank) {
     std::ostringstream rank_string;
     rank_string << "rank: " << rank;
     SCOPED_TRACE(rank_string.str());
     //
     // Test over random dimensions
     //
-    for (int times = 0; times < max_times; times++) {
+    for (int times = 0; times < max_times; ++times) {
       Tensor<elt_t> data(random_dimensions(rank, max_dimension));
       data.randomize();
       test(data);
@@ -298,7 +298,7 @@ void test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
     //
     // Forced tests over empty tensors
     //
-    for (int times = 0; times < rank; times++) {
+    for (int times = 0; times < rank; ++times) {
       Tensor<elt_t> data(random_empty_dimensions(rank, max_dimension, times));
       test(data);
     }
@@ -395,7 +395,7 @@ class BooleansIterator {
   }
 
   bool operator++() {
-    for (int i = 0; i < base_booleans_.size(); i++) {
+    for (int i = 0; i < base_booleans_.size(); ++i) {
       if (base_booleans_[i] == false) {
         base_booleans_.at(i) = true;
         return more_ = true;

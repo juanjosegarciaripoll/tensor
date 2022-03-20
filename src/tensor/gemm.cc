@@ -35,7 +35,7 @@ inline void gemm(char op1, char op2, index m, index n, index k, double alpha,
 #ifdef _MSC_VER
 #pragma warning(disable : 4127)
 #endif
-  if (sizeof(index) < sizeof(tensor::index)) {
+  if (sizeof(blas::integer) < sizeof(tensor::index)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
     tensor_assert2(m <= limit && n <= limit && lda <= limit && ldb <= limit &&
                        ldc <= limit,
@@ -65,7 +65,7 @@ inline void gemm(char op1, char op2, index m, index n, index k,
 #ifdef _MSC_VER
 #pragma warning(disable : 4127)
 #endif
-  if (sizeof(index) < sizeof(tensor::index)) {
+  if (sizeof(blas::integer) < sizeof(tensor::index)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
     tensor_assert2(m <= limit && n <= limit && lda <= limit && ldb <= limit &&
                        ldc <= limit,

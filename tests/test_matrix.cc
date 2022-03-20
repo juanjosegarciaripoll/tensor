@@ -39,7 +39,7 @@ void test_ones(int n) {
     EXPECT_EQ(1, M.ref_count());
   }
   SCOPED_TRACE("rectangular matrix");
-  for (int i = 0; i <= n; i++) {
+  for (int i = 0; i <= n; ++i) {
     {
       Tensor<elt_t> M = Tensor<elt_t>::ones(i, n);
       EXPECT_EQ(2, M.rank());
@@ -74,7 +74,7 @@ void test_zeros(int n) {
     EXPECT_EQ(1, M.ref_count());
   }
   SCOPED_TRACE("rectangular matrix");
-  for (int i = 0; i <= n; i++) {
+  for (int i = 0; i <= n; ++i) {
     {
       Tensor<elt_t> M = Tensor<elt_t>::zeros(i, n);
       EXPECT_EQ(2, M.rank());
@@ -101,11 +101,11 @@ void test_diag(int n) {
   auto zero = number_zero<elt_t>();
   auto d = Tensor<elt_t>::empty(n);
   int i = 1;
-  for (typename Tensor<elt_t>::iterator it = d.begin(); it != d.end(); it++) {
+  for (typename Tensor<elt_t>::iterator it = d.begin(); it != d.end(); ++it) {
     *it = (i++);
   }
   SCOPED_TRACE("no rows / columns specified");
-  for (i = -n; i <= n; i++) {
+  for (i = -n; i <= n; ++i) {
     Tensor<elt_t> M = diag(d, i);
     EXPECT_EQ(2, M.rank());
     if (i == 0) {
@@ -136,15 +136,15 @@ void test_diag(int n) {
 
 template <typename elt_t>
 void test_transpose(int n) {
-  for (int m = 0; m <= n; m++) {
+  for (int m = 0; m <= n; ++m) {
     auto A = Tensor<elt_t>::random(n, m);
 
     Tensor<elt_t> At = transpose(A);
     EXPECT_EQ(At.rank(), 2);
     EXPECT_EQ(At.rows(), m);
     EXPECT_EQ(At.columns(), n);
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m; j++) {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
         EXPECT_TRUE(A(i, j) == At(j, i));
       }
     }
@@ -153,8 +153,8 @@ void test_transpose(int n) {
     EXPECT_EQ(Att.rank(), 2);
     EXPECT_EQ(Att.rows(), n);
     EXPECT_EQ(Att.columns(), m);
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m; j++) {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
         EXPECT_TRUE(A(i, j) == Att(i, j));
       }
     }
@@ -163,15 +163,15 @@ void test_transpose(int n) {
 
 template <typename elt_t>
 void test_adjoint(int n) {
-  for (int m = 0; m <= n; m++) {
+  for (int m = 0; m <= n; ++m) {
     auto A = Tensor<elt_t>::random(n, m);
 
     Tensor<elt_t> At = adjoint(A);
     EXPECT_EQ(At.rank(), 2);
     EXPECT_EQ(At.rows(), m);
     EXPECT_EQ(At.columns(), n);
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m; j++) {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
         EXPECT_TRUE(A(i, j) == conj(At(j, i)));
       }
     }
@@ -180,8 +180,8 @@ void test_adjoint(int n) {
     EXPECT_EQ(Att.rank(), 2);
     EXPECT_EQ(Att.rows(), n);
     EXPECT_EQ(Att.columns(), m);
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m; j++) {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
         EXPECT_TRUE(A(i, j) == Att(i, j));
       }
     }
@@ -190,7 +190,7 @@ void test_adjoint(int n) {
 
 template <typename elt_t>
 void test_permute(int n) {
-  for (int m = 0; m <= n; m++) {
+  for (int m = 0; m <= n; ++m) {
     auto A = Tensor<elt_t>::random(n, m);
 
     Tensor<elt_t> At = transpose(A);
@@ -199,7 +199,7 @@ void test_permute(int n) {
     EXPECT_EQ(Ap.rows(), m);
     EXPECT_EQ(Ap.columns(), n);
     for (typename Tensor<elt_t>::iterator it = At.begin(), ip = Ap.begin();
-         ip != Ap.end(); ip++, it++) {
+         ip != Ap.end(); ++ip, ++it) {
       EXPECT_TRUE(*ip == *it);
     }
 
@@ -207,8 +207,8 @@ void test_permute(int n) {
     EXPECT_EQ(Att.rank(), 2);
     EXPECT_EQ(Att.rows(), n);
     EXPECT_EQ(Att.columns(), m);
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m; j++) {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
         EXPECT_TRUE(A(i, j) == Att(i, j));
       }
     }

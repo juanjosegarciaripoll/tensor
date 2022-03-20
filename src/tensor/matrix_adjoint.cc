@@ -30,9 +30,9 @@ inline Tensor<n> do_adjoint(const Tensor<n> &a) {
   if (cols && rows) {
     typename Tensor<n>::const_iterator ij_a = a.begin();
     typename Tensor<n>::iterator j_b = b.begin();
-    for (index j = cols; j--; j_b++) {
+    for (index j = cols; j--; ++j_b) {
       typename Tensor<n>::iterator ji_b = j_b;
-      for (index i = rows; i--; ij_a++, ji_b += cols) {
+      for (index i = rows; i--; ++ij_a, ji_b += cols) {
         //tensor_assert(ij_a >= a.begin() && ij_a < a.end());
         //tensor_assert(ji_b >= b.begin() && ji_b < b.end());
         *ji_b = tensor::conj(*ij_a);

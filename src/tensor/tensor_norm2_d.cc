@@ -26,7 +26,7 @@ double norm2(const RTensor &r) { return ::sqrt(scprod(r, r)); }
 double scprod(const RTensor &a, const RTensor &b) {
   double output = 0;
   for (RTensor::const_iterator ia = a.begin(), ib = b.begin(); ia != a.end();
-       ia++, ib++)
+       ++ia, ++ib)
     output += (*ia) * (*ib);
   return output;
 }

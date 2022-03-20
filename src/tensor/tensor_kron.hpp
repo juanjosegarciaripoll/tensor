@@ -52,19 +52,19 @@ static inline Tensor<elt_t> do_kron(const Tensor<elt_t> &b,
   auto output = Tensor<elt_t>::empty(ij_len, k_len * l_len);
   typename Tensor<elt_t>::iterator pc = output.begin();
   typename Tensor<elt_t>::const_iterator pb = b.begin();
-  for (index l = 0; l < l_len; l++, pb += j_len) {
+  for (index l = 0; l < l_len; ++l, pb += j_len) {
     typename Tensor<elt_t>::const_iterator pa = a.begin();
-    for (index k = 0; k < k_len; k++, pa += i_len) {
+    for (index k = 0; k < k_len; ++k, pa += i_len) {
 #ifdef MPS_USE_CBLAS
       memset(pc, 0, ij_len * sizeof(*pc));
       geru(i_len, j_len, Tensor<elt_t>::elt_one(), pa, 1, pb, 1, pc, i_len);
       pc += i_len * j_len;
 #else
       typename Tensor<elt_t>::const_iterator pb2 = pb;
-      for (index j = 0; j < j_len; j++, pb2++) {
+      for (index j = 0; j < j_len; ++j, ++pb2) {
         typename Tensor<elt_t>::const_iterator pa2 = pa;
         const elt_t v = *pb2;
-        for (index i = 0; i < i_len; i++, pc++, pa2++) {
+        for (index i = 0; i < i_len; ++i, ++pc, ++pa2) {
           *pc = v * (*pa2);
         }
       }
