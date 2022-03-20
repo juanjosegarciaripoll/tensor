@@ -36,7 +36,7 @@ Dimensions squeeze_dimensions(const Dimensions &dims) {
     SimpleVector<index> without_ones(dims.rank() - ones);
     std::copy_if(std::begin(dims), std::end(dims), std::begin(without_ones),
                  [](index n) { return n != 1; });
-    return Dimensions(without_ones);
+    return without_ones;
   }
   return dims;
 }
@@ -135,7 +135,7 @@ Range::Range(Indices indices)
    empty intervals. For instance, (first,end)=(0,-1) would get reinterpreted as
    (0, dimension-1). This particular choice always produces, after
    set_dimension() is called, an empty interval which is within bounds. */
-Range Range::empty() { return Range(-1, -2, 1); }
+Range Range::empty() { return {-1, -2, 1}; }
 
 Range Range::empty(index dimension) {
   Range output(0, -1, 1);
@@ -145,7 +145,7 @@ Range Range::empty(index dimension) {
 
 const Range _ = Range::full();
 
-Range Range::full(index start, index step) { return Range(start, -1, step); }
+Range Range::full(index start, index step) { return {start, -1, step}; }
 
 bool Range::maybe_combine(const Range &other) {
   /* Sometimes we can merge two range specifications into a simpler one. This
@@ -249,7 +249,7 @@ RangeIterator RangeIterator::make_end_iterator() const noexcept {
 
 RangeIterator RangeIterator::make_range_iterators(RangeSpan &ranges) {
   if (ranges.empty_ranges()) {
-    return RangeIterator(Range::empty(0), 1);
+    return {Range::empty(0), 1};
   }
   tensor_assert2(
       ranges.valid_ranges(),
@@ -276,7 +276,7 @@ RangeIterator RangeIterator::make_next_iterator(RangeSpan &ranges,
     next =
         new RangeIterator(make_next_iterator(ranges, factor * r.dimension()));
   }
-  return RangeIterator(r, factor, next);
+  return {r, factor, next};
 }
 
 RangeIterator::RangeIterator(const Range &r, index factor, RangeIterator *next)
@@ -289,7 +289,7 @@ RangeIterator::RangeIterator(const Range &r, index factor, RangeIterator *next)
    * When we work with indices, the current position is
    *    step_ * v[counter_] + offset_
    * and counter_ grows from 0 up to limit_.
-   * 
+   *
    * When we work with bare indices, the current position is counter_,
    * which firsts at offset_, is incremented by step_ and is always
    * below limit_

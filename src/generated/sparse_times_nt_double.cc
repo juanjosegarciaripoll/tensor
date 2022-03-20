@@ -22,8 +22,8 @@
 namespace tensor {
 
 RSparse operator*(double n, const RSparse &s) {
-  return RSparse(s.dimensions(), s.priv_row_start(), s.priv_column(),
-                 n * s.priv_data());
+  return {s.dimensions(), s.priv_row_start(), s.priv_column(),
+          n * s.priv_data()};
 }
 
 }  // namespace tensor

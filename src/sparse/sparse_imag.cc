@@ -21,8 +21,8 @@
 namespace tensor {
 
 RSparse imag(const CSparse &A) {
-  return RSparse(A.priv_dims(), A.priv_row_start(), A.priv_column(),
-                 imag(A.priv_data()));
+  return {A.priv_dims(), A.priv_row_start(), A.priv_column(),
+          imag(A.priv_data())};
 }
 
 }  // namespace tensor

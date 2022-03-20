@@ -60,7 +60,7 @@ Indices sort_indices(const Indices &v, bool reverse) {
     }
     return output;
   } else {
-    return Indices();
+    return {};
   }
 }
 

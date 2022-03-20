@@ -21,8 +21,8 @@
 namespace tensor {
 
 CSparse conj(const CSparse &A) {
-  return CSparse(A.priv_dims(), A.priv_row_start(), A.priv_column(),
-                 conj(A.priv_data()));
+  return {A.priv_dims(), A.priv_row_start(), A.priv_column(),
+          conj(A.priv_data())};
 }
 
 }  // namespace tensor

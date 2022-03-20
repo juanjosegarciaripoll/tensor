@@ -23,9 +23,8 @@ namespace tensor {
 const Indices sparse_rows(const Indices &row_start, const Indices &column);
 
 CSparse transpose(const CSparse &s) {
-  return CSparse(s.priv_column(),
-                 sparse_rows(s.priv_row_start(), s.priv_column()),
-                 s.priv_data(), s.columns(), s.rows());
+  return {s.priv_column(), sparse_rows(s.priv_row_start(), s.priv_column()),
+          s.priv_data(), s.columns(), s.rows()};
 }
 
 }  // namespace tensor
