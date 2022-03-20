@@ -19,6 +19,8 @@
 #ifndef TENSOR_LINSPACE_HPP
 #define TENSOR_LINSPACE_HPP
 
+#include <tensor/tensor.h>
+
 namespace tensor {
 
 template <typename elt_t>
@@ -30,7 +32,6 @@ static inline const Tensor<elt_t> do_linspace(const Tensor<elt_t> &min,
   if (n == 1) {
     output = min;
   } else if (n) {
-    const Tensor<elt_t> base = reshape(max, d);
     const Tensor<elt_t> delta =
         reshape((max - min) / static_cast<double>(n - 1), d);
     for (index i = 0; i < n; i++) {
