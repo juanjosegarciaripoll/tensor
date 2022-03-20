@@ -20,14 +20,19 @@
 
 namespace tensor {
 
-/**Complex conjugate of a tensor.*/
+/**Real part of a complex tensor.*/
 RTensor real(const CTensor &t) {
   RTensor output(t.dimensions());
-  RTensor::iterator a = output.begin();
-  CTensor::const_iterator b = t.begin();
-  for (; b != t.end(); a++, b++) {
-    *a = real(*b);
-  }
+  std::transform(t.cbegin(), t.cend(), output.begin(),
+                 [](const auto &z) { return z.real(); });
+  return output;
+}
+
+/**Imaginary part of a complex tensor.*/
+RTensor imag(const CTensor &t) {
+  RTensor output(t.dimensions());
+  std::transform(t.cbegin(), t.cend(), output.begin(),
+                 [](const auto &z) { return z.imag(); });
   return output;
 }
 
