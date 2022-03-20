@@ -90,7 +90,7 @@ class MatrixForm {
 
  public:
   /**Creates an object that displays a tensor as a matrix.*/
-  MatrixForm(const Tensor<elt_t> &t) : data(t) {}
+  explicit MatrixForm(const Tensor<elt_t> &t) : data(t) {}
   std::ostream &display(std::ostream &s) const;
 };
 

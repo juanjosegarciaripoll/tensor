@@ -38,10 +38,17 @@ class Dimensions;
 class Indices : public Vector<index> {
  public:
   Indices() : Vector<index>() {}
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Indices(const Vector<index> &v) : Vector<index>(v) {}
+
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Indices(const Dimensions &dims);
 
+  // NOLINTNEXTLINE(*-explicit-constructor)
   template <typename other_elt>
+  // cppcheck-suppress noExplicitConstructor
   Indices(const std::initializer_list<other_elt> &l) : Vector<index>(l) {}
 
   explicit Indices(size_t size) : Vector<index>(size) {}
@@ -50,19 +57,32 @@ class Indices : public Vector<index> {
 };
 
 class Dimensions {
+  using index = ::tensor::index;
+
+  SimpleVector<index> dimensions_{};
+  index total_size_{0};
+
+  static index compute_total_size(const SimpleVector<index> &dims);
+
  public:
-  typedef index *iterator;
-  typedef const index *const_iterator;
+  using iterator = index *;
+  using const_iterator = const index *;
 
-  Dimensions() : dimensions_(), total_size_{0} {}
+  Dimensions() = default;
 
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Dimensions(const SimpleVector<index> &dims)
       : dimensions_(dims), total_size_{compute_total_size(dimensions_)} {}
 
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Dimensions(const Indices &dims)
       : dimensions_(dims), total_size_{compute_total_size(dimensions_)} {};
 
+  // NOLINTNEXTLINE(*-explicit-constructor)
   template <typename other_elt>
+  // cppcheck-suppress noExplicitConstructor
   Dimensions(const std::initializer_list<other_elt> &l)
       : dimensions_(l), total_size_{compute_total_size(dimensions_)} {}
 
@@ -73,7 +93,6 @@ class Dimensions {
   const_iterator begin() const { return dimensions_.begin(); }
   const_iterator end() const { return dimensions_.end(); }
   const SimpleVector<index> &get_vector() const { return dimensions_; }
-
   static inline index normalize_index(index i,
                                       index dimension) tensor_noexcept {
     if (i < 0) i += dimension;
@@ -106,9 +125,6 @@ class Dimensions {
   }
 
  private:
-  SimpleVector<index> dimensions_;
-  index total_size_;
-
   template <typename... index_like>
   index column_major_inner(index n, index in, index_like... irest) const {
     index dn = dimensions_[n];
@@ -121,8 +137,6 @@ class Dimensions {
     in = normalize_index(in, dn);
     return in;
   }
-
-  static index compute_total_size(const SimpleVector<index> &dims);
 };
 
 void surrounding_dimensions(const Dimensions &d, index ndx, index *d1,
@@ -137,12 +151,16 @@ extern template class Vector<bool>;
 class Booleans : public Vector<bool> {
  public:
   Booleans() : Vector<bool>() {}
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Booleans(const Booleans &b) : Vector<bool>(b) {}
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Booleans(const std::initializer_list<bool> &l) : Vector<bool>(l) {}
   explicit Booleans(size_t size) : Vector<bool>(size) {}
 };
 
-Booleans operator!(const Booleans &b);
+Booleans operator!(const Booleans &a);
 Booleans operator&&(const Booleans &a, const Booleans &b);
 Booleans operator||(const Booleans &a, const Booleans &b);
 const Indices which(const Booleans &b);

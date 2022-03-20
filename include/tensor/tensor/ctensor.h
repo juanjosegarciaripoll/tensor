@@ -27,24 +27,24 @@
 
 namespace tensor {
 
-CTensor change_dimension(const CTensor &U, int dimension, index new_size);
+CTensor change_dimension(const CTensor &a, int dimension, index new_size);
 
 /**Return the sum of the elements in the tensor.*/
 cdouble sum(const CTensor &r);
 /**Return the mean of the elements in the tensor.*/
 cdouble mean(const CTensor &r);
 /**Return the mean of the elements in the along the given dimension.*/
-CTensor mean(const CTensor &r, int ndx);
+CTensor mean(const CTensor &t, int ndx);
 
 double norm0(const CTensor &r);
 cdouble scprod(const CTensor &a, const CTensor &b);
 double norm2(const CTensor &r);
-double matrix_norminf(const CTensor &r);
+double matrix_norminf(const CTensor &m);
 
 inline RTensor real(const RTensor &r) { return r; }
-RTensor imag(const RTensor &r);
-RTensor real(const CTensor &r);
-RTensor imag(const CTensor &r);
+RTensor imag(const RTensor &t);
+RTensor real(const CTensor &t);
+RTensor imag(const CTensor &t);
 
 CTensor to_complex(const RTensor &r);
 inline const CTensor &to_complex(const CTensor &r) { return r; }
@@ -52,7 +52,7 @@ CTensor to_complex(const RTensor &r, const RTensor &i);
 
 /**Complex conjugate of a real tensor. Returns the same tensor.*/
 inline const RTensor &conj(const RTensor &r) { return r; }
-const CTensor conj(const CTensor &c);
+const CTensor conj(const CTensor &t);
 
 RTensor abs(const CTensor &t);
 CTensor cos(const CTensor &t);
@@ -67,9 +67,9 @@ CTensor log(const CTensor &t);
 
 CTensor diag(const CTensor &d, int which, index rows, index cols);
 CTensor diag(const CTensor &d, int which = 0);
-CTensor take_diag(const CTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
-cdouble trace(const CTensor &d);
-CTensor trace(const CTensor &A, int i1, int i2);
+CTensor take_diag(const CTensor &a, int which = 0, int ndx1 = 0, int ndx2 = -1);
+cdouble trace(const CTensor &a);
+CTensor trace(const CTensor &a, int ndx1, int ndx2);
 
 CTensor squeeze(const CTensor &t);
 CTensor permute(const CTensor &a, index ndx1 = 0, index ndx2 = -1);
@@ -88,10 +88,10 @@ CTensor mmult(const CTensor &a, const CTensor &b);
 CTensor mmult(const RTensor &a, const CTensor &b);
 CTensor mmult(const CTensor &a, const RTensor &b);
 
-CTensor scale(const CTensor &t, int ndx1, const CTensor &v);
-CTensor scale(const CTensor &t, int ndx1, const RTensor &v);
-void scale_inplace(CTensor &t, int ndx1, const CTensor &v);
-void scale_inplace(CTensor &t, int ndx1, const RTensor &v);
+CTensor scale(const CTensor &t, int ndx, const CTensor &v);
+CTensor scale(const CTensor &t, int ndx, const RTensor &v);
+void scale_inplace(CTensor &t, int ndx, const CTensor &v);
+void scale_inplace(CTensor &t, int ndx, const RTensor &v);
 
 CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2);
 

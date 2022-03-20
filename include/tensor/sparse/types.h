@@ -57,7 +57,9 @@ class CSRMatrix {
   /**Move assignment operator.*/
   CSRMatrix &operator=(CSRMatrix<elt_t> &&s) = default;
   /**Implicit conversion from other sparse types.*/
+  // NOLINTNEXTLINE(*-explicit-constructor)
   template <typename e2>
+  // cppcheck-suppress noExplicitConstructor
   CSRMatrix(const CSRMatrix<e2> &other)
       : dims_(other.priv_dims()),
         row_start_(other.priv_row_start()),
@@ -85,7 +87,7 @@ class CSRMatrix {
   bool is_empty() const { return (rows() == 0) || (columns() == 0); }
 
   /**Identity matrix in sparse form.*/
-  static CSRMatrix<elt_t> eye(index rows, index cols);
+  static CSRMatrix<elt_t> eye(index rows, index columns);
   /**Identity matrix in sparse form.*/
   static CSRMatrix<elt_t> eye(index rows) { return eye(rows, rows); }
   /**Return a random sparse matrix.*/

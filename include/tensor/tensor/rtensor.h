@@ -37,7 +37,7 @@ typedef Tensor<double> RTensor;
 #endif
 
 RTensor
-change_dimension(const RTensor &U, int dimension, index new_size);
+change_dimension(const RTensor &a, int dimension, index new_size);
 
 /**Return the smallest element in the tensor.*/
 double min(const RTensor &r);
@@ -48,12 +48,12 @@ double sum(const RTensor &r);
 /**Return the mean of the elements in the tensor.*/
 double mean(const RTensor &r);
 /**Return the mean of the elements in the along the given dimension.*/
-RTensor mean(const RTensor &r, int which);
+RTensor mean(const RTensor &t, int ndx);
 
 double norm0(const RTensor &r);
 double scprod(const RTensor &a, const RTensor &b);
 double norm2(const RTensor &r);
-double matrix_norminf(const RTensor &r);
+double matrix_norminf(const RTensor &m);
 
 RTensor abs(const RTensor &t);
 RTensor cos(const RTensor &t);
@@ -70,9 +70,9 @@ RTensor round(const RTensor &t);
 
 RTensor diag(const RTensor &d, int which, index rows, index cols);
 RTensor diag(const RTensor &d, int which = 0);
-RTensor take_diag(const RTensor &d, int which = 0, int ndx1 = 0, int ndx2 = -1);
-double trace(const RTensor &d);
-RTensor trace(const RTensor &A, int i1, int i2);
+RTensor take_diag(const RTensor &a, int which = 0, int ndx1 = 0, int ndx2 = -1);
+double trace(const RTensor &a);
+RTensor trace(const RTensor &a, int ndx1, int ndx2);
 
 RTensor squeeze(const RTensor &t);
 RTensor permute(const RTensor &a, index ndx1 = 0, index ndx2 = -1);
@@ -84,8 +84,8 @@ RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
 RTensor foldin(const RTensor &a, int ndx1, const RTensor &b, int ndx2);
 RTensor mmult(const RTensor &a, const RTensor &b);
 
-RTensor scale(const RTensor &t, int ndx1, const RTensor &v);
-void scale_inplace(RTensor &t, int ndx1, const RTensor &v);
+RTensor scale(const RTensor &t, int ndx, const RTensor &v);
+void scale_inplace(RTensor &t, int ndx, const RTensor &v);
 
 void fold_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b,
                int ndx2);
@@ -160,7 +160,7 @@ RTensor kron2(const RTensor &a, const RTensor &b);
 RTensor kron2_sum(const RTensor &a, const RTensor &b);
 
 /** Convert a vector of indices to a 1D tensor of real numbers.*/
-RTensor index_to_tensor(const Indices &i);
+RTensor index_to_tensor(const Indices &ndx);
 
 }  // namespace tensor
 

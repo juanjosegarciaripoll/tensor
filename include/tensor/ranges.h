@@ -42,7 +42,7 @@ class Range {
      last element we visit (the limit). We combine this with the wraparound
      semantics from Numpy, by which negative numbers are associated positions
      relative to the dimension of the coordinate we are running through. Thus,
-    
+
      (first, last) = (0, 0)   -> runs over [0]
                    = (0, -1)  -> runs over [0, 1, 2] for dimension = 3
                    = (-2, -1) -> runs over [1, 2] for dimension = 3
@@ -51,7 +51,9 @@ class Range {
      negative or zero values.
    */
  public:
-  Range(index position) : Range(position, position, 1) { squeezed_ = true; }
+  explicit Range(index position) : Range(position, position, 1) {
+    squeezed_ = true;
+  }
   Range(index first, index last) : Range(first, last, 1) {}
   Range(index first, index last, index step)
       : first_{first}, step_{step}, last_{last}, dimension_{-1} {
@@ -62,6 +64,8 @@ class Range {
     tensor_assert2(step != 0, std::invalid_argument("Range() with zero step"));
     set_dimension(dimension);
   }
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Range(Indices indices);
   Range() = default;
   Range(const Range &r) = default;
@@ -106,9 +110,11 @@ class RangeSpan {
 
  public:
   template <size_t N>
-  RangeSpan(std::array<Range, N> &v) : begin_{&v[0]}, end_{begin_ + N} {}
-  RangeSpan(SimpleVector<Range> &v) : begin_{v.begin()}, end_{v.end()} {}
-  bool more() { return begin_ != end_; }
+  explicit RangeSpan(std::array<Range, N> &v)
+      : begin_{&v[0]}, end_{begin_ + N} {}
+  explicit RangeSpan(SimpleVector<Range> &v)
+      : begin_{v.begin()}, end_{v.end()} {}
+  bool more() const { return begin_ != end_; }
   bool empty_ranges() const;
   bool valid_ranges() const;
   Range next_range();

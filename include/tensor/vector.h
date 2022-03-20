@@ -67,11 +67,15 @@ class Vector {
     return Vector(safe_size_t(size));
   }
 
+  // NOLINTNEXTLINE(*-explicit-constructor)
   template <typename other_elt>
+  // cppcheck-suppress noExplicitConstructor
   Vector(const std::initializer_list<other_elt> &l) : Vector(l.size()) {
     std::copy(l.begin(), l.end(), base_);
   }
 
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Vector(const SimpleVector<elt_t> &v) : Vector(v.size()) {
     std::copy(v.begin(), v.end(), base_);
   }
@@ -93,8 +97,7 @@ class Vector {
     return static_cast<difference_type>(size_);
   }
 
-  /* TODO: Add operator[] for non-const once we remove copy-on-write */
-
+  /**\todo Add operator[] for non-const once we remove copy-on-write */
   const elt_t &operator[](difference_type pos) const noexcept {
     return *(cbegin() + pos);
   }
@@ -106,7 +109,7 @@ class Vector {
   elt_t *data() { return begin(); }
   const elt_t *data() const noexcept { return cbegin(); }
 
-  /* TODO: Make begin() and end() no except when we remove copy-on-write. */
+  /**\todo Make begin() and end() no except when we remove copy-on-write. */
   iterator begin() { return appropriate(); }
   const_iterator begin() const noexcept { return base_; }
   const_iterator cbegin() const noexcept { return base_; }
@@ -162,14 +165,18 @@ class SimpleVector {
   explicit SimpleVector(size_type size) : size_{size}, base_(new elt_t[size]) {}
 
   explicit SimpleVector(difference_type size)
-      : size_{safe_size_t(size)}, base_(new elt_t[size]) {}
+      : size_{safe_size_t(size)}, base_(new elt_t[safe_size_t(size)]) {}
 
+  // NOLINTNEXTLINE(*-explicit-constructor)
   template <typename other_elt>
+  // cppcheck-suppress noExplicitConstructor
   SimpleVector(const std::initializer_list<other_elt> &l)
       : SimpleVector(l.size()) {
     std::copy(l.begin(), l.end(), begin());
   }
 
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   SimpleVector(const Vector<elt_t> &v) : SimpleVector<elt_t>(v.size()) {
     std::copy(v.begin(), v.end(), base_.get());
   }

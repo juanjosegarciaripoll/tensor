@@ -81,13 +81,19 @@ class Tensor {
   }
 
   /**Constructs a 1-D Tensor from a vector.*/
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Tensor(const vector_type &data) : data_(data), dims_{data_.size()} {}
 
   /**Constructs a 1-D Tensor from a vector (move version for temporaries).*/
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Tensor(vector_type &&data) noexcept
       : data_(std::move(data)), dims_({data_.size()}) {}
 
   /**Constructs a 1-D Tensor from a vector.*/
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Tensor(const std::vector<elt_t> &data)
       : data_(data.size()), dims_{static_cast<index>(data.size())} {
     std::copy(data.begin(), data.end(), begin());
@@ -100,22 +106,32 @@ class Tensor {
   Tensor(Tensor &&other) = default;
 
   /**Implicit coercion and transformation to a different type. */
+  // NOLINTNEXTLINE(*-explicit-constructor)
   template <typename e2>
+  // cppcheck-suppress noExplicitConstructor
   Tensor(const Tensor<e2> &other)
       : data_(other.size()), dims_(other.dimensions()) {
     std::copy(other.begin(), other.end(), begin());
   }
 
   /**Create a Tensor from a vector initializer list {1, 2, 3}. */
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Tensor(typename detail::nested_initializer_list<1, elt_t>::type l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a matrix braced initializer list of rows, e.g. {{1, 2, 3}, {3, 4, 5}}. */
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Tensor(typename detail::nested_initializer_list<2, elt_t>::type l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a three-dimensional initializer list, e.g. {{{1}, {2}}, {{3}, {4}}, {{5}, {6}}}. */
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Tensor(typename detail::nested_initializer_list<3, elt_t>::type l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a four-dimensional initializer list. */
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
   Tensor(typename detail::nested_initializer_list<4, elt_t>::type l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
 
@@ -203,9 +219,8 @@ class Tensor {
   }
   /**Destructively fill this tensor with random numbers. Consider using random() instead.*/
   Tensor<elt_t> &randomize() noexcept {
-    for (auto &x : *this) {
-      x = rand<elt_t>();
-    }
+    std::generate(this->begin(), this->end(),
+                  []() -> elt_t { return rand<elt_t>(); });
     return *this;
   }
 
@@ -227,7 +242,7 @@ class Tensor {
     // as being 1D
     std::array<Range, 1> ranges{std::move(r)};
     ranges.begin()->set_dimension(ssize());
-    return TensorView<elt_t>(*this, ranges);
+    return TensorView<elt_t>(*this, RangeSpan(ranges));
   }
 
   /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
@@ -235,7 +250,7 @@ class Tensor {
   inline TensorView<elt_t> operator()(Range r1, RangeLike... rnext) const {
     std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
                                                    std::move(rnext)...};
-    return TensorView<elt_t>(*this, ranges);
+    return TensorView<elt_t>(*this, RangeSpan(ranges));
   }
 
   /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
@@ -244,7 +259,7 @@ class Tensor {
     // as being 1D
     std::array<Range, 1> ranges{std::move(r)};
     ranges.begin()->set_dimension(ssize());
-    return MutableTensorView<elt_t>(*this, ranges);
+    return MutableTensorView<elt_t>(*this, RangeSpan(ranges));
   }
 
   /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
@@ -252,7 +267,7 @@ class Tensor {
   inline MutableTensorView<elt_t> at(Range r1, RangeLike... rnext) {
     std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
                                                    std::move(rnext)...};
-    return MutableTensorView<elt_t>(*this, ranges);
+    return MutableTensorView<elt_t>(*this, RangeSpan(ranges));
   }
 
   //
@@ -384,11 +399,13 @@ class MutableTensorView {
         range_iterator_begin_(RangeIterator::begin(ranges)) {}
 
   void operator=(const TensorView<elt_t> &t) {
-	tensor_assert(verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
-	begin().copy_from(t.begin());
+    tensor_assert(
+        verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
+    begin().copy_from(t.begin());
   }
   void operator=(const Tensor<elt_t> &t) {
-	tensor_assert(verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
+    tensor_assert(
+        verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
     begin().copy_from_contiguous_iterator(t.begin());
   }
   void operator=(elt_t v) { begin().fill(v); }
