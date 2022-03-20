@@ -32,9 +32,8 @@ namespace tensor {
    */
 const Indices operator<<(const Indices &a, const Indices &b) {
   Indices output(a.size() + b.size());
-  Indices::iterator j = output.begin();
-  for (Indices::const_iterator i = a.begin(); i != a.end(); i++, j++) *j = *i;
-  for (Indices::const_iterator i = b.begin(); i != b.end(); i++, j++) *j = *i;
+  std::copy(a.cbegin(), a.cend(), output.begin());
+  std::copy(b.cbegin(), b.cend(), output.begin() + a.size());
   return output;
 }
 

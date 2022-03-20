@@ -92,4 +92,35 @@ TEST(Indices, MakeRange) {
   }
 }
 
+TEST(Indices, Concatenate) {
+  {
+    Indices a = {1, 2, 3};
+    Indices b = {4, 5};
+    Indices c = a << b;
+    ASSERT_EQ(c.size(), 5);
+    ASSERT_EQ(c[0], 1);
+    ASSERT_EQ(c[1], 2);
+    ASSERT_EQ(c[2], 3);
+    ASSERT_EQ(c[3], 4);
+    ASSERT_EQ(c[4], 5);
+  }
+  {
+    Indices a = {1, 2, 3};
+    Indices b{};
+    Indices c = a << b;
+    ASSERT_EQ(c.size(), 3);
+    ASSERT_EQ(c[0], 1);
+    ASSERT_EQ(c[1], 2);
+    ASSERT_EQ(c[2], 3);
+  }
+  {
+    Indices a{};
+    Indices b = {4, 5};
+    Indices c = a << b;
+    ASSERT_EQ(c.size(), 2);
+    ASSERT_EQ(c[0], 4);
+    ASSERT_EQ(c[1], 5);
+  }
+}
+
 }  // namespace tensor_test

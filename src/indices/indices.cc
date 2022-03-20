@@ -61,10 +61,11 @@ const Indices Indices::range(index min, index max, index step) {
   } else {
     auto size = static_cast<size_t>((max - min) / step + 1);
     Indices output(size);
-    for (Indices::iterator it = output.begin(); it != output.end(); it++) {
-      *it = min;
+    std::generate(output.begin(), output.end(), [&]() -> index {
+      index output = min;
       min += step;
-    }
+      return output;
+    });
     return output;
   }
 }
