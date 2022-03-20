@@ -40,7 +40,7 @@ elt_t eig_power_loop(const LinearMap<Tensor<elt_t>> &A, size_t dims,
     iter = std::max<size_t>(20, v.size());
   }
   v /= norm2(v);
-  elt_t eig = 0;
+  elt_t eigenvalue = 0;
   //
   // We apply repeatedly the map 'A' onto the same random initial
   // vector, until (A^n)*v converges to the eigenstate with the largest
@@ -48,13 +48,13 @@ elt_t eig_power_loop(const LinearMap<Tensor<elt_t>> &A, size_t dims,
   //
   for (size_t i = 0; i <= iter; i++) {
     Tensor<elt_t> v_new = A(v);
-    eig = scprod(v, v_new);
-    double err = norm0(v_new - eig * v);
+    eigenvalue = scprod(v, v_new);
+    double err = norm0(v_new - eigenvalue * v);
     // Stop if the vector is sufficiently close to an eigenstate
-    if (err < tol * std::abs(eig)) break;
+    if (err < tol * std::abs(eigenvalue)) break;
     v = (v_new /= norm2(v_new));
   }
-  return eig;
+  return eigenvalue;
 }
 
 }  // namespace linalg

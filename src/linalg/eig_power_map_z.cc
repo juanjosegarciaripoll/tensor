@@ -22,8 +22,8 @@
 namespace linalg {
 
 tensor::cdouble eig_power(const LinearMap<CTensor> &A, size_t dimension,
-                          CTensor *vector, size_t iterations, double tol) {
-  return eig_power_loop(A, dimension, vector, iterations, tol);
+                          CTensor *eigenvector, size_t iterations, double tol) {
+  return eig_power_loop(A, dimension, eigenvector, iterations, tol);
 }
 
 }  // namespace linalg
