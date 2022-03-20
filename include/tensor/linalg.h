@@ -131,8 +131,9 @@ double eig_power(const LinearMap<RTensor> &f, size_t dim, RTensor *vector,
 /**Compute the right eigenvector with the largest absolute eigenvalue using the
      power method. 'f' is a function that takes in a Tensor and returns also a
      Tensor of the same class and dimension. */
-tensor::cdouble eig_power(const LinearMap<CTensor> &f, size_t dim,
-                          CTensor *vector, size_t iter = 0, double tol = 1e-11);
+tensor::cdouble eig_power(const LinearMap<CTensor> &f, size_t dimension,
+                          CTensor *vector, size_t iterations = 0,
+                          double tol = 1e-11);
 
 RTensor eig_sym(const RTensor &A, RTensor *pR = 0);
 RTensor eig_sym(const CTensor &A, CTensor *pR = 0);
@@ -152,104 +153,109 @@ enum EigType {
   SmallestImaginary = 5  /*!<Eigenvalues with the smallest imaginary part.*/
 };
 
-/**Find out a few eigenvalues and eigenvectors of a complex matrix. 'vectors' is
+/**Find out a few eigenvalues and eigenvectors of a complex matrix. 'eigenvectors' is
      used to output the eigenvectors, but it can also contain a good estimate of
      them. 'converged' is true when the algorithm finished properly. */
 CTensor eigs(const CTensor &A, EigType eig_type, size_t neig,
-             CTensor *vectors = nullptr, bool *converged = nullptr);
+             CTensor *eigenvectors = nullptr, bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a complex sparse matrix.
-     'vectors' is used to output the eigenvectors, but it can also contain a
+     'eigenvectors' is used to output the eigenvectors, but it can also contain a
      good estimate of them. 'converged' is true when the algorithm finished
      properly. */
 CTensor eigs(const CSparse &A, EigType eig_type, size_t neig,
-             CTensor *vectors = nullptr, bool *converged = nullptr);
+             CTensor *eigenvectors = nullptr, bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
      matrix. 'f' is a function that takes in a Tensor and returns also a Tensor
      of the same class and dimension. Because we do not know the dimensions of
-     'f', this has to be provided in 'dim'. 'vectors' is used to output the
+     'f', this has to be provided in 'dim'. 'eigenvectors' is used to output the
      eigenvectors, but it can also contain a good estimate of them. 'converged'
      is true when the algorithm finished properly. */
 CTensor eigs(const LinearMap<CTensor> &f, size_t dim, EigType eig_type,
-             size_t neig, CTensor *vectors = nullptr, bool *converged = nullptr);
+             size_t neig, CTensor *eigenvectors = nullptr,
+             bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a complex sparse matrix. 'f'
      is a function that takes in a Tensor and returns also a Tensor of the same
      class and dimension. Because we do not know the dimensions of 'f', this has
-     to be provided in 'dim'. 'vectors' is used to output the eigenvectors, but
+     to be provided in 'dim'. 'eigenvectors' is used to output the eigenvectors, but
      it can also contain a good estimate of them. 'converged' is true when the
      algorithm finished properly. */
 CTensor eigs(const InPlaceLinearMap<CTensor> &f, size_t dim, EigType eig_type,
-             size_t neig, CTensor *vectors = nullptr, bool *converged = nullptr);
+             size_t neig, CTensor *eigenvectors = nullptr,
+             bool *converged = nullptr);
 
 /*------------ Real symmetric problems ----------- */
 
 /**Find out a few eigenvalues and eigenvectors of a real symmetric matrix.
-     'vectors' is used to output the eigenvectors, but it can also contain a
+     'eigenvectors' is used to output the eigenvectors, but it can also contain a
      good estimate of them. 'converged' is true when the algorithm finished
      properly. */
 RTensor eigs(const RTensor &A, EigType eig_type, size_t neig,
-             RTensor *vectors = nullptr, bool *converged = nullptr);
+             RTensor *eigenvectors = nullptr, bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a symmetric real sparse
-     matrix. 'vectors' is used to output the eigenvectors, but it can also
+     matrix. 'eigenvectors' is used to output the eigenvectors, but it can also
      contain a good estimate of them. 'converged' is true when the algorithm
      finished properly. */
 RTensor eigs(const RSparse &A, EigType eig_type, size_t neig,
-             RTensor *vectors = nullptr, bool *converged = nullptr);
+             RTensor *eigenvectors = nullptr, bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
      matrix. 'f' is a function that takes in a Tensor and returns also a Tensor
      of the same class and dimension. Because we do not know the dimensions of
-     'f', this has to be provided in 'dim'. 'vectors' is used to output the
+     'f', this has to be provided in 'dim'. 'eigenvectors' is used to output the
      eigenvectors, but it can also contain a good estimate of them. 'converged'
      is true when the algorithm finished properly. */
 RTensor eigs(const LinearMap<RTensor> &f, size_t dim, EigType eig_type,
-             size_t neig, RTensor *vectors = nullptr, bool *converged = nullptr);
+             size_t neig, RTensor *eigenvectors = nullptr,
+             bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a symmetric real sparse
      matrix. 'f' is a function that takes in a Tensor and stores in the output
      argument a tensor of the same class and dimension. Because we do not know
-     the dimensions of 'f', this has to be provided in 'dim'. 'vectors' is used
+     the dimensions of 'f', this has to be provided in 'dim'. 'eigenvectors' is used
      to output the eigenvectors, but it can also contain a good estimate of
      them. 'converged' is true when the algorithm finished properly. */
 RTensor eigs(const InPlaceLinearMap<RTensor> &f, size_t dim, EigType eig_type,
-             size_t neig, RTensor *vectors = nullptr, bool *converged = nullptr);
+             size_t neig, RTensor *eigenvectors = nullptr,
+             bool *converged = nullptr);
 
 /*------------ Real non-symmetric problems ----------- */
 
 /**Find out a few eigenvalues and eigenvectors of a real nonsymmetric matrix.
-     'vectors' is used to output the eigenvectors, but it can also contain a
+     'eigenvectors' is used to output the eigenvectors, but it can also contain a
      good estimate of them. 'converged' is true when the algorithm finished
      properly. */
 CTensor eigs_gen(const RTensor &A, EigType eig_type, size_t neig,
-                 CTensor *vectors = nullptr, bool *converged = nullptr);
+                 CTensor *eigenvectors = nullptr, bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
-     matrix. 'vectors' is used to output the eigenvectors, but it can also
+     matrix. 'eigenvectors' is used to output the eigenvectors, but it can also
      contain a good estimate of them. 'converged' is true when the algorithm
      finished properly. */
 CTensor eigs_gen(const RSparse &A, EigType eig_type, size_t neig,
-                 CTensor *vectors = nullptr, bool *converged = nullptr);
+                 CTensor *eigenvectors = nullptr, bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
      matrix. 'f' is a function that takes in a Tensor and returns also a Tensor
      of the same class and dimension. Because we do not know the dimensions of
-     'f', this has to be provided in 'dim'. 'vectors' is used to output the
+     'f', this has to be provided in 'dim'. 'eigenvectors' is used to output the
      eigenvectors, but it can also contain a good estimate of them. 'converged'
      is true when the algorithm finished properly. */
 CTensor eigs_gen(const LinearMap<RTensor> &f, size_t dim, EigType eig_type,
-                 size_t neig, CTensor *vectors = nullptr, bool *converged = nullptr);
+                 size_t neig, CTensor *eigenvectors = nullptr,
+                 bool *converged = nullptr);
 
 /**Find out a few eigenvalues and eigenvectors of a nonsymmetric real sparse
      matrix. 'f' is a function that takes in a Tensor and stores in the output
      argument a tensor of the same class and dimension. Because we do not know
-     the dimensions of 'f', this has to be provided in 'dim'. 'vectors' is used
+     the dimensions of 'f', this has to be provided in 'dim'. 'eigenvectors' is used
      to output the eigenvectors, but it can also contain a good estimate of
      them. 'converged' is true when the algorithm finished properly. */
 CTensor eigs_gen(const InPlaceLinearMap<RTensor> &f, size_t dim,
-                 EigType eig_type, size_t neig, CTensor *vectors = nullptr,
+                 EigType eig_type, size_t neig, CTensor *eigenvectors = nullptr,
                  bool *converged = nullptr);
 
 }  // namespace linalg

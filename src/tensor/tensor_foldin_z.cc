@@ -30,9 +30,9 @@ namespace tensor {
 
      \ingroup Tensors
   */
-CTensor foldin(const CTensor &a, int _ndx1, const CTensor &b, int _ndx2) {
+CTensor foldin(const CTensor &a, int ndx1, const CTensor &b, int ndx2) {
   CTensor output;
-  do_foldin_into(output, a, _ndx1, b, _ndx2);
+  do_foldin_into(output, a, ndx1, b, ndx2);
   return output;
 }
 
@@ -40,9 +40,9 @@ CTensor foldin(const CTensor &a, int _ndx1, const CTensor &b, int _ndx2) {
 
      \ingroup Tensors
   */
-void foldin_into(CTensor &output, const CTensor &a, int _ndx1, const CTensor &b,
-                 int _ndx2) {
-  do_foldin_into(output, a, _ndx1, b, _ndx2);
+void foldin_into(CTensor &output, const CTensor &a, int ndx1, const CTensor &b,
+                 int ndx2) {
+  do_foldin_into(output, a, ndx1, b, ndx2);
 }
 
 }  // namespace tensor

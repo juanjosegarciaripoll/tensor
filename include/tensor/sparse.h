@@ -115,18 +115,18 @@ CSparse operator/(const RSparse &a, cdouble b);
 CSparse operator*(cdouble a, const RSparse &b);
 
 /**Kronecker product between matrices, in Matlab order.*/
-RSparse kron(const RSparse &s1, const RSparse &s2);
+RSparse kron(const RSparse &a, const RSparse &b);
 /**Kronecker product between matrices, opposite to Matlab order.*/
-RSparse kron2(const RSparse &s1, const RSparse &s2);
+RSparse kron2(const RSparse &a, const RSparse &b);
 /**Implements A+B where A and B act on different spaces of a tensor product.*/
-RSparse kron2_sum(const RSparse &s1, const RSparse &s2);
+RSparse kron2_sum(const RSparse &a, const RSparse &b);
 
 /**Kronecker product between matrices, in Matlab order.*/
-CSparse kron(const CSparse &s1, const CSparse &s2);
+CSparse kron(const CSparse &a, const CSparse &b);
 /**Kronecker product between matrices, opposite to Matlab order.*/
-CSparse kron2(const CSparse &s1, const CSparse &s2);
+CSparse kron2(const CSparse &a, const CSparse &b);
 /**Implements A+B where A and B act on different spaces of a tensor product.*/
-CSparse kron2_sum(const CSparse &s1, const CSparse &s2);
+CSparse kron2_sum(const CSparse &a, const CSparse &b);
 
 }  // namespace tensor
 

@@ -207,22 +207,22 @@ void OutDataFile::dump(const std::vector<CTensor> &m, const std::string &name) {
   }
 }
 
-void OutDataFile::dump(const double v, const std::string &name) {
-  RTensor t(Dimensions{1}, Vector<double>({v}));
+void OutDataFile::dump(const double value, const std::string &name) {
+  RTensor t(Dimensions{1}, Vector<double>({value}));
   dump(t, name);
 }
 
-void OutDataFile::dump(const cdouble v, const std::string &name) {
-  CTensor t(Dimensions{1}, Vector<cdouble>({v}));
+void OutDataFile::dump(const cdouble value, const std::string &name) {
+  CTensor t(Dimensions{1}, Vector<cdouble>({value}));
   dump(t, name);
 }
 
-void OutDataFile::dump(size_t v, const std::string &name) {
-  dump(static_cast<double>(v), name);
+void OutDataFile::dump(size_t value, const std::string &name) {
+  dump(static_cast<double>(value), name);
 }
 
-void OutDataFile::dump(int v, const std::string &name) {
-  dump(static_cast<double>(v), name);
+void OutDataFile::dump(int value, const std::string &name) {
+  dump(static_cast<double>(value), name);
 }
 
 void OutDataFile::write_header() {

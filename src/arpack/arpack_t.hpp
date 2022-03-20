@@ -49,22 +49,23 @@ inline const char *eigenvalue_selector<tensor::cdouble>(enum EigType _t) {
 }
 
 template <typename elt_t, bool is_symmetric>
-Arpack<elt_t, is_symmetric>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
-  if (_t < 0 || _t > 6) {
+Arpack<elt_t, is_symmetric>::Arpack(size_t a_n, enum EigType a_t,
+                                    size_t a_nev) {
+  if (a_t < 0 || a_t > 6) {
     std::cerr << "Invalid argument EigType passed to Arpack constructor\n";
     abort();
   }
 
   // Select the type of problem
-  which_eig = _t;
-  which = eigenvalue_selector<elt_t>(_t);
+  which_eig = a_t;
+  which = eigenvalue_selector<elt_t>(a_t);
 
   // Default tolerance is machine precision
   tol = -1.0;
 
   // Select the problem size
-  n = blas::size_t_to_blas(_n);
-  nev = blas::size_t_to_blas(_nev);
+  n = blas::size_t_to_blas(a_n);
+  nev = blas::size_t_to_blas(a_nev);
 
   // There's a limit in the number of eigenvalues we can get
   if ((nev == 0) || (nev > (n - 1))) {
@@ -80,7 +81,7 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t _n, enum EigType _t, size_t _nev) {
 
   // By default, random vector
   info = 0;
-  resid = std::make_unique<elt_t[]>(_n);
+  resid = std::make_unique<elt_t[]>(a_n);
 
   // Reserve space for the lanczos basis in which the eigenvectors are
   // approximated.

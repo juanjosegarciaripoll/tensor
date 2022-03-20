@@ -77,7 +77,7 @@ class Range {
   index step() const { return step_; }
   index last() const { return last_; }
   index dimension() const { return dimension_; }
-  void set_dimension(index dimension);
+  void set_dimension(index new_dimension);
   bool has_indices() const { return indices().size() != 0; }
   const Indices &indices() const { return indices_; }
   index get_index(index pos) const { return indices()[pos]; }
@@ -93,7 +93,7 @@ class Range {
 
   static Range empty();
   static Range empty(index dimension);
-  static Range full(index first = 0, index step = 1);
+  static Range full(index start = 0, index step = 1);
 
  private:
   index first_{-1}, step_{1}, last_{-2}, dimension_{-1};

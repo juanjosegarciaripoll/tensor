@@ -50,7 +50,7 @@ void fftw_inplace(CTensor& in, index dim, int direction);
 void fftw_inplace(CTensor& in, const Booleans& convert, int direction);
 
 /** Shifts the half-planes of the input tensor to reorder the frequencies.
-   * 
+   *
    * A direction of FFTW_FORWARD applied to the output of fftw() shifts the
    * half-planes such that the frequencies go from minimum to maximum. Setting
    * direction to FFTW_BACKWARD reverses this operation.
@@ -59,11 +59,11 @@ void fftw_inplace(CTensor& in, const Booleans& convert, int direction);
    * the implementation is not the fastest, either, so if possible you should
    * not use this inside time-critical sections of the code.
    */
-CTensor fftshift(const CTensor& in, int direction);
+CTensor fftshift(const CTensor& input, int direction);
 /** fftshift along only one diemnsion. */
-CTensor fftshift(const CTensor& in, index dim, int direction);
+CTensor fftshift(const CTensor& input, index dim, int direction);
 /** fftshift along the given dimensions. */
-CTensor fftshift(const CTensor& in, const Booleans& convert, int direction);
+CTensor fftshift(const CTensor& input, const Booleans& convert, int direction);
 
 }  // namespace tensor
 

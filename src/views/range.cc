@@ -26,19 +26,19 @@
 
 namespace tensor {
 
-Dimensions squeeze_dimensions(const Dimensions &dims) {
-  index ones = std::count(std::begin(dims), std::end(dims), 1);
-  if (ones == dims.rank()) {
+Dimensions squeeze_dimensions(const Dimensions &d) {
+  index ones = std::count(std::begin(d), std::end(d), 1);
+  if (ones == d.rank()) {
     // A(range(0), range(3), range(1)) has dimensions [1,1,1] which
     // squeeze down to [1].
     return Dimensions{1};
   } else if (ones > 0) {
-    SimpleVector<index> without_ones(dims.rank() - ones);
-    std::copy_if(std::begin(dims), std::end(dims), std::begin(without_ones),
+    SimpleVector<index> without_ones(d.rank() - ones);
+    std::copy_if(std::begin(d), std::end(d), std::begin(without_ones),
                  [](index n) { return n != 1; });
     return without_ones;
   }
-  return dims;
+  return d;
 }
 
 Range RangeSpan::next_range() {
@@ -229,14 +229,14 @@ void Range::set_dimension(index new_dimension) {
 
 const Range RangeIterator::empty_range = Range::empty();
 
-bool RangeIterator::same_iterator(const RangeIterator &r) const noexcept {
-  if ((counter_ != r.counter_) or (limit_ != r.limit_) or
-      (start_ != r.start_) or (step_ != r.step_) or (factor_ != r.factor_) or
-      (has_indices() != r.has_indices()) or (bool(next_) != bool(r.next_)))
+bool RangeIterator::same_iterator(const RangeIterator &it) const noexcept {
+  if ((counter_ != it.counter_) or (limit_ != it.limit_) or
+      (start_ != it.start_) or (step_ != it.step_) or (factor_ != it.factor_) or
+      (has_indices() != it.has_indices()) or (bool(next_) != bool(it.next_)))
     return false;
-  if (has_indices() && !all_equal(indices_, r.indices_)) return false;
+  if (has_indices() && !all_equal(indices_, it.indices_)) return false;
   if (next_) {
-    return next_->same_iterator(*r.next_);
+    return next_->same_iterator(*it.next_);
   }
   return true;
 }

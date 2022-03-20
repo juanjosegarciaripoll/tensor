@@ -20,6 +20,8 @@
 
 namespace tensor {
 
-CTensor trace(const CTensor &a, int i1, int i2) { return do_trace(a, i1, i2); }
+CTensor trace(const CTensor &a, int ndx1, int ndx2) {
+  return do_trace(a, ndx1, ndx2);
+}
 
 }  // namespace tensor

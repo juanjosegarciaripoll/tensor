@@ -21,8 +21,8 @@
 
 namespace tensor {
 
-CTensor kron2_sum(const CTensor &s1, const CTensor &s2) {
-  return do_kron2_sum(s2, s1);
+CTensor kron2_sum(const CTensor &a, const CTensor &b) {
+  return do_kron2_sum(b, a);
 }
 
 }  // namespace tensor

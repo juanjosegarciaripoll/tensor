@@ -28,8 +28,8 @@ CTensor foldc(const RTensor &a, int ndx1, const CTensor &b, int ndx2) {
   return fold(to_complex(a), ndx1, b, ndx2);
 }
 
-CTensor mmult(const RTensor &m1, const CTensor &m2) {
-  return fold(to_complex(m1), -1, m2, 0);
+CTensor mmult(const RTensor &a, const CTensor &b) {
+  return fold(to_complex(a), -1, b, 0);
 }
 
 CTensor fold(const CTensor &a, int ndx1, const RTensor &b, int ndx2) {
@@ -40,8 +40,8 @@ CTensor foldc(const CTensor &a, int ndx1, const RTensor &b, int ndx2) {
   return foldc(a, ndx1, to_complex(b), ndx2);
 }
 
-CTensor mmult(const CTensor &m1, const RTensor &m2) {
-  return fold(m1, -1, to_complex(m2), 0);
+CTensor mmult(const CTensor &a, const RTensor &b) {
+  return fold(a, -1, to_complex(b), 0);
 }
 
 }  // namespace tensor

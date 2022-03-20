@@ -221,16 +221,16 @@ void InDataFile::load(cdouble *value, const std::string &name) {
   *value = t[0];
 }
 
-void InDataFile::load(size_t *v, const std::string &name) {
-  double aux;
+void InDataFile::load(size_t *value, const std::string &name) {
+  double aux{};
   load(&aux, name);
-  *v = static_cast<size_t>(aux);
+  *value = static_cast<size_t>(aux);
 }
 
-void InDataFile::load(int *v, const std::string &name) {
-  double aux;
+void InDataFile::load(int *value, const std::string &name) {
+  double aux{};
   load(&aux, name);
-  *v = static_cast<int>(aux);
+  *value = static_cast<int>(aux);
 }
 
 void InDataFile::read_header() {

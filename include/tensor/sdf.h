@@ -64,7 +64,7 @@ class DataFile {
   static const enum endianness endian;
   static const unsigned int var_name_size;
 
-  explicit DataFile(const std::string &a_filename, int flags = SDF_SHARED);
+  explicit DataFile(const std::string &a_filename, int a_flags = SDF_SHARED);
   ~DataFile();
   const char *tag_to_name(tensor::index tag);
   void close();
@@ -75,13 +75,13 @@ class DataFile {
 
 class OutDataFile : public DataFile {
  public:
-  explicit OutDataFile(const std::string &a_filename, int flags = SDF_SHARED);
+  explicit OutDataFile(const std::string &a_filename, int a_flags = SDF_SHARED);
   ~OutDataFile();
 
-  void dump(const int r, const std::string &name = "");
-  void dump(const size_t r, const std::string &name = "");
-  void dump(const double r, const std::string &name = "");
-  void dump(const cdouble r, const std::string &name = "");
+  void dump(const int value, const std::string &name = "");
+  void dump(const size_t value, const std::string &name = "");
+  void dump(const double value, const std::string &name = "");
+  void dump(const cdouble value, const std::string &name = "");
   void dump(const RTensor &t, const std::string &name = "");
   void dump(const CTensor &t, const std::string &name = "");
   void dump(const std::vector<RTensor> &t, const std::string &name = "");
@@ -117,12 +117,12 @@ class OutDataFile : public DataFile {
 
 class InDataFile : public DataFile {
  public:
-  explicit InDataFile(const std::string &a_filename, int flags = SDF_SHARED);
+  explicit InDataFile(const std::string &a_filename, int a_flags = SDF_SHARED);
 
-  void load(int *r, const std::string &name = "");
-  void load(size_t *r, const std::string &name = "");
-  void load(double *r, const std::string &name = "");
-  void load(cdouble *r, const std::string &name = "");
+  void load(int *value, const std::string &name = "");
+  void load(size_t *value, const std::string &name = "");
+  void load(double *value, const std::string &name = "");
+  void load(cdouble *value, const std::string &name = "");
   void load(RTensor *t, const std::string &name = "");
   void load(CTensor *t, const std::string &name = "");
   void load(std::vector<RTensor> *m, const std::string &name = "");

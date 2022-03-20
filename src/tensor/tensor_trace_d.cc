@@ -20,6 +20,8 @@
 
 namespace tensor {
 
-RTensor trace(const RTensor &a, int i1, int i2) { return do_trace(a, i1, i2); }
+RTensor trace(const RTensor &a, int ndx1, int ndx2) {
+  return do_trace(a, ndx1, ndx2);
+}
 
 }  // namespace tensor

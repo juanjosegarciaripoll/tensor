@@ -68,8 +68,8 @@ RTensor log(const RTensor &t);
 
 RTensor round(const RTensor &t);
 
-RTensor diag(const RTensor &d, int which, index rows, index cols);
-RTensor diag(const RTensor &d, int which = 0);
+RTensor diag(const RTensor &a, int which, index rows, index cols);
+RTensor diag(const RTensor &a, int which = 0);
 RTensor take_diag(const RTensor &a, int which = 0, int ndx1 = 0, int ndx2 = -1);
 double trace(const RTensor &a);
 RTensor trace(const RTensor &a, int ndx1, int ndx2);

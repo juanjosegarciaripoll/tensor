@@ -65,8 +65,8 @@ CTensor exp(const CTensor &t);
 CTensor sqrt(const CTensor &t);
 CTensor log(const CTensor &t);
 
-CTensor diag(const CTensor &d, int which, index rows, index cols);
-CTensor diag(const CTensor &d, int which = 0);
+CTensor diag(const CTensor &a, int which, index rows, index cols);
+CTensor diag(const CTensor &a, int which = 0);
 CTensor take_diag(const CTensor &a, int which = 0, int ndx1 = 0, int ndx2 = -1);
 cdouble trace(const CTensor &a);
 CTensor trace(const CTensor &a, int ndx1, int ndx2);

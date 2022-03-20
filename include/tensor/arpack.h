@@ -69,7 +69,7 @@ class Arpack {
     NoConvergence = 6,
   };
 
-  Arpack(size_t n, enum EigType t, size_t neig);
+  Arpack(size_t a_n, enum EigType a_t, size_t a_neig);
   void set_random_start_vector();
   void set_start_vector(const elt_t *v);
   void set_tolerance(double tol);

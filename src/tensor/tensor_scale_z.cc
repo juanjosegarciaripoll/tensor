@@ -27,11 +27,10 @@ namespace tensor {
 
      \ingroup Tensors
   */
-CTensor scale(const CTensor &t, int a_ndx, const CTensor &v) {
+CTensor scale(const CTensor &t, int ndx, const CTensor &v) {
   index d1, d2, d3;
   CTensor output(t.dimensions());
-  index ndx = Dimensions::normalize_index(a_ndx, t.rank());
-  surrounding_dimensions(t.dimensions(), ndx, &d1, &d2, &d3);
+  surrounding_dimensions(t.dimensions(), Dimensions::normalize_index(ndx, t.rank()), &d1, &d2, &d3);
   if (d2 != v.ssize()) {
     std::cerr << "In scale() the dimension " << ndx
               << " of the tensor does not match the length " << v.size()

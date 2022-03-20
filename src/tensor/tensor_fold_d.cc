@@ -52,19 +52,17 @@ RTensor foldc(const RTensor &a, int ndx1, const RTensor &b, int ndx2) {
   return output;
 }
 
-void fold_into(RTensor &c, const RTensor &a, int ndx1, const RTensor &b,
+void fold_into(RTensor &output, const RTensor &a, int ndx1, const RTensor &b,
                int ndx2) {
-  do_fold<double, false>(c, a, ndx1, b, ndx2);
+  do_fold<double, false>(output, a, ndx1, b, ndx2);
 }
 
 /**Matrix multiplication. \c mmult(A,B) is equivalent to \c fold(A,-1,B,0). */
 
-RTensor mmult(const RTensor &m1, const RTensor &m2) {
-  return fold(m1, -1, m2, 0);
-}
+RTensor mmult(const RTensor &a, const RTensor &b) { return fold(a, -1, b, 0); }
 
-void mmult_into(RTensor &c, const RTensor &m1, const RTensor &m2) {
-  fold_into(c, m1, -1, m2, 0);
+void mmult_into(RTensor &output, const RTensor &a, const RTensor &b) {
+  fold_into(output, a, -1, b, 0);
 }
 
 }  // namespace tensor

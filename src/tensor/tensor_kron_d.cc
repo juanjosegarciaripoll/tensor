@@ -37,8 +37,8 @@ namespace tensor {
 	     0, 0, 6, 8];
    \endverbatim
 */
-RTensor kron(const RTensor &s1, const RTensor &s2) { return do_kron(s1, s2); }
+RTensor kron(const RTensor &a, const RTensor &b) { return do_kron(a, b); }
 
-RTensor kron2(const RTensor &s1, const RTensor &s2) { return do_kron(s2, s1); }
+RTensor kron2(const RTensor &a, const RTensor &b) { return do_kron(b, a); }
 
 }  // namespace tensor

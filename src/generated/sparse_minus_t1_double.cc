@@ -20,8 +20,8 @@
 
 namespace tensor {
 
-RSparse operator-(const RSparse &s) {
-  return {s.dimensions(), s.priv_row_start(), s.priv_column(), -s.priv_data()};
+RSparse operator-(const RSparse &a) {
+  return {a.dimensions(), a.priv_row_start(), a.priv_column(), -a.priv_data()};
 }
 
 }  // namespace tensor

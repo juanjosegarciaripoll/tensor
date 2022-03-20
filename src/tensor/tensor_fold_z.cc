@@ -68,12 +68,12 @@ void fold_into(CTensor &c, const CTensor &a, int ndx1, const CTensor &b,
 }
 
 /**Matrix multiplication. \c mmult(A,B) is equivalent to \c fold(A,-1,B,0). */
-CTensor mmult(const CTensor &m1, const CTensor &m2) {
-  return fold(m1, -1, m2, 0);
+CTensor mmult(const CTensor &a, const CTensor &b) {
+  return fold(a, -1, b, 0);
 }
 
-void mmult_into(CTensor &c, const CTensor &m1, const CTensor &m2) {
-  fold_into(c, m1, -1, m2, 0);
+void mmult_into(CTensor &c, const CTensor &a, const CTensor &b) {
+  fold_into(c, a, -1, b, 0);
 }
 
 }  // namespace tensor

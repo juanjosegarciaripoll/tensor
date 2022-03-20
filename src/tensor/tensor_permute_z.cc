@@ -20,8 +20,8 @@
 
 namespace tensor {
 
-CTensor permute(const CTensor &a, index i1, index i2) {
-  return do_permute(a, i1, i2);
+CTensor permute(const CTensor &a, index ndx1, index ndx2) {
+  return do_permute(a, ndx1, ndx2);
 }
 
 }  // namespace tensor

@@ -23,14 +23,14 @@
 
 namespace tensor {
 
-RTensor round(const RTensor &r) {
-  RTensor output(r.dimensions());
+RTensor round(const RTensor &t) {
+  RTensor output(t.dimensions());
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
-  std::transform(r.begin(), r.end(), output.begin(), [](double x) {
+  std::transform(t.begin(), t.end(), output.begin(), [](double x) {
     return floor((x < 0) ? (x - 0.5) : (x + 0.5));
   });
 #else
-  std::transform(r.begin(), r.end(), output.begin(),
+  std::transform(t.begin(), t.end(), output.begin(),
                  [](double x) { return ::round(x); });
 #endif
   return output;

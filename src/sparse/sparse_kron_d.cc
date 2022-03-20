@@ -22,13 +22,12 @@
 namespace tensor {
 
 // Explicit instantiation
-RSparse kron(const RSparse &s1, const RSparse &s2) { return do_kron(s1, s2); }
+RSparse kron(const RSparse &a, const RSparse &b) { return do_kron(a, b); }
 
-RSparse kron2(const RSparse &s1, const RSparse &s2) { return kron(s2, s1); }
+RSparse kron2(const RSparse &a, const RSparse &b) { return kron(b, a); }
 
-RSparse kron2_sum(const RSparse &s2, const RSparse &s1) {
-  return kron(s1, RSparse::eye(s2.length())) +
-         kron(RSparse::eye(s1.length()), s2);
+RSparse kron2_sum(const RSparse &a, const RSparse &b) {
+  return kron(b, RSparse::eye(a.length())) + kron(RSparse::eye(b.length()), a);
 }
 
 }  // namespace tensor
