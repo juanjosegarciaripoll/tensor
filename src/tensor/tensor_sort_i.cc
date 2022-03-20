@@ -32,31 +32,15 @@ Indices sort(const Indices &v, bool reverse) {
   return output;
 }
 
-template <typename elt_t>
-struct Compare {
-  const elt_t *p;
-
-  Compare(const elt_t *newp) : p(newp){};
-  int operator()(index i1, index i2) { return p[i1] < p[i2]; }
-};
-
-template <typename elt_t>
-struct CompareInv {
-  const elt_t *p;
-
-  CompareInv(const elt_t *newp) : p(newp){};
-  int operator()(index i1, index i2) { return p[i1] > p[i2]; }
-};
-
 Indices sort_indices(const Indices &v, bool reverse) {
   if (v.size()) {
     Indices output = iota(0, v.ssize() - 1);
     if (reverse) {
-      CompareInv<index> c(v.begin());
-      std::sort(output.begin(), output.end(), c);
+      std::sort(output.begin(), output.end(),
+                [&](index i1, index i2) { return v[i1] > v[i2]; });
     } else {
-      Compare<index> c(v.begin());
-      std::sort(output.begin(), output.end(), c);
+      std::sort(output.begin(), output.end(),
+                [&](index i1, index i2) { return v[i1] < v[i2]; });
     }
     return output;
   } else {

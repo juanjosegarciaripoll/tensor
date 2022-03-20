@@ -32,31 +32,15 @@ RTensor sort(const RTensor &v, bool reverse) {
   return output;
 }
 
-template <typename elt_t>
-struct Compare {
-  const elt_t *p;
-
-  Compare(const elt_t *newp) : p(newp){};
-  int operator()(size_t i1, size_t i2) { return p[i1] < p[i2]; }
-};
-
-template <typename elt_t>
-struct CompareInv {
-  const elt_t *p;
-
-  CompareInv(const elt_t *newp) : p(newp){};
-  int operator()(size_t i1, size_t i2) { return p[i1] > p[i2]; }
-};
-
 Indices sort_indices(const RTensor &v, bool reverse) {
   if (v.size()) {
     Indices output = iota(0, v.ssize() - 1);
     if (reverse) {
-      CompareInv<double> c(v.begin());
-      std::stable_sort(output.begin(), output.end(), c);
+      std::sort(output.begin(), output.end(),
+                [&](index i1, index i2) { return v[i1] > v[i2]; });
     } else {
-      Compare<double> c(v.begin());
-      std::stable_sort(output.begin(), output.end(), c);
+      std::sort(output.begin(), output.end(),
+                [&](index i1, index i2) { return v[i1] < v[i2]; });
     }
     return output;
   } else {

@@ -123,4 +123,20 @@ TEST(Indices, Concatenate) {
   }
 }
 
+TEST(Indices, Sort) {
+  ASSERT_TRUE(all_equal(sort(Indices{1, 2, 3}), Indices{1, 2, 3}));
+  ASSERT_TRUE(all_equal(sort(Indices{1, 2, 3}, true), Indices{3, 2, 1}));
+
+  ASSERT_TRUE(all_equal(sort(Indices{5, 7, 6}), Indices{5, 6, 7}));
+  ASSERT_TRUE(all_equal(sort(Indices{5, 7, 6}, true), Indices{7, 6, 5}));
+
+  ASSERT_TRUE(all_equal(sort_indices(Indices{5, 6, 7}), Indices{0, 1, 2}));
+  ASSERT_TRUE(
+      all_equal(sort_indices(Indices{5, 6, 7}, true), Indices{2, 1, 0}));
+
+  ASSERT_TRUE(all_equal(sort_indices(Indices{6, 5, 7}), Indices{1, 0, 2}));
+  ASSERT_TRUE(
+      all_equal(sort_indices(Indices{6, 5, 7}, true), Indices{2, 0, 1}));
+}
+
 }  // namespace tensor_test
