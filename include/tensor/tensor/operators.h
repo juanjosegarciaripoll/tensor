@@ -293,50 +293,38 @@ template <typename t1, typename t2,
           typename = std::enable_if_t<std::is_floating_point<t1>::value &&
                                       std::is_floating_point<t2>::value>>
 Booleans operator<(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return detail::compare_tensors(
-      a, b,
-      [](const t1 &a_value, const t2 &b_value) { return a_value < b_value; });
+  return detail::compare_tensors(a, b, std::less<>());
 }
 
 template <typename t1, typename t2,
           typename = std::enable_if_t<std::is_floating_point<t1>::value &&
                                       std::is_floating_point<t2>::value>>
 Booleans operator>(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return detail::compare_tensors(
-      a, b,
-      [](const t1 &a_value, const t2 &b_value) { return a_value > b_value; });
+  return detail::compare_tensors(a, b, std::greater<>());
 }
 
 template <typename t1, typename t2>
 Booleans operator==(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return detail::compare_tensors(
-      a, b,
-      [](const t1 &a_value, const t2 &b_value) { return a_value == b_value; });
+  return detail::compare_tensors(a, b, std::equal_to<>());
 }
 
 template <typename t1, typename t2>
 Booleans operator!=(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return detail::compare_tensors(
-      a, b,
-      [](const t1 &a_value, const t2 &b_value) { return a_value != b_value; });
+  return detail::compare_tensors(a, b, std::not_equal_to<>());
 }
 
 template <typename t1, typename t2,
           typename = std::enable_if_t<std::is_floating_point<t1>::value &&
                                       std::is_floating_point<t2>::value>>
 Booleans operator<=(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return detail::compare_tensors(
-      a, b,
-      [](const t1 &a_value, const t2 &b_value) { return a_value <= b_value; });
+  return detail::compare_tensors(a, b, std::less_equal<>());
 }
 
 template <typename t1, typename t2,
           typename = std::enable_if_t<std::is_floating_point<t1>::value &&
                                       std::is_floating_point<t2>::value>>
 Booleans operator>=(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return detail::compare_tensors(
-      a, b,
-      [](const t1 &a_value, const t2 &b_value) { return a_value >= b_value; });
+  return detail::compare_tensors(a, b, std::greater_equal<>());
 }
 
 template <typename t1, typename t2>

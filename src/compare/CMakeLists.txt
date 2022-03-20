@@ -1,17 +1,6 @@
 target_sources(tensor
   PRIVATE
-    ctensor_ctensor_comparison.cc
-    indices_index_e.cc
-    indices_index_g.cc
-    indices_index_ge.cc
-    indices_index_l.cc
-    indices_index_le.cc
-    indices_index_ne.cc
-    indices_indices_e.cc
-    indices_indices_g.cc
-    indices_indices_ge.cc
-    indices_indices_l.cc
-    indices_indices_le.cc
-    indices_indices_ne.cc
-    rtensor_rtensor_comparison.cc
-    )
+  ctensor_ctensor_comparison.cc
+  indices_comparisons.cc
+  rtensor_rtensor_comparison.cc
+  )

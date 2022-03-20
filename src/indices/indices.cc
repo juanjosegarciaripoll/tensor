@@ -28,10 +28,6 @@ template class Vector<index>;
 
 template class SimpleVector<index>;
 
-bool all_equal(const Indices &a, const Indices &b) {
-  return (a.size() == b.size()) && std::equal(a.cbegin(), a.cend(), b.cbegin());
-}
-
 index Dimensions::compute_total_size(const SimpleVector<index> &dims) {
   if (dims.size()) {
     index total_dimension = 1,
@@ -62,9 +58,9 @@ const Indices Indices::range(index min, index max, index step) {
     auto size = static_cast<size_t>((max - min) / step + 1);
     Indices output(size);
     std::generate(output.begin(), output.end(), [&]() -> index {
-      index output = min;
+      index value = min;
       min += step;
-      return output;
+      return value;
     });
     return output;
   }
