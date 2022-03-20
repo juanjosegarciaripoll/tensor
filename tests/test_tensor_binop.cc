@@ -22,6 +22,8 @@
 
 namespace tensor_test {
 
+static constexpr int default_repeats = 10;
+
 // Test binary operations among tensors
 //
 template <typename elt_t, typename elt_t2, typename elt_t3>
@@ -29,7 +31,7 @@ void test_tensor_tensor_binop(Tensor<elt_t> &P) {
   const Tensor<elt_t> Pcopy(P);
   elt_t orig;
   if (P.size()) orig = Pcopy[0];
-  for (size_t times = 0; times < 10; times++) {
+  for (size_t times = 0; times < default_repeats; times++) {
     Tensor<elt_t2> Paux(P.dimensions());
     Paux.randomize();
     const Tensor<elt_t3> P1 = P + Paux;
@@ -62,8 +64,8 @@ void test_tensor_number_binop(Tensor<elt_t> &P) {
   const Tensor<elt_t> Pcopy(P);
   elt_t orig;
   if (P.size()) orig = Pcopy[0];
-  for (size_t times = 0; times < 10; times++) {
-    elt_t2 aux = rand<elt_t2>();
+  for (size_t times = 0; times < default_repeats; times++) {
+    auto aux = rand<elt_t2>();
     const Tensor<elt_t3> P1 = P + aux;
     const Tensor<elt_t3> P2 = P - aux;
     const Tensor<elt_t3> P3 = P * aux;
@@ -90,8 +92,8 @@ void test_number_tensor_binop(Tensor<elt_t> &P) {
   const Tensor<elt_t> Pcopy(P);
   elt_t orig;
   if (P.size()) orig = Pcopy[0];
-  for (size_t times = 0; times < 10; times++) {
-    elt_t2 aux = rand<elt_t2>();
+  for (size_t times = 0; times < default_repeats; times++) {
+    auto aux = rand<elt_t2>();
     const Tensor<elt_t3> P1 = aux + P;
     const Tensor<elt_t3> P2 = aux - P;
     const Tensor<elt_t3> P3 = aux * P;
@@ -111,6 +113,96 @@ void test_number_tensor_binop(Tensor<elt_t> &P) {
   }
 }
 
+//
+// IN-PLACE UPDATES
+//
+
+template <typename elt_t, typename elt_t2, typename elt_t3>
+void test_tensor_tensor_binop_in_place(Tensor<elt_t> &P) {
+  for (size_t times = 0; times < default_repeats; times++) {
+    {
+      auto P1 = P;
+      auto P2 = Tensor<elt_t2>::random(P.dimensions());
+      P1 += P2;
+      EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+      for (size_t i = 0; i < P1.size(); i++) {
+        ASSERT_EQ(P1[i], P[i] + P2[i]);
+      }
+    }
+    {
+      auto P1 = P;
+      auto P2 = Tensor<elt_t2>::random(P.dimensions());
+      P1 -= P2;
+      EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+      for (size_t i = 0; i < P1.size(); i++) {
+        ASSERT_EQ(P1[i], P[i] - P2[i]);
+      }
+    }
+    {
+      auto P1 = P;
+      auto P2 = Tensor<elt_t2>::random(P.dimensions());
+      P1 *= P2;
+      EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+      for (size_t i = 0; i < P1.size(); i++) {
+        ASSERT_EQ(P1[i], P[i] * P2[i]);
+      }
+    }
+    {
+      auto P1 = P;
+      const double large_offset = 2.0;
+      auto P2 = large_offset + Tensor<elt_t2>::random(P.dimensions());
+      P1 /= P2;
+      EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+      for (size_t i = 0; i < P1.size(); i++) {
+        ASSERT_EQ(P1[i], P[i] / P2[i]);
+      }
+    }
+  }
+}
+
+template <typename elt_t, typename elt_t2, typename elt_t3>
+void test_tensor_number_binop_in_place(Tensor<elt_t> &P) {
+  for (size_t times = 0; times < default_repeats; times++) {
+    {
+      auto P1 = P;
+      auto P2 = rand<elt_t2>();
+      P1 += P2;
+      EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+      for (size_t i = 0; i < P1.size(); i++) {
+        ASSERT_EQ(P1[i], P[i] + P2);
+      }
+    }
+    {
+      auto P1 = P;
+      auto P2 = rand<elt_t2>();
+      P1 -= P2;
+      EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+      for (size_t i = 0; i < P1.size(); i++) {
+        ASSERT_EQ(P1[i], P[i] - P2);
+      }
+    }
+    {
+      auto P1 = P;
+      auto P2 = rand<elt_t2>();
+      P1 *= P2;
+      EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+      for (size_t i = 0; i < P1.size(); i++) {
+        ASSERT_EQ(P1[i], P[i] * P2);
+      }
+    }
+    {
+      auto P1 = P;
+      const double large_offset = 2.0;
+      auto P2 = large_offset + rand<elt_t2>();
+      P1 /= P2;
+      EXPECT_TRUE(all_equal(P1.dimensions(), P.dimensions()));
+      for (size_t i = 0; i < P1.size(); i++) {
+        ASSERT_EQ(P1[i], P[i] / P2);
+      }
+    }
+  }
+}
+
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
@@ -125,6 +217,16 @@ TEST(TensorBinopTest, RTensorDoubleBinop) {
 
 TEST(TensorBinopTest, DoubleRTensorBinop) {
   test_over_tensors<double>(test_number_tensor_binop<double, double, double>);
+}
+
+TEST(TensorBinopTest, RTensorRTensorBinopInPlace) {
+  test_over_tensors<double>(
+      test_tensor_tensor_binop_in_place<double, double, double>);
+}
+
+TEST(TensorBinopTest, RTensorDoubleBinopInPlace) {
+  test_over_tensors<double>(
+      test_tensor_number_binop_in_place<double, double, double>);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -171,6 +273,26 @@ TEST(TensorBinopTest, RTensorCTensorBinop) {
 
 TEST(TensorBinopTest, RTensorCdoubleBinop) {
   test_over_tensors<double>(test_tensor_number_binop<double, cdouble, cdouble>);
+}
+
+TEST(TensorBinopTest, CTensorCTensorBinopInPlace) {
+  test_over_tensors<cdouble>(
+      test_tensor_tensor_binop_in_place<cdouble, cdouble, cdouble>);
+}
+
+TEST(TensorBinopTest, CTensorCdoubleBinopInPlace) {
+  test_over_tensors<cdouble>(
+      test_tensor_number_binop_in_place<cdouble, cdouble, cdouble>);
+}
+
+TEST(TensorBinopTest, CTensorRTensorBinopInPlace) {
+  test_over_tensors<cdouble>(
+      test_tensor_tensor_binop_in_place<cdouble, double, cdouble>);
+}
+
+TEST(TensorBinopTest, CTensorDoubleBinopInPlace) {
+  test_over_tensors<cdouble>(
+      test_tensor_number_binop_in_place<cdouble, double, cdouble>);
 }
 
 }  // namespace tensor_test
