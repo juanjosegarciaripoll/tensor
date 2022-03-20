@@ -328,6 +328,23 @@ TEST(RTensorTest, RTensorChangeDimension) {
   }
 }
 
+TEST(RTensorTest, RTensorRealImag) {
+  {
+    RTensor A = RTensor::random(4, 3, 5);
+    RTensor B = real(A);
+    RTensor C = imag(A);
+    ASSERT_TRUE(all_equal(B, A));
+    ASSERT_TRUE(all_equal(C, 0.0));
+  }
+  {
+    RTensor A{};
+    RTensor B = imag(A);
+    RTensor C = imag(A);
+    ASSERT_TRUE(all_equal(B, RTensor()));
+    ASSERT_TRUE(all_equal(C, RTensor()));
+  }
+}
+
 //////////////////////////////////////////////////////////////////////
 // COMPLEX SPECIALIZATIONS
 //
@@ -365,6 +382,27 @@ TEST(CTensorTest, CTensorChangeDimension) {
     CTensor C = CTensor::zeros(3, 10);
     C.at(0, 0) = C.at(1, 0) = C.at(2, 0) = A.at(0, 0);
     EXPECT_CEQ(B, C);
+  }
+}
+
+TEST(CTensorTest, CTensorRealImag) {
+  {
+    CTensor A = CTensor::random(4, 3, 5);
+    RTensor B = real(A);
+    RTensor C = imag(A);
+    ASSERT_TRUE(all_equal(B.dimensions(), A.dimensions()));
+    ASSERT_TRUE(all_equal(C.dimensions(), A.dimensions()));
+    for (size_t i = 0; i < A.size(); ++i) {
+      ASSERT_TRUE(A[i].real() == B[i]);
+      ASSERT_TRUE(A[i].imag() == C[i]);
+    }
+  }
+  {
+    CTensor A{};
+    RTensor B = imag(A);
+    RTensor C = imag(A);
+    ASSERT_TRUE(all_equal(B, CTensor()));
+    ASSERT_TRUE(all_equal(C, CTensor()));
   }
 }
 
