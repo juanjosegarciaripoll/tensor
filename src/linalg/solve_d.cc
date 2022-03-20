@@ -39,7 +39,6 @@ RTensor solve(const RTensor &A, const RTensor &B) {
   blas::integer n = blas::tensor_rows(A);
   blas::integer lda = n;
   blas::integer ldb = blas::tensor_rows(B);
-  blas::integer nrhs;
 
   // Currently, we only solve square systems
   if (n != blas::tensor_columns(A)) {
@@ -67,14 +66,14 @@ RTensor solve(const RTensor &A, const RTensor &B) {
 
   // Since B may be a tensor, we compute how many effective
   // right-hand-sides (nrhs) there are.
-  nrhs = blas::index_to_blas(B.ssize()) / ldb;
+  auto nrhs = blas::index_to_blas(B.ssize()) / ldb;
 
   // The matrix that we pass to LAPACK is modified
   RTensor aux(A);
   RTensor::elt_t *a = tensor_pointer(aux);
 
   auto ipiv = std::make_unique<blas::integer[]>(static_cast<size_t>(n));
-  blas::integer info;
+  blas::integer info{};
 #ifdef TENSOR_USE_ACML
   dgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
 #else

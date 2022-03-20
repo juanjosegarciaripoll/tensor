@@ -22,6 +22,7 @@
 
 namespace linalg {
 
+using tensor::SimpleVector;
 using namespace lapack;
 
 /**Eigenvalue decomposition of a real matrix.
@@ -55,23 +56,28 @@ RTensor eig_sym(const RTensor &A, RTensor *V) {
 
   RTensor aux(A);
   double *a = tensor_pointer(aux);
-  blas::integer lda = n, info[1];
-  char jobz[2] = {(V == 0) ? 'N' : 'V', 0};
-  char uplo[2] = {'U', 0};
+
   RTensor output = RTensor::empty(n);
   double *w = tensor_pointer(output);
 
+  char jobz{(V == nullptr) ? 'N' : 'V'};
+  char uplo{'U'};
+
+  blas::integer info{};
 #ifdef TENSOR_USE_ACML
-  dsyev(*jobz, *uplo, n, a, lda, w, info);
+  dsyev(jobz, uplo, n, a, n, w, &info);
 #else
   blas::integer lwork = -1;
-  double work0[1];
-  F77NAME(dsyev)(jobz, uplo, &n, a, &lda, w, work0, &lwork, info);
-  lwork = static_cast<blas::integer>(work0[0]);
-
-  RTensor work = RTensor::empty(lwork);
-  F77NAME(dsyev)
-  (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork, info);
+  {
+    double work0{};
+    F77NAME(dsyev)(&jobz, &uplo, &n, a, &n, w, &work0, &lwork, &info);
+    lwork = static_cast<blas::integer>(work0);
+  }
+  {
+    SimpleVector<double> work(tensor::safe_size_t(lwork));
+    F77NAME(dsyev)
+    (&jobz, &uplo, &n, a, &n, w, work.begin(), &lwork, &info);
+  }
 #endif
 
   if (V) *V = aux;

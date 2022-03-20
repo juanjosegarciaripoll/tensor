@@ -22,6 +22,8 @@
 
 namespace linalg {
 
+using tensor::SimpleVector;
+
 using namespace lapack;
 
 /**Eigenvalue decomposition of a complex matrix.
@@ -57,27 +59,28 @@ RTensor eig_sym(const CTensor &A, CTensor *V) {
 
   CTensor aux(A);
   cdouble *a = tensor_pointer(aux);
-  blas::integer lda = n, info[1];
-  char jobz[2] = {(V == 0) ? 'N' : 'V', 0};
-  char uplo[2] = {'U', 0};
+  char jobz{(V == nullptr) ? 'N' : 'V'};
+  char uplo{'U'};
   RTensor output = RTensor::empty(n);
   double *w = tensor_pointer(output);
-  RTensor rwork = RTensor::empty(3 * n);
 
+  blas::integer info{};
 #ifdef TENSOR_USE_ACML
-  zheev(*jobz, *uplo, n, a, lda, w, info);
+  zheev(jobz, uplo, n, a, n, w, info);
 #else
   blas::integer lwork = -1;
-  CTensor work = CTensor::empty(1);
-  F77NAME(zheev)
-  (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork,
-   tensor_pointer(rwork), info);
-  lwork = static_cast<blas::integer>(tensor::real(work[0]));
-
-  work = CTensor::empty(lwork);
-  F77NAME(zheev)
-  (jobz, uplo, &n, a, &lda, w, tensor_pointer(work), &lwork,
-   tensor_pointer(rwork), info);
+  SimpleVector<double> rwork(static_cast<size_t>(3 * n));
+  {
+    cdouble work0;
+    F77NAME(zheev)
+    (&jobz, &uplo, &n, a, &n, w, &work0, &lwork, rwork.begin(), &info);
+    lwork = static_cast<blas::integer>(lapack::real(work0));
+  }
+  {
+    SimpleVector<cdouble> work(tensor::safe_size_t(lwork));
+    F77NAME(zheev)
+    (&jobz, &uplo, &n, a, &n, w, work.begin(), &lwork, rwork.begin(), &info);
+  }
 #endif
 
   if (V) *V = aux;

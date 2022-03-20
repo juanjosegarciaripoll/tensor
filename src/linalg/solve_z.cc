@@ -33,7 +33,6 @@ CTensor solve(const CTensor &A, const CTensor &B) {
   blas::integer n = tensor_rows(A);
   blas::integer lda = n;
   blas::integer ldb = tensor_rows(B);
-  blas::integer nrhs;
 
   // Currently, we only solve square systems
   if (n != blas::tensor_columns(A)) {
@@ -61,14 +60,14 @@ CTensor solve(const CTensor &A, const CTensor &B) {
 
   // Since B may be a tensor, we compute how many effective
   // right-hand-sides (nrhs) there are.
-  nrhs = blas::index_to_blas(B.ssize()) / ldb;
+  auto nrhs = blas::index_to_blas(B.ssize()) / ldb;
 
   // The matrix that we pass to LAPACK is modified
   CTensor aux(A);
   cdouble *a = tensor_pointer(aux);
 
   auto ipiv = std::make_unique<blas::integer[]>(static_cast<size_t>(n));
-  blas::integer info;
+  blas::integer info{};
 #ifdef TENSOR_USE_ACML
   zgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
 #else

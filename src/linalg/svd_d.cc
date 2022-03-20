@@ -23,6 +23,7 @@
 
 namespace linalg {
 
+using tensor::SimpleVector;
 using namespace lapack;
 
 /*!\defgroup Linalg Linear algebra
@@ -93,47 +94,45 @@ RTensor svd(RTensor A, RTensor *U, RTensor *VT, bool economic) {
   }
 
   blas::integer k = std::min(m, n);
-  blas::integer lwork, ldu, lda, ldv, info;
   RTensor output = RTensor::empty(k);
-  double *u, *v;
   double *a = tensor_pointer(A), *s = tensor_pointer(output);
-  char jobv[1], jobu[1];
+  auto &lda = m;
 
+  char jobu{'N'};
+  double *u = nullptr;
+  blas::integer ldu = 1;
   if (U) {
     *U = RTensor::empty(m, economic ? k : m);
     u = tensor_pointer(*U);
-    jobu[0] = economic ? 'S' : 'A';
+    jobu = economic ? 'S' : 'A';
     ldu = m;
-  } else {
-    jobu[0] = 'N';
-    u = nullptr;
-    ldu = 1;
   }
+
+  char jobv{'N'};
+  double *v = nullptr;
+  blas::integer ldv = 1;
   if (VT) {
     (*VT) = RTensor::empty(economic ? k : n, n);
     v = tensor_pointer(*VT);
-    jobv[0] = economic ? 'S' : 'A';
+    jobv = economic ? 'S' : 'A';
     ldv = economic ? k : n;
-  } else {
-    jobv[0] = 'N';
-    v = nullptr;
-    ldv = 1;
   }
-  lda = m;
+
+  blas::integer info{};
 #ifdef TENSOR_USE_ACML
-  dgesvd(*jobu, *jobv, m, n, a, lda, s, u, ldu, v, ldv, &info);
+  dgesvd(jobu, jobv, m, n, a, lda, s, u, ldu, v, ldv, &info);
 #else
-  lwork = -1;
+  blas::integer lwork = -1;
   {
-    double work0[1];
+    double work0{};
     F77NAME(dgesvd)
-    (jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work0, &lwork, &info);
-    lwork = static_cast<blas::integer>(work0[0]);
+    (&jobu, &jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, &work0, &lwork, &info);
+    lwork = static_cast<blas::integer>(work0);
   }
   {
-    auto work = std::make_unique<double[]>(tensor::safe_size_t(lwork));
+    SimpleVector<double> work(tensor::safe_size_t(lwork));
     F77NAME(dgesvd)
-    (jobu, jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work.get(), &lwork,
+    (&jobu, &jobv, &m, &n, a, &lda, s, u, &ldu, v, &ldv, work.begin(), &lwork,
      &info);
   }
 #endif

@@ -17,6 +17,7 @@
 */
 
 #include <memory>
+#include <array>
 #include <tensor/tensor.h>
 #include <tensor/tensor_lapack.h>
 #include <tensor/linalg.h>
@@ -25,6 +26,7 @@ namespace linalg {
 
 using tensor::CTensor;
 using tensor::RTensor;
+using tensor::SimpleVector;
 using namespace lapack;
 
 /**
@@ -48,10 +50,6 @@ CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
   tensor_assert(A.rank() == 2);
   tensor_assert(A.rows() == A.columns());
 
-  char jobvl[2] = "N";
-  char jobvr[2] = "N";
-  blas::integer lda, ldvl, ldvr, lwork, info;
-  cdouble *vl, *vr, *w;
   CTensor aux(A);
   cdouble *a = tensor_pointer(aux);
   blas::integer n = blas::tensor_rows(A);
@@ -64,41 +62,46 @@ CTensor eig(const CTensor &A, CTensor *R, CTensor *L) {
     abort();
   }
 
+  char jobvl{'N'};
+  cdouble *vl = nullptr;
   if (L) {
     (*L) = CTensor::empty(n, n);
     vl = tensor_pointer(*L);
-    jobvl[0] = 'V';
-  } else {
-    vl = nullptr;
+    jobvl = 'V';
   }
+
+  char jobvr{'N'};
+  cdouble *vr = nullptr;
   if (R) {
     (*R) = CTensor::empty(n, n);
     vr = tensor_pointer(*R);
-    jobvr[0] = 'V';
-  } else {
-    vr = nullptr;
+    jobvr = 'V';
   }
 
-  ldvl = ldvr = n;
-  lda = n;
+  blas::integer ldvl = n, ldvr = n;
+  blas::integer lda = n;
   auto output = CTensor::empty(n);
-  w = tensor_pointer(output);
+  cdouble *w = tensor_pointer(output);
+  blas::integer info{};
 #ifdef TENSOR_USE_ACML
   zgeev(*jobvl, *jobvr, n, a, lda, w, vl, ldvl, vr, ldvr, &info);
 #else
-  cdouble work0[1];
-  lwork = -1;
-  auto rwork = std::make_unique<double[]>(2 * static_cast<size_t>(n));
-  F77NAME(zgeev)
-  (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work0, &lwork,
-   rwork.get(), &info);
-  // On exit, work0 contains the optimal amount of work to be done
-  lwork = static_cast<blas::integer>(lapack::real(work0[0]));
-
-  auto work = std::make_unique<cdouble[]>(static_cast<size_t>(lwork));
-  F77NAME(zgeev)
-  (jobvl, jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work.get(), &lwork,
-   rwork.get(), &info);
+  SimpleVector<double> rwork(2 * static_cast<size_t>(n));
+  blas::integer lwork = -1;
+  {
+    std::array<cdouble, 1> work0{};
+    F77NAME(zgeev)
+    (&jobvl, &jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, &work0[0], &lwork,
+     rwork.begin(), &info);
+    // On exit, work0 contains the optimal amount of work to be done
+    lwork = static_cast<blas::integer>(lapack::real(work0[0]));
+  }
+  {
+    SimpleVector<cdouble> work(static_cast<size_t>(lwork));
+    F77NAME(zgeev)
+    (&jobvl, &jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work.begin(), &lwork,
+     rwork.begin(), &info);
+  }
 #endif
   return output;
 }

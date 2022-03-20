@@ -23,6 +23,7 @@
 
 namespace linalg {
 
+using tensor::SimpleVector;
 using namespace lapack;
 
 static RTensor economic_row_svd(const CTensor &A, CTensor *U, CTensor *VT) {
@@ -87,49 +88,52 @@ RTensor svd(CTensor A, CTensor *U, CTensor *VT, bool economic) {
   }
 
   blas::integer k = std::min(m, n);
-  blas::integer lwork, ldu, ldv, info;
   RTensor output = RTensor::empty(k);
-  cdouble *u, *v, *a = tensor_pointer(A);
   double *s = tensor_pointer(output);
-  char jobv[1], jobu[1];
+  cdouble *a = tensor_pointer(A);
 
+  char jobu{'N'};
+  cdouble *u = nullptr;
+  blas::integer ldu = 1;
   if (U) {
     *U = CTensor::empty(m, economic ? k : m);
     u = tensor_pointer(*U);
-    jobu[0] = economic ? 'S' : 'A';
+    jobu = economic ? 'S' : 'A';
     ldu = m;
-  } else {
-    jobu[0] = 'N';
-    u = nullptr;
-    ldu = 1;
   }
+
+  char jobv{'N'};
+  cdouble *v = nullptr;
+  blas::integer ldv = 1;
   if (VT) {
     (*VT) = CTensor::empty(economic ? k : n, n);
     v = tensor_pointer(*VT);
-    jobv[0] = economic ? 'S' : 'A';
+    jobv = economic ? 'S' : 'A';
     ldv = economic ? k : n;
-  } else {
-    jobv[0] = 'N';
-    v = nullptr;
-    ldv = 1;
   }
+
+  blas::integer info{};
 #ifdef TENSOR_USE_ACML
-  zgesvd(*jobu, *jobv, m, n, a, m, s, u, ldu, v, ldv, &info);
+  zgesvd(jobu, jobv, m, n, a, m, s, u, ldu, v, ldv, &info);
 #else
-  lwork = -1;
-  cdouble work0[1];
-  double rwork0[1];
-  F77NAME(zgesvd)
-  (jobu, jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work0, &lwork, rwork0,
-   &info);
-  // work[0] contains the optimal amount of space required
-  lwork = static_cast<blas::integer>(lapack::real(work0[0]));
+  blas::integer lwork = -1;
+  {
+    cdouble work0{};
+    double rwork0{};
+    F77NAME(zgesvd)
+    (&jobu, &jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, &work0, &lwork, &rwork0,
+     &info);
+    // work[0] contains the optimal amount of space required
+    lwork = static_cast<blas::integer>(lapack::real(work0));
+  }
   /* TODO: Guard against negative lwork using safe_size_t() */
-  auto work = std::make_unique<cdouble[]>(static_cast<size_t>(lwork));
-  auto rwork = std::make_unique<double[]>(5 * static_cast<size_t>(k));
-  F77NAME(zgesvd)
-  (jobu, jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work.get(), &lwork,
-   rwork.get(), &info);
+  {
+    SimpleVector<cdouble> work(tensor::safe_size_t(lwork));
+    SimpleVector<double> rwork(5 * static_cast<size_t>(k));
+    F77NAME(zgesvd)
+    (&jobu, &jobv, &m, &n, a, &m, s, u, &ldu, v, &ldv, work.begin(), &lwork,
+     rwork.begin(), &info);
+  }
 #endif
   return output;
 }

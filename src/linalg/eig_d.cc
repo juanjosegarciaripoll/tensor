@@ -25,6 +25,7 @@ namespace linalg {
 
 using tensor::CTensor;
 using tensor::RTensor;
+using tensor::SimpleVector;
 using namespace lapack;
 using tensor::Dimensions;
 
@@ -47,14 +48,9 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   tensor_assert(A.rank() == 2);
   tensor_assert(A.rows() == A.columns());
 
-  char jobvl[2] = "N";
-  char jobvr[2] = "N";
-  blas::integer lda, ldvl, ldvr, lwork, info;
-  double *vl = nullptr, *vr = nullptr, *wr, *wi;
   RTensor aux(A);
   double *a = tensor_pointer(aux);
   blas::integer n = blas::tensor_rows(A);
-  std::unique_ptr<RTensor> realL, realR;
 
   if (n != A.columns()) {
     std::cerr << "Routine eig() can only compute eigenvalues of square "
@@ -64,36 +60,48 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
     abort();
   }
 
+  char jobvl{'N'};
+  std::unique_ptr<RTensor> realL;
+  double *vl = nullptr;
   if (L) {
     realL = std::make_unique<RTensor>(Dimensions{n, n});
     vl = tensor_pointer(*realL);
-    jobvl[0] = 'V';
+    jobvl = 'V';
   }
+
+  char jobvr{'N'};
+  std::unique_ptr<RTensor> realR;
+  double *vr = nullptr;
   if (R) {
     realR = std::make_unique<RTensor>(Dimensions{n, n});
     vr = tensor_pointer(*realR);
-    jobvr[0] = 'V';
+    jobvr = 'V';
   }
-  ldvl = ldvr = n;
-  lda = n;
+
+  blas::integer ldvl = n, ldvr = n, lda = n;
   auto real = RTensor::empty(n);
   auto imag = RTensor::empty(n);
-  wr = tensor_pointer(real);
-  wi = tensor_pointer(imag);
+  double *wr = tensor_pointer(real);
+  double *wi = tensor_pointer(imag);
 
+  blas::integer info{};
 #ifdef TENSOR_USE_ACML
   dgeev(*jobvl, *jobvr, n, a, lda, wr, wi, vl, ldvl, vr, ldvr, &info);
 #else
-  lwork = -1;
-  double work0[1];
-  F77NAME(dgeev)
-  (jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work0, &lwork,
-   &info);
-  lwork = static_cast<blas::integer>(work0[0]);
-  auto work = std::make_unique<double[]>(tensor::safe_size_t(lwork));
-  F77NAME(dgeev)
-  (jobvl, jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work.get(), &lwork,
-   &info);
+  blas::integer lwork = -1;
+  {
+    std::array<double, 1> work0{};
+    F77NAME(dgeev)
+    (&jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, &work0[0],
+     &lwork, &info);
+    lwork = static_cast<blas::integer>(work0[0]);
+  }
+  {
+    SimpleVector<double> work(tensor::safe_size_t(lwork));
+    F77NAME(dgeev)
+    (&jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work.begin(),
+     &lwork, &info);
+  }
 #endif
 
   CTensor output(to_complex(real));
