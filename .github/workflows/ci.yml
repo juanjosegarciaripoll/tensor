@@ -21,7 +21,7 @@ jobs:
         run: ./scripts/build-and-test.sh --build --threads=2
       - name: test
         run: ./scripts/build-and-test.sh --test --threads=2
-        timeout-minutes: 5
+        timeout-minutes: 10
 
   ClangTidy:
       runs-on: ubuntu-latest
