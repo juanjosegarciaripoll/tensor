@@ -134,12 +134,10 @@ CSRMatrix<elt_t> make_sparse(const Indices &rows, const Indices &cols,
 
 template <typename elt_t>
 static index number_of_nonzero(const Tensor<elt_t> &data) {
-  index counter = 0;
-  for (typename Tensor<elt_t>::const_iterator it = data.begin();
-       it != data.end(); it++) {
-    if (!(*it == number_zero<elt_t>())) counter++;
-  }
-  return counter;
+  auto counter = std::count_if(
+      data.cbegin(), data.cend(),
+      [](const elt_t &value) { return value != number_zero<elt_t>(); });
+  return static_cast<index>(counter);
 }
 
 template <typename elt_t>
@@ -194,9 +192,9 @@ const Tensor<elt_t> full(const CSRMatrix<elt_t> &s) {
 }
 
 template <typename elt_t>
-index CSRMatrix<elt_t>::dimension(int dimension) const {
-  tensor_assert(dimension < 2);
-  return dimension ? columns() : rows();
+index CSRMatrix<elt_t>::dimension(int which) const {
+  tensor_assert(which < 2);
+  return which ? columns() : rows();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -221,16 +219,15 @@ CSRMatrix<elt_t> CSRMatrix<elt_t>::eye(index rows, index columns) {
 template <typename elt_t>
 CSRMatrix<elt_t> CSRMatrix<elt_t>::random(index rows, index columns,
                                           double density) {
-  auto output = Tensor<elt_t>::empty(rows * columns);
-  output.randomize();
-  for (typename Tensor<elt_t>::iterator it = output.begin(), end = output.end();
-       it < end; it++) {
-    if (abs(*it) > density)
-      *it = number_zero<elt_t>();
-    else
-      *it /= density;
+  auto output = Tensor<elt_t>::random(rows, columns);
+  for (auto &value : output) {
+    if (abs(value) > density) {
+      value = number_zero<elt_t>();
+    } else {
+      value /= density;
+    }
   }
-  return CSRMatrix<elt_t>(reshape(output, rows, columns));
+  return CSRMatrix<elt_t>(output);
 }
 
 //////////////////////////////////////////////////////////////////////
