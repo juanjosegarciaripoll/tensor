@@ -193,8 +193,7 @@ void test_sparse_eye(Tensor<elt_t>& t) {
   Sparse<elt_t> saux = Sparse<elt_t>::eye(rows, cols);
 
   EXPECT_TRUE(all_equal(Indices::range(0, k - 1), saux.priv_column()));
-  Vector<elt_t> v(k);
-  std::fill(v.begin(), v.end(), number_one<elt_t>());
+  auto v = Tensor<elt_t>::ones(k);
   EXPECT_TRUE(all_equal(v, saux.priv_data()));
   EXPECT_TRUE(all_equal(taux, full(saux)));
   EXPECT_TRUE(all_equal(Sparse<elt_t>(taux), saux));
@@ -227,7 +226,7 @@ void test_sparse_random_small() {
     EXPECT_EQ(0, S.columns());
     EXPECT_TRUE(all_equal(Indices{0}, S.priv_row_start()));
     EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
-    EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(0), S.priv_data()));
     EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(0, 0), full(S)));
   }
   {
@@ -238,7 +237,7 @@ void test_sparse_random_small() {
     EXPECT_EQ(1, S.columns());
     EXPECT_TRUE(all_equal(Indices{0}, S.priv_row_start()));
     EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
-    EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(0), S.priv_data()));
     EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(0, 1), full(S)));
   }
   {
@@ -249,7 +248,7 @@ void test_sparse_random_small() {
     EXPECT_EQ(0, S.columns());
     EXPECT_TRUE(all_equal(Indices{0, 0, 0}, S.priv_row_start()));
     EXPECT_TRUE(all_equal(Indices(), S.priv_column()));
-    EXPECT_TRUE(all_equal(Vector<elt_t>(), S.priv_data()));
+    EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(0), S.priv_data()));
     EXPECT_TRUE(all_equal(Tensor<elt_t>::empty(2, 0), full(S)));
   }
 }

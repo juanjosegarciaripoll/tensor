@@ -266,6 +266,72 @@ Tensor<t1> &operator/=(Tensor<t1> &a, t2 b) {
   return a;
 }
 
+//
+// TENSOR <=> TENSOR
+//
+namespace detail {
+
+template <typename t1, typename t2, class comparison>
+Booleans compare_tensors(const Tensor<t1> &a, const Tensor<t2> &b,
+                         comparison fn) {
+  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  Booleans output(a.size());
+  std::transform(a.cbegin(), a.cend(), b.cbegin(), output.begin(), fn);
+  return output;
+}
+
+}  // namespace detail
+
+template <typename t1, typename t2,
+          typename = std::enable_if_t<std::is_floating_point<t1>::value &&
+                                      std::is_floating_point<t2>::value>>
+Booleans operator<(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return detail::compare_tensors(
+      a, b, [](const t1 &a, const t2 &b) { return a < b; });
+}
+
+template <typename t1, typename t2,
+          typename = std::enable_if_t<std::is_floating_point<t1>::value &&
+                                      std::is_floating_point<t2>::value>>
+Booleans operator>(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return detail::compare_tensors(
+      a, b, [](const t1 &a, const t2 &b) { return a > b; });
+}
+
+template <typename t1, typename t2>
+Booleans operator==(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return detail::compare_tensors(
+      a, b, [](const t1 &a, const t2 &b) { return a == b; });
+}
+
+template <typename t1, typename t2>
+Booleans operator!=(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return detail::compare_tensors(
+      a, b, [](const t1 &a, const t2 &b) { return a != b; });
+}
+
+template <typename t1, typename t2,
+          typename = std::enable_if_t<std::is_floating_point<t1>::value &&
+                                      std::is_floating_point<t2>::value>>
+Booleans operator<=(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return detail::compare_tensors(
+      a, b, [](const t1 &a, const t2 &b) { return a <= b; });
+}
+
+template <typename t1, typename t2,
+          typename = std::enable_if_t<std::is_floating_point<t1>::value &&
+                                      std::is_floating_point<t2>::value>>
+Booleans operator>=(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return detail::compare_tensors(
+      a, b, [](const t1 &a, const t2 &b) { return a >= b; });
+}
+
+template <typename t1, typename t2>
+bool all_equal(const Tensor<t1> &a, const Tensor<t2> &b) {
+  return verify_tensor_dimensions_match(a.dimensions(), b.dimensions()) &&
+         std::equal(a.cbegin(), a.cend(), b.cbegin());
+}
+
 }  // namespace tensor
 
 /* @} */

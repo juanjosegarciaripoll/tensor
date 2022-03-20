@@ -101,12 +101,12 @@ CTensor linspace(const CTensor &min, const CTensor &max, index n = 100);
 CTensor sort(const CTensor &v, bool reverse = false);
 Indices sort_indices(const CTensor &v, bool reverse = false);
 
-bool all_equal(const CTensor &a, const CTensor &b);
+extern template bool all_equal(const CTensor &a, const CTensor &b);
 bool all_equal(const CTensor &a, const cdouble &b);
 inline bool all_equal(cdouble b, const CTensor &a) { return all_equal(a, b); }
 
-Booleans operator==(const CTensor &a, const CTensor &b);
-Booleans operator!=(const CTensor &a, const CTensor &b);
+extern template Booleans operator==(const CTensor &a, const CTensor &b);
+extern template Booleans operator!=(const CTensor &a, const CTensor &b);
 Booleans operator==(const CTensor &a, cdouble b);
 Booleans operator!=(const CTensor &a, cdouble b);
 inline Booleans operator==(cdouble a, const CTensor &b) { return b == a; }

@@ -102,7 +102,7 @@ Indices sort_indices(const Indices &v, bool reverse = false);
 RTensor sort(const RTensor &v, bool reverse = false);
 Indices sort_indices(const RTensor &v, bool reverse = false);
 
-bool all_equal(const RTensor &a, const RTensor &b);
+extern template bool all_equal(const RTensor &a, const RTensor &b);
 bool all_equal(const RTensor &a, double b);
 inline bool all_equal(double b, const RTensor &a) { return all_equal(a, b); }
 template <typename t1, typename t2>
@@ -110,12 +110,12 @@ inline bool some_unequal(const t1 &a, const t2 &b) {
   return !all_equal(a, b);
 }
 
-Booleans operator==(const RTensor &a, const RTensor &b);
-Booleans operator<(const RTensor &a, const RTensor &b);
-Booleans operator>(const RTensor &a, const RTensor &b);
-Booleans operator<=(const RTensor &a, const RTensor &b);
-Booleans operator>=(const RTensor &a, const RTensor &b);
-Booleans operator!=(const RTensor &a, const RTensor &b);
+extern template Booleans operator==(const RTensor &a, const RTensor &b);
+extern template Booleans operator<(const RTensor &a, const RTensor &b);
+extern template Booleans operator>(const RTensor &a, const RTensor &b);
+extern template Booleans operator<=(const RTensor &a, const RTensor &b);
+extern template Booleans operator>=(const RTensor &a, const RTensor &b);
+extern template Booleans operator!=(const RTensor &a, const RTensor &b);
 
 Booleans operator==(const RTensor &a, double b);
 Booleans operator<(const RTensor &a, double b);

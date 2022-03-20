@@ -3,9 +3,7 @@ target_sources(tensor
     ctensor_cdouble_all_equal.cc
     ctensor_cdouble_e.cc
     ctensor_cdouble_ne.cc
-    ctensor_ctensor_all_equal.cc
-    ctensor_ctensor_e.cc
-    ctensor_ctensor_ne.cc
+    ctensor_ctensor_comparison.cc
     indices_index_e.cc
     indices_index_g.cc
     indices_index_ge.cc
@@ -25,11 +23,5 @@ target_sources(tensor
     rtensor_double_l.cc
     rtensor_double_le.cc
     rtensor_double_ne.cc
-    rtensor_rtensor_all_equal.cc
-    rtensor_rtensor_e.cc
-    rtensor_rtensor_g.cc
-    rtensor_rtensor_ge.cc
-    rtensor_rtensor_l.cc
-    rtensor_rtensor_le.cc
-    rtensor_rtensor_ne.cc
+    rtensor_rtensor_comparison.cc
     )

@@ -18,17 +18,12 @@
 
 #include <algorithm>
 #include <tensor/tensor.h>
+#include <tensor/tensor/operators.h>
 
 namespace tensor {
 
-Booleans operator>(const RTensor &a, const RTensor &b) {
-  tensor_assert(a.size() == b.size());
-  Booleans c(a.size());
-  Booleans::iterator ic = c.begin();
-  for (RTensor::const_iterator ia = a.begin(), ib = b.begin(); ia != a.end();
-       ia++, ib++, ic++)
-    *ic = (*ia) > (*ib);
-  return c;
-}
+template Booleans operator==(const CTensor &a, const CTensor &b);
+template Booleans operator!=(const CTensor &a, const CTensor &b);
+template bool all_equal(const CTensor &a, const CTensor &b);
 
 }  // namespace tensor
