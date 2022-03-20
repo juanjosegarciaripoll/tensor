@@ -24,6 +24,11 @@ namespace tensor {
 
 template Booleans operator==(const CTensor &a, const CTensor &b);
 template Booleans operator!=(const CTensor &a, const CTensor &b);
+
 template bool all_equal(const CTensor &a, const CTensor &b);
+template bool all_equal(const CTensor &a, cdouble b);
+
+template Booleans operator==(const CTensor &a, cdouble b);
+template Booleans operator!=(const CTensor &a, cdouble b);
 
 }  // namespace tensor

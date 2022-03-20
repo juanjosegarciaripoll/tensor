@@ -1,8 +1,5 @@
 target_sources(tensor
   PRIVATE
-    ctensor_cdouble_all_equal.cc
-    ctensor_cdouble_e.cc
-    ctensor_cdouble_ne.cc
     ctensor_ctensor_comparison.cc
     indices_index_e.cc
     indices_index_g.cc
@@ -16,12 +13,5 @@ target_sources(tensor
     indices_indices_l.cc
     indices_indices_le.cc
     indices_indices_ne.cc
-    rtensor_double_all_equal.cc
-    rtensor_double_e.cc
-    rtensor_double_g.cc
-    rtensor_double_ge.cc
-    rtensor_double_l.cc
-    rtensor_double_le.cc
-    rtensor_double_ne.cc
     rtensor_rtensor_comparison.cc
     )

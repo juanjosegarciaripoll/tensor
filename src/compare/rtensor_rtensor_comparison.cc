@@ -28,6 +28,15 @@ template Booleans operator==(const RTensor &a, const RTensor &b);
 template Booleans operator!=(const RTensor &a, const RTensor &b);
 template Booleans operator<=(const RTensor &a, const RTensor &b);
 template Booleans operator>=(const RTensor &a, const RTensor &b);
+
 template bool all_equal(const RTensor &a, const RTensor &b);
+template bool all_equal(const RTensor &a, double b);
+
+template Booleans operator<(const RTensor &a, double b);
+template Booleans operator>(const RTensor &a, double b);
+template Booleans operator==(const RTensor &a, double b);
+template Booleans operator!=(const RTensor &a, double b);
+template Booleans operator<=(const RTensor &a, double b);
+template Booleans operator>=(const RTensor &a, double b);
 
 }  // namespace tensor

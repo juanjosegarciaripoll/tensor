@@ -102,15 +102,12 @@ CTensor sort(const CTensor &v, bool reverse = false);
 Indices sort_indices(const CTensor &v, bool reverse = false);
 
 extern template bool all_equal(const CTensor &a, const CTensor &b);
-bool all_equal(const CTensor &a, const cdouble &b);
-inline bool all_equal(cdouble b, const CTensor &a) { return all_equal(a, b); }
+extern template bool all_equal(const CTensor &a, cdouble b);
 
 extern template Booleans operator==(const CTensor &a, const CTensor &b);
 extern template Booleans operator!=(const CTensor &a, const CTensor &b);
-Booleans operator==(const CTensor &a, cdouble b);
-Booleans operator!=(const CTensor &a, cdouble b);
-inline Booleans operator==(cdouble a, const CTensor &b) { return b == a; }
-inline Booleans operator!=(cdouble a, const CTensor &b) { return b != a; }
+extern template Booleans operator==(const CTensor &a, cdouble b);
+extern template Booleans operator!=(const CTensor &a, cdouble b);
 
 extern template CTensor operator+(const CTensor &a, const CTensor &b);
 extern template CTensor operator-(const CTensor &a, const CTensor &b);

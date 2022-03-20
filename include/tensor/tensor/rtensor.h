@@ -103,8 +103,8 @@ RTensor sort(const RTensor &v, bool reverse = false);
 Indices sort_indices(const RTensor &v, bool reverse = false);
 
 extern template bool all_equal(const RTensor &a, const RTensor &b);
-bool all_equal(const RTensor &a, double b);
-inline bool all_equal(double b, const RTensor &a) { return all_equal(a, b); }
+extern template bool all_equal(const RTensor &a, double b);
+
 template <typename t1, typename t2>
 inline bool some_unequal(const t1 &a, const t2 &b) {
   return !all_equal(a, b);
@@ -117,19 +117,12 @@ extern template Booleans operator<=(const RTensor &a, const RTensor &b);
 extern template Booleans operator>=(const RTensor &a, const RTensor &b);
 extern template Booleans operator!=(const RTensor &a, const RTensor &b);
 
-Booleans operator==(const RTensor &a, double b);
-Booleans operator<(const RTensor &a, double b);
-Booleans operator>(const RTensor &a, double b);
-Booleans operator<=(const RTensor &a, double b);
-Booleans operator>=(const RTensor &a, double b);
-Booleans operator!=(const RTensor &a, double b);
-
-inline Booleans operator==(double a, const RTensor &b) { return b == a; }
-inline Booleans operator<(double a, const RTensor &b) { return b >= a; }
-inline Booleans operator>(double a, const RTensor &b) { return b <= a; }
-inline Booleans operator<=(double a, const RTensor &b) { return b > a; }
-inline Booleans operator>=(double a, const RTensor &b) { return b < a; }
-inline Booleans operator!=(double a, const RTensor &b) { return b != a; }
+extern template Booleans operator==(const RTensor &a, double b);
+extern template Booleans operator<(const RTensor &a, double b);
+extern template Booleans operator>(const RTensor &a, double b);
+extern template Booleans operator<=(const RTensor &a, double b);
+extern template Booleans operator>=(const RTensor &a, double b);
+extern template Booleans operator!=(const RTensor &a, double b);
 
 extern template RTensor operator+(const RTensor &a, const RTensor &b);
 extern template RTensor operator-(const RTensor &a, const RTensor &b);

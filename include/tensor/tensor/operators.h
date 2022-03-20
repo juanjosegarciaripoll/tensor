@@ -280,6 +280,13 @@ Booleans compare_tensors(const Tensor<t1> &a, const Tensor<t2> &b,
   return output;
 }
 
+template <typename t1, class test>
+Booleans test_tensor(const Tensor<t1> &a, test fn) {
+  Booleans output(a.size());
+  std::transform(a.cbegin(), a.cend(), output.begin(), fn);
+  return output;
+}
+
 }  // namespace detail
 
 template <typename t1, typename t2,
@@ -330,6 +337,90 @@ template <typename t1, typename t2>
 bool all_equal(const Tensor<t1> &a, const Tensor<t2> &b) {
   return verify_tensor_dimensions_match(a.dimensions(), b.dimensions()) &&
          std::equal(a.cbegin(), a.cend(), b.cbegin());
+}
+
+//
+// TENSOR <=> NUMBER
+//
+
+template <typename t1,
+          typename = std::enable_if_t<std::is_floating_point<t1>::value>>
+Booleans operator<(const Tensor<t1> &a, t1 b) {
+  return detail::test_tensor(a, [&](const t1 &a) { return a < b; });
+}
+
+template <typename t1,
+          typename = std::enable_if_t<std::is_floating_point<t1>::value>>
+Booleans operator<=(const Tensor<t1> &a, t1 b) {
+  return detail::test_tensor(a, [&](const t1 &a) { return a <= b; });
+}
+
+template <typename t1,
+          typename = std::enable_if_t<std::is_floating_point<t1>::value>>
+Booleans operator>(const Tensor<t1> &a, t1 b) {
+  return detail::test_tensor(a, [&](const t1 &a) { return a > b; });
+}
+
+template <typename t1,
+          typename = std::enable_if_t<std::is_floating_point<t1>::value>>
+Booleans operator>=(const Tensor<t1> &a, t1 b) {
+  return detail::test_tensor(a, [&](const t1 &a) { return a >= b; });
+}
+
+template <typename t1>
+Booleans operator==(const Tensor<t1> &a, t1 b) {
+  return detail::test_tensor(a, [&](const t1 &a) { return a == b; });
+}
+
+template <typename t1>
+Booleans operator!=(const Tensor<t1> &a, t1 b) {
+  return detail::test_tensor(a, [&](const t1 &a) { return a != b; });
+}
+
+template <typename t1>
+bool all_equal(const Tensor<t1> &a, t1 b) {
+  return std::all_of(a.cbegin(), a.cend(),
+                     [&](const t1 &a_value) { return a_value == b; });
+}
+
+//
+// NUMBER <=> TENSOR
+//
+
+template <typename t1>
+Booleans operator<(t1 a, const Tensor<t1> &b) {
+  return b > a;
+}
+
+template <typename t1>
+Booleans operator<=(t1 a, const Tensor<t1> &b) {
+  return b >= a;
+}
+
+template <typename t1>
+Booleans operator>(t1 a, const Tensor<t1> &b) {
+  return b < a;
+}
+
+template <typename t1>
+Booleans operator>=(t1 a, const Tensor<t1> &b) {
+  return b <= a;
+}
+
+template <typename t1>
+Booleans operator==(t1 a, const Tensor<t1> &b) {
+  return b == a;
+}
+
+template <typename t1>
+Booleans operator!=(t1 a, const Tensor<t1> &b) {
+  return b != a;
+}
+
+template <typename t1>
+bool all_equal(t1 a, const Tensor<t1> &b) {
+  return std::all_of(b.cbegin(), b.cend(),
+                     [&](const t1 &b_value) { return b_value == a; });
 }
 
 }  // namespace tensor
