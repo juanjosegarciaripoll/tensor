@@ -249,7 +249,7 @@ RangeIterator RangeIterator::make_end_iterator() const noexcept {
 
 RangeIterator RangeIterator::make_range_iterators(RangeSpan &ranges) {
   if (ranges.empty_ranges()) {
-    return {Range::empty(0), 1};
+    return RangeIterator(Range::empty(0), 1);
   }
   tensor_assert2(
       ranges.valid_ranges(),
@@ -276,7 +276,7 @@ RangeIterator RangeIterator::make_next_iterator(RangeSpan &ranges,
     next =
         new RangeIterator(make_next_iterator(ranges, factor * r.dimension()));
   }
-  return {r, factor, next};
+  return RangeIterator(r, factor, next);
 }
 
 RangeIterator::RangeIterator(const Range &r, index factor, RangeIterator *next)

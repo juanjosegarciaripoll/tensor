@@ -42,7 +42,7 @@ CTensor eigs(const CTensor &A, EigType eig_type, size_t neig,
         blas::gemv('N', n, n, number_one<cdouble>(), A.begin(), n, in.begin(),
                    1, number_zero<cdouble>(), out.begin(), 1);
       },
-      n, eig_type, neig, eigenvectors, converged);
+      static_cast<size_t>(n), eig_type, neig, eigenvectors, converged);
 }
 
 }  //namespace linalg

@@ -23,6 +23,7 @@
 
 namespace linalg {
 
+using tensor::SimpleVector;
 using namespace lapack;
 
 /**Solve a complex linear system of equations by Gauss-Seidel method.
@@ -66,12 +67,12 @@ CTensor solve(const CTensor &A, const CTensor &B) {
   CTensor aux(A);
   cdouble *a = tensor_pointer(aux);
 
-  auto ipiv = std::make_unique<blas::integer[]>(static_cast<size_t>(n));
+  SimpleVector<blas::integer> ipiv(static_cast<size_t>(n));
   blas::integer info{};
 #ifdef TENSOR_USE_ACML
   zgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
 #else
-  F77NAME(zgesv)(&n, &nrhs, a, &lda, ipiv.get(), b, &ldb, &info);
+  F77NAME(zgesv)(&n, &nrhs, a, &lda, ipiv.begin(), b, &ldb, &info);
 #endif
 
   if (info) {

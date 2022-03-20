@@ -62,18 +62,22 @@ static Tensor<elt_t> do_trace(const Tensor<elt_t> &D, index i1, index i2) {
     abort();
   }
 
-  int i, rank;
-  index a1, a2, a3, a4, a5;
   index new_rank = std::max(D.rank() - 2, tensor::index(1));
   Indices dimensions(static_cast<size_t>(new_rank));
-  dimensions.at(rank = 0) = 1;
-  for (a1 = 1, i = 0; i < i1;) {
-    a1 *= (dimensions.at(rank++) = D.dimension(i++));
+  index rank = 0;
+  dimensions.at(rank) = 1;
+  index i = 0, a1 = 1;
+  for (; i < i1; ++rank, ++i) {
+    a1 *= (dimensions.at(rank) = D.dimension(i));
   }
-  a2 = D.dimension(i++);
-  for (a3 = 1; i < i2;) a3 *= (dimensions.at(rank++) = D.dimension(i++));
-  a4 = D.dimension(i++);
-  for (a5 = 1; i < D.rank();) a5 *= (dimensions.at(rank++) = D.dimension(i++));
+  index a2 = D.dimension(i++), a3 = 1;
+  for (; i < i2; ++rank, ++i) {
+    a3 *= (dimensions.at(rank) = D.dimension(i));
+  }
+  index a4 = D.dimension(i++), a5 = 1;
+  for (; i < D.rank(); ++rank, ++i) {
+    a5 *= (dimensions.at(rank) = D.dimension(i));
+  }
 
   Tensor<elt_t> output = RTensor::zeros(dimensions);
   trace_loop<elt_t>(output.begin(), D.begin(), a1, a2, a3, a4, a5);

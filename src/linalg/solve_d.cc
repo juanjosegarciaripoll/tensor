@@ -23,6 +23,7 @@
 
 namespace linalg {
 
+using tensor::SimpleVector;
 using namespace lapack;
 
 /**Solve a real linear system of equations by Gauss-Seidel method.
@@ -72,12 +73,12 @@ RTensor solve(const RTensor &A, const RTensor &B) {
   RTensor aux(A);
   RTensor::elt_t *a = tensor_pointer(aux);
 
-  auto ipiv = std::make_unique<blas::integer[]>(static_cast<size_t>(n));
+  SimpleVector<blas::integer> ipiv(static_cast<size_t>(n));
   blas::integer info{};
 #ifdef TENSOR_USE_ACML
   dgesv(n, nrhs, a, lda, ipiv, b, ldb, &info);
 #else
-  F77NAME(dgesv)(&n, &nrhs, a, &lda, ipiv.get(), b, &ldb, &info);
+  F77NAME(dgesv)(&n, &nrhs, a, &lda, ipiv.begin(), b, &ldb, &info);
 #endif
 
   if (info) {

@@ -172,7 +172,7 @@ inline Indices random_empty_dimensions(int rank, int max_dim, int which = -1) {
 
 class DimensionIterator {
  public:
-  DimensionIterator(int rank, int max_dim = 10)
+  explicit DimensionIterator(int rank, int max_dim = 10)
       : dims_(rank), max_(max_dim), more_(true) {
     std::fill(dims_.begin(), dims_.end(), 0);
   }
@@ -199,7 +199,7 @@ class DimensionIterator {
 
 class fixed_rank_iterator {
  public:
-  fixed_rank_iterator(int rank, int max_dimension = 10)
+  explicit fixed_rank_iterator(int rank, int max_dimension = 10)
       : rank_(rank),
         max_dimension_(max_dimension),
         indices_(rank),
@@ -307,7 +307,8 @@ void test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
 
 class DimensionsProducer {
  public:
-  DimensionsProducer(const Indices &d) : base_indices(d), counter(13) {}
+  explicit DimensionsProducer(const Indices &d)
+      : base_indices(d), counter(13) {}
 
   operator bool() const { return counter >= 14; }
   int operator++() { return counter++; }
@@ -390,7 +391,7 @@ static struct Foo {
 // Iterates through all true/false combinations of a Booleans of given rank.
 class BooleansIterator {
  public:
-  BooleansIterator(int rank) : base_booleans_(rank), more_(true) {
+  explicit BooleansIterator(int rank) : base_booleans_(rank), more_(true) {
     std::fill(base_booleans_.begin(), base_booleans_.end(), false);
   }
 

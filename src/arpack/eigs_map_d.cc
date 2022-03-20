@@ -37,7 +37,7 @@ CTensor eigs_gen(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
 CTensor eigs_gen_small(const RTensor &A, EigType eig_type, size_t neig,
                        CTensor *eigenvectors, bool *converged) {
   CTensor vectors;
-  CTensor values = eig(A, nullptr, eigenvectors ? &vectors : 0);
+  CTensor values = eig(A, nullptr, eigenvectors ? &vectors : nullptr);
   Indices ndx = RArpack::sort_values(values, eig_type);
   Indices ndx_out(neig);
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());

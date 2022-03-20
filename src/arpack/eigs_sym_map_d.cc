@@ -49,7 +49,7 @@ RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n) {
 RTensor eigs_small(const RTensor &A, EigType eig_type, size_t neig,
                    RTensor *eigenvectors, bool *converged) {
   RTensor vectors;
-  RTensor values = eig_sym(A, eigenvectors ? &vectors : 0);
+  RTensor values = eig_sym(A, eigenvectors ? &vectors : nullptr);
   Indices ndx = RArpack::sort_values(values, eig_type);
   Indices ndx_out(neig);
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());

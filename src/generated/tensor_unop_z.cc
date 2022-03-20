@@ -25,9 +25,9 @@ namespace tensor {
 
 using tensor::mapping::ufunc1;
 
-RTensor abs(const CTensor &a) {
-  auto output = RTensor::empty(a.dimensions());
-  std::transform(std::begin(a), std::end(a), std::begin(output),
+RTensor abs(const CTensor &t) {
+  auto output = RTensor::empty(t.dimensions());
+  std::transform(t.cbegin(), t.cend(), output.begin(),
                  [](const cdouble &z) -> double { return std::abs(z); });
   return output;
 }

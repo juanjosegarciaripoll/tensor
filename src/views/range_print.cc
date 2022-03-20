@@ -34,15 +34,15 @@ std::ostream &operator<<(std::ostream &out, const Range &r) {
   return out << ",size=" << r.size() << ')';
 }
 
-std::ostream &operator<<(std::ostream &out, const RangeIterator &r) {
-  out << "RangeIterator(counter=" << r.counter() << ",offset=" << r.offset()
-      << ",limit=" << r.limit() << ",step=" << r.step();
-  if (r.has_indices()) {
-    out << ",indices=" << r.indices();
+std::ostream &operator<<(std::ostream &out, const RangeIterator &it) {
+  out << "RangeIterator(counter=" << it.counter() << ",offset=" << it.offset()
+      << ",limit=" << it.limit() << ",step=" << it.step();
+  if (it.has_indices()) {
+    out << ",indices=" << it.indices();
   }
   out << ",next=";
-  if (r.has_next()) {
-    out << r.next();
+  if (it.has_next()) {
+    out << it.next();
   } else {
     out << "nullptr";
   }

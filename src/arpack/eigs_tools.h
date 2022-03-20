@@ -21,6 +21,8 @@
 
 namespace linalg {
 
+static constexpr int min_arpack_size = 10;
+
 RTensor eigs_small(const RTensor &A, EigType eig_type, size_t neig,
                    RTensor *eigenvectors, bool *converged);
 

@@ -21,9 +21,9 @@
 
 namespace tensor {
 
-CSparse operator*(cdouble n, const CSparse &s) {
-  return {s.dimensions(), s.priv_row_start(), s.priv_column(),
-          n * s.priv_data()};
+CSparse operator*(cdouble a, const CSparse &b) {
+  return {b.dimensions(), b.priv_row_start(), b.priv_column(),
+          a * b.priv_data()};
 }
 
 }  // namespace tensor

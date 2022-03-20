@@ -61,26 +61,27 @@ CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
   return tensor::real(values(range(ndx_out)));
 }
 
-CTensor eigs(const InPlaceLinearMap<CTensor> &A, size_t n, EigType eig_type,
+CTensor eigs(const InPlaceLinearMap<CTensor> &A, size_t dim, EigType eig_type,
              size_t neig, CTensor *eigenvectors, bool *converged) {
-  if (neig > n || neig == 0) {
-    std::cerr << "In eigs(): Can only compute up to " << n << " eigenvalues\n"
-              << "in a matrix that has " << n << " times " << n << " elements.";
+  if (neig > dim || neig == 0) {
+    std::cerr << "In eigs(): Can only compute up to " << dim << " eigenvalues\n"
+              << "in a matrix that has " << dim << " times " << dim
+              << " elements.";
     abort();
   }
 
-  if (n <= 4) {
+  if (dim <= min_arpack_size) {
     /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-    return eigs_small(make_matrix(A, n), eig_type, neig, eigenvectors,
+    return eigs_small(make_matrix(A, dim), eig_type, neig, eigenvectors,
                       converged);
   }
 
-  CArpack data(n, eig_type, neig);
+  CArpack data(dim, eig_type, neig);
 
-  if (eigenvectors && eigenvectors->size() >= n)
+  if (eigenvectors && eigenvectors->size() >= dim)
     data.set_start_vector(eigenvectors->cbegin());
 
   while (data.update() < data.Finished) {

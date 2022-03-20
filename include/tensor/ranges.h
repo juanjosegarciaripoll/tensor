@@ -191,8 +191,8 @@ class RangeIterator {
   Indices indices_{};
   next_t next_{};
 
-  RangeIterator(const Range &r, index factor = 1,
-                RangeIterator *next = nullptr);
+  explicit RangeIterator(const Range &r, index factor = 1,
+                         RangeIterator *next = nullptr);
   static RangeIterator make_range_iterators(RangeSpan &ranges);
 
   static RangeIterator make_next_iterator(RangeSpan &ranges, index factor);

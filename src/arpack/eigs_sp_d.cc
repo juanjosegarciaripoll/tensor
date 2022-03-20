@@ -27,7 +27,7 @@ namespace linalg {
 CTensor eigs_gen(const RSparse &A, EigType eig_type, size_t neig,
                  CTensor *eigenvectors, bool *converged) {
   auto n = A.columns();
-  if (n <= 10) {
+  if (n < min_arpack_size) {
     /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.

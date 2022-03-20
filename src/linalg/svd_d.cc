@@ -29,7 +29,7 @@ using namespace lapack;
 /*!\defgroup Linalg Linear algebra
    */
 
-bool accurate_svd = 0;
+bool accurate_svd = false;
 
 static RTensor economic_row_svd(const RTensor &A, RTensor *U, RTensor *VT) {
   RTensor s = RTensor::ones(1);

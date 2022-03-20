@@ -36,10 +36,8 @@ CTensor random_unitary(int n, int iterations) {
   CTensor output = id;
   if (iterations <= 0) iterations = 2 * n;
   while (iterations--) {
-    int j, i = rand<int>(0, n);
-    do {
-      j = rand<int>(0, n);
-    } while (i == j);
+    int i = rand<int>(0, n);
+    int j = (rand<int>(1, n) + i) % n;
     CTensor U = id;
     double theta = rand(0.0, M_PI);
     double c = cos(theta);

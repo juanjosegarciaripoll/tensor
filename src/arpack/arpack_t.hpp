@@ -50,7 +50,7 @@ inline const char *eigenvalue_selector<tensor::cdouble>(enum EigType _t) {
 
 template <typename elt_t, bool is_symmetric>
 Arpack<elt_t, is_symmetric>::Arpack(size_t a_n, enum EigType a_t,
-                                    size_t a_nev) {
+                                    size_t a_neig) {
   if (a_t < 0 || a_t > 6) {
     std::cerr << "Invalid argument EigType passed to Arpack constructor\n";
     abort();
@@ -65,7 +65,7 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t a_n, enum EigType a_t,
 
   // Select the problem size
   n = blas::size_t_to_blas(a_n);
-  nev = blas::size_t_to_blas(a_nev);
+  nev = blas::size_t_to_blas(a_neig);
 
   // There's a limit in the number of eigenvalues we can get
   if ((nev == 0) || (nev > (n - 1))) {
@@ -96,6 +96,7 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t a_n, enum EigType a_t,
 
   // Parameters for the algorithm: the (-1) in the index is to make it
   // look like FORTRAN.
+  /** \todo Give meaningful names to IPARAM arguments */
   for (size_t i = 1; i < 12; i++) iparam[i - 1] = 0;
   iparam[1 - 1] = 1;      // Shift produced by user
   iparam[3 - 1] = maxit;  // Maximum number of iterations
@@ -257,12 +258,12 @@ void Arpack<elt_t, is_symmetric>::set_random_start_vector() {
 }
 
 template <typename elt_t, bool is_symmetric>
-void Arpack<elt_t, is_symmetric>::set_tolerance(double _tol) {
+void Arpack<elt_t, is_symmetric>::set_tolerance(double new_tol) {
   if (status >= Running) {
     std::cerr << "Arpack<elt_t>:: Cannot change tolerance while running\n";
     abort();
   }
-  tol = _tol;
+  tol = new_tol;
 }
 
 template <typename elt_t, bool is_symmetric>
@@ -301,7 +302,7 @@ elt_t *Arpack<elt_t, is_symmetric>::get_y_vector() {
 }
 
 template <typename elt_t, bool is_symmetric>
-const tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_x() {
+const tensor::Tensor<elt_t> &Arpack<elt_t, is_symmetric>::get_x() const {
   // IPNTR[1] has a FORTRAN index, which is one-based, instead of zero-based
   auto ndx = ipntr[1 - 1] - 1;
   tensor_assert((ndx >= 0) && (ndx < 3 * n) && (ndx % n == 0));
@@ -322,27 +323,27 @@ void Arpack<elt_t, is_symmetric>::set_y(const tensor::Tensor<elt_t> &y) {
 }
 
 template <typename elt_t, bool is_symmetric>
-Indices Arpack<elt_t, is_symmetric>::sort_values(const CTensor &values,
-                                                 EigType t) {
+Indices Arpack<elt_t, is_symmetric>::sort_values(const CTensor &eigenvalues,
+                                                 EigType selector) {
   RTensor aux;
-  switch (t) {
+  switch (selector) {
     case LargestReal:
-      aux = -tensor::real(values);
+      aux = -tensor::real(eigenvalues);
       break;
     case LargestMagnitude:
-      aux = -abs(values);
+      aux = -abs(eigenvalues);
       break;
     case SmallestMagnitude:
-      aux = abs(values);
+      aux = abs(eigenvalues);
       break;
     case LargestImaginary:
-      aux = -imag(values);
+      aux = -imag(eigenvalues);
       break;
     case SmallestImaginary:
-      aux = imag(values);
+      aux = imag(eigenvalues);
       break;
     case SmallestReal:
-      aux = tensor::real(values);
+      aux = tensor::real(eigenvalues);
       break;
   }
   return sort_indices(aux);

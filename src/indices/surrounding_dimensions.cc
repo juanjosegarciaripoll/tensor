@@ -22,8 +22,8 @@ namespace tensor {
 
 static inline void surrounding_dimensions(const index *d, index size, index ndx,
                                           index *d1, index *d2, index *d3) {
-  index i;
-  for (i = 0, *d1 = 1; i < ndx; i++) {
+  index i = 0;
+  for (*d1 = 1; i < ndx; i++) {
     *d1 *= d[i];
   }
   *d2 = d[i++];

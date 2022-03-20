@@ -172,7 +172,7 @@ CTensor eigs(const CSparse &A, EigType eig_type, size_t neig,
      'f', this has to be provided in 'dim'. 'eigenvectors' is used to output the
      eigenvectors, but it can also contain a good estimate of them. 'converged'
      is true when the algorithm finished properly. */
-CTensor eigs(const LinearMap<CTensor> &f, size_t dim, EigType eig_type,
+CTensor eigs(const LinearMap<CTensor> &A, size_t dim, EigType eig_type,
              size_t neig, CTensor *eigenvectors = nullptr,
              bool *converged = nullptr);
 
