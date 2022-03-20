@@ -29,54 +29,60 @@ namespace jobs {
 
 class Job {
  public:
+  using dataset = std::shared_ptr<sdf::OutDataFile>;
+  using index = tensor::index;
+
+  Job() = delete;
+  Job(const Job &) = delete;
+  Job(Job &&) = delete;
   Job(int argc, const char **argv);
 
-  tensor::index number_of_jobs() const { return number_of_jobs_; };
-  tensor::index current_job() const { return this_job_; };
+  index number_of_jobs() const { return number_of_jobs_; };
+  index current_job() const { return this_job_; };
   void operator++();
-  bool to_do();
+  bool to_do() const;
 
-  double get_value_with_default(const std::string &variable, double def) const;
-  double get_value(const std::string &variable) const;
+  double get_value_with_default(const std::string &name, double def) const;
+  double get_value(const std::string &name) const;
   void dump_variables(sdf::OutDataFile &file) const;
 
-  typedef std::shared_ptr<sdf::OutDataFile> dataset;
   dataset open_dataset(const std::string &filename) const;
   bool dataset_record_exists(const std::string &filename) const;
 
  private:
+  static constexpr index default_steps = 10;
+
   class Variable {
    public:
-    Variable(const std::string name, double min, double max,
-             tensor::index n = 10)
-        : name_(name), values_(tensor::linspace(min, max, n)), which_(0) {}
-    Variable() : name_(""), values_(), which_(0) {}
+    Variable() = default;
+    Variable(std::string name, double min, double max, index n = default_steps)
+        : name_(std::move(name)), values_(tensor::linspace(min, max, n)) {}
 
     const std::string &name() const { return name_; }
     const tensor::RTensor &values() const { return values_; }
-    tensor::index size() const { return values_.ssize(); }
-    void select(tensor::index i) { which_ = i; }
+    index size() const { return values_.ssize(); }
+    void select(index i) { which_ = i; }
     double value() const { return values_[which_]; }
 
    private:
-    std::string name_;
-    tensor::RTensor values_;
-    tensor::index which_;
+    std::string name_{};
+    tensor::RTensor values_{};
+    index which_{};
   };
 
-  typedef std::vector<Variable> var_list;
+  using var_list = std::vector<Variable>;
 
   static const Variable no_variable;
-  std::string filename_;
-  var_list variables_;
-  tensor::index number_of_jobs_;
-  tensor::index this_job_, first_job_, last_job_;
+  std::string filename_{};
+  var_list variables_{};
+  index number_of_jobs_{0};
+  index this_job_{0}, first_job_{0}, last_job_{0};
 
   const Variable *find_variable(const std::string &name) const;
   static const Variable parse_line(const std::string &s);
   static int parse_file(std::istream &s, std::vector<Variable> &data);
-  tensor::index compute_number_of_jobs() const;
-  void select_job(tensor::index which);
+  index compute_number_of_jobs() const;
+  void select_job(index which);
 };
 
 }  // namespace jobs

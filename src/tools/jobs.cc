@@ -16,6 +16,9 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <algorithm>
+#include <functional>
+#include <numeric>
 #include <tensor/jobs.h>
 #include <fstream>
 
@@ -32,8 +35,8 @@ std::vector<std::string> split_string(const std::string &s) {
     while (is_separator(s[i])) {
       if (++i == l) return output;
     }
-    size_t j;
-    for (j = i + 1; (j < l) && !is_separator(s[j]); j++) {
+    size_t j = i + 1;
+    for (; (j < l) && !is_separator(s[j]); ++j) {
       (void)0;
     }
     output.push_back(s.substr(i, j - i));
@@ -58,15 +61,15 @@ const Job::Variable Job::parse_line(const std::string &s) {
     std::cerr << "Missing minimum value for variable " << data[0] << std::endl;
     return no_variable;
   }
-  double max, min = atof(data[1].c_str());
-  tensor::index nsteps;
+  double min = atof(data[1].c_str());
+  double max = min;
+  index nsteps = 0;
   if (data.size() == 2) {
-    max = min;
     nsteps = 1;
   } else {
     max = atof(data[2].c_str());
     if (data.size() == 3) {
-      nsteps = 10;
+      nsteps = Job::default_steps;
     } else if (data.size() > 4) {
       std::cerr << "Too many arguments for variable " << data[0] << std::endl;
       return no_variable;
@@ -79,17 +82,52 @@ const Job::Variable Job::parse_line(const std::string &s) {
 
 int Job::parse_file(std::istream & /*s*/, var_list &data) {
   std::string buffer;
-  int line;
-  for (line = 0; 1; line++) {
+  int line = 0;
+  while (true) {
     const Variable v = parse_line(buffer);
     if (v.name().size() == 0)
       return line;
     else
       data.push_back(v);
+    ++line;
   }
-  while (1)
-    ;
   return 0;
+}
+
+static void print_job_help_and_exit() {
+  std::cout
+      << "Arguments:\n"
+         "--help\n"
+         "\tShow this message and exit.\n"
+         "--print-jobs\n"
+         "\tShow number of jobs and exit.\n"
+         "--first-job / --last-job n\n"
+         "\tRun this program completing the selected interval of jobs.\n"
+         "--this-job n\n"
+         "\tSelect to run one job or one job block.\n"
+         "--jobs-blocks n\n"
+         "\tSplit the number of blocks into 'n' blocks and run the jobs in "
+         "the\n"
+         "\tblock selected by --this-job.\n"
+         "--variable name,min[,max[,nsteps]]\n"
+         "\tDefine variable and the range it runs, including number of "
+         "steps.\n"
+         "\t'min' and 'max' are floating point numbers; 'name' is a "
+         "string\n"
+         "\twithout spaces; 'nsteps' is a positive (>0) integer denoting "
+         "how\n"
+         "\tmany values in the interval [min,max] are used. There can be "
+         "many\n"
+         "\t--variable arguments, as a substitute for a job file. If both "
+         "'max'\n"
+         "\tand 'nsteps' are missing, the variable takes a unique, "
+         "constant\n"
+         "\tvalue, 'min'.\n"
+         "--job filename\n"
+         "\tParse file, loading variable ranges from them using the syntax "
+         "above,\n"
+         "\tbut allowing spaces or tabs instead of commas as separators.";
+  exit(0);
 }
 
 Job::Job(int argc, const char **argv) : filename_("no file") {
@@ -98,109 +136,75 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
   bool last_job_found = false;
   bool job_blocks_found = false;
   bool this_job_found = false;
-  tensor::index blocks{0};
-  tensor::index current_job{0};
-  int i;
-  for (i = 0; i < argc; i++) {
-    if (!strcmp(argv[i], "--job")) {
-      if (++i == argc) {
-        std::cerr << "Missing argument after --job" << std::endl;
-        abort();
-      }
-      filename_ = std::string(argv[i]);
-      std::ifstream s(argv[i]);
-      int line = parse_file(s, variables_);
-      if (line) {
-        std::cerr << "Syntax error in line " << line << " of job file "
-                  << filename_ << std::endl;
-        abort();
-      }
-    } else if (!strcmp(argv[i], "--print-jobs")) {
+  index blocks{0};
+  index current_job{0};
+
+  const auto argv_end = argv + argc;
+  auto arguments_left = [&]() { return argv != argv_end; };
+  auto pop_argument = [&]() {
+    tensor_assert(arguments_left());
+    const char *output = *argv;
+    ++argv;
+    return output;
+  };
+
+  auto get_option_argument = [&](const char *option) {
+    if (!arguments_left()) {
+      std::cerr << "Missing argument after " << option << 'n';
+      abort();
+    }
+    return pop_argument();
+  };
+
+  auto parse_job_filename = [&](const char *argument) {
+    filename_ = std::string(argument);
+    std::ifstream s(argument);
+    int line = parse_file(s, variables_);
+    if (line) {
+      std::cerr << "Syntax error in line " << line << " of job file "
+                << filename_ << '\n';
+      abort();
+    }
+  };
+
+  auto parse_integer = atoi;
+
+  auto parse_variable = [&](const char *argument) {
+    Variable v = parse_line(argument);
+    if (v.name().size() == 0) {
+      std::cerr << "Syntax error parsing --variable argument:\n"
+                << argument << '\n';
+      abort();
+    }
+    return v;
+  };
+
+  while (arguments_left()) {
+    const char *option = pop_argument();
+    if (!strcmp(option, "--job")) {
+      parse_job_filename(get_option_argument("--job"));
+    } else if (!strcmp(option, "--print-jobs")) {
       print_jobs = true;
-    } else if (!strcmp(argv[i], "--this-job")) {
-      if (++i == argc) {
-        std::cerr << "Missing argument to --this-job" << std::endl;
-        abort();
-      }
-      current_job = atoi(argv[i]);
+    } else if (!strcmp(option, "--this-job")) {
+      current_job = parse_integer(get_option_argument("--this-job"));
       this_job_found = true;
-    } else if (!strcmp(argv[i], "--job-blocks")) {
-      if (++i == argc) {
-        std::cerr << "Missing argument to --job-blocks" << std::endl;
-        abort();
-      }
-      blocks = atoi(argv[i]);
+    } else if (!strcmp(option, "--job-blocks")) {
+      blocks = parse_integer(get_option_argument("--job-blocks"));
       job_blocks_found = true;
-    } else if (!strcmp(argv[i], "--first-job")) {
-      if (this_job_found) {
-        std::cerr << "Cannot use --first-job and --this-job simultaneously."
-                  << std::endl;
-        abort();
-      }
-      if (++i == argc) {
-        std::cerr << "Missing argument to --first-job" << std::endl;
-        abort();
-      }
-      first_job_ = atoi(argv[i]);
+    } else if (!strcmp(option, "--first-job")) {
+      first_job_ = parse_integer(get_option_argument("--first-job"));
       first_job_found = true;
-    } else if (!strcmp(argv[i], "--last-job")) {
+    } else if (!strcmp(option, "--last-job")) {
       if (!first_job_found) {
-        std::cerr << "--last-job without preceding --first-job" << std::endl;
+        std::cerr << "--last-job without preceding --first-job\n";
         abort();
       }
-      if (++i == argc) {
-        std::cerr << "Missing argument to --last-job" << std::endl;
-        abort();
-      }
-      last_job_ = atoi(argv[i]);
+      last_job_ = parse_integer(get_option_argument("--last-job"));
       last_job_found = true;
-    } else if (!strcmp(argv[i], "--variable")) {
-      if (++i == argc) {
-        std::cerr << "Missing argument after --variable" << std::endl;
-        abort();
-      }
-      Variable v = parse_line(argv[i]);
-      if (v.name().size() == 0) {
-        std::cerr << "Syntax error parsing --variable argument:" << std::endl
-                  << argv[i] << std::endl;
-        abort();
-      }
-      variables_.push_back(v);
-    } else if (!strcmp(argv[i], "--help")) {
-      std::cout
-          << "Arguments:\n"
-             "--help\n"
-             "\tShow this message and exit.\n"
-             "--print-jobs\n"
-             "\tShow number of jobs and exit.\n"
-             "--first-job / --last-job n\n"
-             "\tRun this program completing the selected interval of jobs.\n"
-             "--this-job n\n"
-             "\tSelect to run one job or one job block.\n"
-             "--jobs-blocks n\n"
-             "\tSplit the number of blocks into 'n' blocks and run the jobs in "
-             "the\n"
-             "\tblock selected by --this-job.\n"
-             "--variable name,min[,max[,nsteps]]\n"
-             "\tDefine variable and the range it runs, including number of "
-             "steps.\n"
-             "\t'min' and 'max' are floating point numbers; 'name' is a "
-             "string\n"
-             "\twithout spaces; 'nsteps' is a positive (>0) integer denoting "
-             "how\n"
-             "\tmany values in the interval [min,max] are used. There can be "
-             "many\n"
-             "\t--variable arguments, as a substitute for a job file. If both "
-             "'max'\n"
-             "\tand 'nsteps' are missing, the variable takes a unique, "
-             "constant\n"
-             "\tvalue, 'min'.\n"
-             "--job filename\n"
-             "\tParse file, loading variable ranges from them using the syntax "
-             "above,\n"
-             "\tbut allowing spaces or tabs instead of commas as separators."
-          << std::endl;
-      exit(0);
+    } else if (!strcmp(option, "--variable")) {
+      variables_.push_back(parse_variable(get_option_argument("--variable")));
+    } else if (!strcmp(option, "--help")) {
+      print_job_help_and_exit();
     }
   }
   number_of_jobs_ = compute_number_of_jobs();
@@ -223,7 +227,7 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
       std::cerr << "The number of job blocks cannot be zero or negative.";
       abort();
     }
-    tensor::index delta = (number_of_jobs_ + blocks - 1) / blocks;
+    index delta = (number_of_jobs_ + blocks - 1) / blocks;
     first_job_ = current_job = std::min(current_job * delta, number_of_jobs_);
     last_job_ = std::min(number_of_jobs_ - 1, first_job_ + delta - 1);
   } else if (first_job_found) {
@@ -231,20 +235,20 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
      * --first-job and --last-job combined
      */
     if (first_job_ < 0) {
-      std::cerr << "--first-job is negative" << std::endl;
+      std::cerr << "--first-job is negative\n";
       abort();
     } else if (first_job_ >= number_of_jobs_) {
-      std::cerr << "--first-job exceeds the number of jobs" << std::endl;
+      std::cerr << "--first-job exceeds the number of jobs\n";
       abort();
     }
     if (last_job_found) {
       if (last_job_ >= number_of_jobs_) {
         std::cerr << "warning: --last-job exceeds the number of jobs"
                   << std::endl;
-        last_job_ = std::max<tensor::index>(0, number_of_jobs_ - 1);
+        last_job_ = std::max<index>(0, number_of_jobs_ - 1);
       }
       if (last_job_ < first_job_) {
-        std::cerr << "--last-job is smaller than --first-job" << std::endl;
+        std::cerr << "--last-job is smaller than --first-job\n";
         abort();
       }
     }
@@ -265,22 +269,17 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
 }
 
 tensor::index Job::compute_number_of_jobs() const {
-  tensor::index n = 1;
-  for (var_list::const_iterator it = variables_.begin(); it != variables_.end();
-       it++) {
-    n *= it->size();
-  }
-  return n;
+  return std::accumulate(variables_.cbegin(), variables_.cend(), index(1),
+                         [](index x, auto &v) { return x * v.size(); });
 }
 
-void Job::select_job(tensor::index which) {
+void Job::select_job(index which) {
   tensor_assert(which >= 0);
-  tensor::index i = this_job_ = which;
+  index i = this_job_ = which;
   if (which <= number_of_jobs_) {
-    for (var_list::iterator it = variables_.begin(); it != variables_.end();
-         it++) {
-      tensor::index n = it->size();
-      it->select(i % n);
+    for (auto &variable : variables_) {
+      index n = variable.size();
+      variable.select(i % n);
       i = i / n;
     }
   }
@@ -288,19 +287,19 @@ void Job::select_job(tensor::index which) {
 
 void Job::operator++() { select_job(this_job_ + 1); }
 
-bool Job::to_do() {
+bool Job::to_do() const {
   return (this_job_ >= 0) && (this_job_ < number_of_jobs_) &&
          (this_job_ >= first_job_) && (this_job_ <= last_job_);
 }
 
 const Job::Variable *Job::find_variable(const std::string &name) const {
-  for (var_list::const_iterator it = variables_.begin(); it != variables_.end();
-       it++) {
-    if (it->name() == name) {
-      return &(*it);
-    }
+  auto pos = std::find_if(variables_.cbegin(), variables_.cend(),
+                          [&](const auto &v) { return v.name() == name; });
+  if (pos == variables_.cend()) {
+    return nullptr;
+  } else {
+    return &(*pos);
   }
-  return nullptr;
 }
 
 double Job::get_value(const std::string &name) const {

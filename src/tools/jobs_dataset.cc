@@ -61,16 +61,14 @@ Job::dataset Job::open_dataset(const std::string &filename) const {
     }
   }
   std::string dataset_record_name = dataset_name(filename, current_job());
-  sdf::OutDataFile *output;
   if (sdf::file_exists(dataset_record_name)) {
     std::cout << "File " << dataset_record_name << " already exists"
               << std::endl;
-    output = nullptr;
+    return nullptr;
   } else {
-    output =
-        new sdf::OutDataFile(dataset_record_name, sdf::DataFile::SDF_PARANOID);
+    return std::make_shared<sdf::OutDataFile>(dataset_record_name,
+                                              sdf::DataFile::SDF_PARANOID);
   }
-  return dataset(output);
 }
 
 bool Job::dataset_record_exists(const std::string &filename) const {
