@@ -23,9 +23,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #endif
+#include <array>
 #include <tensor/config.h>
 #include <tensor/sdf.h>
-#include <errno.h>
+#include <cerrno>
 #include <cstdio>
 
 namespace sdf {
@@ -35,7 +36,6 @@ const enum DataFile::endianness DataFile::endian = BIG_ENDIAN_FILE;
 #else
 const enum DataFile::endianness DataFile::endian = LITTLE_ENDIAN_FILE;
 #endif
-const unsigned int DataFile::var_name_size = 64;
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 static int get_lock(char const * /*lockname*/, bool /*wait*/) { return 1; }
@@ -72,8 +72,8 @@ static void giveup_lock(int fd, char const *lockName) {
 }
 #endif
 
-DataFile::DataFile(const std::string &a_filename, int a_flags)
-    : _actual_filename(a_filename),
+DataFile::DataFile(std::string a_filename, int a_flags)
+    : _actual_filename(std::move(a_filename)),
       _filename(_actual_filename),
       _lock_filename(_actual_filename + ".lck"),
       _flags(a_flags),
@@ -117,12 +117,12 @@ void DataFile::close() {
   }
 }
 
-const char *DataFile::tag_to_name(tensor::index tag) {
-  static const char *names[] = {"RTensor", "CTensor", "Real MPS",
-                                "Complex MPS"};
-
+const char *DataFile::tag_to_name(tensor::index tag) const {
+  const std::array<const char *, 4> names = {"RTensor", "CTensor", "Real MPS",
+                                             "Complex MPS"};
   if (tag > 4 || tag < 0) {
     std::cerr << "Not a valid tag code, " << tag << " found in " << _filename;
+    std::terminate();
   }
   return names[tag];
 }

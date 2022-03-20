@@ -28,11 +28,11 @@ namespace tensor {
      \ingroup Tensors
   */
 RTensor scale(const RTensor &t, int ndx, const RTensor &v) {
-  index d1, d2, d3;
+  index d1{}, d2{}, d3{};
   RTensor output(t.dimensions());
   surrounding_dimensions(t.dimensions(),
-						 Dimensions::normalize_index(ndx, t.rank()), &d1, &d2,
-						 &d3);
+                         Dimensions::normalize_index(ndx, t.rank()), &d1, &d2,
+                         &d3);
   if (d2 != v.ssize()) {
     std::cerr << "In scale() the dimension " << ndx
               << " of the tensor does not match the length " << v.size()
@@ -44,7 +44,7 @@ RTensor scale(const RTensor &t, int ndx, const RTensor &v) {
 }
 
 void scale_inplace(RTensor &t, int ndx, const RTensor &v) {
-  index d1, d2, d3;
+  index d1{}, d2{}, d3{};
   surrounding_dimensions(t.dimensions(),
                          Dimensions::normalize_index(ndx, t.rank()), &d1, &d2,
                          &d3);

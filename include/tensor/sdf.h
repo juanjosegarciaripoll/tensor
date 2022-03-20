@@ -54,7 +54,6 @@ class DataFile {
   };
 
  protected:
-  const char *_suffix;
   std::string _actual_filename;
   std::string _filename;
   std::string _lock_filename;
@@ -62,11 +61,11 @@ class DataFile {
   int _lock;
   bool _open;
   static const enum endianness endian;
-  static const unsigned int var_name_size;
+  static constexpr unsigned int var_name_size = 64;
 
-  explicit DataFile(const std::string &a_filename, int a_flags = SDF_SHARED);
+  explicit DataFile(std::string a_filename, int a_flags = SDF_SHARED);
   ~DataFile();
-  const char *tag_to_name(tensor::index tag);
+  const char *tag_to_name(tensor::index tag) const;
   void close();
   bool is_open() const { return _open; }
   bool is_locked() const { return _lock; }
@@ -75,7 +74,7 @@ class DataFile {
 
 class OutDataFile : public DataFile {
  public:
-  explicit OutDataFile(const std::string &a_filename, int a_flags = SDF_SHARED);
+  explicit OutDataFile(std::string a_filename, int a_flags = SDF_SHARED);
   ~OutDataFile();
 
   void dump(const int value, const std::string &name = "");
@@ -117,7 +116,7 @@ class OutDataFile : public DataFile {
 
 class InDataFile : public DataFile {
  public:
-  explicit InDataFile(const std::string &a_filename, int a_flags = SDF_SHARED);
+  explicit InDataFile(std::string a_filename, int a_flags = SDF_SHARED);
 
   void load(int *value, const std::string &name = "");
   void load(size_t *value, const std::string &name = "");

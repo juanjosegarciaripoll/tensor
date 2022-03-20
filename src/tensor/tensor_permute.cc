@@ -17,7 +17,6 @@
 */
 
 #define TENSOR_LOAD_IMPL
-#include <string.h>
 #include <tensor/tensor.h>
 
 namespace tensor {
@@ -145,12 +144,12 @@ Tensor<n> do_permute(const Tensor<n> &a, index ndx1, index ndx2) {
     return a;
   }
   Indices new_dims = a.dimensions();
-  index i, a1, a2, a3, a4, a5;
+  index i{0}, a1{1};
   for (i = 0, a1 = 1; i < n1;) a1 *= new_dims[i++];
-  a2 = new_dims[i++];
-  for (a3 = 1; i < n2;) a3 *= new_dims[i++];
-  a4 = new_dims[i++];
-  for (a5 = 1; i < a.rank();) a5 *= new_dims[i++];
+  index a2 = new_dims[i++], a3{1};
+  for (; i < n2;) a3 *= new_dims[i++];
+  index a4 = new_dims[i++], a5{1};
+  for (; i < a.rank();) a5 *= new_dims[i++];
 
   std::swap(new_dims.at(n1), new_dims.at(n2));
 

@@ -16,6 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <array>
 #include <limits>
 #include <cstring>
 #include <limits>
@@ -104,7 +105,7 @@ void write_raw_with_endian(std::ofstream &s, const number *data, size_t n) {
 // COMMON I/O ROUTINES
 //
 
-OutDataFile::OutDataFile(const std::string &a_filename, int a_flags)
+OutDataFile::OutDataFile(std::string a_filename, int a_flags)
     : DataFile(a_filename, a_flags) {
   bool existed = file_exists(actual_filename());
   _stream.open(actual_filename().c_str(),
@@ -161,9 +162,9 @@ void OutDataFile::write_variable_name(const std::string &name) {
   write_raw(buffer.c_str(), var_name_size);
 }
 
-void OutDataFile::write_tag(const std::string &name, tensor::index type) {
+void OutDataFile::write_tag(const std::string &name, tensor::index tag) {
   write_variable_name(name);
-  write_raw(type);
+  write_raw(tag);
 }
 
 template <class Vector>
@@ -189,21 +190,19 @@ void OutDataFile::dump(const CTensor &t, const std::string &name) {
   dump_vector(t);
 }
 
-void OutDataFile::dump(const std::vector<RTensor> &m, const std::string &name) {
-  size_t l = m.size();
-  write_tag(name, TAG_RTENSOR_VECTOR);
-  write_raw(l);
-  for (size_t k = 0; k < l; k++) {
-    dump(m[k]);
+void OutDataFile::dump(const std::vector<RTensor> &t, const std::string &name) {
+  write_tag(name, TAG_CTENSOR_VECTOR);
+  write_raw(t.size());
+  for (const auto &value : t) {
+    dump(value);
   }
 }
 
-void OutDataFile::dump(const std::vector<CTensor> &m, const std::string &name) {
-  size_t l = m.size();
+void OutDataFile::dump(const std::vector<CTensor> &t, const std::string &name) {
   write_tag(name, TAG_CTENSOR_VECTOR);
-  write_raw(l);
-  for (size_t k = 0; k < l; k++) {
-    dump(m[k]);
+  write_raw(t.size());
+  for (const auto &value : t) {
+    dump(value);
   }
 }
 
@@ -226,10 +225,13 @@ void OutDataFile::dump(int value, const std::string &name) {
 }
 
 void OutDataFile::write_header() {
-  char tag[7] = "sdf  ";
-  tag[3] = sizeof(int) + '0';
-  tag[4] = sizeof(tensor::index) + '0';
-  tag[5] = (endian == BIG_ENDIAN_FILE) ? '0' : '1';
+  std::array<char, 7> tag = {'s',
+                             'd',
+                             'f',
+                             sizeof(int) + '0',
+                             sizeof(tensor::index) + '0',
+                             (endian == BIG_ENDIAN_FILE) ? '0' : '1',
+                             0};
 
-  write_variable_name(tag);
+  write_variable_name(&tag[0]);
 }

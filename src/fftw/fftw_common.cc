@@ -38,9 +38,10 @@ int inline index_to_fftw_dimension(const Indices& dims, int which) {
 // basic FFTW along all degrees of freedom
 void do_fftw(fftw_complex* pin, fftw_complex* pout, const Indices& dims,
              int direction) {
-  fftw_plan plan;
+  fftw_plan plan{};
   int d = static_cast<int>(dims.ssize());
 
+  /** \todo Rewrite this in separate functions */
   if (d == 1) {
     plan = fftw_plan_dft_1d(index_to_fftw_dimension(dims, 0), pin, pout,
                             direction, FFTW_ESTIMATE);

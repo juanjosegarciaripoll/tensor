@@ -16,6 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <array>
 #include <limits>
 #include <tensor/sdf.h>
 
@@ -88,7 +89,7 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n) {
 }
 #endif
 
-InDataFile::InDataFile(const std::string &a_filename, int a_flags)
+InDataFile::InDataFile(std::string a_filename, int a_flags)
     : DataFile(a_filename, a_flags),
       _stream(actual_filename().c_str(),
               std::ios_base::in | std::ios_base::binary) {
@@ -127,38 +128,38 @@ void InDataFile::read_raw(cdouble *data, size_t n) {
 }
 
 tensor::index InDataFile::read_tag_code() {
-  tensor::index output;
+  tensor::index output{};
   read_raw(output);
   return output;
 }
 
 std::string InDataFile::read_variable_name() {
-  char *buffer = new char[var_name_size];
-  read_raw(buffer, var_name_size);
-  std::string output(buffer);
-  delete[] buffer;
+  std::array<char, var_name_size> buffer{};
+  read_raw(&buffer[0], var_name_size);
+  std::string output(&buffer[0]);
   return output;
 }
 
-void InDataFile::read_tag(const std::string &name, tensor::index type) {
+void InDataFile::read_tag(const std::string &record_name, tensor::index tag) {
   std::string other_name = read_variable_name();
-  if (name.size() && (name != other_name)) {
-    std::cerr << "While reading file " << _filename << ", variable " << name
-              << " was expected but found " << other_name << '\n';
+  if (record_name.size() && (record_name != other_name)) {
+    std::cerr << "While reading file " << _filename << ", variable "
+              << record_name << " was expected but found " << other_name
+              << '\n';
     abort();
   }
-  tensor::index other_type = read_tag_code();
-  if (type != other_type) {
+  tensor::index other_tag = read_tag_code();
+  if (tag != other_tag) {
     std::cerr << "While reading file " << _filename << ", an object of type "
-              << tag_to_name(type) << " was expected but found a "
-              << tag_to_name(other_type) << '\n';
+              << tag_to_name(tag) << " was expected but found a "
+              << tag_to_name(other_tag) << '\n';
     abort();
   }
 }
 
 template <class Vector>
 const Vector InDataFile::load_vector() {
-  size_t length;
+  size_t length{};
   read_raw(length);
   Vector v(length);
   read_raw(v.begin(), length);
@@ -179,7 +180,7 @@ void InDataFile::load(CTensor *t, const std::string &name) {
 
 void InDataFile::load(std::vector<RTensor> *m, const std::string &name) {
   read_tag(name, TAG_RTENSOR_VECTOR);
-  size_t l;
+  size_t l{};
   read_raw(l);
   m->resize(l);
   for (size_t k = 0; k < l; k++) {
@@ -189,7 +190,7 @@ void InDataFile::load(std::vector<RTensor> *m, const std::string &name) {
 
 void InDataFile::load(std::vector<CTensor> *m, const std::string &name) {
   read_tag(name, TAG_CTENSOR_VECTOR);
-  size_t l;
+  size_t l{};
   read_raw(l);
   m->resize(l);
   for (size_t k = 0; k < l; k++) {

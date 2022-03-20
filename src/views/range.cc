@@ -116,18 +116,18 @@ static bool equispaced(const Indices &indices) {
 
 Range::Range(Indices indices)
     : first_{0},
-      step_{1},
+      /*step_{1},*/
       last_{indices.ssize() - 1},
-      dimension_{-1},
+      /*dimension_{-1},*/
       indices_(std::move(indices)) {
-  if (indices.size() == 0) {
+  if (indices_.size() == 0) {
     *this = empty();
-  } else if (indices.size() == 1) {
-    *this = Range(indices[0], indices[0]);
-  } else if (equispaced(indices)) {
-    index first = indices[0];
-    index last = indices[indices.ssize() - 1];
-    *this = Range(first, last, indices[1] - first);
+  } else if (indices_.size() == 1) {
+    *this = Range(indices_[0], indices_[0]);
+  } else if (equispaced(indices_)) {
+    index first = indices_[0];
+    index last = indices_[indices_.ssize() - 1];
+    *this = Range(first, last, indices_[1] - first);
   }
 }
 
@@ -187,7 +187,7 @@ bool Range::maybe_combine(const Range &other) {
 }
 
 static void normalize_all_indices(Indices &indices, index dimension) {
-  for (auto x : indices) {
+  for (auto &x : indices) {
     x = Dimensions::normalize_index_safe(x, dimension);
   }
 }
@@ -280,7 +280,7 @@ RangeIterator RangeIterator::make_next_iterator(RangeSpan &ranges,
 }
 
 RangeIterator::RangeIterator(const Range &r, index factor, RangeIterator *next)
-    : counter_{0},
+    : /*counter_{0},*/
       offset_{next ? next->get_position() : 0},
       factor_{factor},
       indices_(r.indices()),

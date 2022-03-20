@@ -16,7 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <signal.h>
+#include <csignal>
 #include <cstdlib>
 #include <cstdio>
 #include <tensor/config.h>

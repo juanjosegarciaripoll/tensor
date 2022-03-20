@@ -44,7 +44,7 @@ inline Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1,
 /**Convert a tensor to a 1D vector with the same elements.*/
 template <typename elt_t>
 Tensor<elt_t> flatten(const Tensor<elt_t> &t) {
-  return reshape(t, t.size());
+  return reshape(t, t.ssize());
 }
 
 //
