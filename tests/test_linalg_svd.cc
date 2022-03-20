@@ -70,7 +70,7 @@ void test_eye_svd(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
     ASSERT_THROW_DEBUG(linalg::svd(Tensor<elt_t>::eye(n, n)),
-                 ::tensor::invalid_assertion);
+                       ::tensor::invalid_assertion);
 #endif
     return;
   }
@@ -97,7 +97,7 @@ void test_random_svd(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
     ASSERT_THROW_DEBUG(linalg::svd(Tensor<elt_t>::eye(n, n)),
-                 ::tensor::invalid_assertion);
+                       ::tensor::invalid_assertion);
 #endif
     return;
   }
@@ -109,7 +109,7 @@ void test_random_svd(int n) {
 #else
       RTensor true_s;
       Tensor<elt_t> A = random_svd_matrix<elt_t>(m, n, true_s);
-      std::sort(true_s.begin(), true_s.end(), std::greater<double>());
+      std::sort(true_s.begin(), true_s.end(), std::greater<>());
 #endif
 
       Tensor<elt_t> U, Vt;

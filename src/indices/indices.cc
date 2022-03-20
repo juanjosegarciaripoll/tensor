@@ -59,7 +59,7 @@ const Indices Indices::range(index min, index max, index step) {
   if (max < min) {
     return Indices();
   } else {
-    size_t size = static_cast<size_t>((max - min) / step + 1);
+    auto size = static_cast<size_t>((max - min) / step + 1);
     Indices output(size);
     for (Indices::iterator it = output.begin(); it != output.end(); it++) {
       *it = min;

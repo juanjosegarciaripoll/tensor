@@ -27,7 +27,7 @@ using tensor::index;
 
 template <typename elt_t>
 elt_t slow_trace(const Tensor<elt_t> &A) {
-  elt_t output = number_zero<elt_t>();
+  auto output = number_zero<elt_t>();
   for (index i = 0; i < std::min(A.rows(), A.columns()); i++)
     output = output + A(i, i);
   return output;

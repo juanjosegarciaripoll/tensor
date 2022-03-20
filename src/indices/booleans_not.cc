@@ -24,7 +24,7 @@ namespace tensor {
 
 Booleans operator!(const Booleans &a) {
   Booleans output(a.size());
-  std::transform(a.begin(), a.end(), output.begin(), std::logical_not<bool>());
+  std::transform(a.begin(), a.end(), output.begin(), std::logical_not<>());
 
   return output;
 }

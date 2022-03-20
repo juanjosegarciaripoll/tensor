@@ -28,7 +28,7 @@ namespace tensor_test {
 
 template <typename elt_t>
 void test_ones(int n) {
-  elt_t one = number_one<elt_t>();
+  auto one = number_one<elt_t>();
   SCOPED_TRACE("vector");
   {
     Tensor<elt_t> M = Tensor<elt_t>::ones(n);
@@ -63,7 +63,7 @@ void test_ones(int n) {
 
 template <typename elt_t>
 void test_zeros(int n) {
-  elt_t zero = number_zero<elt_t>();
+  auto zero = number_zero<elt_t>();
   SCOPED_TRACE("vector");
   {
     Tensor<elt_t> M = Tensor<elt_t>::zeros(n);
@@ -98,7 +98,7 @@ void test_zeros(int n) {
 
 template <typename elt_t>
 void test_diag(int n) {
-  elt_t zero = number_zero<elt_t>();
+  auto zero = number_zero<elt_t>();
   auto d = Tensor<elt_t>::empty(n);
   int i = 1;
   for (typename Tensor<elt_t>::iterator it = d.begin(); it != d.end(); it++) {

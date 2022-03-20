@@ -25,9 +25,9 @@ namespace tensor {
 Indices sort(const Indices &v, bool reverse) {
   Indices output(v);
   if (reverse) {
-    std::sort(output.begin(), output.end(), std::greater<Indices::elt_t>());
+    std::sort(output.begin(), output.end(), std::greater<>());
   } else {
-    std::sort(output.begin(), output.end(), std::less<Indices::elt_t>());
+    std::sort(output.begin(), output.end(), std::less<>());
   }
   return output;
 }

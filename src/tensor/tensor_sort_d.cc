@@ -25,9 +25,9 @@ namespace tensor {
 RTensor sort(const RTensor &v, bool reverse) {
   RTensor output(v);
   if (reverse) {
-    std::sort(output.begin(), output.end(), std::greater<double>());
+    std::sort(output.begin(), output.end(), std::greater<>());
   } else {
-    std::sort(output.begin(), output.end(), std::less<double>());
+    std::sort(output.begin(), output.end(), std::less<>());
   }
   return output;
 }

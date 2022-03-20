@@ -21,7 +21,7 @@
 namespace tensor {
 
 RSparse operator-(const RSparse &a, const RSparse &b) {
-  return sparse_binop(a, b, std::minus<double>());
+  return sparse_binop(a, b, std::minus<>());
 }
 
 }  // namespace tensor

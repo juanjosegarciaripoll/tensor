@@ -24,7 +24,7 @@ namespace tensor_test {
 
 template <typename elt_t>
 void test_scale_small() {
-  elt_t zero = number_zero<elt_t>();
+  auto zero = number_zero<elt_t>();
   Tensor<elt_t> A(Dimensions{2, 3, 4}, linspace(0, 23, 24));
   Tensor<elt_t> A1(Dimensions{2, 3, 4},
                    {0,  2,  2,  6,  4,  10, 6,  14, 8,  18, 10, 22,

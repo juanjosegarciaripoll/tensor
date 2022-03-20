@@ -27,7 +27,7 @@ Booleans operator&&(const Booleans &a, const Booleans &b) {
   tensor_assert(a.size() == b.size());
   Booleans output(a.size());
   std::transform(a.begin(), a.end(), b.begin(), output.begin(),
-                 std::logical_and<bool>());
+                 std::logical_and<>());
 
   return output;
 }
