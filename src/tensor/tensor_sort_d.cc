@@ -48,4 +48,30 @@ Indices sort_indices(const RTensor &v, bool reverse) {
   }
 }
 
+RTensor stable_sort(const RTensor &v, bool reverse) {
+  RTensor output(v);
+  if (reverse) {
+    std::stable_sort(output.begin(), output.end(), std::greater<>());
+  } else {
+    std::stable_sort(output.begin(), output.end(), std::less<>());
+  }
+  return output;
+}
+
+Indices stable_sort_indices(const RTensor &v, bool reverse) {
+  if (v.size()) {
+    Indices output = iota(0, v.ssize() - 1);
+    if (reverse) {
+      std::stable_sort(output.begin(), output.end(),
+					   [&](index i1, index i2) { return v[i1] > v[i2]; });
+    } else {
+      std::stable_sort(output.begin(), output.end(),
+					   [&](index i1, index i2) { return v[i1] < v[i2]; });
+    }
+    return output;
+  } else {
+    return {};
+  }
+}
+
 }  // namespace tensor

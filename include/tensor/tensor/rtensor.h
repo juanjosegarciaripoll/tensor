@@ -98,9 +98,13 @@ RTensor linspace(const RTensor &min, const RTensor &max, index n = 100);
 
 Indices sort(const Indices &v, bool reverse = false);
 Indices sort_indices(const Indices &v, bool reverse = false);
+Indices stable_sort(const Indices &v, bool reverse = false);
+Indices stable_sort_indices(const Indices &v, bool reverse = false);
 
 RTensor sort(const RTensor &v, bool reverse = false);
 Indices sort_indices(const RTensor &v, bool reverse = false);
+RTensor stable_sort(const RTensor &v, bool reverse = false);
+Indices stable_sort_indices(const RTensor &v, bool reverse = false);
 
 extern template bool all_equal(const RTensor &a, const RTensor &b);
 extern template bool all_equal(const RTensor &a, double b);

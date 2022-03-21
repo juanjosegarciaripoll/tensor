@@ -77,7 +77,7 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
       sndx = slast + 1;
     }
   }
-  Indices ndx = sort_indices(s, true);
+  Indices ndx = stable_sort_indices(s, true);
   s = s(range(ndx));
   if (pU) *pU = (*pU)(_, range(ndx));
   if (pVT) *pVT = (*pVT)(range(ndx), _);
