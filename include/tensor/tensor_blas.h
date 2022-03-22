@@ -183,6 +183,10 @@ inline blas::integer size_t_to_blas(size_t value) {
   return static_cast<blas::integer>(value);
 }
 
+inline tensor::cdouble cdouble_to_tensor(blas::cdouble z) {
+  return *reinterpret_cast<tensor::cdouble *>(&z);
+}
+
 template <typename elt_t>
 inline blas::integer tensor_rows(const tensor::Tensor<elt_t> &A) {
   return index_to_blas(A.rows());
