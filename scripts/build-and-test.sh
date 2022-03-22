@@ -1,6 +1,7 @@
 #!/bin/bash
+
 function clean () {
-    if [ $do_clean = yes ]; then
+    if [ "$do_clean" = yes ]; then
         if [ -d "$builddir" ]; then
             rm -rf "$builddir"
         fi
@@ -8,17 +9,17 @@ function clean () {
 }
 
 function configure () {
-    if [ $do_configure = yes ]; then
+    if [ "$do_configure" = yes ]; then
         test -d "$builddir" || mkdir "$builddir"
         CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DTENSOR_ARPACK=ON -DTENSOR_FFTW=ON -DTENSOR_OPTIMIZED_BUILD=ON"
 		CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
-		if [ $do_sanitize = yes ]; then
+		if [ "$do_sanitize" = yes ]; then
 			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ADD_SANITIZERS=ON"
 		fi
-		if [ $do_cppcheck = yes ]; then
+		if [ "$do_cppcheck" = yes ]; then
 			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CPPCHECK=ON"
 		fi
-		if [ $do_clang_tidy = yes ]; then
+		if [ "$do_clang_tidy" = yes ]; then
 			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CLANG_TIDY=ON"
 		fi
         cmake -S"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
@@ -30,7 +31,7 @@ function configure () {
 }
 
 function build () {
-    if [ $do_build = yes ]; then
+    if [ "$do_build" = yes ]; then
         cmake --build "$builddir" -j $threads -- 2>&1 | tee -a "$logfile"
         if [ $? -ne 0 ]; then
             echo CMake build failed
@@ -40,7 +41,7 @@ function build () {
 }
 
 function docs () {
-    if [ $do_docs = yes ]; then
+    if [ "$do_docs" = yes ]; then
         cmake --build "$builddir" --target doxygen -- 2>&1 | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake documentation build failed
@@ -50,7 +51,7 @@ function docs () {
 }
 
 function profile () {
-    if [ $do_profile = yes ]; then
+    if [ "$do_profile" = yes ]; then
         "$builddir/profile/profile" "$sourcedir/profile/benchmark_$os.json" 2>&1 | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake profile failed
@@ -60,7 +61,7 @@ function profile () {
 }
 
 function check () {
-    if [ $do_check = yes ]; then
+    if [ "$do_check" = yes ]; then
         cd "$builddir"/tests
 		ctest -j $threads --rerun-failed --output-on-failure | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
