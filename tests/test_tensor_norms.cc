@@ -19,6 +19,7 @@
 #include <gtest/gtest.h>
 #include <cmath>
 #include <tensor/tensor.h>
+#include <tensor/tools.h>
 
 namespace {
 
@@ -87,7 +88,7 @@ TYPED_TEST(NormTest, Norm2ReturnsSqrtOfSumOfSquares) {
   using Tensor = TypeParam;
   {
     const Tensor P = {0.0, -3.0, 1.0, -2.0};
-    ASSERT_EQ(norm2(P), sqrt(9.0 + 1.0 + 4.0));
+    ASSERT_FLOAT_EQ(norm2(P), sqrt(9.0 + 1.0 + 4.0));
   }
   {
     const auto z = this->small_number();
@@ -114,6 +115,16 @@ TYPED_TEST(NormTest, Norm2IsAccurateInLargeVectors) {
     const Tensor invP = this->one() / P;
     ASSERT_NEAR(norm2(invP), exact_norm2, tolerance);
   }
+  // Timed test - something is slow
+  tic();
+  const Tensor P = linspace(this->one() * double(steps), this->one(), steps);
+  std::cerr << "Step 1 " << toc() << '\n';
+  tic();
+  const Tensor invP = this->one() / P;
+  std::cerr << "Step 2 " << toc() << '\n';
+  tic();
+  ASSERT_NEAR(norm2(invP), exact_norm2, tolerance);
+  std::cerr << "Step 3 " << toc() << '\n';
 }
 
 }  // namespace
