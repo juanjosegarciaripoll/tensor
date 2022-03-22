@@ -16,10 +16,24 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#define TENSOR_LOAD_IMPL
 #include <tensor/tensor.h>
+#include <tensor/tensor_blas.h>
 
 namespace tensor {
+
+#if 1
+
+double norm2(const RTensor &r) {
+  auto N = blas::size_t_to_blas(r.size());
+  return cblas_dnrm2(N, blas::tensor_pointer(r), 1);
+}
+
+double scprod(const RTensor &a, const RTensor &b) {
+  auto N = blas::size_t_to_blas(a.size());
+  return cblas_ddot(N, blas::tensor_pointer(a), 1, blas::tensor_pointer(b), 1);
+}
+
+#else
 
 double norm2(const RTensor &r) { return ::sqrt(scprod(r, r)); }
 
@@ -30,5 +44,7 @@ double scprod(const RTensor &a, const RTensor &b) {
     output += (*ia) * (*ib);
   return output;
 }
+
+#endif
 
 }  // namespace tensor
