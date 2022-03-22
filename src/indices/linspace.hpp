@@ -1,3 +1,4 @@
+#pragma once
 /*
     Copyright (c) 2010 Juan Jose Garcia Ripoll
 
@@ -19,14 +20,35 @@
 #ifndef TENSOR_LINSPACE_HPP
 #define TENSOR_LINSPACE_HPP
 
+#include <algorithm>
 #include <tensor/tensor.h>
 
 namespace tensor {
 
 template <typename elt_t>
+static inline const Tensor<elt_t> do_linspace(elt_t min, elt_t max, index n) {
+  if (n == 0) {
+    return Tensor<elt_t>();
+  } else if (n == 1) {
+    return Tensor<elt_t>{min};
+  } else {
+    tensor_assert(n > 0);
+    auto output = Tensor<elt_t>::empty(n);
+    auto delta = (max - min) / static_cast<double>(n);
+    index i = 0;
+    std::generate(output.begin(), output.end(), [&]() {
+      auto output = min + static_cast<double>(i) * delta;
+      ++i;
+      return output;
+    });
+    return output;
+  }
+}
+
+template <typename elt_t>
 static inline const Tensor<elt_t> do_linspace(const Tensor<elt_t> &min,
                                               const Tensor<elt_t> &max,
-                                              index n = 100) {
+                                              index n) {
   index d = min.ssize();
   auto output = Tensor<elt_t>::empty(d, n);
   if (n == 1) {
