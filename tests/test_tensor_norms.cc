@@ -96,4 +96,24 @@ TYPED_TEST(NormTest, Norm2ReturnsSqrtOfSumOfSquares) {
   }
 }
 
+TYPED_TEST(NormTest, Norm2IsAccurateInLargeVectors) {
+  using Tensor = TypeParam;
+  constexpr double sqrtpi2over6 = 1.28254983016186409;
+  constexpr int steps = 100000000;
+  constexpr double tolerance = 4e-7;
+  constexpr double exact_norm2 = sqrtpi2over6;
+  {
+    SCOPED_TRACE("Larger to smaller");
+    const Tensor P = linspace(this->one(), this->one() * double(steps), steps);
+    const Tensor invP = this->one() / P;
+    ASSERT_NEAR(norm2(invP), exact_norm2, tolerance);
+  }
+  {
+    SCOPED_TRACE("Smaller to larger");
+    const Tensor P = linspace(this->one() * double(steps), this->one(), steps);
+    const Tensor invP = this->one() / P;
+    ASSERT_NEAR(norm2(invP), exact_norm2, tolerance);
+  }
+}
+
 }  // namespace
