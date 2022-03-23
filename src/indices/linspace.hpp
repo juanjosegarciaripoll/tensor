@@ -28,7 +28,7 @@ namespace tensor {
 template <typename elt_t>
 static inline const Tensor<elt_t> do_linspace(elt_t min, elt_t max, index n) {
   if (n == 0) {
-    return Tensor<elt_t>();
+    return Tensor<elt_t>::empty(0);
   } else if (n == 1) {
     return Tensor<elt_t>{min};
   } else {

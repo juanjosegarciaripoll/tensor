@@ -47,3 +47,5 @@ RTensor tensor = {{{1.0}, {2.0}}, {{3.0}, {4.0}}}
 * Member variables in class Sparse are now privated (the public declaration was a typo).
 
 * Comparison operators (`operator==`, `operator<=`, `all_equal`, etc) are now implemented using templates for ease of maintenance. This means that they no longer support passing `Vector` type objects or automatic conversion of arguments to `Tensor`.
+
+* `linspace(a, b, 0)`  with number arguments produces a vector of size zero. Formerly it created an empty tensor.
