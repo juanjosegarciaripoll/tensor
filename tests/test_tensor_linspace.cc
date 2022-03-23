@@ -107,22 +107,34 @@ class TestTensorLinspace : public TensorTest<T> {};
 using MyTypes = ::testing::Types<RTensor, CTensor>;
 TYPED_TEST_SUITE(TestTensorLinspace, MyTypes);
 
-TYPED_TEST(TestTensorLinspace, SizeZeroAddsZeroDimension) {
+TYPED_TEST(TestTensorLinspace, SizeAddsDimensionOfThatSize) {
   using Tensor = TypeParam;
+
   {
     auto start = Tensor::random(4);
     auto end = Tensor::random(4);
-    ASSERT_EQ(linspace(start, end, 0).rank(), 2);
-    ASSERT_EQ(linspace(start, end, 0).dimension(0), 4);
-    ASSERT_EQ(linspace(start, end, 0).dimension(1), 0);
+
+    ASSERT_TRUE(
+        all_equal(linspace(start, end, 0).dimensions(), Dimensions{4, 0}));
+    ASSERT_TRUE(
+        all_equal(linspace(start, end, 1).dimensions(), Dimensions{4, 1}));
+    ASSERT_TRUE(
+        all_equal(linspace(start, end, 2).dimensions(), Dimensions{4, 2}));
+    ASSERT_TRUE(
+        all_equal(linspace(start, end, 10).dimensions(), Dimensions{4, 10}));
   }
   {
-    auto start = Tensor::random(3, 4);
-    auto end = Tensor::random(3, 4);
-    ASSERT_EQ(linspace(start, end, 0).rank(), 3);
-    ASSERT_EQ(linspace(start, end, 0).dimension(0), 3);
-    ASSERT_EQ(linspace(start, end, 0).dimension(1), 4);
-    ASSERT_EQ(linspace(start, end, 0).dimension(2), 0);
+    auto start = Tensor::random(2, 3);
+    auto end = Tensor::random(2, 3);
+
+    ASSERT_TRUE(
+        all_equal(linspace(start, end, 0).dimensions(), Dimensions{2, 3, 0}));
+    ASSERT_TRUE(
+        all_equal(linspace(start, end, 1).dimensions(), Dimensions{2, 3, 1}));
+    ASSERT_TRUE(
+        all_equal(linspace(start, end, 2).dimensions(), Dimensions{2, 3, 2}));
+    ASSERT_TRUE(
+        all_equal(linspace(start, end, 10).dimensions(), Dimensions{2, 3, 10}));
   }
 }
 
@@ -144,22 +156,6 @@ TYPED_TEST(TestTensorLinspace, SizeOneGivesFirstValue) {
     ASSERT_CEQ(tensor(1, 0, 0), start(1, 0));
     ASSERT_CEQ(tensor(1, 1, 0), start(1, 1));
   }
-}
-
-TYPED_TEST(TestTensorLinspace, OtherSizeGivesVectorOfThatSize) {
-  using Tensor = TypeParam;
-
-  auto start = Tensor::random(2, 3);
-  auto end = Tensor::random(2, 3);
-
-  ASSERT_TRUE(
-      all_equal(linspace(start, end, 0).dimensions(), Dimensions{2, 3, 0}));
-  ASSERT_TRUE(
-      all_equal(linspace(start, end, 1).dimensions(), Dimensions{2, 3, 1}));
-  ASSERT_TRUE(
-      all_equal(linspace(start, end, 2).dimensions(), Dimensions{2, 3, 2}));
-  ASSERT_TRUE(
-      all_equal(linspace(start, end, 10).dimensions(), Dimensions{2, 3, 10}));
 }
 
 TYPED_TEST(TestTensorLinspace, SizeTwoGivesIntervalBoundaries) {
