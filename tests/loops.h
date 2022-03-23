@@ -428,14 +428,18 @@ template <typename T>
 class TensorTest : public ::testing::Test {
  public:
   using value_type = typename T::elt_t;
-  static constexpr double small_factor = 1e-6;
 
-  value_type small_number() const { return small_factor * rand<value_type>(); }
+  value_type small_number() const {
+    static constexpr double small_factor = 1e-6;
+    return small_factor * rand<value_type>();
+  }
 
   constexpr value_type one() const { return number_one<value_type>(); }
 
   template <typename otherT>
-  constexpr value_type to_value_type(otherT x) { return static_cast<value_type>(x); }
+  constexpr value_type to_value_type(otherT x) {
+    return static_cast<value_type>(x);
+  }
 };
 
 }  // namespace tensor_test
