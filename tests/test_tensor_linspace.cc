@@ -23,6 +23,10 @@
 
 namespace tensor_test {
 
+//
+// Linspace with number arguments
+//
+
 template <typename T>
 class TestNumberLinspace : public TensorTest<T> {};
 
@@ -90,6 +94,115 @@ TYPED_TEST(TestNumberLinspace, WithCommensurateSizeProducesIntegerVectors) {
       linspace(this->to_value_type(0), this->to_value_type(size), size + 1);
   for (int i = 0; i < size; ++i) {
     ASSERT_EQ(P[i], this->to_value_type(i));
+  }
+}
+
+//
+// Linspace with number arguments
+//
+
+template <typename T>
+class TestTensorLinspace : public TensorTest<T> {};
+
+using MyTypes = ::testing::Types<RTensor, CTensor>;
+TYPED_TEST_SUITE(TestTensorLinspace, MyTypes);
+
+TYPED_TEST(TestTensorLinspace, SizeZeroAddsZeroDimension) {
+  using Tensor = TypeParam;
+  {
+    auto start = Tensor::random(4);
+    auto end = Tensor::random(4);
+    ASSERT_EQ(linspace(start, end, 0).rank(), 2);
+    ASSERT_EQ(linspace(start, end, 0).dimension(0), 4);
+    ASSERT_EQ(linspace(start, end, 0).dimension(1), 0);
+  }
+  {
+    auto start = Tensor::random(3, 4);
+    auto end = Tensor::random(3, 4);
+    ASSERT_EQ(linspace(start, end, 0).rank(), 3);
+    ASSERT_EQ(linspace(start, end, 0).dimension(0), 3);
+    ASSERT_EQ(linspace(start, end, 0).dimension(1), 4);
+    ASSERT_EQ(linspace(start, end, 0).dimension(2), 0);
+  }
+}
+
+TYPED_TEST(TestTensorLinspace, SizeOneGivesFirstValue) {
+  using Tensor = TypeParam;
+  {
+    auto start = Tensor{-1.0, 1.0};
+    auto end = Tensor{pi, -pi};
+    auto tensor = linspace(start, end, 1);
+    ASSERT_CEQ(tensor(0, 0), start[0]);
+    ASSERT_CEQ(tensor(1, 0), start[1]);
+  }
+  {
+    auto start = Tensor::random(2, 2);
+    auto end = Tensor::random(2, 2);
+    auto tensor = linspace(start, end, 1);
+    ASSERT_CEQ(tensor(0, 0, 0), start(0, 0));
+    ASSERT_CEQ(tensor(0, 1, 0), start(0, 1));
+    ASSERT_CEQ(tensor(1, 0, 0), start(1, 0));
+    ASSERT_CEQ(tensor(1, 1, 0), start(1, 1));
+  }
+}
+
+TYPED_TEST(TestTensorLinspace, OtherSizeGivesVectorOfThatSize) {
+  using Tensor = TypeParam;
+
+  auto start = Tensor::random(2, 3);
+  auto end = Tensor::random(2, 3);
+
+  ASSERT_TRUE(
+      all_equal(linspace(start, end, 0).dimensions(), Dimensions{2, 3, 0}));
+  ASSERT_TRUE(
+      all_equal(linspace(start, end, 1).dimensions(), Dimensions{2, 3, 1}));
+  ASSERT_TRUE(
+      all_equal(linspace(start, end, 2).dimensions(), Dimensions{2, 3, 2}));
+  ASSERT_TRUE(
+      all_equal(linspace(start, end, 10).dimensions(), Dimensions{2, 3, 10}));
+}
+
+TYPED_TEST(TestTensorLinspace, SizeTwoGivesIntervalBoundaries) {
+  using Tensor = TypeParam;
+
+  auto start = Tensor::random(2, 3);
+  auto end = Tensor::random(2, 3);
+  auto tensor = linspace(start, end, 2);
+  for (int i = 0; i < 2; ++i) {
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_CEQ(tensor(i, j, 0), start(i, j));
+      ASSERT_CEQ(tensor(i, j, 1), end(i, j));
+    }
+  }
+}
+
+TYPED_TEST(TestTensorLinspace, ProducesEquispacedVectors) {
+  using Tensor = TypeParam;
+
+  auto start = Tensor::random(2, 3);
+  auto end = Tensor::random(2, 3);
+  auto tensor = linspace(start, end, 4);
+
+  for (int i = 0; i < 2; ++i) {
+    for (int j = 0; j < 2; ++j) {
+      auto delta = tensor(i, j, 1) - tensor(i, j, 0);
+      ASSERT_CEQ(delta, tensor(i, j, 2) - tensor(i, j, 1));
+      ASSERT_CEQ(delta, tensor(i, j, 3) - tensor(i, j, 2));
+    }
+  }
+}
+
+TYPED_TEST(TestTensorLinspace, WithCommensurateSizeProducesIntegerVectors) {
+  using Tensor = TypeParam;
+
+  auto size = 4;
+  auto start = Tensor{0, 3};
+  auto end = Tensor{size + 0, size + 3};
+  auto tensor = linspace(start, end, size + 1);
+
+  for (int i = 0; i < size; ++i) {
+    ASSERT_EQ(tensor(0, i), this->to_value_type(i));
+    ASSERT_EQ(tensor(1, i), this->to_value_type(i + 3));
   }
 }
 
