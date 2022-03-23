@@ -1,6 +1,7 @@
 //
 // Copyright 2008, Juan Jose Garcia-Ripoll
 //
+#pragma once
 
 #ifndef TENSOR_TEST_LOOPS_H
 #define TENSOR_TEST_LOOPS_H
@@ -30,6 +31,8 @@
 namespace tensor_test {
 
 using namespace tensor;
+
+static constexpr double pi = 3.14159265358979323846;
 
 /*
    * Verifies that the tensor that has been passed to the routine has
@@ -415,6 +418,24 @@ class BooleansIterator {
  private:
   Booleans base_booleans_;
   bool more_;
+};
+
+//
+// FIXTURES
+//
+
+template <typename T>
+class TensorTest : public ::testing::Test {
+ public:
+  using value_type = typename T::elt_t;
+  static constexpr double small_factor = 1e-6;
+
+  value_type small_number() const { return small_factor * rand<value_type>(); }
+
+  constexpr value_type one() const { return number_one<value_type>(); }
+
+  template <typename otherT>
+  constexpr value_type to_value_type(otherT x) { return static_cast<value_type>(x); }
 };
 
 }  // namespace tensor_test

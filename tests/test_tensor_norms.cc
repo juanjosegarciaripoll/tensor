@@ -16,29 +16,19 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <gtest/gtest.h>
 #include <cmath>
 #include <tensor/tensor.h>
 #include <tensor/tools.h>
+#include "loops.h"
 
-namespace {
-
-using namespace ::tensor;
+namespace tensor_test {
 
 template <typename T>
-class NormTest : public ::testing::Test {
- public:
-  using value_type = typename T::elt_t;
-
-  value_type small_number() const { return 1e-6 * rand<value_type>(); }
-
-  constexpr value_type one() const { return number_one<value_type>(); }
-};
+class NormTest : public TensorTest<T> {};
 
 using MyTypes = ::testing::Types<RTensor, CTensor>;
 TYPED_TEST_SUITE(NormTest, MyTypes);
 
-static constexpr double pi = 3.14159265358979323846;
 static constexpr double pi2over6 = 1.64493406684822643647241;
 
 //
