@@ -1,10 +1,10 @@
 name: Tensor build checks
 
 on:
-  push:
-   branches: [cmake]
-  pull_request:
-    branches: [cmake]
+  #push:
+  # branches: [cmake]
+  #pull_request:
+  #  branches: [cmake]
 
 jobs:
   VisualStudioVcpkg64:
