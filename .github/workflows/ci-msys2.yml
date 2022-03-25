@@ -18,6 +18,7 @@ jobs:
     - name: Setup MSYS2-UCRT64
       uses: msys2/setup-msys2@v2
       with:
+        update: false
         msystem: ucrt64
         install: >-
           mingw-w64-ucrt-x86_64-gcc
@@ -33,7 +34,7 @@ jobs:
     - name: fix permisions
       run: chmod u+x ./scripts/build-and-test.sh
     - name: configure
-      run: ./scripts/build-and-test.sh --configure --sanitize --debug
+      run: ./scripts/build-and-test.sh --configure --sanitize --debug --no-fftw
     - name: build
       run: ./scripts/build-and-test.sh --build --threads=2
     - name: test

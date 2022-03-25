@@ -11,10 +11,16 @@ function clean () {
 function configure () {
     if [ "$do_configure" = yes ]; then
         test -d "$builddir" || mkdir "$builddir"
-        CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DTENSOR_ARPACK=ON -DTENSOR_FFTW=ON -DTENSOR_OPTIMIZED_BUILD=ON"
+        CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DTENSOR_OPTIMIZED_BUILD=ON"
 		CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 		if [ "$do_sanitize" = yes ]; then
 			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ADD_SANITIZERS=ON"
+		fi
+		if [ "$do_arpack" = yes ]; then
+			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ARPACK=ON"
+		fi
+		if [ "$do_fftw" = yes ]; then
+			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_FFTW=ON"
 		fi
 		if [ "$do_cppcheck" = yes ]; then
 			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CPPCHECK=ON"
@@ -95,6 +101,8 @@ do_check=no
 do_docs=no
 do_sanitize=no
 do_analyze=no
+do_fftw=yes
+do_arpack=yes
 for arg in $*; do
     case $arg in
 		--threads=*) threads=${arg:10};;
@@ -102,6 +110,8 @@ for arg in $*; do
         --configure) do_configure=yes;;
         --build) do_build=yes;;
         --profile) do_profile=yes;;
+		--no-fftw) do_fftw=no;;
+		--no-arpack) do_arpack=no;;
         --test) do_check=yes;;
         --docs) do_docs=yes;;
 		--sanitize) do_sanitize=yes;;
