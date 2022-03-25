@@ -12,7 +12,7 @@ jobs:
       steps:
       - uses: actions/checkout@v2
       - name: install 64-bit libraries
-        run: c:/vcpkg.exe install openblas[threads]:x64-windows fftw3:x64-windows lapack:x64-windows googletest:x64-windows
+        run: c:/vcpkg/vcpkg.exe install openblas[threads]:x64-windows fftw3:x64-windows lapack:x64-windows googletest:x64-windows
       - name: build
         run: ./scripts/build-and-test.cmd vs22-64 --fftw --clean --configure
       - name: build
