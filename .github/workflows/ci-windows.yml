@@ -3,8 +3,8 @@ name: Tensor build checks
 on:
   #push:
   # branches: [cmake]
-  #pull_request:
-  #  branches: [cmake]
+  pull_request:
+    branches: [cmake]
 
 jobs:
   VisualStudioVcpkg64:
