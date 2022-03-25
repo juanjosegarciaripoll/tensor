@@ -8,9 +8,13 @@ set _TENSOR_BUILDDIR=
 set _TENSOR_BUILD=
 set _TENSOR_TEST=
 set _TENSOR_THREADS=1
-set _TENSOR_CMAKE_OPTIONS=-DCMAKE_TOOLCHAIN_FILE=%HOME%/src/vcpkg/scripts/buildsystems/vcpkg.cmake
+set _TENSOR_CMAKE_OPTIONS=
 set CMAKE_BUILD_TYPE=Release
 call :setenv build-and-test.cmd
+if "x%VCPKG_INSTALLATION_ROOT%" NEQ "x" (
+  echo Using Vcpkg at %VCPKG_INSTALLATION_ROOT%
+  set _TENSOR_CMAKE_OPTIONS=-DCMAKE_TOOLCHAIN_FILE=%VCPKG_INSTALLATION_ROOT%/scripts/buildsystems/vcpkg.cmake
+)
 if "x%1" NEQ "x" call :process build-and-test.cmd %1
 if "x%2" NEQ "x" call :process build-and-test.cmd %2
 if "x%3" NEQ "x" call :process build-and-test.cmd %3
@@ -90,7 +94,7 @@ rem
 rem %%%%%%%%%%%%%% CLEAN DIRECTORY %%%%%%%%%%%%%%%%%
 rem
 :clean
-if exist %_TENSOR_BUILDDIR% ( rmdir /s %_TENSOR_BUILDDIR% )
+if exist %_TENSOR_BUILDDIR% ( rmdir /s /q %_TENSOR_BUILDDIR% )
 goto :eof
 
 rem
@@ -118,6 +122,8 @@ rem %%%%%%%%%%%%%% TEST %%%%%%%%%%%%%%%%%
 rem
 :test
 cd %_TENSOR_BUILDDIR%/tests
+set OPENMP_NUM_THREADS=4
+set OPENBLAS_NUM_THREADS=4
 ctest --output-on-failure -j %_TENSOR_THREADS%
 goto :eof
 
@@ -129,29 +135,41 @@ rem
 if "x%_TENSOR_ARCH%" NEQ "x" goto :archdefined
 
 :setarchvs17
-if x%VS2017BTROOT% EQU x goto :setarchvs22
-if "%2" EQU "vs17bt32" (
-   %VS2017BTROOT%\vcvarsall.bat x86
+if "%2" EQU "vs17-32" (
+   if "x%VS2017ROOT%" EQU "x" goto :noarchvs17
+   call "%VS2017ROOT%\vcvarsall.bat" x86
    goto :archok
 )
-if "%2" EQU "vs17bt64" (
-   %VS2017BTROOT%\vcvarsall.bat amd64
+if "%2" EQU "vs17-64" (
+   if "x%VS2017ROOT%" EQU "x" goto :noarchvs17
+   call "%VS2017ROOT%\vcvarsall.bat" amd64
    goto :archok
 )
 
 :setarchvs22
-if x%VS2022COMMROOT% EQU x goto :noarch
-if "%2" EQU "vs22comm32" (
-   call %VS2022COMMOOT%\vcvarsall.bat x86
+if "%2" EQU "vs22-32" (
+   if "x%VS2022ROOT%" EQU "x" goto :noarchvs22
+   call "%VS2022ROOT%\vcvarsall.bat" x86
    goto :archok
 )
-if "%2" EQU "vs22comm64" (
-   call %VS2022COMMROOT%\vcvarsall.bat amd64
+if "%2" EQU "vs22-64" (
+   if "x%VS2022ROOT%" EQU "x" goto :noarchvs22
+   call "%VS2022ROOT%\vcvarsall.bat" amd64
    goto :archok
 )
 
-:noarch
+:noarchvs
 echo Unknown option %2
+set _TENSOR_ERROR=yes
+goto :eof
+
+:noarchvs17
+echo Error: Missing Visual Studio 2017. Option %2 not considered
+set _TENSOR_ERROR=yes
+goto :eof
+
+:noarchvs22
+echo Error: Missing Visual Studio 2022. Option %2 not considered
 set _TENSOR_ERROR=yes
 goto :eof
 
@@ -170,10 +188,38 @@ rem %%%%%%%%%%%%%% FIND BACKENDS %%%%%%%%%%%%%%%%%
 rem
 
 :setenv
-set VS2017BTROOT="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build"
-if exist "%VS2017BTROOT%" () else (set VS2017BTROOT=)
-set VS2022COMMROOT="%ProgramFiles%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build"
-if exist "%VS2022COMMROOT%" () else (set VS2022COMMROOT=)
+if "x%VCPKG_INSTALLATION_ROOT%" NEQ "x" goto :setenvvs17
+if exist c:/vcpkg set VCPKG_INSTALLATION_ROOT=c:/vcpkg
+
+:setenvvs17
+set VS2017ROOT=%ProgramFiles%\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build
+if exist "%VS2017ROOT%" (goto :setenvvs22)
+set VS2017ROOT=%ProgramFiles%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build
+if exist "%VS2017ROOT%" (goto :setenvvs22)
+set VS2017ROOT=%ProgramFiles%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build
+if exist "%VS2017ROOT%" (goto :setenvvs22)
+set VS2017ROOT=%ProgramFiles(x86)%\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build
+if exist "%VS2017ROOT%" (goto :setenvvs22)
+set VS2017ROOT=%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build
+if exist "%VS2017ROOT%" (goto :setenvvs22)
+set VS2017ROOT=%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build
+if exist "%VS2017ROOT%" (goto :setenvvs22)
+set VS2017ROOT=
+
+:setenvvs22
+set VS2022ROOT=%ProgramFiles%\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build
+if exist "%VS2022ROOT%" (goto :eof)
+set VS2022ROOT=%ProgramFiles%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build
+if exist "%VS2022ROOT%" (goto :eof)
+set VS2022ROOT=%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build
+if exist "%VS2022ROOT%" (goto :eof)
+set VS2022ROOT=%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build
+if exist "%VS2022ROOT%" (goto :eof)
+set VS2022ROOT=%ProgramFiles(x86)%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build
+if exist "%VS2022ROOT%" (goto :eof)
+set VS2022ROOT=%ProgramFiles(x86)%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build
+if exist "%VS2022ROOT%" (goto :eof)
+set VS2022ROOT=
 exit /b
 
 rem
@@ -182,16 +228,15 @@ rem
 
 :help
 echo Available backends
-if "X%VS2017BTROOT" NEQ "X" (
-   echo vs17bt32 - Visual Studio Build Tools 2017 x86
-   echo vs17bt64 - Visual Studio Build Tools 2017 amd64
+if "X%VS2017ROOT" NEQ "X" (
+   echo vs17-32 - Visual Studio Build Tools 2017 x86
+   echo vs17-64 - Visual Studio Build Tools 2017 amd64
    )
 if "X%VS2022COMMROOT" NEQ "X" (
-   echo vs22comm32 - Visual Studio Community 2022 x86
-   echo vs22comm64 - Visual Studio Community 2022 amd64
+   echo vs22-32 - Visual Studio Community 2022 x86
+   echo vs22-64 - Visual Studio Community 2022 amd64
    )
 exit /b
 
 :error
-echo "Error"
 exit -1
