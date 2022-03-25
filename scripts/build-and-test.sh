@@ -39,7 +39,7 @@ function configure () {
 function build () {
     if [ "$do_build" = yes ]; then
         cmake --build "$builddir" -j $threads -- 2>&1 | tee -a "$logfile"
-        if [ $? -ne 0 ]; then
+        if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake build failed
             exit 1
         fi
