@@ -1,0 +1,42 @@
+name: Tensor MSYS2 build checks
+
+on:
+  push:
+   branches: [cmake]
+  pull_request:
+    branches: [cmake]
+
+jobs:
+  Msys2Ucrt64:
+    runs-on: windows-latest
+    env:
+      MSYSTEM: UCRT64
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - name: Setup MSYS2-UCRT64
+      uses: msys2/setup-msys2@v2
+      with:
+        update: false
+        msystem: ucrt64
+        install: >-
+          mingw-w64-ucrt-x86_64-gcc
+          mingw-w64-ucrt-x86_64-cmake
+          mingw-w64-ucrt-x86_64-ninja
+          mingw-w64-ucrt-x86_64-openblas
+          mingw-w64-ucrt-x86_64-fftw
+          mingw-w64-ucrt-x86_64-arpack
+    - name: 'Checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: fix permisions
+      run: chmod u+x ./scripts/build-and-test.sh
+    - name: configure
+      run: ./scripts/build-and-test.sh --configure --debug --no-fftw
+    - name: build
+      run: ./scripts/build-and-test.sh --build --threads=2
+    - name: test
+      run: ./scripts/build-and-test.sh --test --threads=2
+      timeout-minutes: 10

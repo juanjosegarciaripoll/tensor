@@ -1,8 +1,8 @@
 name: Tensor build checks
 
 on:
-  push:
-    branches: [cmake]
+  #push:
+  # branches: [cmake]
   pull_request:
     branches: [cmake]
 
