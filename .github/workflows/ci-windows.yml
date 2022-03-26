@@ -1,22 +1,23 @@
 name: Tensor build checks
 
 on:
-  #push:
-  # branches: [cmake]
+  push:
+    branches: [cmake]
   pull_request:
     branches: [cmake]
 
 jobs:
   VisualStudioVcpkg64:
-      runs-on: windows-latest
-      steps:
-      - uses: actions/checkout@v2
-      - name: install 64-bit libraries
-        run: c:/vcpkg/vcpkg.exe install openblas[threads]:x64-windows fftw3:x64-windows lapack:x64-windows gtest:x64-windows
-      - name: build
-        run: ./scripts/build-and-test.cmd vs22-64 --fftw --clean --configure
-      - name: build
-        run: ./scripts/build-and-test.cmd vs22-64 --build
-      - name: test
-        run: ./scripts/build-and-test.cmd vs22-64 --test
-        timeout-minutes: 10
+    runs-on: windows-latest
+    if: ${{ false }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: install 64-bit libraries
+      run: c:/vcpkg/vcpkg.exe install openblas[threads]:x64-windows fftw3:x64-windows lapack:x64-windows gtest:x64-windows
+    - name: build
+      run: ./scripts/build-and-test.cmd vs22-64 --fftw --clean --configure
+    - name: build
+      run: ./scripts/build-and-test.cmd vs22-64 --build
+    - name: test
+      run: ./scripts/build-and-test.cmd vs22-64 --test
+      timeout-minutes: 10
