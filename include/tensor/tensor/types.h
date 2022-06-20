@@ -135,21 +135,6 @@ class Tensor {
   Tensor(typename detail::nested_initializer_list<4, elt_t>::type l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
 
-#if 0
-  /**Build a 1D Tensor or vector.*/
-  explicit Tensor(index length);
-  /**Build a 2D Tensor or matrix.*/
-  Tensor(index rows, index cols);
-  /**Build a 3D Tensor.*/
-  Tensor(index d1, index d2, index d3);
-  /**Build a 4D Tensor.*/
-  Tensor(index d1, index d2, index d3, index d4);
-  /**Build a 5D Tensor.*/
-  Tensor(index d1, index d2, index d3, index d4, index d5);
-  /**Build a 6D Tensor.*/
-  Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
-#endif
-
   /**Explicit copy of this tensor's data as a vector.*/
   explicit operator vector_type() const { return data_; }
 
@@ -208,7 +193,7 @@ class Tensor {
     return data_.at(dims_.column_major_position(i0, irest...));
   }
 
-  /**Destructively full this tensor with the given value. Consider using fill() instead.*/
+  /**Destructively fill this tensor with the given value. Consider using fill() instead.*/
   Tensor<elt_t> &fill_with(const elt_t &e) noexcept {
     std::fill(begin(), end(), e);
     return *this;

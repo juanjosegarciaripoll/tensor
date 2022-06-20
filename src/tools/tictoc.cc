@@ -49,7 +49,7 @@ double tic() { return inner_clock.tic(); }
 /**Output the time in seconds since last invocation of tic(). This function
      only counts the real time that the program has used since the last
      call of tic(). This may not be related to the processing time if your
-     program is using more than one core and thus it may not be very accurate
+     program is using more than one core, and thus it may not be very accurate
      for computing CPU consumption in clusters.
 
      Opposite to Matlab, toc() by itself does not produce any informative message.
@@ -57,10 +57,9 @@ double tic() { return inner_clock.tic(); }
 double toc() { return inner_clock.toc(); }
 
 /**Output the time in seconds since the given time. This function
-     only counts the real time that the program has used since the last
-     call of tic(). This may not be related to the processing time if your
-     program is using more than one core and thus it may not be very accurate
-     for computing CPU consumption in clusters.
+     only counts the real time. This may not be related to the processing time
+     if your program is using more than one core, and thus it may not be very
+     accurate for computing CPU consumption in clusters.
 
      Opposite to Matlab, toc() by itself does not produce any informative message.
   */

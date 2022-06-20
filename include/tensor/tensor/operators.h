@@ -126,7 +126,7 @@ template <
 tensor_common_t<t1, t2> operator+(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](tensor_scalar_t<t1> x) { return x + b; });
+                 [b](tensor_scalar_t<t1> x) { return x + b; });
   return output;
 }
 
@@ -136,7 +136,7 @@ template <
 tensor_common_t<t1, t2> operator-(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](tensor_scalar_t<t1> x) { return x - b; });
+                 [b](tensor_scalar_t<t1> x) { return x - b; });
   return output;
 }
 
@@ -146,7 +146,7 @@ template <
 tensor_common_t<t1, t2> operator*(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](tensor_scalar_t<t1> x) { return x * b; });
+                 [b](tensor_scalar_t<t1> x) { return x * b; });
   return output;
 }
 
@@ -156,7 +156,7 @@ template <
 tensor_common_t<t1, t2> operator/(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(a.begin(), a.end(), output.begin(),
-                 [&](tensor_scalar_t<t1> x) { return x / b; });
+                 [b](tensor_scalar_t<t1> x) { return x / b; });
   return output;
 }
 
@@ -169,7 +169,7 @@ template <
 tensor_common_t<t1, t2> operator+(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](tensor_scalar_t<t2> x) { return a + x; });
+                 [a](tensor_scalar_t<t2> x) { return a + x; });
   return output;
 }
 
@@ -179,7 +179,7 @@ template <
 tensor_common_t<t1, t2> operator-(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](tensor_scalar_t<t2> x) { return a - x; });
+                 [a](tensor_scalar_t<t2> x) { return a - x; });
   return output;
 }
 
@@ -189,7 +189,7 @@ template <
 tensor_common_t<t1, t2> operator*(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](tensor_scalar_t<t2> x) { return a * x; });
+                 [a](tensor_scalar_t<t2> x) { return a * x; });
   return output;
 }
 
@@ -199,7 +199,7 @@ template <
 tensor_common_t<t1, t2> operator/(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
   std::transform(b.begin(), b.end(), output.begin(),
-                 [&](tensor_scalar_t<t2> x) { return a / x; });
+                 [a](tensor_scalar_t<t2> x) { return a / x; });
   return output;
 }
 
@@ -244,25 +244,25 @@ Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t2> &b) {
 template <typename t1, typename t2>
 Tensor<t1> &operator+=(Tensor<t1> &a, t2 b) {
   std::transform(a.begin(), a.end(), a.begin(),
-                 [&](const auto &value) { return value + b; });
+                 [b](const auto &value) { return value + b; });
   return a;
 }
 template <typename t1, typename t2>
 Tensor<t1> &operator-=(Tensor<t1> &a, t2 b) {
   std::transform(a.begin(), a.end(), a.begin(),
-                 [&](const auto &value) { return value - b; });
+                 [b](const auto &value) { return value - b; });
   return a;
 }
 template <typename t1, typename t2>
 Tensor<t1> &operator*=(Tensor<t1> &a, t2 b) {
   std::transform(a.begin(), a.end(), a.begin(),
-                 [&](const auto &value) { return value * b; });
+                 [b](const auto &value) { return value * b; });
   return a;
 }
 template <typename t1, typename t2>
 Tensor<t1> &operator/=(Tensor<t1> &a, t2 b) {
   std::transform(a.begin(), a.end(), a.begin(),
-                 [&](const auto &value) { return value / b; });
+                 [b](const auto &value) { return value / b; });
   return a;
 }
 
@@ -340,45 +340,45 @@ bool all_equal(const Tensor<t1> &a, const Tensor<t2> &b) {
 template <typename t1,
           typename = std::enable_if_t<std::is_floating_point<t1>::value>>
 Booleans operator<(const Tensor<t1> &a, t1 b) {
-  return detail::test_tensor(a, [&](const t1 &a_value) { return a_value < b; });
+  return detail::test_tensor(a, [b](const t1 &a_value) { return a_value < b; });
 }
 
 template <typename t1,
           typename = std::enable_if_t<std::is_floating_point<t1>::value>>
 Booleans operator<=(const Tensor<t1> &a, t1 b) {
   return detail::test_tensor(a,
-                             [&](const t1 &a_value) { return a_value <= b; });
+                             [b](const t1 &a_value) { return a_value <= b; });
 }
 
 template <typename t1,
           typename = std::enable_if_t<std::is_floating_point<t1>::value>>
 Booleans operator>(const Tensor<t1> &a, t1 b) {
-  return detail::test_tensor(a, [&](const t1 &a_value) { return a_value > b; });
+  return detail::test_tensor(a, [b](const t1 &a_value) { return a_value > b; });
 }
 
 template <typename t1,
           typename = std::enable_if_t<std::is_floating_point<t1>::value>>
 Booleans operator>=(const Tensor<t1> &a, t1 b) {
   return detail::test_tensor(a,
-                             [&](const t1 &a_value) { return a_value >= b; });
+                             [b](const t1 &a_value) { return a_value >= b; });
 }
 
 template <typename t1>
 Booleans operator==(const Tensor<t1> &a, t1 b) {
   return detail::test_tensor(a,
-                             [&](const t1 &a_value) { return a_value == b; });
+                             [b](const t1 &a_value) { return a_value == b; });
 }
 
 template <typename t1>
 Booleans operator!=(const Tensor<t1> &a, t1 b) {
   return detail::test_tensor(a,
-                             [&](const t1 &a_value) { return a_value != b; });
+                             [b](const t1 &a_value) { return a_value != b; });
 }
 
 template <typename t1>
 bool all_equal(const Tensor<t1> &a, t1 b) {
   return std::all_of(a.cbegin(), a.cend(),
-                     [&](const t1 &a_value) { return a_value == b; });
+                     [b](const t1 &a_value) { return a_value == b; });
 }
 
 //
@@ -418,7 +418,7 @@ Booleans operator!=(t1 a, const Tensor<t1> &b) {
 template <typename t1>
 bool all_equal(t1 a, const Tensor<t1> &b) {
   return std::all_of(b.cbegin(), b.cend(),
-                     [&](const t1 &b_value) { return b_value == a; });
+                     [a](const t1 &b_value) { return b_value == a; });
 }
 
 }  // namespace tensor

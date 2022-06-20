@@ -73,7 +73,7 @@ void test_small_constructor() {
   {
     // sparse([1]);
     SCOPED_TRACE("1x1");
-    Tensor<elt_t> T(Dimensions{1, 1}, Tensor<elt_t>{1.0});
+    Tensor<elt_t> T(Dimensions{1, 1}, {1.0});
     Sparse<elt_t> S(T);
     EXPECT_EQ(1, S.rows());
     EXPECT_EQ(1, S.columns());
@@ -85,7 +85,7 @@ void test_small_constructor() {
   {
     // sparse([1, 0; 0, 2]);
     SCOPED_TRACE("2x2");
-    Tensor<elt_t> T(Dimensions{2, 2}, Tensor<elt_t>{1.0, 0.0, 0.0, 2.0});
+    Tensor<elt_t> T(Dimensions{2, 2}, {1.0, 0.0, 0.0, 2.0});
     Sparse<elt_t> S(T);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(2, S.columns());
@@ -97,7 +97,7 @@ void test_small_constructor() {
   {
     // sparse([1, 2; 0, 3]);
     SCOPED_TRACE("2x2");
-    Tensor<elt_t> T(Dimensions{2, 2}, Tensor<elt_t>{1.0, 0.0, 2.0, 3.0});
+    Tensor<elt_t> T(Dimensions{2, 2}, {1.0, 0.0, 2.0, 3.0});
     Sparse<elt_t> S(T);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(2, S.columns());
@@ -109,7 +109,7 @@ void test_small_constructor() {
   {
     // sparse([1, 0; 2, 3]);
     SCOPED_TRACE("2x2");
-    Tensor<elt_t> T(Dimensions{2, 2}, Tensor<elt_t>{1.0, 2.0, 0.0, 3.0});
+    Tensor<elt_t> T(Dimensions{2, 2}, {1.0, 2.0, 0.0, 3.0});
     Sparse<elt_t> S(T);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(2, S.columns());
@@ -122,7 +122,7 @@ void test_small_constructor() {
     // sparse([1, 0, 4; 2, 3, 0]);
     SCOPED_TRACE("2x2");
     Tensor<elt_t> T(Dimensions{2, 3},
-                    Tensor<elt_t>{1.0, 2.0, 0.0, 3.0, 4.0, 0.0});
+                    {1.0, 2.0, 0.0, 3.0, 4.0, 0.0});
     Sparse<elt_t> S(T);
     EXPECT_EQ(2, S.rows());
     EXPECT_EQ(3, S.columns());
