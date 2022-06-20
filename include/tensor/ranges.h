@@ -136,8 +136,8 @@ class RangeIterator {
   RangeIterator &operator=(const RangeIterator &r) = delete;
   RangeIterator &operator=(RangeIterator &&r) = default;
 
-  index operator*() const { return get_position(); };
-  RangeIterator &operator++() {
+  index operator*() const noexcept { return get_position(); };
+  RangeIterator &operator++() noexcept {
     if (++counter_ >= limit_) {
       advance_next();
     } else {
@@ -145,11 +145,11 @@ class RangeIterator {
     }
     return *this;
   }
-  bool finished() const { return counter_ >= limit_; }
-  bool operator!=(const RangeIterator &other) const {
+  bool finished() const noexcept { return counter_ >= limit_; }
+  bool operator!=(const RangeIterator &other) const noexcept {
     return other.counter_ != counter_;
   }
-  bool operator==(const RangeIterator &other) const {
+  bool operator==(const RangeIterator &other) const noexcept {
     return other.counter_ == counter_;
   }
   static RangeIterator begin(RangeSpan &ranges) {

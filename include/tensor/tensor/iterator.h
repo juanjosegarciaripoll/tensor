@@ -38,16 +38,16 @@ class TensorConstIterator {
 
   TensorConstIterator(RangeIterator it, const elt_t *base)
       : iterator_{std::move(it)}, base_{base} {}
-  const elt_t &operator*() {
+  const elt_t &operator*() noexcept {
     index tensor_iterator_position = iterator_.get_position();
     return base_[tensor_iterator_position];
   }
-  const elt_t &operator->() { return this->operator*(); }
-  TensorConstIterator<elt_t> &operator++() {
+  const elt_t &operator->() noexcept { return this->operator*(); }
+  TensorConstIterator<elt_t> &operator++() noexcept {
     ++iterator_;
     return *this;
   }
-  bool operator!=(const TensorConstIterator<elt_t> &other) const {
+  bool operator!=(const TensorConstIterator<elt_t> &other) const noexcept {
     return iterator_ != other.iterator_;
   }
 
