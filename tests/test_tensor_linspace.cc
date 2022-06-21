@@ -82,6 +82,7 @@ TYPED_TEST(TestNumberLinspace, ProducesEquispacedVectors) {
 
   auto P = linspace(this->to_value_type(0.0), this->to_value_type(pi), 4);
   auto delta = P[1] - P[0];
+  ASSERT_CEQ(pi/3.0, delta);
   ASSERT_CEQ(delta, P[2] - P[1]);
   ASSERT_CEQ(delta, P[3] - P[2]);
 }
@@ -182,6 +183,7 @@ TYPED_TEST(TestTensorLinspace, ProducesEquispacedVectors) {
   for (int i = 0; i < 2; ++i) {
     for (int j = 0; j < 2; ++j) {
       auto delta = tensor(i, j, 1) - tensor(i, j, 0);
+      ASSERT_CEQ((end(i,j)-start(i,j))/3.0, delta);
       ASSERT_CEQ(delta, tensor(i, j, 2) - tensor(i, j, 1));
       ASSERT_CEQ(delta, tensor(i, j, 3) - tensor(i, j, 2));
     }

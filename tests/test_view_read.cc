@@ -376,13 +376,11 @@ void test_view_extract(Tensor<elt_t> &P, index i0, index i2, index i1, index j0,
   Tensor<elt_t> t1 = slow_range2(P, i0, i2, i1, j0, j2, j1);
   {
     Tensor<elt_t> t = P(range(i0, i2, i1), range(j0, j2, j1));
-    if (!all_equal(t1, t)) {
-      std::cerr << P << '\n'
-                << t1 << '\n'
-                << t << '\n'
-                << range(i0, i2, i1) << ',' << range(j0, j2, j1) << '\n';
-    }
-    ASSERT_TRUE(all_equal(t, t1));
+    ASSERT_TRUE(all_equal(t, t1))
+        << P << '\n'
+        << t1 << '\n'
+        << t << '\n'
+        << range(i0, i2, i1) << ',' << range(j0, j2, j1) << '\n';
   }
   {
     Tensor<elt_t> t = P(range2(i0, i2, i1), range(j0, j2, j1));

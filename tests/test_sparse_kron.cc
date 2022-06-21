@@ -65,10 +65,8 @@ void test_kron_small() {
     Sparse<elt_t> sb(*(it++));
     Sparse<elt_t> sk(*(it++));
 
-    if (!all_equal(sk, kron(sa, sb))) {
-      std::cerr << "sk=" << sk << '\n' << "kron=" << kron(sa, sb) << '\n';
-    }
-    ASSERT_TRUE(all_equal(sk, kron(sa, sb)));
+    ASSERT_TRUE(all_equal(sk, kron(sa, sb)))
+        << "sk=" << sk << '\n' << "kron=" << kron(sa, sb) << '\n';
     ASSERT_TRUE(all_equal(kron(sb, sa), kron2(sa, sb)));
   }
 }
