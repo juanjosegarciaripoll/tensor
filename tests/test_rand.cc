@@ -17,26 +17,11 @@
 */
 
 #include <tensor/rand.h>
-#include "rand/mt.h"
 #include <gtest/gtest.h>
 
 namespace {
 
 using namespace ::tensor;
-
-// The random integer type must have enough bits for integers.
-TEST(RandTest, IntSize) {
-  int int_size = sizeof(unsigned int);
-  int rand_size = sizeof(rand_uint);
-  EXPECT_LE(int_size, rand_size);
-}
-
-// The random integer type must have enough bits for longs.
-TEST(RandTest, LongSize) {
-  int long_size = sizeof(unsigned long);
-  int rand_size = sizeof(rand_uint);
-  EXPECT_LE(long_size, rand_size);
-}
 
 // Ensure that reseeding does indeed change the random number generator.
 TEST(RandTest, Reseed) {
