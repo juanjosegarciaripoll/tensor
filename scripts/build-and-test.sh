@@ -12,22 +12,22 @@ function configure () {
     if [ "$do_configure" = yes ]; then
         test -d "$builddir" || mkdir "$builddir"
         CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DTENSOR_OPTIMIZED_BUILD=ON"
-		CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
-		if [ "$do_sanitize" = yes ]; then
-			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ADD_SANITIZERS=ON"
-		fi
-		if [ "$do_arpack" = yes ]; then
-			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ARPACK=ON"
-		fi
-		if [ "$do_fftw" = yes ]; then
-			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_FFTW=ON"
-		fi
-		if [ "$do_cppcheck" = yes ]; then
-			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CPPCHECK=ON"
-		fi
-		if [ "$do_clang_tidy" = yes ]; then
-			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CLANG_TIDY=ON"
-		fi
+        CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+        if [ "$do_sanitize" = yes ]; then
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ADD_SANITIZERS=ON"
+        fi
+        if [ "$do_arpack" = yes ]; then
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_ARPACK=ON"
+        fi
+        if [ "$do_fftw" = yes ]; then
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_FFTW=ON"
+        fi
+        if [ "$do_cppcheck" = yes ]; then
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CPPCHECK=ON"
+        fi
+        if [ "$do_clang_tidy" = yes ]; then
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CLANG_TIDY=ON"
+        fi
         cmake -S"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake configuration failed
@@ -69,7 +69,7 @@ function profile () {
 function check () {
     if [ "$do_check" = yes ]; then
         cd "$builddir"/tests
-		ctest -j $threads --rerun-failed --output-on-failure | tee -a "$logfile"
+        ctest -j $threads --rerun-failed --output-on-failure | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake test failed
             exit -1
@@ -105,23 +105,23 @@ do_fftw=yes
 do_arpack=yes
 for arg in $*; do
     case $arg in
-		--threads=*) threads=${arg:10};;
+        --threads=*) threads=${arg:10};;
         --clean) do_clean=yes;;
         --configure) do_configure=yes;;
         --build) do_build=yes;;
         --profile) do_profile=yes;;
-		--no-fftw) do_fftw=no;;
-		--no-arpack) do_arpack=no;;
+        --no-fftw) do_fftw=no;;
+        --no-arpack) do_arpack=no;;
         --test) do_check=yes;;
         --docs) do_docs=yes;;
-		--sanitize) do_sanitize=yes;;
-		--analyze) do_cppcheck=yes; do_clang_tidy=yes;;
-		--cppcheck) do_cppcheck=yes;;
-		--clang-tidy) do_clang_tidy=yes;;
+        --sanitize) do_sanitize=yes;;
+        --analyze) do_cppcheck=yes; do_clang_tidy=yes;;
+        --cppcheck) do_cppcheck=yes;;
+        --clang-tidy) do_clang_tidy=yes;;
         --all) do_clean=yes; do_configure=yes; do_build=yes; do_profile=yes; do_check=yes;;
         --debug) CMAKE_BUILD_TYPE=Debug;;
         --release) CMAKE_BUILD_TYPE=Release;;
-		*) builddir=$arg;;
+        *) builddir=$arg;;
     esac
 done
 logfile="$builddir/log"

@@ -36,7 +36,8 @@ template <typename elt_t>
 class SimpleVector;
 
 inline size_t safe_size_t(index size_value) tensor_noexcept {
-  tensor_assert(size_value >= 0) return static_cast<size_t>(size_value);
+  tensor_assert(size_value >= 0);
+  return static_cast<size_t>(size_value);
 }
 
 template <typename sequence>
