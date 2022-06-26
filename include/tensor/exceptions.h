@@ -28,8 +28,9 @@ namespace tensor {
 struct invalid_assertion : public std::logic_error {
   invalid_assertion(const char *message, const char *a_filename, int a_fileno)
       : std::logic_error(message), filename{a_filename}, fileno{a_fileno} {}
-  const char *filename = "";
-  int fileno{};
+
+  const char *filename;
+  int fileno;
 };
 
 struct invalid_dimension : public std::invalid_argument {

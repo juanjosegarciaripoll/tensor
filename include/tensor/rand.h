@@ -27,13 +27,10 @@
 
 namespace tensor {
 
-/** Reset the random number generator. If the environment variable
-    RANDSEED is defined, that value is used. Otherwise we try to
-    gather enough random numbers, either from /dev/urandom, from
-    the clock or from other sources. */
+/** Reseeds the random number generator with a random value. */
 void rand_reseed();
 
-/** Explicitely sed the seed of the RNG. */
+/** Reseeds the random number generator with the given value. */
 void set_seed(unsigned long seed);
 
 #ifdef TENSOR_64BITS
