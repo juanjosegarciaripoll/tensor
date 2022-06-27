@@ -116,7 +116,7 @@ class Dimensions {
   void get_values(index_like *...in) const {
     tensor_assert(rank() == sizeof...(in));
     index n = 0;
-    auto ignored = {(*(in) = dimensions_[n++], 1)...};  // NOLINT
+    [[maybe_unused]] auto ignored = {(*(in) = dimensions_[n++], 1)...};  // NOLINT
   }
 
   bool operator==(const Dimensions &other) const {
