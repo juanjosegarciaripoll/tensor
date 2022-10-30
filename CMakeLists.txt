@@ -53,6 +53,7 @@ option(TENSOR_BENCHMARK "Enable benchmarking code after building" OFF)
 option(TENSOR_RANGE_SQUEEZE "Selecting ranges from a tensor can remove dimensions" ON)
 option(TENSOR_COPY_ON_WRITE "Tensor data is stored and shared using a copy-on-write model" ON)
 option(BUILD_SHARED_LIBS "Build as shared library" OFF)
+option(TENSOR_BUILD_PROFILE "Build profiling code" OFF)
 set(TENSOR_BLAS "OpenBLAS" CACHE STRING "BLAS backend to use. Values are OpenBLAS (default) or MKL (also brings LAPACK backend)")
 
 # Compiler settings and other tooling
@@ -188,7 +189,9 @@ add_subdirectory(src)
 ############################################################
 # PROFILING
 #
+if(TENSOR_BUILD_PROFILE)
 add_subdirectory("profile")
+endif()
 
 ############################################################
 # DOCUMENTATION
