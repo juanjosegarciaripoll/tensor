@@ -109,7 +109,7 @@ if(TENSOR_ARPACK)
   tensor_find_dependency(
     NAME arpack
     VAR tensor_arpack_target
-    CONFIG_NAMES ARPACK arpack-ng
+    CONFIG_NAMES arpack-ng arpackng ARPACK
     IMPORT_TARGET ARPACK::ARPACK
     DEPENDENCIES TENSOR_DEPENDENCIES
     PKGCONFIG_NAMES arpack-ng arpack
