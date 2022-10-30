@@ -193,7 +193,7 @@ TYPED_TEST(TestTensorLinspace, WithCommensurateSizeProducesIntegerVectors) {
 
   auto size = 4;
   auto start = Tensor{0, 3};
-  auto end = Tensor{size + 0, size + 3};
+  auto end = Tensor{size + 0.0, size + 3.0};
   auto tensor = linspace(start, end, size + 1);
 
   for (int i = 0; i < size; ++i) {
