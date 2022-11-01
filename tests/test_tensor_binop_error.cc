@@ -30,17 +30,17 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
 #ifdef TENSOR_DEBUG
   if (P.size()) {
     {
-      Tensor<elt_t2> Paux;
-      EXPECT_EQ(0, Paux.rank());
-      EXPECT_THROW(P + Paux, ::tensor::invalid_assertion);
-      EXPECT_THROW(Paux + P, ::tensor::invalid_assertion);
+      Tensor<elt_t2> Pempty;
+      EXPECT_EQ(0, Pempty.rank());
+      ASSERT_THROW_DEBUG(P + Pempty, ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(Pempty + P, ::tensor::invalid_assertion);
     }
     {
       Indices dims = P.dimensions();
       dims.at(P.rank() - 1) += 1;
-      Tensor<elt_t2> Paux(dims);
-      EXPECT_THROW(P + Paux, ::tensor::invalid_assertion);
-      EXPECT_THROW(Paux + P, ::tensor::invalid_assertion);
+      Tensor<elt_t2> Psmaller(dims);
+      ASSERT_THROW_DEBUG(P + Psmaller, ::tensor::invalid_assertion);
+      ASSERT_THROW_DEBUG(Psmaller + P, ::tensor::invalid_assertion);
     }
   }
 #endif

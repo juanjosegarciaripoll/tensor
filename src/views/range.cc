@@ -67,7 +67,7 @@ Dimensions RangeSpan::get_dimensions(const Dimensions &parent_dimensions) {
       // prior to iteration.
       return get_dimensions(Dimensions{parent_dimensions.total_size()});
     }
-    throw std::out_of_range("Number of _ exceeds Tensor rank.");
+    tensor_terminate(std::out_of_range("Number of _ exceeds Tensor rank."));
   }
 #ifdef TENSOR_RANGE_SQUEEZE
   index removed_dimensions = std::count_if(
@@ -295,8 +295,8 @@ RangeIterator::RangeIterator(const Range &r, index factor, RangeIterator *next)
    * below limit_
    */
   if (r.dimension() < 0) {
-    throw std::invalid_argument(
-        "RangeIterator passed a Range without dimensions");
+    tensor_terminate(std::invalid_argument(
+        "RangeIterator passed a Range without dimensions"));
   }
   if (r.has_indices()) {
     start_ = 0;

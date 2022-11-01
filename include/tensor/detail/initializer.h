@@ -78,8 +78,8 @@ class nested_list_initializer {
   static void copy_into(elt_t *buffer, const index *dims, index stride,
                         const std::initializer_list<item> &l) {
     if (*dims != static_cast<index>(l.size())) {
-      throw std::out_of_range(
-          "Mismatch between tensor initializer list and dimensions.");
+      tensor_terminate(std::out_of_range(
+          "Mismatch between tensor initializer list and dimensions."));
     }
     const index next_stride = stride * (*dims);
     for (auto x : l) {
