@@ -88,14 +88,13 @@ class Tensor {
   /**Constructs a 1-D Tensor from a vector (move version for temporaries).*/
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
-  Tensor(vector_type &&data) noexcept
-      : data_(std::move(data)), dims_({data_.size()}) {}
+  Tensor(vector_type &&data) : data_(std::move(data)), dims_{data_.ssize()} {}
 
   /**Constructs a 1-D Tensor from a vector.*/
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
   Tensor(const std::vector<elt_t> &data)
-      : data_(data.size()), dims_{static_cast<index>(data.size())} {
+      : data_(data.size()), dims_{data_.ssize()} {
     std::copy(data.begin(), data.end(), begin());
   }
 
@@ -377,6 +376,8 @@ class TensorView {
     begin().copy_to_contiguous_iterator(output.begin());
     return output;
   }
+
+  [[deprecated]] Tensor<elt_t> clone() const { return copy(); }
 
   operator Tensor<elt_t>() const { return copy(); }
 
