@@ -57,8 +57,8 @@ struct dimensions_mismatch : public std::out_of_range {
                       index which2);
 };
 
-void tensor_terminate(const std::exception &exception);
-void tensor_terminate(const invalid_assertion &exception);
+[[noreturn]] void tensor_terminate(const std::exception &exception);
+[[noreturn]] void tensor_terminate(const invalid_assertion &exception);
 
 #define tensor_expects(expression) tensor_assert(expression)
 #define tensor_assert(assertion) \
