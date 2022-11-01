@@ -8,7 +8,7 @@ option(TENSOR_ADD_SANITIZERS "Compile and link with address sanitizers if in Deb
 function(make_tensor_options)
     add_library(tensor_options INTERFACE)
     if (TENSOR_OPTIMIZED_BUILD)
-        if (NOT CMAKE_BUILD_TYPE MATCHES "Rel")
+        if (CMAKE_BUILD_TYPE MATCHES "Rel")
             tensor_add_optimizations()
         endif()
     endif()
