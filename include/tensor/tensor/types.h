@@ -372,13 +372,13 @@ class TensorView {
                                       tensor_.begin());
   }
 
-  Tensor<elt_t> clone() const {
+  Tensor<elt_t> copy() const {
     Tensor<elt_t> output(dimensions());
     begin().copy_to_contiguous_iterator(output.begin());
     return output;
   }
 
-  operator Tensor<elt_t>() const { return clone(); }
+  operator Tensor<elt_t>() const { return copy(); }
 
  private:
   const Tensor<elt_t> &tensor_;
