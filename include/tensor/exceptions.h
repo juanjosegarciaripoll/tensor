@@ -75,6 +75,12 @@ struct dimensions_mismatch : public std::out_of_range {
 #define tensor_noexcept noexcept
 #endif
 
+// narrow_cast(): a searchable way to do narrowing casts of values
+template <class T, class U>
+constexpr T narrow_cast(U &&u) noexcept {
+  return static_cast<T>(std::forward<U>(u));
+}
+
 }  // namespace tensor
 
 #endif  // TENSOR_EXCEPTIONS_H
