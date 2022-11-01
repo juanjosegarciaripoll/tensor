@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <tensor/config.h>
 #include <tensor/tools.h>
+#include <tensor/exceptions.h>
 
 #ifdef HAVE_DLADDR
 #ifdef HAVE_DLFCN_H
@@ -158,3 +159,17 @@ static void tensor_abort(int /*signal*/) {
 }
 
 void tensor::tensor_abort_handler() { signal(SIGABRT, tensor_abort); }
+
+void tensor::tensor_terminate(const std::exception &condition) {
+  std::cerr << "Logic error:\n" << condition.what() << std::endl;
+  dump_backtrace();
+  std::terminate();
+}
+
+void tensor::tensor_terminate(const invalid_assertion &condition) {
+  std::cerr << "Logic error:\n"
+            << condition.what() << " at " << condition.filename << "("
+            << condition.line << ")\n";
+  dump_backtrace();
+  std::terminate();
+}
