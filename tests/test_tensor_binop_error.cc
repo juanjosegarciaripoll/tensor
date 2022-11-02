@@ -31,8 +31,6 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
     {
       Tensor<elt_t2> Pempty;
       EXPECT_EQ(0, Pempty.rank());
-      std::cerr << "P.shape=" << P.dimensions()
-                << ", Pempty.shape=" << Pempty.dimensions() << '\n';
       ASSERT_THROW_DEBUG(P + Pempty, ::tensor::invalid_assertion);
       ASSERT_THROW_DEBUG(Pempty + P, ::tensor::invalid_assertion);
     }
