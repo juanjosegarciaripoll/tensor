@@ -95,8 +95,7 @@ Booleans operator!=(const Indices &a, index b) {
 }
 
 bool all_equal(const Indices &a, const Indices &b) {
-  tensor_assert(a.size() == b.size());
-  return std::equal(a.cbegin(), a.cend(), b.cbegin());
+  return (a.size() == b.size()) && std::equal(a.cbegin(), a.cend(), b.cbegin());
 }
 
 bool all_equal(const Indices &a, index b) {
