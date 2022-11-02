@@ -62,7 +62,8 @@ RTensor rtensor_failed_2d_list_initialization() {
 }
 
 TEST(RTensorTest, RTensor2DListFailedConstructor) {
-  EXPECT_THROW(rtensor_failed_2d_list_initialization(), std::out_of_range);
+  EXPECT_THROW_DEBUG(rtensor_failed_2d_list_initialization(),
+                     std::out_of_range);
 }
 
 TEST(RTensorTest, RTensor3DListConstructor) {
@@ -93,7 +94,8 @@ RTensor rtensor_failed_3d_list_initialization() {
 }
 
 TEST(RTensorTest, RTensor3DListFailedConstructor) {
-  EXPECT_THROW(rtensor_failed_3d_list_initialization(), std::out_of_range);
+  EXPECT_THROW_DEBUG(rtensor_failed_3d_list_initialization(),
+                     std::out_of_range);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -136,7 +138,8 @@ CTensor ctensor_failed_2d_list_initialization() {
 }
 
 TEST(CTensorTest, CTensor2DListFailedConstructor) {
-  EXPECT_THROW(ctensor_failed_2d_list_initialization(), std::out_of_range);
+  EXPECT_THROW_DEBUG(ctensor_failed_2d_list_initialization(),
+                     std::out_of_range);
 }
 
 TEST(CTensorTest, CTensor3DListConstructor) {
@@ -167,7 +170,8 @@ CTensor ctensor_failed_3d_list_initialization() {
 }
 
 TEST(CTensorTest, CTensor3DListFailedConstructor) {
-  EXPECT_THROW(ctensor_failed_3d_list_initialization(), std::out_of_range);
+  EXPECT_THROW_DEBUG(ctensor_failed_3d_list_initialization(),
+                     std::out_of_range);
 }
 
 }  // namespace tensor_test

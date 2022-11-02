@@ -163,7 +163,7 @@ void tensor::tensor_abort_handler() { signal(SIGABRT, tensor_abort); }
 void tensor::tensor_terminate(const std::exception &condition) {
   std::cerr << "Logic error:\n" << condition.what() << std::endl;
   dump_backtrace();
-  std::terminate();
+  std::abort();
 }
 
 void tensor::tensor_terminate(const invalid_assertion &condition) {
@@ -171,5 +171,5 @@ void tensor::tensor_terminate(const invalid_assertion &condition) {
             << condition.what() << " at " << condition.filename << "("
             << condition.line << ")\n";
   dump_backtrace();
-  std::terminate();
+  std::abort();
 }

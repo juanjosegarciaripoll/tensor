@@ -27,11 +27,12 @@ namespace tensor_test {
 //
 template <typename elt_t, typename elt_t2, typename elt_t3>
 void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
-#ifdef TENSOR_DEBUG
   if (P.size()) {
     {
       Tensor<elt_t2> Pempty;
       EXPECT_EQ(0, Pempty.rank());
+      std::cerr << "P.shape=" << P.dimensions()
+                << ", Pempty.shape=" << Pempty.dimensions() << '\n';
       ASSERT_THROW_DEBUG(P + Pempty, ::tensor::invalid_assertion);
       ASSERT_THROW_DEBUG(Pempty + P, ::tensor::invalid_assertion);
     }
@@ -43,7 +44,6 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
       ASSERT_THROW_DEBUG(Psmaller + P, ::tensor::invalid_assertion);
     }
   }
-#endif
 }
 
 //////////////////////////////////////////////////////////////////////
