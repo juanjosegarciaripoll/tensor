@@ -33,7 +33,7 @@ function(make_tensor_options)
 	# Clang-tidy does not understand G++ precompiled headers
 	if (TENSOR_CLANG_TIDY)
 	    message(STATUS "CMAKE_CXX_COMPILER_ID=${CMAKE_CXX_COMPILER_ID}")
-	    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	    if (CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
 		    set(TENSOR_USE_PCH OFF)
 		endif()
 	endif()
