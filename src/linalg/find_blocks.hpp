@@ -50,31 +50,31 @@ using tensor::index;
 template <class Tensor>
 bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
                  std::vector<Indices> &column_indices, double tol = 0.0) {
-  index N = A.rows();
-  index M = A.columns();
+  size_t N = static_cast<size_t>(A.rows());
+  size_t M = static_cast<size_t>(A.columns());
   if (N > M) {
     return find_blocks(transpose(A), column_indices, row_indices);
   }
 
-  const index aux = 0;
-  const index empty = ~aux;
-  std::vector<index> row_block(N, empty);
-  std::vector<index> column_block;
+  const size_t aux = 0;
+  const size_t empty = ~aux;
+  std::vector<size_t> row_block(N, empty);
+  std::vector<size_t> column_block;
   column_block.reserve(M);
 
-  index nblocks = 0;
+  size_t nblocks = 0;
   auto data = A.cbegin();
-  for (index col = 0; col < M; col++) {
+  for (size_t col = 0; col < M; col++) {
     // For each col, we see what rowumns it is linked to. If some of these
     // rowumns belongs to a block, and the current block is not set, we
     // set our current block. Otherwise, we mix different blocks.
-    index curr_block = col;
+    size_t curr_block = col;
     bool set = false;
-    for (index row = 0; row < N; row++, ++data) {
+    for (size_t row = 0; row < N; row++, ++data) {
       bool significant = abs(real(*data)) + abs(imag(*data)) > tol;
       if (significant) {
         set = true;
-        index new_block = row_block[row];
+        size_t new_block = row_block[row];
         if (new_block == empty) {
           row_block[row] = curr_block;
         } else if (new_block != curr_block) {
@@ -94,7 +94,7 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
       column_block.push_back(empty);
     }
   }
-  if (tensor::FLAGS.get(tensor::TENSOR_DEBUG_BLOCK_SVD)) {
+  if (tensor::FLAGS.get_bool(tensor::TENSOR_DEBUG_BLOCK_SVD)) {
     std::cout << "*** find_blocks: nxm=" << N << "x" << M
               << ", n_blocks=" << nblocks << std::endl;
   }
@@ -106,20 +106,20 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
   }
 
   std::vector<index> buffer;
-  buffer.reserve(std::max<index>(N, M));
+  buffer.reserve(std::max(N, M));
   column_indices.reserve(nblocks);
   row_indices.reserve(nblocks);
 
-  auto extract_positions = [&](std::vector<index> &v, index start,
-                               index which) {
+  auto extract_positions = [&](std::vector<size_t> &v, size_t start,
+                               size_t which) {
     buffer.clear();
     index count = 0;
-    for (index ndx = start; ndx < static_cast<index>(v.size()); ++ndx) {
+    for (size_t ndx = start; ndx < v.size(); ++ndx) {
       auto &x = v[ndx];
       if (x == which) {
         x = empty;
         ++count;
-        buffer.push_back(ndx);
+        buffer.push_back(static_cast<index>(ndx));
       }
     }
     Indices output = Indices::empty(count);
@@ -131,16 +131,15 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
   column_indices.push_back(extract_positions(column_block, 0, empty));
   row_indices.push_back(extract_positions(row_block, 0, empty));
   // The next ones contain useful blocks
-  for (index start = 0; start < static_cast<index>(column_block.size());
-       ++start) {
+  for (size_t start = 0; start < column_block.size(); ++start) {
     auto block = column_block[start];
     if (block != empty) {
       column_indices.push_back(extract_positions(column_block, start, block));
       row_indices.push_back(extract_positions(row_block, 0, block));
     }
   }
-  tensor_assert(ssize(column_indices) == nblocks + 1);
-  tensor_assert(ssize(row_indices) == nblocks + 1);
+  tensor_assert(size(column_indices) == nblocks + 1);
+  tensor_assert(size(row_indices) == nblocks + 1);
   return true;
 }
 

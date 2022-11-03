@@ -32,6 +32,7 @@ class Flags {
   Flags &set(unsigned int code, double value);
 
   int get_int(unsigned int code) const { return static_cast<int>(get(code)); }
+  bool get_bool(unsigned int code) const { return get(code) != 0; }
 
   unsigned int create_key(double value);
 

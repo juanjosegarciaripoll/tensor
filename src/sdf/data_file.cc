@@ -124,7 +124,7 @@ const char *DataFile::tag_to_name(tensor::index tag) const {
     std::cerr << "Not a valid tag code, " << tag << " found in " << _filename;
     std::terminate();
   }
-  return names[tag];
+  return names[static_cast<unsigned int>(tag)];
 }
 
 }  // namespace sdf
