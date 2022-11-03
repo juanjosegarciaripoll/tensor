@@ -33,9 +33,6 @@ blas_integer_overflow::blas_integer_overflow()
 
 namespace tensor {
 
-dimensions_mismatch::dimensions_mismatch(const char *message)
-    : std::out_of_range(message) {}
-
 static std::string dimensions_mismatch_message(const Dimensions &d1,
                                                const Dimensions &d2) {
   std::ostringstream out;
