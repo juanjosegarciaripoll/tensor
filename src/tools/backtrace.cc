@@ -18,8 +18,8 @@
 
 #include <csignal>
 #include <cstdlib>
-#include <cstdio>
 #include <iostream>
+#include <memory>
 #include <tensor/config.h>
 #include <tensor/tools.h>
 #include <tensor/exceptions.h>
@@ -34,11 +34,13 @@
 #include <execinfo.h>
 #endif
 
+constexpr int max_backtrace_size = 32;
+
 #if !defined(HAVE_BACKTRACE) && defined(HAVE___BUILTIN_RETURN_ADDRESS) && \
     defined(HAVE_BACKTRACE_SYMBOLS)
 #define HAVE_BACKTRACE
 static int backtrace(void **buffer, int n) {
-  int nframes = (n > 32) ? 32 : n;
+  int nframes = std::min(max_backtrace_size, n);
   switch (nframes) {
     case 32:
       buffer[31] = __builtin_return_address(31);
@@ -129,48 +131,43 @@ static char **backtrace_symbols(void **buffer, int nframes) {
 #endif /* HAVE_BACKTRACE && HAVE_DLADDR */
 #endif /* !HAVE_BACKTRACE_SYMBOLS */
 
-#ifdef HAVE_BACKTRACE_SYMBOLS
 static void dump_backtrace() {
+#ifdef HAVE_BACKTRACE_SYMBOLS
   {
-    void *pointers[32];
-    int nframes = backtrace(pointers, 32);
+    void *pointers[max_backtrace_size];
+    int nframes = backtrace(pointers, max_backtrace_size);
     char **names = backtrace_symbols(pointers, nframes);
-    int i;
-    fprintf(stderr, "\n;;; ECL C Backtrace\n");
-    for (i = 0; i < nframes; i++) {
+    std::cerr << "\n;;; ECL C Backtrace\n";
+    for (int i = 0; i < nframes; i++) {
 #ifdef BACKTRACE_SYMBOLS_SIMPLE
-      fprintf(stderr, ";;; %4d %s (%p) \n", i, names[i], pointers[i]);
+      std::cerr << ";;; " << i << ' ' << names[i] << " (" << pointers[i]
+                << ")\n";
 #else
-      fprintf(stderr, ";;; %s\n", names[i]);
+      std::cerr << ";;; " << names[i] << "\n";
 #endif
     }
-    fflush(stderr);
-    free(names);
+    free(names);  // NOLINT
   }
-}
-#else
-static void dump_backtrace() {}
 #endif
+}
 
 #undef abort
 
-static void tensor_abort(int /*signal*/) {
+[[noreturn]] static void tensor_abort(int /*signal*/) {
   dump_backtrace();
   exit(-1);
 }
 
 void tensor::tensor_abort_handler() { signal(SIGABRT, tensor_abort); }
 
-void tensor::tensor_terminate(const std::exception &condition) {
-  std::cerr << "Logic error:\n" << condition.what() << std::endl;
-  dump_backtrace();
-  std::abort();
+void tensor::tensor_terminate(const std::exception &exception) {
+  std::cerr << "Logic error:\n" << exception.what() << std::endl;
+  tensor_abort(0);
 }
 
-void tensor::tensor_terminate(const invalid_assertion &condition) {
+void tensor::tensor_terminate(const invalid_assertion &exception) {
   std::cerr << "Logic error:\n"
-            << condition.what() << " at " << condition.filename << "("
-            << condition.line << ")\n";
-  dump_backtrace();
-  std::abort();
+            << exception.what() << " at " << exception.filename << "("
+            << exception.line << ")\n";
+  tensor_abort(0);
 }
