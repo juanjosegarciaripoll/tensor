@@ -51,6 +51,10 @@ SimpleVector<Range> make_ranges(SimpleVector<Range> l, Dimensions d) {
   return l;
 }
 
+SimpleVector<Range> make_ranges(std::initializer_list<Range> l, Dimensions d) {
+  return make_ranges(SimpleVector<Range>(std::move(l)), d);
+}
+
 Dimensions dimensions_from_ranges(SimpleVector<Range> &l, const Dimensions &d) {
   return RangeSpan(l).get_dimensions(d);
 }
@@ -97,7 +101,7 @@ TEST(RangeIteratorTest, OptimizesSize1) {
   ASSERT_EQ(r1.size(), 1);
   auto r2 = Range(/*start*/ 2, /*end*/ 2, /*step*/ 1, /*dimension*/ 3);
   ASSERT_EQ(r2.size(), 1);
-  auto it = RangeIterator::begin({r1, r2});
+  auto it = RangeIterator::begin(SimpleVector<Range>{r1, r2});
   ASSERT_FALSE(it.has_next());
   ASSERT_EQ(it.counter(), 0);
   ASSERT_EQ(it.step(), 2 * 1);
@@ -111,27 +115,27 @@ TEST(RangeIteratorTest, OptimizesSize1) {
 
 TEST(RangeIteratorTest, EmptyRangeIterator) {
   Range r = Range::empty(0);  // = []
-  RangeIterator it = RangeIterator::begin({r});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*it, 0);
-  ASSERT_EQ(it, RangeIterator::end({r}));
+  ASSERT_EQ(it, RangeIterator::end(SimpleVector<Range>{r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize0) {
   Range r(/*start*/ -1, /*end*/ -2, /*step*/ 1, /*dimension*/ 1);  // = []
-  RangeIterator it = RangeIterator::begin({r});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ++it;
   ASSERT_EQ(*it, 0);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+  ASSERT_EQ(it, RangeIterator::end(SimpleVector<Range>{r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize1) {
   Range r(/*start*/ 0, /*end*/ 0);  // = [0]
   r.set_dimension(3);
-  RangeIterator it = RangeIterator::begin({r});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
   index last;
   ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
@@ -140,14 +144,14 @@ TEST(RangeIteratorTest, RangeIterator1DSize1) {
   ASSERT_EQ(*it, last);
   ++it;
   ASSERT_EQ(*it, last);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+  ASSERT_EQ(it, RangeIterator::end(SimpleVector<Range>{r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize1Start1) {
   Range r(/*start*/ 1, /*end*/ 1);  // = [1, 1]
   r.set_dimension(3);
   index last;
-  RangeIterator it = RangeIterator::begin({r});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
   ASSERT_EQ(last = *it, 1);
   ASSERT_FALSE(it.finished());
   ++it;
@@ -155,14 +159,14 @@ TEST(RangeIteratorTest, RangeIterator1DSize1Start1) {
   ASSERT_EQ(*it, last);
   ++it;
   ASSERT_EQ(*it, last);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+  ASSERT_EQ(it, RangeIterator::end(SimpleVector<Range>{r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize2) {
   Range r(/*start*/ 0, /*end*/ 1);  // = [0, 1]
   r.set_dimension(3);
   index last;
-  RangeIterator it = RangeIterator::begin({r});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
   ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
@@ -173,14 +177,14 @@ TEST(RangeIteratorTest, RangeIterator1DSize2) {
   ASSERT_EQ(*it, last);
   ++it;
   ASSERT_EQ(*it, last);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+  ASSERT_EQ(it, RangeIterator::end(SimpleVector<Range>{r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize1Step2) {
   Range r(/*start*/ 0, /*end*/ 0, /*step*/ 2);  // = [0]
   r.set_dimension(3);
   index last;
-  RangeIterator it = RangeIterator::begin({r});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
   ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
@@ -188,13 +192,13 @@ TEST(RangeIteratorTest, RangeIterator1DSize1Step2) {
   ASSERT_EQ(*it, last);
   ++it;
   ASSERT_EQ(*it, last);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+  ASSERT_EQ(it, RangeIterator::end(SimpleVector<Range>{r}));
 }
 
 TEST(RangeIteratorTest, RangeIterator1DSize2Step2) {
   Range r(/*start*/ 0, /*end*/ 1, /*step*/ 2, /*dimension*/ 2);  // = [0]
   index last;
-  RangeIterator it = RangeIterator::begin({r});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
   ASSERT_EQ(last = *it, 0);
   ASSERT_FALSE(it.finished());
   ++it;
@@ -202,7 +206,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize2Step2) {
   ASSERT_EQ(*it, last);
   ++it;
   ASSERT_EQ(*it, last);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+  ASSERT_EQ(it, RangeIterator::end(SimpleVector<Range>{r}));
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -211,7 +215,7 @@ TEST(RangeIteratorTest, RangeIterator1DSize2Step2) {
 
 TEST(RangeIteratorTest, RangeIterator1DNegativeStep) {
   Range r(/*start*/ 1, /*end*/ 0, /*step*/ -1, /*dimension*/ 2);  // = [1, 0]
-  RangeIterator it = RangeIterator::begin({r});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
   index last;
   ASSERT_EQ(*it, 1);
   ++it;
@@ -222,7 +226,7 @@ TEST(RangeIteratorTest, RangeIterator1DNegativeStep) {
   ASSERT_EQ(*it, last);
   ++it;
   ASSERT_EQ(*it, last);  // We do not run past the limit
-  ASSERT_EQ(it, RangeIterator::end({r}));
+  ASSERT_EQ(it, RangeIterator::end(SimpleVector<Range>{r}));
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -237,28 +241,28 @@ TEST(RangeIteratorTest, RangeIterator2DEmptyA) {
   Range r1 = Range::empty(), r2(/*start*/ 0, /*end*/ 0);  // = []
   r1.set_dimension(3);
   r2.set_dimension(3);
-  RangeIterator it = RangeIterator::begin({r1, r2});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r1, r2});
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*(++it), 0);
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
+  ASSERT_TRUE(it == RangeIterator::end(SimpleVector<Range>{r1, r2}));
 }
 
 TEST(RangeIteratorTest, RangeIterator2DEmptyB) {
   Range r1(/*start*/ 0, /*end*/ 0), r2 = Range::empty();  // = []
   r1.set_dimension(3);
   r2.set_dimension(3);
-  RangeIterator it = RangeIterator::begin({r1, r2});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r1, r2});
   ASSERT_EQ(*it, 0);
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*(++it), 0);  // We do not run past the limit
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
+  ASSERT_TRUE(it == RangeIterator::end(SimpleVector<Range>{r1, r2}));
 }
 
 TEST(RangeIteratorTest, RangeIterator2DSize1x1) {
   Range r1(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 1);
   Range r2(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 1);  // = [[0, 0]]
-  RangeIterator it = RangeIterator::begin({r1, r2});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r1, r2});
   ASSERT_FALSE(it.finished());
   ASSERT_EQ(*it, 0);
   ++it;
@@ -266,13 +270,13 @@ TEST(RangeIteratorTest, RangeIterator2DSize1x1) {
   ASSERT_EQ(*it, 0);
   ++it;
   ASSERT_EQ(*it, 0);  // We do not run past the limit
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
+  ASSERT_TRUE(it == RangeIterator::end(SimpleVector<Range>{r1, r2}));
 }
 
 TEST(RangeIteratorTest, RangeIterator2DSize1x1Dim3x4) {
   Range r1(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 3);
   Range r2(/*start*/ 0, /*end*/ 0, /*step*/ 1, /*dimension*/ 4);
-  RangeIterator it = RangeIterator::begin({r1, r2});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r1, r2});
   ASSERT_FALSE(it.finished());
   ASSERT_EQ(*it, 0);
   ++it;
@@ -280,13 +284,13 @@ TEST(RangeIteratorTest, RangeIterator2DSize1x1Dim3x4) {
   ASSERT_EQ(*it, 0);
   ++it;
   ASSERT_EQ(*it, 0);  // We do not run past the limit
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
+  ASSERT_TRUE(it == RangeIterator::end(SimpleVector<Range>{r1, r2}));
 }
 
 TEST(RangeIteratorTest, RangeIterator2DSize2x2Dim3x4) {
   Range r1(/*start*/ 0, /*end*/ 1, /*step*/ 1, /*dimension*/ 3);
   Range r2(/*start*/ 0, /*end*/ 1, /*step*/ 1, /*dimension*/ 4);
-  RangeIterator it = RangeIterator::begin({r1, r2});
+  RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r1, r2});
   ASSERT_FALSE(it.finished());
   ASSERT_EQ(*it, 0);
   ASSERT_FALSE(it.finished());
@@ -299,7 +303,7 @@ TEST(RangeIteratorTest, RangeIterator2DSize2x2Dim3x4) {
   ASSERT_EQ(*(++it), 1 + 3);
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*(++it), 1 + 3);  // We do not run past the limit
-  ASSERT_TRUE(it == RangeIterator::end({r1, r2}));
+  ASSERT_TRUE(it == RangeIterator::end(SimpleVector<Range>{r1, r2}));
 }
 
 //////////////////////////////////////////////////////////////////////
