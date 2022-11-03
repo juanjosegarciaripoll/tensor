@@ -19,6 +19,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <cstdio>
+#include <iostream>
 #include <tensor/config.h>
 #include <tensor/tools.h>
 #include <tensor/exceptions.h>
