@@ -20,8 +20,13 @@
 
 #define EPSILON 1e-14
 
+#ifdef TENSOR_DEBUG
 #define ASSERT_THROW_DEBUG(x, y) ASSERT_DEATH(x, ".*")
 #define EXPECT_THROW_DEBUG(x, y) EXPECT_DEATH(x, ".*")
+#else
+#define ASSERT_THROW_DEBUG(x, y) (void)0
+#define EXPECT_THROW_DEBUG(x, y) (void)0
+#endif
 
 namespace tensor_test {
 
