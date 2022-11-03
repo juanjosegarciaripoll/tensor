@@ -52,7 +52,7 @@ class Dimensions;
 
 struct dimensions_mismatch : public std::out_of_range {
   dimensions_mismatch() : std::out_of_range("Mismatch in tensor dimensions"){};
-  dimensions_mismatch(const char *message) : std::out_of_range(message){};
+  explicit dimensions_mismatch(const char *message) : std::out_of_range(message){};
   dimensions_mismatch(const Dimensions &d1, const Dimensions &d2);
   dimensions_mismatch(const Dimensions &d1, const Dimensions &d2, index which1,
                       index which2);

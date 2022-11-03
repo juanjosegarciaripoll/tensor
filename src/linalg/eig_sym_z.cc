@@ -71,7 +71,7 @@ RTensor eig_sym(const CTensor &A, CTensor *V) {
   blas::integer lwork = -1;
   SimpleVector<double> rwork(static_cast<size_t>(3 * n));
   {
-    cdouble work0;
+    cdouble work0; // NOLINT
     F77NAME(zheev)
     (&jobz, &uplo, &n, a, &n, w, &work0, &lwork, rwork.begin(), &info);
     lwork = static_cast<blas::integer>(lapack::real(work0));

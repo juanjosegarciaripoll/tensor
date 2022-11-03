@@ -23,8 +23,8 @@ namespace tensor {
 
 double norm0(const CTensor &r) {
   double output = 0;
-  for (CTensor::const_iterator it = r.begin(); it != r.end(); ++it) {
-    output = std::max(output, abs(*it));
+  for (cdouble z: r) {
+    output = std::max(output, abs(z));
   }
   return output;
 }

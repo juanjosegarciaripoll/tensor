@@ -23,8 +23,8 @@ namespace tensor {
 
 double norm0(const RTensor &r) {
   double output = 0;
-  for (RTensor::const_iterator it = r.begin(); it != r.end(); ++it) {
-    output = std::max(output, abs(*it));
+  for (double x : r) {
+    output = std::max(output, abs(x));
   }
   return output;
 }

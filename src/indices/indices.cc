@@ -33,12 +33,14 @@ index Dimensions::compute_total_size(const SimpleVector<index> &dims) {
     index total_dimension = 1,
           maximum_dimension = std::numeric_limits<index>::max();
     for (index dimension : dims) {
+#ifdef TENSOR_DEBUG
       tensor_assert(dimension >= 0);
       tensor_assert(dimension < maximum_dimension);
-      total_dimension *= dimension;
       if (dimension) {
         maximum_dimension /= dimension;
       }
+#endif
+      total_dimension *= dimension;
     }
     return total_dimension;
   } else {
