@@ -3,6 +3,7 @@ option(TENSOR_OPTIMIZED_BUILD "Add well known optimization arguments" ON)
 option(TENSOR_CLANG_TIDY "Enable running clang-tidy if found" OFF)
 option(TENSOR_CPPCHECK "Enable running cppcheck if found" OFF)
 option(WARNINGS_AS_ERRORS "Compilation and analysis warnings become errors" OFF)
+option(TENSOR_USE_PCH "Use precompiled headers" ON)
 option(TENSOR_ADD_SANITIZERS "Compile and link with address sanitizers if in Debug mode" OFF)
 
 function(make_tensor_options)
@@ -30,8 +31,7 @@ function(make_tensor_options)
     endif()
 
 	# Clang-tidy does not understand G++ precompiled headers
-	set(TENSOR_USE_PCH ON)
-	if (CLANGTIDY)
+	if (TENSOR_CLANG_TIDY)
 	    message(STATUS "CMAKE_CXX_COMPILER_ID=${CMAKE_CXX_COMPILER_ID}")
 	    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 		    set(TENSOR_USE_PCH OFF)
