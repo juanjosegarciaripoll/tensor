@@ -70,6 +70,8 @@ class Tensor {
   /**Constructs an empty Tensor.*/
   Tensor() = default;
 
+  ~Tensor() = default;
+
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
   explicit Tensor(const Dimensions &new_dims)
       : data_(static_cast<size_t>(new_dims.total_size())), dims_(new_dims){};
@@ -351,8 +353,11 @@ template <typename elt_t>
 class TensorView {
  public:
   TensorView() = delete;
+  ~TensorView() = default;
   TensorView(const TensorView<elt_t> &other) = default;
   TensorView(TensorView<elt_t> &&other) = default;
+  TensorView &operator=(const TensorView &) = delete;
+  TensorView &operator=(TensorView &&) = delete;
 
   TensorView(const Tensor<elt_t> &tensor, RangeSpan ranges)
       : tensor_(tensor),
@@ -391,6 +396,7 @@ template <typename elt_t>
 class MutableTensorView {
  public:
   MutableTensorView() = delete;
+  ~MutableTensorView() = default;
   MutableTensorView(const MutableTensorView<elt_t> &other) = default;
   MutableTensorView(MutableTensorView<elt_t> &&other) = default;
 
@@ -399,17 +405,22 @@ class MutableTensorView {
         dims_(ranges.get_dimensions(tensor.dimensions())),
         range_iterator_begin_(RangeIterator::begin(ranges)) {}
 
-  void operator=(const TensorView<elt_t> &t) {
+  MutableTensorView &operator=(const TensorView<elt_t> &t) {
     tensor_assert(
         verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
     begin().copy_from(t.begin());
+    return *this;
   }
-  void operator=(const Tensor<elt_t> &t) {
+  MutableTensorView &operator=(const Tensor<elt_t> &t) {
     tensor_assert(
         verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
     begin().copy_from_contiguous_iterator(t.begin());
+    return *this;
   }
-  void operator=(elt_t v) { begin().fill(v); }
+  MutableTensorView &operator=(elt_t v) {
+    begin().fill(v);
+    return *this;
+  }
 
   size_t size() const { return static_cast<size_t>(dims_.total_size()); }
   index ssize() const { return dims_.total_size(); }
