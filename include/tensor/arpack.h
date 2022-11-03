@@ -30,15 +30,15 @@ namespace arpack {
 
 template <typename elt_t, bool symmetric>
 struct eigenvalue_type {
-  typedef elt_t type;
+  using type = elt_t;
 };
 template <>
 struct eigenvalue_type<double, true> {
-  typedef double type;
+  using type = double;
 };
 template <>
 struct eigenvalue_type<double, false> {
-  typedef tensor::cdouble type;
+  using type = tensor::cdouble;
 };
 
 }  // namespace arpack
@@ -145,8 +145,8 @@ struct RArpack : public Arpack<double, true> {
 struct CArpack : public Arpack<tensor::cdouble, true> {
 }
 #else
-typedef Arpack<double, true> RArpack;
-typedef Arpack<tensor::cdouble, true> CArpack;
+using RArpack = Arpack<double, true>;
+using CArpack = Arpack<tensor::cdouble, true>;
 #endif
 
 }  // namespace linalg

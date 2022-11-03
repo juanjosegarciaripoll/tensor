@@ -33,8 +33,8 @@ namespace tensor {
 template <typename elt>
 class CSRMatrix {
  public:
-  typedef elt elt_t;
-  typedef Tensor<elt> tensor;
+  using elt_t = elt;
+  using tensor = Tensor<elt>;
 
   /**Build an empty matrix.*/
   CSRMatrix();
@@ -119,8 +119,8 @@ using Sparse = CSRMatrix<elt_t>;
 extern template class CSRMatrix<double>;
 extern template class CSRMatrix<cdouble>;
 
-typedef Sparse<double> RSparse;
-typedef Sparse<cdouble> CSparse;
+using RSparse = Sparse<double>;
+using CSparse = Sparse<cdouble>;
 
 }  // namespace tensor
 

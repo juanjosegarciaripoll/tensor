@@ -28,7 +28,7 @@ namespace tensor {
 
 using std::abs;
 
-typedef std::ptrdiff_t index;
+using index = std::ptrdiff_t;
 
 //
 // REAL NUMBERS
@@ -59,7 +59,7 @@ inline number square(number r) {
 // COMPLEX NUMBERS
 //
 
-typedef std::complex<double> cdouble;
+using cdouble = std::complex<double>;
 
 inline cdouble to_complex(const double &r) { return cdouble(r, 0); }
 

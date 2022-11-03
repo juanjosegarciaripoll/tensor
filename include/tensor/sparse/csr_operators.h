@@ -69,17 +69,17 @@ template <typename T1, typename T2, class binop>
 Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
                                                 const Sparse<T2> &m2,
                                                 binop op) {
-  typedef std::common_type_t<T1, T2> T3;
+  using result_type = std::common_type_t<T1, T2>;
 
   index rows = m1.rows();
   index cols = m1.columns();
 
   tensor_assert(rows == m2.rows() && cols == m2.columns());
 
-  if (rows == 0 || cols == 0) return Sparse<T3>(rows, cols);
+  if (rows == 0 || cols == 0) return Sparse<result_type>(rows, cols);
 
   size_t max_size = m1.priv_data().size() + m2.priv_data().size();
-  Tensor<T3> data(Dimensions{max_size});
+  Tensor<result_type> data(Dimensions{max_size});
   Indices column(max_size);
   Indices row_start(static_cast<size_t>(rows) + 1);
 
@@ -107,7 +107,7 @@ Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
     // each element on each matrix.
     index c1 = l1 ? *m1_column : cols;
     index c2 = l2 ? *m2_column : cols;
-    T3 value;
+    result_type value;
     index c;
     if (c1 < c2) {
       // There is an element a column c1 on matrix m1, but the
@@ -150,7 +150,7 @@ Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
       l2 = (*m2_row_start) - j2;
       continue;
     }
-    if (!(value == number_zero<T3>())) {
+    if (!(value == number_zero<result_type>())) {
       *(out_data++) = value;
       *(out_column++) = c;
     }
@@ -158,30 +158,30 @@ Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
   index j = out_data - out_begin;
   Indices the_column(safe_size_t(j));
   std::copy(column.begin(), column.begin() + j, the_column.begin());
-  Tensor<T3> the_data(Dimensions{j});
+  Tensor<result_type> the_data(Dimensions{j});
   std::copy(data.begin(), data.begin() + j, the_data.begin());
-  return Sparse<T3>(m1.dimensions(), row_start, the_column, the_data);
+  return Sparse<result_type>(m1.dimensions(), row_start, the_column, the_data);
 }
 
 template <typename T1, typename T2>
 const CSRMatrix<std::common_type_t<T1, T2>> operator+(const CSRMatrix<T1> &m1,
                                                       const CSRMatrix<T2> &m2) {
-  typedef std::common_type_t<T1, T2> T3;
-  return sparse_binop(m1, m2, std::plus<T3>());
+  using result_type = std::common_type_t<T1, T2>;
+  return sparse_binop(m1, m2, std::plus<result_type>());
 }
 
 template <typename T1, typename T2>
 const CSRMatrix<std::common_type_t<T1, T2>> operator-(const CSRMatrix<T1> &m1,
                                                       const CSRMatrix<T2> &m2) {
-  typedef std::common_type_t<T1, T2> T3;
-  return sparse_binop(m1, m2, std::minus<T3>());
+  using result_type = std::common_type_t<T1, T2>;
+  return sparse_binop(m1, m2, std::minus<result_type>());
 }
 
 template <typename T1, typename T2>
 const CSRMatrix<std::common_type_t<T1, T2>> operator*(const CSRMatrix<T1> &m1,
                                                       const CSRMatrix<T2> &m2) {
-  typedef std::common_type_t<T1, T2> T3;
-  return sparse_binop(m1, m2, std::multiplies<T3>());
+  using result_type = std::common_type_t<T1, T2>;
+  return sparse_binop(m1, m2, std::multiplies<result_type>());
 }
 
 }  // namespace tensor

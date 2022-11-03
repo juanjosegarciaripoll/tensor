@@ -48,19 +48,20 @@ constexpr index ssize(const sequence &s) tensor_noexcept {
 template <typename elt>
 class Vector {
  public:
-  typedef elt elt_t;
-  typedef elt value_type;
-  typedef size_t size_type;
-  typedef index difference_type;
-  typedef elt_t *iterator;
-  typedef const elt_t *const_iterator;
+  using elt_t = elt;
+  using value_type = elt;
+  using size_type = size_t;
+  using difference_type = index;
+  using iterator = elt_t *;
+  using const_iterator = const elt_t *;
 
   Vector() = default;
+  ~Vector() = default;
 
   explicit Vector(size_type size)
       : size_{size},
         base_{size ? new elt_t[size] : nullptr},
-        data_(base_, std::default_delete<elt_t[]>()) {}
+        data_(base_, std::default_delete<elt_t[]>()) {}  // NOLINT
 
   static inline Vector<elt_t> empty(size_type size) { return Vector(size); }
 
@@ -127,6 +128,7 @@ class Vector {
   std::shared_ptr<elt_t> data_{};
 
   elt_t *appropriate() {
+    // NOLINTBEGIN
     if (data_.use_count() > 1) {
       std::shared_ptr<elt_t> tmp(new elt_t[size_],
                                  std::default_delete<elt_t[]>());
@@ -134,12 +136,13 @@ class Vector {
       std::swap(data_, tmp);
       return base_ = data_.get();
     }
+    // NOLINTEND
     return base_;
   }
 };
 
-typedef Vector<double> RVector;
-typedef Vector<cdouble> CVector;
+using RVector = Vector<double>;
+using CVector = Vector<cdouble>;
 
 template <typename t1, typename t2>
 bool operator==(const Vector<t1> &v1, const Vector<t2> &v2) {
@@ -154,19 +157,22 @@ bool operator==(const Vector<t1> &v1, const Vector<t2> &v2) {
 template <typename elt>
 class SimpleVector {
  public:
-  typedef elt elt_t;
-  typedef elt value_type;
-  typedef size_t size_type;
-  typedef index difference_type;
-  typedef elt_t *iterator;
-  typedef const elt_t *const_iterator;
+  using elt_t = elt;
+  using value_type = elt;
+  using size_type = size_t;
+  using difference_type = index;
+  using iterator = elt_t *;
+  using const_iterator = const elt_t *;
 
   SimpleVector() = default;
+  ~SimpleVector() = default;
 
-  explicit SimpleVector(size_type size) : size_{size}, base_(new elt_t[size]) {}
+  explicit SimpleVector(size_type size)
+      : size_{size}, base_(new elt_t[size]) {}  // NOLINT
 
   explicit SimpleVector(difference_type size)
-      : size_{safe_size_t(size)}, base_(new elt_t[safe_size_t(size)]) {}
+      : size_{safe_size_t(size)},
+        base_(new elt_t[safe_size_t(size)]) {}  // NOLINT
 
   // NOLINTNEXTLINE(*-explicit-constructor)
   template <typename other_elt>
@@ -188,7 +194,7 @@ class SimpleVector {
   };
   SimpleVector &operator=(const SimpleVector<elt_t> &v) {
     size_ = v.size_;
-    base_ = std::make_unique<elt_t[]>(v.size_);
+    base_ = std::make_unique<elt_t[]>(v.size_);  // NOLINT
     std::copy(v.begin(), v.end(), base_.get());
     return *this;
   };
@@ -227,7 +233,7 @@ class SimpleVector {
 
  private:
   size_t size_{0};
-  std::unique_ptr<elt_t[]> base_{};
+  std::unique_ptr<elt_t[]> base_{};  // NOLINT
 };
 
 }  // namespace tensor

@@ -33,7 +33,7 @@ extern template class Tensor<double>;
 struct RTensor : public Tensor<double> {
 }
 #else
-typedef Tensor<double> RTensor;
+using RTensor = Tensor<double>;
 #endif
 
 RTensor

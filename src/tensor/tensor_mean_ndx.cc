@@ -25,7 +25,7 @@ using tensor::index;
 
 template <typename Tensor>
 Tensor do_mean(const Tensor &t, index ndx) {
-  typedef typename Tensor::elt_t elt_t;
+  using elt_t = typename Tensor::elt_t;
   index rank = t.rank();
   if (rank == 1) {
     return Tensor(Dimensions{1}, Vector<elt_t>({mean(t)}));

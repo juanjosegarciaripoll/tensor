@@ -28,7 +28,6 @@ template <class Tensor>
 static Tensor solve_cgs(const LinearMap<Tensor> &A, const Tensor &b,
                         const Tensor *x_start, tensor::index maxiter,
                         double tol) {
-  typedef typename Tensor::elt_t number;
   if (maxiter == 0) {
     maxiter = b.rows();
   }
@@ -38,20 +37,20 @@ static Tensor solve_cgs(const LinearMap<Tensor> &A, const Tensor &b,
   Tensor x = x_start ? *x_start : (b + 0.05 * Tensor::random(b.dimensions()));
   Tensor r = b - A(x);
   Tensor p = r;
-  number rsold = scprod(r, r);
+  auto rsold = scprod(r, r);
   if (sqrt(abs(rsold)) > tol) {
     while (maxiter-- >= 0) {
       Tensor Ap = A(p);
-      number beta = scprod(p, Ap);
+      auto beta = scprod(p, Ap);
       if (abs(beta) < 1e-15 * abs(rsold)) {
         // We have hit a zero
         std::cerr << "Singular system of equations hit in cgs()" << std::endl;
         abort();
       }
-      number alpha = rsold / scprod(p, Ap);
+      auto alpha = rsold / scprod(p, Ap);
       x += alpha * p;
       r -= alpha * Ap;
-      number rsnew = scprod(r, r);
+      auto rsnew = scprod(r, r);
       if (sqrt(abs(rsnew)) < tol) break;
       p = r + (rsnew / rsold) * p;
       rsold = rsnew;

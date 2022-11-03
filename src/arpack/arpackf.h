@@ -43,7 +43,7 @@
 
 using namespace blas;
 
-typedef blas::integer logical;
+using logical = blas::integer;
 
 #ifdef __cplusplus
 extern "C" {

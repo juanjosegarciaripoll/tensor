@@ -150,10 +150,10 @@ extern template class Vector<bool>;
 /** Vector of boolean values. */
 class Booleans : public Vector<bool> {
  public:
-  Booleans() : Vector<bool>() {}
+  Booleans() = default;
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
-  Booleans(const Booleans &b) : Vector<bool>(b) {}
+  Booleans(const Booleans &b) = default;
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
   Booleans(const std::initializer_list<bool> &l) : Vector<bool>(l) {}

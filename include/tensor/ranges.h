@@ -128,7 +128,7 @@ class RangeSpan {
 class RangeIterator {
  public:
   static const Range empty_range;
-  typedef std::unique_ptr<RangeIterator> next_t;
+  using next_t = std::unique_ptr<RangeIterator>;
 
   RangeIterator() = default;
   RangeIterator(RangeIterator &&r) = default;

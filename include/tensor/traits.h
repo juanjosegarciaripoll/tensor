@@ -44,22 +44,22 @@ struct is_tensor<MutableTensorView<elt_t>> : public std::true_type {};
 
 template <typename t>
 struct tensor_scalar_type_inner {
-  typedef t type;
+  using type = t;
 };
 
 template <typename t>
 struct tensor_scalar_type_inner<Tensor<t>> {
-  typedef t type;
+  using type = t;
 };
 
 template <typename t>
 struct tensor_scalar_type_inner<TensorView<t>> {
-  typedef t type;
+  using type = t;
 };
 
 template <typename t>
 struct tensor_scalar_type_inner<MutableTensorView<t>> {
-  typedef t type;
+  using type = t;
 };
 
 template <typename t>

@@ -52,19 +52,19 @@ template <typename elt>
 class Tensor {
  public:
   /** The type of this tensor's elements */
-  typedef elt elt_t;
+  using elt_t = elt;
   /** The type of this tensor's elements */
-  typedef elt value_type;
+  using value_type = elt;
   /** Random access iterator type */
-  typedef elt_t *iterator;
+  using iterator = elt_t *;
   /** Random access iterator type to const */
-  typedef const elt_t *const_iterator;
+  using const_iterator = const elt_t *;
 #ifdef TENSOR_COPY_ON_WRITE
   /** Container for this tensor's data */
-  typedef Vector<elt_t> vector_type;
+  using vector_type = Vector<elt_t>;
 #else
   /** Container for this tensor's data */
-  typedef SimpleVector<elt_t> vector_type;
+  using vector_type = SimpleVector<elt_t>;
 #endif
 
   /**Constructs an empty Tensor.*/
@@ -448,7 +448,7 @@ extern template class MutableTensorView<double>;
 /** Real Tensor with elements of type "double". */
 struct RTensor : public Tensor<double> {};
 #else
-typedef Tensor<double> RTensor;
+using RTensor = Tensor<double>;
 #endif
 
 extern template class Tensor<cdouble>;
@@ -458,7 +458,7 @@ extern template class MutableTensorView<cdouble>;
 #ifdef DOXYGEN_ONLY
 struct CTensor : public Tensor<cdouble> {}
 #else
-typedef Tensor<cdouble> CTensor;
+using CTensor = Tensor<cdouble>;
 #endif
 
 }  // namespace tensor

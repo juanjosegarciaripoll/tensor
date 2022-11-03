@@ -30,11 +30,11 @@ class TensorIterator;
 template <typename elt_t>
 class TensorConstIterator {
  public:
-  typedef const elt_t value_type;
-  typedef index difference_type;
-  typedef const elt_t &reference;
-  typedef const elt_t *pointer;
-  typedef std::input_iterator_tag iterator_category;
+  using value_type = const elt_t;
+  using difference_type = index;
+  using reference = const elt_t &;
+  using pointer = const elt_t *;
+  using iterator_category = std::input_iterator_tag;
 
   TensorConstIterator(RangeIterator it, const elt_t *base)
       : iterator_{std::move(it)}, base_{base} {}
@@ -78,11 +78,11 @@ class TensorConstIterator {
 template <typename elt_t>
 class TensorIterator {
  public:
-  typedef elt_t value_type;
-  typedef index difference_type;
-  typedef elt_t &reference;
-  typedef elt_t *pointer;
-  typedef std::input_iterator_tag iterator_category;
+  using value_type = elt_t;
+  using difference_type = index;
+  using reference = elt_t &;
+  using pointer = elt_t *;
+  using iterator_category = std::input_iterator_tag;
 
   TensorIterator(RangeIterator it, elt_t *base)
       : iterator_{std::move(it)}, base_{base} {}
