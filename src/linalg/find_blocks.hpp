@@ -138,8 +138,8 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
       row_indices.push_back(extract_positions(row_block, 0, block));
     }
   }
-  tensor_assert(std::size(column_indices) == nblocks + 1);
-  tensor_assert(std::size(row_indices) == nblocks + 1);
+  tensor_assert(column_indices.size() == nblocks + 1);
+  tensor_assert(row_indices.size() == nblocks + 1);
   return true;
 }
 
