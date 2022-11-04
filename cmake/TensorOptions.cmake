@@ -190,6 +190,8 @@ macro(tensor_enable_cppcheck)
           --suppress=internalAstError
           # if a file does not have an internalAstError, we get an unmatchedSuppression error
           --suppress=unmatchedSuppression
+          # noExplicitConstructor gives false positives on move constructors
+          --suppress=noExplicitConstructor
           --inconclusive)
         if(${CMAKE_CXX_STANDARD})
             set(CMAKE_CXX_CPPCHECK ${CMAKE_CXX_CPPCHECK} --std=c++${CMAKE_CXX_STANDARD})
