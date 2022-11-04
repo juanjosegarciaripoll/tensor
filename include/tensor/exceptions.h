@@ -52,7 +52,8 @@ class Dimensions;
 
 struct dimensions_mismatch : public std::out_of_range {
   dimensions_mismatch() : std::out_of_range("Mismatch in tensor dimensions"){};
-  explicit dimensions_mismatch(const char *message) : std::out_of_range(message){};
+  explicit dimensions_mismatch(const char *message)
+      : std::out_of_range(message){};
   dimensions_mismatch(const Dimensions &d1, const Dimensions &d2);
   dimensions_mismatch(const Dimensions &d1, const Dimensions &d2, index which1,
                       index which2);
@@ -61,6 +62,7 @@ struct dimensions_mismatch : public std::out_of_range {
 [[noreturn]] void tensor_terminate(const std::exception &exception);
 [[noreturn]] void tensor_terminate(const invalid_assertion &exception);
 
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #define tensor_expects(expression) tensor_assert(expression)
 #define tensor_assert(assertion) \
   tensor_assert2((assertion),    \
@@ -75,6 +77,7 @@ struct dimensions_mismatch : public std::out_of_range {
 #define tensor_assert2(expression, condition)
 #define tensor_noexcept noexcept
 #endif
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 // narrow_cast(): a searchable way to do narrowing casts of values
 template <class T, class U>
