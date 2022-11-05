@@ -62,11 +62,12 @@ void test_random_eig_sym(int n) {
     RTensor s = linalg::eig_sym(A, &R);
     Tensor<elt_t> L = adjoint(R);
     RTensor dS = diag(s);
+    constexpr double epsilon = 1e-12;
     EXPECT_TRUE(norm0(abs(s) - s) < 1e-13);
     EXPECT_TRUE(unitaryp(R, 1e-10));
-    EXPECT_TRUE(approx_eq(mmult(A, R), mmult(R, dS), 1e-12));
-    EXPECT_TRUE(approx_eq(mmult(L, A), mmult(dS, L), 1e-12));
-    EXPECT_TRUE(approx_eq(A, mmult(R, mmult(dS, L)), 1e-12));
+    EXPECT_CEQ3(mmult(A, R), mmult(R, dS), epsilon);
+    EXPECT_CEQ3(mmult(L, A), mmult(dS, L), epsilon);
+    EXPECT_CEQ3(A, mmult(R, mmult(dS, L)), epsilon);
   }
 }
 

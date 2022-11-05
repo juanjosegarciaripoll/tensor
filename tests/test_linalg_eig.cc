@@ -58,8 +58,9 @@ void test_random_eig(int n) {
     auto A = Tensor<elt_t>::random(n, n);
     CTensor L, R, s = linalg::eig(A, &R, &L);
     CTensor dS = diag(s);
-    EXPECT_TRUE(approx_eq(mmult(A, R), mmult(R, dS), 1e-12));
-    EXPECT_TRUE(approx_eq(mmult(adjoint(L), A), mmult(dS, adjoint(L)), 1e-12));
+    constexpr double epsilon = 1e-12;
+    EXPECT_CEQ3(mmult(A, R), mmult(R, dS), epsilon);
+    EXPECT_CEQ3(mmult(adjoint(L), A), mmult(dS, adjoint(L)), epsilon);
 
     A = mmult(A, adjoint(A)) / norm0(A);
     s = linalg::eig(A, &R, &L);
@@ -67,10 +68,9 @@ void test_random_eig(int n) {
     EXPECT_TRUE(norm0(abs(s) - s) < 1e-13);
     EXPECT_TRUE(unitaryp(L, 1e-10));
     EXPECT_TRUE(unitaryp(R, 1e-10));
-    EXPECT_TRUE(approx_eq(mmult(A, R), mmult(R, dS), 1e-12));
-    EXPECT_TRUE(approx_eq(mmult(adjoint(L), A), mmult(dS, adjoint(L)), 1e-12));
-    EXPECT_TRUE(
-        approx_eq(to_complex(A), mmult(L, mmult(diag(s), adjoint(R))), 1e-12));
+    EXPECT_CEQ3(mmult(A, R), mmult(R, dS), epsilon);
+    EXPECT_CEQ3(mmult(adjoint(L), A), mmult(dS, adjoint(L)), epsilon);
+    EXPECT_CEQ3(to_complex(A), mmult(L, mmult(diag(s), adjoint(R))), epsilon);
   }
 }
 

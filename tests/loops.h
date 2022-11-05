@@ -61,82 +61,61 @@ void unique(const Tensor &t) {
    * Approximately equal numbers.
    */
 template <typename elt_t1, typename elt_t2>
-bool simeq(elt_t1 a, elt_t2 b, double epsilon = 2 * EPSILON) {
+::testing::AssertionResult simeq(elt_t1 a, elt_t2 b,
+                                 double epsilon = 2 * EPSILON) {
   double x = tensor::abs(a - b);
-  if (x > epsilon) {
-    std::cout << x << std::endl;
-    return false;
+  if (x <= epsilon) {
+    return ::testing::AssertionSuccess();
+  } else {
+    return ::testing::AssertionFailure()
+           << a << " is not " << b << " within tolerance " << EPSILON;
   }
-  return true;
 }
 
 template <typename elt_t>
-bool simeq(const Tensor<elt_t> &a, const Tensor<elt_t> &b,
-           double epsilon = 2 * EPSILON) {
+::testing::AssertionResult simeq(const Tensor<elt_t> &a, const Tensor<elt_t> &b,
+                                 double epsilon = 2 * EPSILON) {
   if (a.rank() != b.rank()) {
-    std::cerr << "Comparing tensors of different ranks: " << a.rank() << " vs "
-              << b.rank() << '\n';
-    return false;
+    return ::testing::AssertionFailure()
+           << "tensors with different ranks, a.rank()=" << a.rank()
+           << " vs b.rank()=" << b.rank();
   }
-
   if (!all_equal(a.dimensions(), b.dimensions())) {
-    std::cerr << "Dimensions do not match:" << a.dimensions() << " vs. "
-              << b.dimensions() << '\n';
-    return false;
+    return ::testing::AssertionFailure()
+           << "dimension mismatch: " << a.dimensions() << " vs. "
+           << b.dimensions() << '\n';
   }
-
   for (typename Tensor<elt_t>::const_iterator ia = a.begin(), ib = b.begin();
        ia != a.end(); ++ia, ++ib) {
     double x = tensor::abs(*ia - *ib);
     if (x > epsilon) {
-      std::cout << x << std::endl;
-      return false;
+      return ::testing::AssertionFailure()
+             << "tensor elements " << *ia << " and " << *ib
+             << " not equal within tolerance " << epsilon;
     }
   }
-  return true;
+  return ::testing::AssertionSuccess();
 }
 
 #define EXPECT_CEQ(a, b) EXPECT_TRUE(simeq(a, b))
 #define EXPECT_CEQ3(a, b, c) EXPECT_TRUE(simeq(a, b, c))
 #define ASSERT_CEQ(a, b) ASSERT_TRUE(simeq(a, b))
 
-/*
-   * Approximately equal tensors.
-   */
-template <class Tensor>
-bool approx_eq(const Tensor &A, const Tensor &B, double epsilon = 2 * EPSILON) {
-  if (A.rank() != B.rank()) {
-    std::cout << "Ranks do not match." << std::endl;
-    return false;
-  }
-
-  if (!all_equal(A.dimensions(), B.dimensions())) {
-    std::cout << "Dimensions do not match." << std::endl
-              << A.dimensions() << " vs. " << B.dimensions() << std::endl;
-    return false;
-  }
-
-  double x = norm0(A - B);
-  if (x > epsilon) {
-    std::cout << "Deviation: " << x << std::endl;
-    return false;
-  }
-
-  return true;
-}
-
 template <typename elt_t>
-bool unitaryp(const Tensor<elt_t> &U, double epsilon = EPSILON) {
+::testing::AssertionResult unitaryp(const Tensor<elt_t> &U,
+                                    double epsilon = EPSILON) {
   Tensor<elt_t> Ut = adjoint(U);
   if (U.rows() <= U.columns()) {
-    if (!approx_eq(mmult(U, Ut), Tensor<elt_t>::eye(U.rows()), epsilon))
-      return false;
+    auto result = simeq(mmult(U, Ut), Tensor<elt_t>::eye(U.rows()), epsilon);
+    if (!result)
+      return ::testing::AssertionFailure() << "matrix is not right-isometry";
   }
   if (U.columns() <= U.rows()) {
-    if (!approx_eq(mmult(Ut, U), Tensor<elt_t>::eye(U.columns()), epsilon))
-      return false;
+    auto result = simeq(mmult(Ut, U), Tensor<elt_t>::eye(U.columns()), epsilon);
+    if (!result)
+      return ::testing::AssertionFailure() << "matrix is not left-isometry";
   }
-  return true;
+  return ::testing::AssertionSuccess();
 }
 
 /*

@@ -36,7 +36,7 @@ void test_mmult(index max_dim) {
       for (index k = 1; k <= max_dim; k++) {
         auto A = Tensor<n1>::random(i, j);
         auto B = Tensor<n1>::random(j, k);
-        EXPECT_TRUE(approx_eq(mmult(A, B), fold_22_12(A, B)));
+        EXPECT_CEQ(mmult(A, B), fold_22_12(A, B));
         unique(A);
         unique(B);
       }

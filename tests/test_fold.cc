@@ -50,7 +50,7 @@ void test_fold(int max_dim) {
                 // Compare optimized routine with safer, slow ones
                 EXPECT_TRUE(all_equal(AB.dimensions(), sAB.dimensions()));
                 EXPECT_EQ(expected_size, AB.size());
-                EXPECT_TRUE(approx_eq(AB, sAB));
+                EXPECT_CEQ(AB, sAB);
                 // Negative indices conditions
                 EXPECT_TRUE(all_equal(AB, fold(A, i - rankA, B, j)));
                 EXPECT_TRUE(all_equal(AB, fold(A, i, B, j - rankB)));

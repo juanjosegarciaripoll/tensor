@@ -138,26 +138,23 @@ TEST(FFTWTest, OutOfPlaceFFTTest) {
       CTensor ref_fft = full_dft(input, -1);
       CTensor ref_ifft = full_dft(input, +1);
 
-      EXPECT_TRUE(approx_eq(ref_fft, fftw(input, FFTW_FORWARD), 1e-10));
-      EXPECT_TRUE(approx_eq(ref_ifft, fftw(input, FFTW_BACKWARD), 1e-10));
+      EXPECT_CEQ3(ref_fft, fftw(input, FFTW_FORWARD), 1e-10);
+      EXPECT_CEQ3(ref_ifft, fftw(input, FFTW_BACKWARD), 1e-10);
 
       for (int dim = 0; dim < rank; dim++) {
         // test the fftw along only a single dimension
         ref_fft = partial_dft(input, dim, -1);
         ref_ifft = partial_dft(input, dim, +1);
 
-        EXPECT_TRUE(approx_eq(ref_fft, fftw(input, dim, FFTW_FORWARD), 1e-10));
-        EXPECT_TRUE(
-            approx_eq(ref_ifft, fftw(input, dim, FFTW_BACKWARD), 1e-10));
+        EXPECT_CEQ3(ref_fft, fftw(input, dim, FFTW_FORWARD), 1e-10);
+        EXPECT_CEQ3(ref_ifft, fftw(input, dim, FFTW_BACKWARD), 1e-10);
       }
       for (BooleansIterator biter(rank); biter; ++biter) {
         ref_fft = partial_dft(input, *biter, -1);
         ref_ifft = partial_dft(input, *biter, +1);
 
-        EXPECT_TRUE(
-            approx_eq(ref_fft, fftw(input, *biter, FFTW_FORWARD), 1e-10));
-        EXPECT_TRUE(
-            approx_eq(ref_ifft, fftw(input, *biter, FFTW_BACKWARD), 1e-10));
+        EXPECT_CEQ3(ref_fft, fftw(input, *biter, FFTW_FORWARD), 1e-10);
+        EXPECT_CEQ3(ref_ifft, fftw(input, *biter, FFTW_BACKWARD), 1e-10);
       }
     }
   }
@@ -195,14 +192,15 @@ TEST(FFTWTest, InPlaceFFTTest) {
       // first, test the fftw along all dimensions
       CTensor ref_fft = full_dft(input, -1);
       CTensor ref_ifft = full_dft(input, +1);
+      constexpr double epsilon = 1e-10;
 
       CTensor inplace = input;
       fftw_inplace(inplace, FFTW_FORWARD);
-      EXPECT_TRUE(approx_eq(ref_fft, inplace, 1e-10));
+      EXPECT_CEQ3(ref_fft, inplace, epsilon);
 
       inplace = input;
       fftw_inplace(inplace, FFTW_BACKWARD);
-      EXPECT_TRUE(approx_eq(ref_ifft, inplace, 1e-10));
+      EXPECT_CEQ3(ref_ifft, inplace, epsilon);
 
       for (int dim = 0; dim < rank; dim++) {
         // test the fftw along only a single dimension
@@ -211,11 +209,11 @@ TEST(FFTWTest, InPlaceFFTTest) {
 
         inplace = input;
         fftw_inplace(inplace, dim, FFTW_FORWARD);
-        EXPECT_TRUE(approx_eq(ref_fft, inplace, 1e-10));
+        EXPECT_CEQ3(ref_fft, inplace, epsilon);
 
         inplace = input;
         fftw_inplace(inplace, dim, FFTW_BACKWARD);
-        EXPECT_TRUE(approx_eq(ref_ifft, inplace, 1e-10));
+        EXPECT_CEQ3(ref_ifft, inplace, epsilon);
       }
       for (BooleansIterator biter(rank); biter; ++biter) {
         ref_fft = partial_dft(input, *biter, -1);
@@ -223,11 +221,11 @@ TEST(FFTWTest, InPlaceFFTTest) {
 
         inplace = input;
         fftw_inplace(inplace, *biter, FFTW_FORWARD);
-        EXPECT_TRUE(approx_eq(ref_fft, inplace, 1e-10));
+        EXPECT_CEQ3(ref_fft, inplace, epsilon);
 
         inplace = input;
         fftw_inplace(inplace, *biter, FFTW_BACKWARD);
-        EXPECT_TRUE(approx_eq(ref_ifft, inplace, 1e-10));
+        EXPECT_CEQ3(ref_ifft, inplace, epsilon);
       }
     }
   }
@@ -261,22 +259,22 @@ TEST(FFTWTest, fftShiftTest) {
         continue;
       }
 
-      EXPECT_TRUE(approx_eq(all_fft_shift(input, FFTW_FORWARD),
-                            fftshift(input, FFTW_FORWARD)));
-      EXPECT_TRUE(approx_eq(all_fft_shift(input, FFTW_BACKWARD),
-                            fftshift(input, FFTW_BACKWARD)));
+      EXPECT_CEQ(all_fft_shift(input, FFTW_FORWARD),
+                 fftshift(input, FFTW_FORWARD));
+      EXPECT_CEQ(all_fft_shift(input, FFTW_BACKWARD),
+                 fftshift(input, FFTW_BACKWARD));
 
       for (int dim = 0; dim < rank; dim++) {
-        EXPECT_TRUE(approx_eq(single_fft_shift(input, dim, FFTW_FORWARD),
-                              fftshift(input, dim, FFTW_FORWARD)));
-        EXPECT_TRUE(approx_eq(single_fft_shift(input, dim, FFTW_BACKWARD),
-                              fftshift(input, dim, FFTW_BACKWARD)));
+        EXPECT_CEQ(single_fft_shift(input, dim, FFTW_FORWARD),
+                   fftshift(input, dim, FFTW_FORWARD));
+        EXPECT_CEQ(single_fft_shift(input, dim, FFTW_BACKWARD),
+                   fftshift(input, dim, FFTW_BACKWARD));
       }
       for (BooleansIterator biter(rank); biter; ++biter) {
-        EXPECT_TRUE(approx_eq(multiple_fft_shift(input, *biter, FFTW_FORWARD),
-                              fftshift(input, *biter, FFTW_FORWARD)));
-        EXPECT_TRUE(approx_eq(multiple_fft_shift(input, *biter, FFTW_BACKWARD),
-                              fftshift(input, *biter, FFTW_BACKWARD)));
+        EXPECT_CEQ(multiple_fft_shift(input, *biter, FFTW_FORWARD),
+                   fftshift(input, *biter, FFTW_FORWARD));
+        EXPECT_CEQ(multiple_fft_shift(input, *biter, FFTW_BACKWARD),
+                   fftshift(input, *biter, FFTW_BACKWARD));
       }
     }
   }

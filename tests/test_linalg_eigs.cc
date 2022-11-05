@@ -88,7 +88,7 @@ void test_eigs_permuted_diagonal(int n) {
   EXPECT_EQ(n, U.dimension(0));
   EXPECT_EQ(1, U.dimension(1));
   EXPECT_EQ(1, E.size());
-  EXPECT_TRUE(simeq(to_complex((double)n), E(0), 20 * EPSILON));
+  EXPECT_CEQ3(to_complex((double)n), E(0), 20 * EPSILON);
   EXPECT_CEQ(1.0, abs(fold(en, 0, U, 0))(0));
 }
 

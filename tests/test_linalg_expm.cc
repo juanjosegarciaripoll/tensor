@@ -77,7 +77,7 @@ void test_expm_diag(int n) {
     return;
   }
   Tensor<elt_t> exponent, exponential = expm_diag(n, &exponent);
-  EXPECT_TRUE(approx_eq(linalg::expm(exponent), exponential));
+  EXPECT_CEQ(linalg::expm(exponent), exponential);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ TEST(RMatrixTest, ExpmPauliTest) {
     double theta = rand(M_PI);
     double phi = rand(M_PI);
     RTensor fA, expfA = pauli_exponential(theta, phi, &fA);
-    EXPECT_TRUE(approx_eq(linalg::expm(fA), expfA, 1e-13));
+    EXPECT_CEQ3(linalg::expm(fA), expfA, 1e-13);
   }
 }
 
@@ -114,7 +114,7 @@ TEST(RMatrixTest, ExpmKronecker) {
       RTensor in = RTensor::eye(n, n);
       RTensor C = kron(fA, in) + kron(id, B);
       RTensor expC = kron(expfA, expB);
-      EXPECT_TRUE(approx_eq(linalg::expm(C), expC, 1e-13));
+      EXPECT_CEQ3(linalg::expm(C), expC, 1e-13);
     }
   }
 }
@@ -136,7 +136,7 @@ TEST(CMatrixTest, ExpmPauliTest) {
     double theta = rand(M_PI);
     double phi = rand(M_PI);
     CTensor fA, expfA = pauli_exponential(theta, phi, &fA);
-    EXPECT_TRUE(approx_eq(linalg::expm(fA), expfA, 1e-13));
+    EXPECT_CEQ3(linalg::expm(fA), expfA, 1e-13);
   }
 }
 
@@ -153,7 +153,7 @@ TEST(CMatrixTest, ExpmKronecker) {
       CTensor in = CTensor::eye(n, n);
       CTensor C = kron(fA, in) + kron(CTensor(id), B);
       CTensor expC = kron(expfA, expB);
-      EXPECT_TRUE(approx_eq(linalg::expm(C), expC, 1e-13));
+      EXPECT_CEQ3(linalg::expm(C), expC, 1e-13);
     }
   }
 }

@@ -117,26 +117,18 @@ void test_random_svd(int n) {
                         : linalg::svd(A, &U, &Vt, false);
       EXPECT_TRUE(unitaryp(U, 1e-10));
       EXPECT_TRUE(unitaryp(Vt, 1e-10));
-      EXPECT_TRUE(approx_eq(abs(s), s));
-      EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s, 0, m, n), Vt))));
+      EXPECT_CEQ(abs(s), s);
+      EXPECT_CEQ(A, mmult(U, mmult(diag(s, 0, m, n), Vt)));
 
-      EXPECT_TRUE(approx_eq(true_s, s));
+      EXPECT_CEQ(true_s, s);
       auto A2 = A;
 
       RTensor s2 = block ? linalg::block_svd(A, &U, &Vt, true)
                          : linalg::svd(A, &U, &Vt, true);
-      if (!approx_eq(s, s2)) {
-        std::vector<Indices> rows, cols;
-        std::cerr << "find_blocks=" << linalg::find_blocks(A, rows, cols, 0.0)
-                  << '\n';
-        std::cerr << "block=" << block << '\n';
-        std::cerr << "s=" << s << '\n' << "s2=" << s2 << '\n';
-        std::cerr << "A=" << A << '\n' << "A2=" << A2 << '\n';
-      }
-      EXPECT_TRUE(approx_eq(s, s2));
+      EXPECT_CEQ(s, s2);
       EXPECT_TRUE(unitaryp(U));
       EXPECT_TRUE(unitaryp(Vt));
-      EXPECT_TRUE(approx_eq(A, mmult(U, mmult(diag(s), Vt))));
+      EXPECT_CEQ(A, mmult(U, mmult(diag(s), Vt)));
     }
   }
 }
