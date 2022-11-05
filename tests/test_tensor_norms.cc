@@ -29,8 +29,6 @@ class NormTest : public TensorTest<T> {};
 using MyTypes = ::testing::Types<RTensor, CTensor>;
 TYPED_TEST_SUITE(NormTest, MyTypes);
 
-static constexpr double pi2over6 = 1.64493406684822643647241;
-
 //
 // NORM-0
 //
@@ -117,4 +115,4 @@ TYPED_TEST(NormTest, Norm2IsAccurateInLargeVectors) {
   std::cerr << "Step 3 " << toc() << '\n';
 }
 
-}  // namespace
+}  // namespace tensor_test
