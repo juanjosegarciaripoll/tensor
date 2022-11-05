@@ -209,6 +209,16 @@ class Tensor {
     return data_.at(dims_.column_major_position(i0, irest...));
   }
 
+  /**Return the element referenced by the given indices, in column major order.*/
+  inline elt_t &element_at(const Indices &i) noexcept {
+    return data_.at(dims_.column_major_position(i));
+  };
+
+  /**Return the element referenced by the given indices, in column major order.*/
+  inline const elt_t &element_at(const Indices &i) const noexcept {
+    return data_[dims_.column_major_position(i)];
+  };
+
   /**Destructively full this tensor with the given value. Consider using fill() instead.*/
   Tensor<elt_t> &fill_with(const elt_t &e) noexcept {
     std::fill(begin(), end(), e);

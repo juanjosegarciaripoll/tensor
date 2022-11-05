@@ -108,8 +108,20 @@ class Dimensions {
 
   template <typename... index_like>
   index column_major_position(index i0, index_like... in) const {
-    tensor_assert(rank() == sizeof...(in) + 1);
+    tensor_expects(rank() == sizeof...(in) + 1);
     return column_major_inner(0, i0, in...);
+  }
+
+  index column_major_position(const Indices &indices) const {
+    tensor_expects(rank() == indices.ssize());
+    index output = 0;
+    index factor = 1;
+    for (index i = 0; i < rank(); ++i) {
+      auto d = dimensions_[i];
+      output += factor * normalize_index(indices[i], d);
+      factor *= d;
+    }
+    return output;
   }
 
   template <typename... index_like>

@@ -345,6 +345,51 @@ TEST(RTensorTest, RTensorRealImag) {
   }
 }
 
+TEST(RTensorTest, AccessByIndicesObject) {
+  {
+    RTensor A1d{1.0, 2.0};
+    ASSERT_EQ(A1d.element_at(Indices{0}), 1.0);
+    ASSERT_EQ(A1d.element_at(Indices{1}), 2.0);
+    ASSERT_THROW_DEBUG(A1d.element_at(Indices{2}), out_of_bounds_index);
+  }
+  {
+    RTensor A2d{{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
+    ASSERT_EQ(A2d.element_at(Indices{0, 0}), 1.0);
+    ASSERT_EQ(A2d.element_at(Indices{0, 1}), 2.0);
+    ASSERT_EQ(A2d.element_at(Indices{0, 2}), 3.0);
+    ASSERT_EQ(A2d.element_at(Indices{1, 0}), 4.0);
+    ASSERT_EQ(A2d.element_at(Indices{1, 1}), 5.0);
+    ASSERT_EQ(A2d.element_at(Indices{1, 2}), 6.0);
+    ASSERT_THROW_DEBUG(A2d.element_at(Indices{2, 0}), out_of_bounds_index);
+  }
+}
+
+TEST(RTensorTest, AccessByNegativeIndicesObject) {
+  {
+    RTensor A1d{1.0, 2.0};
+    ASSERT_EQ(A1d.element_at(Indices{-2}), 1.0);
+    ASSERT_EQ(A1d.element_at(Indices{-1}), 2.0);
+    ASSERT_THROW_DEBUG(A1d.element_at(Indices{2}), out_of_bounds_index);
+  }
+  {
+    RTensor A2d{{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
+    ASSERT_EQ(A2d.element_at(Indices{0, -3}), 1.0);
+    ASSERT_EQ(A2d.element_at(Indices{0, -2}), 2.0);
+    ASSERT_EQ(A2d.element_at(Indices{0, -1}), 3.0);
+    ASSERT_EQ(A2d.element_at(Indices{-2, 0}), 1.0);
+    ASSERT_EQ(A2d.element_at(Indices{-2, 1}), 2.0);
+    ASSERT_EQ(A2d.element_at(Indices{-2, 2}), 3.0);
+    ASSERT_EQ(A2d.element_at(Indices{1, -3}), 4.0);
+    ASSERT_EQ(A2d.element_at(Indices{1, -2}), 5.0);
+    ASSERT_EQ(A2d.element_at(Indices{1, -1}), 6.0);
+    ASSERT_EQ(A2d.element_at(Indices{-1, 0}), 4.0);
+    ASSERT_EQ(A2d.element_at(Indices{-1, 1}), 5.0);
+    ASSERT_EQ(A2d.element_at(Indices{-1, 2}), 6.0);
+    ASSERT_THROW_DEBUG(A2d.element_at(Indices{-4, 0}), out_of_bounds_index);
+    ASSERT_THROW_DEBUG(A2d.element_at(Indices{0, -4}), out_of_bounds_index);
+  }
+}
+
 //////////////////////////////////////////////////////////////////////
 // COMPLEX SPECIALIZATIONS
 //
