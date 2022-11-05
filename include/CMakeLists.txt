@@ -7,7 +7,10 @@ file(GLOB TENSOR_HEADER_FILES
   tensor/tensor/*.h
   tensor/detail/*.h
   tensor/detail/*.hpp
+  tensor/sparse/*.h
   )
+
+target_sources(tensor PRIVATE ${TENSOR_HEADER_FILES})
 
 install(
   DIRECTORY ${PROJECT_SOURCE_DIR}/include/tensor
