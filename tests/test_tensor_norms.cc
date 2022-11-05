@@ -103,16 +103,6 @@ TYPED_TEST(NormTest, Norm2IsAccurateInLargeVectors) {
     const Tensor invP = this->one() / P;
     ASSERT_NEAR(norm2(invP), exact_norm2, tolerance);
   }
-  // Timed test - something is slow
-  tic();
-  const Tensor P = linspace(this->one() * double(steps), this->one(), steps);
-  std::cerr << "Step 1 " << toc() << '\n';
-  tic();
-  const Tensor invP = this->one() / P;
-  std::cerr << "Step 2 " << toc() << '\n';
-  tic();
-  ASSERT_NEAR(norm2(invP), exact_norm2, tolerance);
-  std::cerr << "Step 3 " << toc() << '\n';
 }
 
 }  // namespace tensor_test
