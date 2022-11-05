@@ -48,7 +48,7 @@ double sum(const RTensor &r);
 /**Return the mean of the elements in the tensor.*/
 double mean(const RTensor &r);
 /**Return the mean of the elements in the along the given dimension.*/
-RTensor mean(const RTensor &t, int ndx);
+extern template RTensor mean(const RTensor &t, index axis);
 
 double norm0(const RTensor &r);
 double scprod(const RTensor &a, const RTensor &b);

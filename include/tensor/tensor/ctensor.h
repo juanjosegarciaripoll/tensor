@@ -34,7 +34,7 @@ cdouble sum(const CTensor &r);
 /**Return the mean of the elements in the tensor.*/
 cdouble mean(const CTensor &r);
 /**Return the mean of the elements in the along the given dimension.*/
-CTensor mean(const CTensor &t, int ndx);
+extern template CTensor mean(const CTensor &t, index ndx);
 
 double norm0(const CTensor &r);
 cdouble scprod(const CTensor &a, const CTensor &b);

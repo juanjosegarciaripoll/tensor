@@ -14,6 +14,7 @@ target_sources(tensor
     tensor_common.cc
     tensor_conj.cc
     tensor_d.cc
+    tensor_accumulate.cc
     tensor_fold_d.cc
     tensor_fold_dz.cc
     tensor_fold_z.cc

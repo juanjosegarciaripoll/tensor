@@ -16,11 +16,11 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "tensor_mean_ndx.cc"
+#include <tensor/tensor/accumulate.h>
 
 namespace tensor {
 
-/* Compute the mean of the tensor T over dimension NDX. */
-CTensor mean(const CTensor &t, int ndx) { return ::do_mean(t, ndx); }
+/* Compute the mean of the tensor T over dimension AXIS. */
+template CTensor mean(const CTensor &t, index axis);
 
 }  // namespace tensor

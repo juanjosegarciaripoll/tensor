@@ -20,7 +20,27 @@
 
 namespace tensor {
 
-/* Compute the mean of the tensor T over dimension AXIS. */
-template RTensor mean(const RTensor &t, index axis);
+AccumulateDimensions prepare_accumulate(const Dimensions &dimensions,
+                                        index axis) {
+  axis = Dimensions::normalize_index(axis, dimensions.rank());
+  tensor_assert(axis < dimensions.rank() && axis >= 0);
+  SimpleVector<index> output_dimensions(dimensions.rank() - 1);
+  index left_size = 1;
+  for (index i = 0; i < axis; ++i) {
+    auto n = output_dimensions[i] = dimensions[i];
+    left_size *= n;
+  }
+  index size = dimensions[axis];
+  index right_size = 1;
+  for (index i = axis + 1; i < dimensions.rank(); ++i) {
+    auto n = output_dimensions[i - 1] = dimensions[i];
+    right_size *= n;
+  }
+  if (output_dimensions.size() == 0) {
+    return AccumulateDimensions{Dimensions{1}, left_size, size, right_size};
+  } else {
+    return AccumulateDimensions{output_dimensions, left_size, size, right_size};
+  }
+}
 
 }  // namespace tensor

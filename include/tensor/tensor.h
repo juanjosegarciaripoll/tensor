@@ -22,6 +22,7 @@
 
 #include <tensor/tensor/types.h>
 #include <tensor/tensor/operators.h>
+#include <tensor/tensor/accumulate.h>
 #include <tensor/tensor/rtensor.h>
 #include <tensor/tensor/ctensor.h>
 
