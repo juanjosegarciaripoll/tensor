@@ -219,7 +219,7 @@ class Tensor {
     return data_[dims_.column_major_position(i)];
   };
 
-  /**Destructively full this tensor with the given value. Consider using fill() instead.*/
+  /**Destructively fill this tensor with the given value. Consider using fill() instead.*/
   Tensor<elt_t> &fill_with(const elt_t &e) noexcept {
     std::fill(begin(), end(), e);
     return *this;
