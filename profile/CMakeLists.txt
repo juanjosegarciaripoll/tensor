@@ -6,6 +6,7 @@ if(TENSOR_BENCHMARK)
     OUTPUT ${PROJECT_BINARY_DIR}/profile.json
     COMMAND profile ${PROJECT_BINARY_DIR}/profile.json
     COMMENT "Run benchmarks"
+    DEPENDS profile
     VERBATIM
   )
 
