@@ -65,6 +65,7 @@ RTensor tanh(const RTensor &t);
 RTensor exp(const RTensor &t);
 RTensor sqrt(const RTensor &t);
 RTensor log(const RTensor &t);
+RTensor pow(const RTensor &base, double expt);
 
 RTensor round(const RTensor &t);
 

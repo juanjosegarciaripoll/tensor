@@ -68,4 +68,12 @@ CTensor tanh(const CTensor &t) {
   return ufunc1(t, [](const cdouble &z) { return std::tanh(z); });
 }
 
+CTensor pow(const CTensor &t, double expt) {
+  return ufunc1(t, [=](cdouble r) { return std::pow(r, expt); });
+}
+
+CTensor pow(const CTensor &t, cdouble expt) {
+  return ufunc1(t, [=](cdouble r) { return std::pow(r, expt); });
+}
+
 }  // namespace tensor

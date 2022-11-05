@@ -64,4 +64,8 @@ RTensor tanh(const RTensor &t) {
   return ufunc1(t, [](double r) { return std::tanh(r); });
 }
 
+RTensor pow(const RTensor &t, double expt) {
+  return ufunc1(t, [=](double r) { return std::pow(r, expt); });
+}
+
 }  // namespace tensor

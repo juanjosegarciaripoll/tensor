@@ -64,6 +64,8 @@ CTensor tanh(const CTensor &t);
 CTensor exp(const CTensor &t);
 CTensor sqrt(const CTensor &t);
 CTensor log(const CTensor &t);
+CTensor pow(const CTensor &base, double expt);
+CTensor pow(const CTensor &base, cdouble expt);
 
 CTensor diag(const CTensor &a, int which, index rows, index cols);
 CTensor diag(const CTensor &a, int which = 0);

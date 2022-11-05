@@ -106,6 +106,13 @@ TEST(TensorUnaryOperatorTest, RTensorTanh) {
   test_over_tensors<double>(test_unop<double, double, _tanh, tanh>, 6, 4, 30);
 }
 
+TEST(TensorUnaryOperatorTest, RTensorPow) {
+  EXPECT_CEQ(pow(RTensor{1.0, -1.0, 2.0, -2.0}, 2.0),
+             RTensor({1.0, 1.0, 4.0, 4.0}));
+  EXPECT_CEQ(pow(RTensor{1.0, -1.0, 2.0, -2.0}, -2.0),
+             RTensor({1.0, 1.0, 1 / 4.0, 1 / 4.0}));
+}
+
 //////////////////////////////////////////////////////////////////////
 // COMPLEX SPECIALIZATIONS
 //
@@ -136,6 +143,13 @@ TEST(TensorUnaryOperatorTest, CTensorCosh) {
 TEST(TensorUnaryOperatorTest, CTensorTanh) {
   test_over_tensors<cdouble>(test_unop<cdouble, cdouble, _tanh, tanh>, 6, 4,
                              30);
+}
+
+TEST(TensorUnaryOperatorTest, CTensorPow) {
+  EXPECT_CEQ(pow(CTensor{1.0, cdouble(0.0, 1.0), -2.0, cdouble(1.0, 2.0)}, 2),
+             CTensor({1.0, -1.0, 4.0, cdouble(-3.0, 4.0)}));
+  EXPECT_CEQ(pow(CTensor{1.0, cdouble(0.0, 1.0), -2.0, cdouble(1.0, 2.0)}, -2),
+             CTensor({1.0, -1.0, 1 / 4.0, 1.0 / cdouble(-3.0, 4.0)}));
 }
 
 }  // namespace tensor_test
