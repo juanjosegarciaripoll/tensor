@@ -51,9 +51,9 @@ class Range {
      negative or zero values.
    */
  public:
-  explicit Range(index position) : Range(position, position, 1) {
-    squeezed_ = true;
-  }
+  // NOLINTNEXTLINE(*-explicit-constructor)
+  // cppcheck-suppress noExplicitConstructor
+  Range(index position) : Range(position, position, 1) { squeezed_ = true; }
   Range(index first, index last) : Range(first, last, 1) {}
   Range(index first, index last, index step)
       : first_{first}, step_{step}, last_{last}, dimension_{-1} {
