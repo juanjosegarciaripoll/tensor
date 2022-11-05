@@ -33,7 +33,7 @@ namespace tensor {
     the clock or from other sources. */
 void rand_reseed();
 
-/** Explicitely sed the seed of the RNG. */
+/** Reseeds the random number generator with the given value. */
 void set_seed(unsigned long seed);
 
 #ifdef TENSOR_64BITS
