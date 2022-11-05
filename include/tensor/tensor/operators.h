@@ -421,6 +421,17 @@ bool all_equal(t1 a, const Tensor<t1> &b) {
                      [&](const t1 &b_value) { return b_value == a; });
 }
 
+template <typename e1, typename e2>
+auto pow(const Tensor<e1> &a, const Tensor<e2> &b) {
+  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  using e3 = typename std::common_type<e1, e2>::type;
+  tensor_assert(a.size() == b.size());
+  Tensor<e3> output(a.dimensions());
+  std::transform(a.begin(), a.end(), b.begin(), output.begin(),
+                 [](e1 x, e2 y) { return std::pow(x, y); });
+  return output;
+}
+
 }  // namespace tensor
 
 /* @} */

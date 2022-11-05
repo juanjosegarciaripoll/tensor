@@ -295,4 +295,18 @@ TEST(TensorBinopTest, CTensorDoubleBinopInPlace) {
       test_tensor_number_binop_in_place<cdouble, double, cdouble>);
 }
 
+TEST(TensorBinopTest, PowRTensorRTensor) {
+  EXPECT_CEQ(::tensor::pow(RTensor{1.0, -1.0, 2.0, -2.0},
+                           RTensor{2.0, -2.0, 3.0, -3.0}),
+             RTensor({1, 1, 8.0, -1 / 8.0}));
+}
+
+TEST(TensorBinopTest, PowCTensorRTensor) {
+  EXPECT_CEQ(::tensor::pow(CTensor{cdouble(0.0, 1.0), cdouble(0.0, 1.0),
+                                   cdouble(0.0, 2.0), cdouble(0.0, -2.0)},
+                           RTensor{-1.0, -2.0, 3.0, -3.0}),
+             CTensor({cdouble(0.0, -1.0), cdouble(-1.0, 0.0),
+                      cdouble(0.0, -8.0), cdouble(0.0, -1 / 8.0)}));
+}
+
 }  // namespace tensor_test
