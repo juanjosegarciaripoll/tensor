@@ -70,7 +70,7 @@ set(TENSOR_USE_LAPACK TRUE)
 if(TENSOR_BLAS STREQUAL MKL)
   tensor_find_dependency(
     NAME MKL
-    VAR tensor_blas_target
+    OUTVAR tensor_blas_target
     CONFIG_NAMES MKL
     IMPORT_TARGET MKL::MKL
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -83,7 +83,7 @@ endif()
 if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT cblas_found))
   tensor_find_dependency(
     NAME OpenBLAS
-    VAR tensor_blas_target
+    OUTVAR tensor_blas_target
     CONFIG_NAMES OpenBLAS
     IMPORT_TARGET OpenBLAS::OpenBLAS
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -93,7 +93,8 @@ if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT cblas_found))
   set(cblas_found TRUE)
   set(TENSOR_USE_OPENBLAS TRUE)
   set(HAVE_CBLAS_H TRUE)
-  tensor_openblas_requires_lapack(TARGET ${tensor_blas_target})
+  tensor_openblas_requires_lapack(TARGET ${tensor_blas_target}
+    OUTVAR OPENBLAS_REQUIRES_LAPACK)
   set(TENSOR_USE_LAPACK ${OPENBLAS_REQUIRES_LAPACK})
 else()
   message(FATAL_ERROR "TENSOR_BLAS must be one of MKL or OpenBLAS. Current value is \"${TENSOR_BLAS}\"")
@@ -101,7 +102,7 @@ endif()
 if(TENSOR_USE_LAPACK)
   tensor_find_dependency(
     NAME lapack
-    VAR tensor_lapack_target
+    OUTVAR tensor_lapack_target
     CONFIG_NAMES LAPACK
     IMPORT_TARGET LAPACK::LAPACK
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -114,7 +115,7 @@ endif()
 if(TENSOR_ARPACK)
   tensor_find_dependency(
     NAME arpack
-    VAR tensor_arpack_target
+    OUTVAR tensor_arpack_target
     CONFIG_NAMES arpackng arpack-ng ARPACK
     IMPORT_TARGET ARPACK::ARPACK
     DEPENDENCIES TENSOR_DEPENDENCIES
@@ -153,7 +154,7 @@ endif()
 if(TENSOR_FFTW)
   tensor_find_dependency(
     NAME fftw3
-    VAR tensor_fftw_target
+    OUTVAR tensor_fftw_target
     CONFIG_NAMES FFTW3
     DEPENDENCIES TENSOR_DEPENDENCIES
     IMPORT_TARGET FFTW3::fftw3
