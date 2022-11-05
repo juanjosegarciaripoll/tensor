@@ -244,7 +244,6 @@ if(TENSOR_TEST)
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     message(STATUS "Downloading googletest")
-    #FetchContent_MakeAvailable(googletest)
     FetchContent_GetProperties(googletest)
     if(NOT googletest_POPULATED)
       FetchContent_Populate(googletest)
