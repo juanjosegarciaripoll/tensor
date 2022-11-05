@@ -31,6 +31,8 @@ CTensor to_complex(const RTensor &r) {
 }
 
 CTensor to_complex(const RTensor &r, const RTensor &i) {
+  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  tensor_assert(r.size() == i.size());
   CTensor output(r.dimensions());
   RTensor::const_iterator ir = r.begin();
   RTensor::const_iterator ii = i.begin();

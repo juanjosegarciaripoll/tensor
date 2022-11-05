@@ -406,4 +406,29 @@ TEST(CTensorTest, CTensorRealImag) {
   }
 }
 
+TEST(CTensorTest, RTensorToComplex) {
+  RTensor A{1.0, 0.0, -2.0};
+  RTensor B{0.2, -0.1, 0.0};
+  {
+    const CTensor C = to_complex(A);
+    EXPECT_EQ(A.dimensions(), C.dimensions());
+    EXPECT_EQ(A[0], real(C[0]));
+    EXPECT_EQ(A[1], real(C[1]));
+    EXPECT_EQ(A[2], real(C[2]));
+    EXPECT_TRUE(std::all_of(C.begin(), C.end(),
+                            [](cdouble z) { return imag(z) == 0; }));
+  }
+  {
+    const CTensor C = to_complex(A, B);
+    EXPECT_EQ(A.dimensions(), C.dimensions());
+    EXPECT_EQ(A[0], real(C[0]));
+    EXPECT_EQ(A[1], real(C[1]));
+    EXPECT_EQ(A[2], real(C[2]));
+    EXPECT_EQ(B[0], imag(C[0]));
+    EXPECT_EQ(B[1], imag(C[1]));
+    EXPECT_EQ(B[2], imag(C[2]));
+  }
+  ASSERT_THROW_DEBUG(to_complex(RTensor{1.0}, RTensor{0.0, 2.0}),
+                     ::tensor::dimensions_mismatch);
+}
 }  // namespace tensor_test
