@@ -94,3 +94,49 @@ TEST(SDF, CTensor) {
   }
   std::remove("sdf_data_ctensor.dat");
 }
+
+TEST(SDF, CTensorVector) {
+  auto input = std::vector<CTensor>{CTensor::zeros(1), CTensor::random(13)};
+  std::string filename{"sdf_data_ctensorvec.dat"};
+  if (file_exists(filename)) {
+    delete_file(filename);
+  }
+
+  {
+    OutDataFile f(filename);
+    f.dump(input, "somevector");
+  }
+
+  {
+    InDataFile f(filename);
+    std::vector<CTensor> output;
+    f.load(&output, "somevector");
+    EXPECT_EQ(input.size(), output.size());
+    EXPECT_TRUE(all_equal(input.at(0), output.at(0)));
+    EXPECT_TRUE(all_equal(input.at(1), output.at(1)));
+  }
+  delete_file(filename);
+}
+
+TEST(SDF, RTensorVector) {
+  auto input = std::vector<RTensor>{RTensor::zeros(1), RTensor::random(13)};
+  std::string filename{"sdf_data_rtensorvec.dat"};
+  if (file_exists(filename)) {
+    delete_file(filename);
+  }
+
+  {
+    OutDataFile f(filename);
+    f.dump(input, "somevector");
+  }
+
+  {
+    InDataFile f(filename);
+    std::vector<RTensor> output;
+    f.load(&output, "somevector");
+    EXPECT_EQ(input.size(), output.size());
+    EXPECT_TRUE(all_equal(input.at(0), output.at(0)));
+    EXPECT_TRUE(all_equal(input.at(1), output.at(1)));
+  }
+  delete_file(filename);
+}

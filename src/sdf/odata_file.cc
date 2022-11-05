@@ -191,7 +191,7 @@ void OutDataFile::dump(const CTensor &t, const std::string &name) {
 }
 
 void OutDataFile::dump(const std::vector<RTensor> &t, const std::string &name) {
-  write_tag(name, TAG_CTENSOR_VECTOR);
+  write_tag(name, TAG_RTENSOR_VECTOR);
   write_raw(t.size());
   for (const auto &value : t) {
     dump(value);
