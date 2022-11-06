@@ -28,6 +28,9 @@ function configure () {
 		if [ "$do_clang_tidy" = yes ]; then
 			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_CLANG_TIDY=ON"
 		fi
+		if [ "$do_coverage" = yes ]; then
+			CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_COVERAGE=ON"
+		fi
         cmake -S"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake configuration failed
@@ -77,6 +80,14 @@ function check () {
     fi
 }
 
+function report_coverage() {
+	if [ "$do_coverage" = yes ]; then
+		cd "$builddir"
+		lcov --capture --directory . --output-file coverage.info
+		genhtml coverage.info --outdir html
+	fi
+}
+
 os=`uname -o`
 if [ -f /etc/os-release ]; then
    os=`(. /etc/os-release; echo $ID)`
@@ -103,6 +114,7 @@ do_sanitize=no
 do_analyze=no
 do_fftw=yes
 do_arpack=yes
+do_coverage=false
 for arg in $*; do
     case $arg in
 		--threads=*) threads=${arg:10};;
@@ -118,6 +130,7 @@ for arg in $*; do
 		--analyze) do_cppcheck=yes; do_clang_tidy=yes;;
 		--cppcheck) do_cppcheck=yes;;
 		--clang-tidy) do_clang_tidy=yes;;
+		--coverage) do_coverage=yes; CMAKE_BUILD_TYPE=Debug;;
         --all) do_clean=yes; do_configure=yes; do_build=yes; do_profile=yes; do_check=yes;;
         --debug) CMAKE_BUILD_TYPE=Debug;;
         --release) CMAKE_BUILD_TYPE=Release;;

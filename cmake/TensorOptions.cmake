@@ -5,19 +5,25 @@ option(TENSOR_CPPCHECK "Enable running cppcheck if found" OFF)
 option(WARNINGS_AS_ERRORS "Compilation and analysis warnings become errors" OFF)
 option(TENSOR_USE_PCH "Use precompiled headers" ON)
 option(TENSOR_ADD_SANITIZERS "Compile and link with address sanitizers if in Debug mode" OFF)
+option(TENSOR_COVERAGE "Add code coverage options to the library" OFF)
 
 # The variables are not for ordinary users, so we hide them
 mark_as_advanced(TENSOR_DEFAULT_WARNINGS
                  TENSOR_OPTIMIZED_BUILD
                  TENSOR_CLANG_TIDY
                  WARNINGS_AS_ERRORS
-                 TENSOR_ADD_SANITIZERS)
+                 TENSOR_ADD_SANITIZERS
+                 TENSOR_COVERAGE)
 
 function(make_tensor_options)
     add_library(tensor_options INTERFACE)
     if (TENSOR_OPTIMIZED_BUILD)
         if (CMAKE_BUILD_TYPE MATCHES "Rel")
             tensor_add_optimizations()
+        endif()
+        if(TENSOR_COVERAGE)
+            message(STATUS "Code coverage options disabled in release mode")
+            set(TENSOR_COVERAGE OFF)
         endif()
     endif()
 
@@ -37,6 +43,10 @@ function(make_tensor_options)
         tensor_add_sanitizers()
     endif()
 
+    if (TENSOR_COVERAGE)
+        tensor_add_coverage()
+    endif()
+
 	# Clang-tidy does not understand G++ precompiled headers
 	if (TENSOR_CLANG_TIDY)
 	    message(STATUS "CMAKE_CXX_COMPILER_ID=${CMAKE_CXX_COMPILER_ID}")
@@ -49,6 +59,18 @@ function(make_tensor_options)
         target_precompile_headers(tensor_options
             INTERFACE <algorithm> <cmath> <complex> <cstring> <functional>
                       <memory> <iostream> <string> <vector>)
+    endif()
+endfunction()
+
+function(tensor_add_coverage)
+    if(CMAKE_BUILD_TYPE MATCHES "Debug")
+        message(STATUS "Adding coverage options")
+        if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU")
+            target_compile_options(tensor_options INTERFACE --coverage)
+            target_link_options(tensor_options INTERFACE --coverage)
+        else()
+            message(STATUS "Unknown code coverage options for ${CMAKE_CXX_COMPILER_ID} C++ Compiler")
+        endif()
     endif()
 endfunction()
 
