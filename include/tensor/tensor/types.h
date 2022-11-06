@@ -281,6 +281,11 @@ class Tensor {
     return MutableTensorView<elt_t>(*this, RangeSpan(ranges));
   }
 
+  /**Creates a fresh new copy of this tensor, sharing memory with no other object.*/
+  Tensor<elt_t> copy() const {
+    return Tensor<elt_t>(dimensions(), data_.copy());
+  }
+
   //
   // Matrix operations
   //

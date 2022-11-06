@@ -122,6 +122,12 @@ class Vector {
   // Only for testing purposes
   difference_type ref_count() const noexcept { return data_.use_count(); }
 
+  Vector<elt_t> copy() const {
+    auto output = empty(size());
+    std::copy(cbegin(), cend(), output.begin());
+    return output;
+  }
+
  private:
   size_type size_{0};
   elt_t *base_{nullptr};
