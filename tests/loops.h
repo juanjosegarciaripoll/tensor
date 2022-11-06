@@ -73,8 +73,8 @@ template <typename elt_t1, typename elt_t2>
 }
 
 template <typename elt_t>
-::testing::AssertionResult simeq(const Tensor<elt_t> &a, const Tensor<elt_t> &b,
-                                 double epsilon = 2 * EPSILON) {
+::testing::AssertionResult test_matching_sizes(const Tensor<elt_t> &a,
+                                               const Tensor<elt_t> &b) {
   if (a.rank() != b.rank()) {
     return ::testing::AssertionFailure()
            << "tensors with different ranks, a.rank()=" << a.rank()
@@ -85,21 +85,47 @@ template <typename elt_t>
            << "dimension mismatch: " << a.dimensions() << " vs. "
            << b.dimensions() << '\n';
   }
-  for (typename Tensor<elt_t>::const_iterator ia = a.begin(), ib = b.begin();
-       ia != a.end(); ++ia, ++ib) {
-    double x = tensor::abs(*ia - *ib);
-    if (x > epsilon) {
-      return ::testing::AssertionFailure()
-             << "tensor elements " << *ia << " and " << *ib
-             << " not equal within tolerance " << epsilon;
-    }
-  }
   return ::testing::AssertionSuccess();
+}
+
+template <typename elt_t>
+::testing::AssertionResult test_all_equal(const Tensor<elt_t> &a,
+                                          const Tensor<elt_t> &b) {
+  if (const auto match = test_matching_sizes(a, b)) {
+    if (all_equal(a, b)) {
+      return ::testing::AssertionSuccess();
+    } else {
+      return ::testing::AssertionFailure() << "unequal tensors";
+    }
+  } else {
+    return match;
+  }
+}
+
+template <typename elt_t>
+::testing::AssertionResult simeq(const Tensor<elt_t> &a, const Tensor<elt_t> &b,
+                                 double epsilon = 2 * EPSILON) {
+  if (const auto match = test_matching_sizes(a, b)) {
+    for (typename Tensor<elt_t>::const_iterator ia = a.begin(), ib = b.begin();
+         ia != a.end(); ++ia, ++ib) {
+      double x = tensor::abs(*ia - *ib);
+      if (x > epsilon) {
+        return ::testing::AssertionFailure()
+               << "tensor elements " << *ia << " and " << *ib
+               << " not equal within tolerance " << epsilon;
+      }
+    }
+    return ::testing::AssertionSuccess();
+  } else {
+    return match;
+  }
 }
 
 #define EXPECT_CEQ(a, b) EXPECT_TRUE(simeq(a, b))
 #define EXPECT_CEQ3(a, b, c) EXPECT_TRUE(simeq(a, b, c))
 #define ASSERT_CEQ(a, b) ASSERT_TRUE(simeq(a, b))
+#define EXPECT_ALL_EQUAL(a, b) EXPECT_TRUE(test_all_equal(a, b))
+#define ASSERT_ALL_EQUAL(a, b) ASSERT_TRUE(test_all_equal(a, b))
 
 template <typename elt_t>
 ::testing::AssertionResult unitaryp(const Tensor<elt_t> &U,
