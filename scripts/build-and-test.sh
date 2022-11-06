@@ -31,6 +31,18 @@ function configure () {
         if [ "$do_coverage" = yes ]; then
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTENSOR_COVERAGE=ON"
         fi
+        if [ "$do_install" = yes ]; then
+            if [ -z "$CMAKE_INSTALL_PREFIX" ]; then
+                echo Option --install selected but no installation directory supplied
+                exit 1
+            fi
+            set -x
+            if [ ! -d "$CMAKE_INSTALL_PREFIX" ]; then
+                echo Option --install selected but installation directory missing
+                exit 1
+            fi
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_INSTALL_PREFIX='$CMAKE_INSTALL_PREFIX'"
+        fi
         cmake -S"$sourcedir" -B"$builddir" $CMAKE_FLAGS -G "$generator" 2>&1 | tee -a "$logfile"
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             echo CMake configuration failed
@@ -88,6 +100,12 @@ function report_coverage() {
     fi
 }
 
+function install_library() {
+    if [ "$do_install" = yes ]; then
+        cmake --install "$builddir"
+    fi
+}
+
 os=`uname -o`
 if [ -f /etc/os-release ]; then
    os=`(. /etc/os-release; echo $ID)`
@@ -133,7 +151,11 @@ for arg in $*; do
         --coverage) do_coverage=yes; CMAKE_BUILD_TYPE=Debug;;
         --all) do_clean=yes; do_configure=yes; do_build=yes; do_profile=yes; do_check=yes;;
         --debug) CMAKE_BUILD_TYPE=Debug;;
+        --install=*) do_install=yes
+            export CMAKE_INSTALL_PREFIX="${arg:10}"
+            echo Installing in "$CMAKE_INSTALL_PREFIX";;
         --release) CMAKE_BUILD_TYPE=Release;;
+        --*) echo Unknown option ${arg}; exit 1;;
         *) builddir=$arg;;
     esac
 done
@@ -141,10 +163,11 @@ logfile="$builddir/log"
 echo "Build directory $builddir"
 echo "Logging into $logfile"
 
-clean || exit -1
-configure || exit -1
-build || exit -1
-docs || exit -1
-check || exit -1
-profile || exit -1
-report_coverage || exit -1
+clean || exit 1
+configure || exit 1
+build || exit 1
+docs || exit 1
+check || exit 1
+profile || exit 1
+report_coverage || exit 1
+install_library || exit 1
