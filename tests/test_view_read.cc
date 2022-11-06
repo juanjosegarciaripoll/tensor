@@ -519,6 +519,20 @@ void test_range_extract3(Tensor<elt_t> &P) {
 // REAL SPECIALIZATIONS
 //
 
+TEST(SliceTest, ImplicitIndexConversionToRange) {
+  /*
+   * This function compiles only when the first argument of a slicing method being
+   * a range() forces the rest to be implicitely coerced to ranges.
+   */
+  RTensor aux{{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
+
+  RTensor aux2 = aux(range(0), Indices{0, 1, 2});
+  EXPECT_ALL_EQUAL(aux2, RTensor({1.0, 2.0, 3.0}));
+
+  RTensor aux3 = aux(_, 0);
+  EXPECT_ALL_EQUAL(aux3, RTensor({1.0, 4.0}));
+}
+
 TEST(SliceTest, SliceRTensor1DExtract) {
   test_over_fixed_rank_tensors<double>(test_range_extract1<double>, 1);
 }

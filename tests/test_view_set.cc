@@ -112,6 +112,26 @@ void test_full_size_set3(Tensor<elt_t> &P) {
 // REAL SPECIALIZATIONS
 //
 
+TEST(SliceSetTest, ImplicitCoercionToRange) {
+  /*
+   * This function compiles only when the first argument of a slicing method being
+   * a range() forces the rest to be implicitely coerced to ranges.
+   */
+  RTensor aux{{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
+  {
+    RTensor aux_copy = aux.copy();
+    aux_copy.at(range(0), Indices{0, 1, 2}) = RTensor{7, 8, 9};
+    EXPECT_ALL_EQUAL(aux_copy.copy(),
+                     RTensor({{7.0, 8.0, 9.0}, {4.0, 5.0, 6.0}}));
+  }
+  {
+    RTensor aux_copy = aux.copy();
+    aux_copy.at(_, range(0)) = RTensor({7.0, 8.0});
+    EXPECT_ALL_EQUAL(aux_copy.copy(),
+                     RTensor({{7.0, 2.0, 3.0}, {8.0, 5.0, 6.0}}));
+  }
+}
+
 TEST(SliceSetTest, SliceRTensor1DFullSet) {
   test_over_fixed_rank_tensors<double>(test_full_size_set1<double>, 1);
 }
