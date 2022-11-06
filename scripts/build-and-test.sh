@@ -147,3 +147,5 @@ build || exit -1
 docs || exit -1
 check || exit -1
 profile || exit -1
+report_coverage || exit -1
+
