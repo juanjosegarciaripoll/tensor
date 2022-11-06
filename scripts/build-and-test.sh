@@ -84,7 +84,7 @@ function report_coverage() {
     if [ "$do_coverage" = yes ]; then
         cd "$builddir"
         lcov --capture --directory . --output-file coverage.info
-        genhtml coverage.info --outdir html-coverage
+        genhtml coverage.info --output-directory html-coverage
     fi
 }
 
