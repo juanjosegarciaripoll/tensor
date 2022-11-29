@@ -31,7 +31,7 @@ namespace tensor {
    * \endcode
    */
 const Indices operator<<(const Indices &a, const Indices &b) {
-  Indices output(a.size() + b.size());
+  Indices output(a.ssize() + b.ssize());
   std::copy(a.cbegin(), a.cend(), output.begin());
   std::copy(b.cbegin(), b.cend(), output.begin() + a.size());
   return output;
