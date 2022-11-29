@@ -51,7 +51,7 @@ class Indices : public Vector<index> {
   // cppcheck-suppress noExplicitConstructor
   Indices(const std::initializer_list<other_elt> &l) : Vector<index>(l) {}
 
-  explicit Indices(size_t size) : Vector<index>(size) {}
+  explicit Indices(index_t size) : Vector<index>(static_cast<size_t>(size)) {}
 
   static const Indices range(index min, index max, index step = 1);
 };
