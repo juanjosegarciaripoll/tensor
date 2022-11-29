@@ -40,12 +40,7 @@ include(TensorOpenBLAS)
 #
 
 # Configuration options
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" ON)
-  set(TENSOR_OPTIMIZED_BUILD OFF)
-else()
-  option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" OFF)
-endif()
+option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" ON)
 option(TENSOR_FFTW "Enable support for FFTW" OFF)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
@@ -157,7 +152,7 @@ if(TENSOR_FFTW)
     OUTVAR tensor_fftw_target
     CONFIG_NAMES FFTW3
     DEPENDENCIES TENSOR_DEPENDENCIES
-    IMPORT_TARGET FFTW3::fftw3
+    IMPORT_TARGET FFTW3 #::fftw3
     PKGCONFIG_NAMES fftw3
   )
   set(TENSOR_USE_FFTW3 TRUE)
