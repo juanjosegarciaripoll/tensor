@@ -29,6 +29,7 @@ namespace tensor {
 using std::abs;
 
 using index = std::ptrdiff_t;
+using index_t = std::ptrdiff_t;
 
 //
 // REAL NUMBERS
