@@ -26,10 +26,9 @@ using namespace tensor;
 
 template <class Tensor>
 static Tensor solve_cgs(const LinearMap<Tensor> &A, const Tensor &b,
-                        const Tensor *x_start, tensor::index maxiter,
-                        double tol) {
+                        const Tensor *x_start, size_t maxiter, double tol) {
   if (maxiter == 0) {
-    maxiter = b.rows();
+    maxiter = static_cast<size_t>(b.rows());
   }
   if (tol <= 0) {
     tol = 1e-10;
@@ -39,7 +38,7 @@ static Tensor solve_cgs(const LinearMap<Tensor> &A, const Tensor &b,
   Tensor p = r;
   auto rsold = scprod(r, r);
   if (sqrt(abs(rsold)) > tol) {
-    while (maxiter-- >= 0) {
+    while (maxiter) {
       Tensor Ap = A(p);
       auto beta = scprod(p, Ap);
       if (abs(beta) < 1e-15 * abs(rsold)) {
@@ -54,6 +53,7 @@ static Tensor solve_cgs(const LinearMap<Tensor> &A, const Tensor &b,
       if (sqrt(abs(rsnew)) < tol) break;
       p = r + (rsnew / rsold) * p;
       rsold = rsnew;
+      --maxiter;
     }
   }
   return x;

@@ -31,7 +31,7 @@ namespace linalg {
      \ingroup Linalg
   */
 RTensor cgs(const LinearMap<RTensor> &f, const RTensor &b,
-            const RTensor *x_start, int maxiter, double tol) {
+            const RTensor *x_start, size_t maxiter, double tol) {
   return solve_cgs(f, b, x_start, maxiter, tol);
 }
 

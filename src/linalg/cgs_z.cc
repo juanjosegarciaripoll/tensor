@@ -29,7 +29,7 @@ namespace linalg {
      \ingroup Linalg
   */
 CTensor cgs(const CTensor &A, const CTensor &b, const CTensor *x_start,
-            int maxiter, double tol) {
+            size_t maxiter, double tol) {
   return cgs([&](const CTensor &x) { return mmult(A, x); }, b, x_start, maxiter,
              tol);
 }

@@ -51,26 +51,26 @@ CTensor solve_with_svd(const CTensor &A, const CTensor &B, double tol = 0.0);
 /**Solve a real linear system of equations by the conjugate gradient method. 'f'
  * is a linear map between tensors, acting similar to multiplication by a matrix.*/
 RTensor cgs(const LinearMap<RTensor> &f, const RTensor &b,
-            const RTensor *x_start = 0, int maxiter = 0, double tol = 0);
+            const RTensor *x_start = 0, size_t maxiter = 0, double tol = 0);
 
 /**Solve a real linear system of equations by the conjugate gradient method.  'f'
  * is a linear map between tensors, acting similar to multiplication by a matrix.*/
 CTensor cgs(const LinearMap<CTensor> &f, const CTensor &b,
-            const CTensor *x_start = 0, int maxiter = 0, double tol = 0);
+            const CTensor *x_start = 0, size_t maxiter = 0, double tol = 0);
 
 /**Solve a real linear system of equations by the conjugate gradient method.*/
 RTensor cgs(const RTensor &A, const RTensor &b, const RTensor *x_start = 0,
-            int maxiter = 0, double tol = 0);
+            size_t maxiter = 0, double tol = 0);
 /**Solve a real linear system of equations by the conjugate gradient method.*/
 CTensor cgs(const CTensor &A, const CTensor &b, const CTensor *x_start = 0,
-            int maxiter = 0, double tol = 0);
+            size_t maxiter = 0, double tol = 0);
 
 /**Solve a real linear system of equations by the conjugate gradient method.*/
 RTensor cgs(const RSparse &A, const RTensor &b, const RTensor *x_start = 0,
-            int maxiter = 0, double tol = 0);
+            size_t maxiter = 0, double tol = 0);
 /**Solve a real linear system of equations by the conjugate gradient method.*/
 CTensor cgs(const RSparse &A, const CTensor &b, const CTensor *x_start = 0,
-            int maxiter = 0, double tol = 0);
+            size_t maxiter = 0, double tol = 0);
 
 extern bool accurate_svd;
 

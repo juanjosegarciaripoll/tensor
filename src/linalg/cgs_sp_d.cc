@@ -29,7 +29,7 @@ namespace linalg {
      \ingroup Linalg
   */
 RTensor cgs(const RSparse &A, const RTensor &b, const RTensor *x_start,
-            int maxiter, double tol) {
+            size_t maxiter, double tol) {
   return cgs([&](const RTensor &x) { return mmult(A, x); }, b, x_start, maxiter,
              tol);
 }
