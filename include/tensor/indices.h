@@ -53,6 +53,11 @@ class Indices : public Vector<index> {
 
   explicit Indices(index_t size) : Vector<index>(static_cast<size_t>(size)) {}
 
+  explicit Indices(index_t size, index_t value)
+      : Vector<index>(static_cast<size_t>(size)) {
+    std::fill(begin(), end(), value);
+  }
+
   static const Indices range(index min, index max, index step = 1);
 };
 
