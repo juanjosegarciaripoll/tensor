@@ -18,9 +18,21 @@
 */
 #ifndef TENSOR_SPARSE_TYPES_H
 
+#include <vector>
 #include <tensor/tensor.h>
 
 namespace tensor {
+
+template <typename elt_t>
+struct SparseTriplet {
+  index_t row{0}, col{0};
+  elt_t value{0};
+  bool operator<(const SparseTriplet &other) const {
+    if (row < other.row) return true;
+    if (row == other.row) return col < other.col;
+    return false;
+  }
+};
 
 /**A sparse matrix. A sparse matrix is a compact representation of
      two-dimensional tensors that have a lot of zero elements. Our
@@ -39,13 +51,16 @@ class CSRMatrix {
   /**Build an empty matrix.*/
   CSRMatrix();
   /**Create a matrix with all elements set to zero.*/
-  CSRMatrix(index rows, index cols, index nonzero = 0);
+  CSRMatrix(index_t rows, index_t cols, index_t nonzero = 0);
+  /**Create a matrix from a collection of coordinates and values.*/
+  CSRMatrix(std::vector<SparseTriplet<elt>> coordinates, index_t rows = 0,
+            index_t columns = 0);
   /**Create a sparse matrix from the coordinates and values. */
   CSRMatrix(const Indices &row_indices, const Indices &column_indices,
-            const Tensor<elt_t> &data, index rows = 0, index columns = 0);
+            const Tensor<elt_t> &data, index_t rows = 0, index_t columns = 0);
   /* Create a sparse matrix from its internal representation. */
-  CSRMatrix(const Indices &dims, const Indices &row_start,
-            const Indices &column, const Tensor<elt_t> &data);
+  CSRMatrix(Indices dims, Indices row_start, Indices column,
+            Tensor<elt_t> data);
   /**Convert a tensor to sparse form.*/
   explicit CSRMatrix(const Tensor<elt_t> &tensor);
   /**Copy constructor.*/
@@ -65,21 +80,22 @@ class CSRMatrix {
         row_start_(other.priv_row_start()),
         column_(other.priv_column()),
         data_(other.priv_data()) {}
+  ~CSRMatrix() = default;
 
   /**Return an element of the sparse matrix.*/
-  elt_t operator()(index row, index col) const;
+  elt_t operator()(index_t row, index_t col) const;
 
   /**Return CSRMatrix matrix dimensions.*/
   const Dimensions &dimensions() const { return dims_; }
   /**Length of a given CSRMatrix matrix index.*/
-  index dimension(int which) const;
+  index_t dimension(int which) const;
   /**Number of rows.*/
-  index rows() const { return dims_[0]; }
+  index_t rows() const { return dims_[0]; }
   /**Number of columns*/
-  index columns() const { return dims_[1]; }
+  index_t columns() const { return dims_[1]; }
   /**Number of nonzero elements.*/
-  index length() const {
-    index r = rows();
+  index_t length() const {
+    index_t r = rows();
     return r ? row_start_[r] : 0;
   }
 
@@ -87,11 +103,11 @@ class CSRMatrix {
   bool is_empty() const { return (rows() == 0) || (columns() == 0); }
 
   /**Identity matrix in sparse form.*/
-  static CSRMatrix<elt_t> eye(index rows, index columns);
+  static CSRMatrix<elt_t> eye(index_t rows, index_t columns);
   /**Identity matrix in sparse form.*/
-  static CSRMatrix<elt_t> eye(index rows) { return eye(rows, rows); }
+  static CSRMatrix<elt_t> eye(index_t rows) { return eye(rows, rows); }
   /**Return a random sparse matrix.*/
-  static CSRMatrix<elt_t> random(index rows, index columns,
+  static CSRMatrix<elt_t> random(index_t rows, index_t columns,
                                  double density = 0.2);
 
   template <typename t>
@@ -111,6 +127,12 @@ class CSRMatrix {
   Indices column_;
   /** The single data entries. */
   Tensor<elt_t> data_;
+
+  static std::vector<SparseTriplet<elt_t>> make_sparse_triplets(
+      const Indices &rows, const Indices &cols, const Tensor<elt_t> &data);
+
+  static CSRMatrix make_sparse(std::vector<SparseTriplet<elt_t>> sorted_data,
+                               index nrows, index ncols);
 };
 
 template <typename elt_t>

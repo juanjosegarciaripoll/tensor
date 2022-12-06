@@ -58,7 +58,7 @@ static inline Tensor<elt_t> do_mmult(const Tensor<elt_t> &m1,
                                      const Sparse<elt_t> &m2) {
   index N = m1.rank();
   index i_len = 1;
-  Indices dims(static_cast<size_t>(N));
+  Indices dims(N);
   for (int k = 0; k < N - 1; k++) {
     dims.at(k) = m1.dimension(k);
     i_len *= dims[k];

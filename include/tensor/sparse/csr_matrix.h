@@ -31,15 +31,6 @@ namespace tensor {
 // CONSTRUCTORS
 //
 
-static inline size_t safe_size(index nonzero, index rows, index cols) {
-  /* The product rows*cols might overflow the word size of this machine */
-  if (rows == 0 || cols == 0) {
-    return 0;
-  }
-  tensor_assert((nonzero / rows) <= cols);
-  return safe_size_t(nonzero);
-}
-
 template <typename elt_t>
 CSRMatrix<elt_t>::CSRMatrix()
     : dims_{0, 0}, row_start_({0}), column_(0), data_{Vector<elt_t>()} {}
@@ -47,70 +38,69 @@ CSRMatrix<elt_t>::CSRMatrix()
 template <typename elt_t>
 CSRMatrix<elt_t>::CSRMatrix(index rows, index cols, index nonzero)
     : dims_{rows, cols},
-      row_start_(safe_size_t(rows + 1)),
-      column_(safe_size(nonzero, rows, cols)),
-      data_(Vector<elt_t>(safe_size(nonzero, rows, cols))) {
+      row_start_(static_cast<index_t>(safe_size_t(rows + 1))),
+      column_(static_cast<index_t>(safe_size_t(nonzero))),
+      data_(Vector<elt_t>(column_.size())) {
   std::fill(row_start_.begin(), row_start_.end(), 0);
 }
 
 template <typename elt_t>
-struct sparse_triplet {
-  index row, col;
-  elt_t value;
-  sparse_triplet(){};
-  sparse_triplet(index r, index c, elt_t v) : row(r), col(c), value(v) {}
-  bool operator<(const sparse_triplet &other) const {
-    if (row < other.row) return 1;
-    if (row == other.row) return col < other.col;
-    return 0;
-  }
-};
-
-template <typename elt_t>
-CSRMatrix<elt_t>::CSRMatrix(const Indices &dims, const Indices &row_start,
-                            const Indices &column, const Tensor<elt_t> &data)
-    : dims_(dims), row_start_(row_start), column_(column), data_(data) {
+CSRMatrix<elt_t>::CSRMatrix(Indices dims, Indices row_start, Indices column,
+                            Tensor<elt_t> data)
+    : dims_(std::move(dims)),
+      row_start_(std::move(row_start)),
+      column_(std::move(column)),
+      data_(std::move(data)) {
   tensor_assert(row_start.ssize() == dims[0] + 1);
 }
 
 template <typename elt_t>
-CSRMatrix<elt_t>::CSRMatrix(const Indices &rows, const Indices &cols,
-                            const Tensor<elt_t> &data, index nrows, index ncols)
-    : CSRMatrix(make_sparse(rows, cols, data, nrows, ncols)) {}
+CSRMatrix<elt_t>::CSRMatrix(const Indices &row_indices,
+                            const Indices &column_indices,
+                            const Tensor<elt_t> &data, index rows,
+                            index columns)
+    : CSRMatrix(
+          make_sparse(make_sparse_triplets(row_indices, column_indices, data),
+                      rows, columns)) {}
 
 template <typename elt_t>
-CSRMatrix<elt_t> make_sparse(const Indices &rows, const Indices &cols,
-                             const Tensor<elt_t> &data, index nrows,
-                             index ncols) {
-  index i, j, last_row, last_col, l = rows.ssize();
+CSRMatrix<elt_t>::CSRMatrix(std::vector<SparseTriplet<elt_t>> coordinates,
+                            index_t rows, index_t columns)
+    : CSRMatrix(make_sparse(coordinates, rows, columns)) {}
+
+template <typename elt_t>
+std::vector<SparseTriplet<elt_t>> CSRMatrix<elt_t>::make_sparse_triplets(
+    const Indices &rows, const Indices &cols, const Tensor<elt_t> &data) {
+  index l = rows.ssize();
   tensor_assert(cols.ssize() == l);
   tensor_assert(data.ssize() == l);
-
-  /* Organize data in sparse_triplets (row,column,value), sorted in the
-     * same order in which we store data in CSRMatrix
-     */
-  std::vector<sparse_triplet<elt_t> > sorted_data;
-  sorted_data.reserve(safe_size_t(l));
-  for (i = 0; i < l; i++) {
-    index r = rows[i];
-    index c = cols[i];
-    nrows = std::max(nrows, r);
-    ncols = std::max(ncols, c);
-    if (data[i] != number_zero<elt_t>()) {
-      sorted_data.push_back(sparse_triplet<elt_t>(r, c, data[i]));
+  std::vector<SparseTriplet<elt_t>> output;
+  output.reserve(static_cast<size_t>(l));
+  for (index_t i = 0; i < l; ++i) {
+    auto d = data[i];
+    if (d != number_zero<elt_t>()) {
+      output.emplace_back(SparseTriplet<elt_t>{rows[i], cols[i], d});
     }
   }
-  std::sort(sorted_data.begin(), sorted_data.end());
-  auto row_start_ = Indices(static_cast<size_t>(nrows) + 1);
-  auto column_ = Indices(sorted_data.size());
-  l = column_.ssize();
+  return output;
+}
+
+template <typename elt_t>
+CSRMatrix<elt_t> CSRMatrix<elt_t>::make_sparse(
+    std::vector<SparseTriplet<elt_t>> sorted_data, index nrows, index ncols) {
+  if (sorted_data.size()) {
+    std::sort(sorted_data.begin(), sorted_data.end());
+    nrows = std::max(nrows, sorted_data.back().row);
+  }
+
+  auto row_start_ = Indices(nrows + 1);
+  auto column_ = Indices(ssize(sorted_data));
+  index_t l = column_.ssize();
   auto data_ = Tensor<elt_t>::empty(l);
 
-  /* Fill in the CSRMatrix structure.
-     */
   std::fill(row_start_.begin(), row_start_.end(), 0);
-  for (last_col = 0, last_row = -1, j = i = 0; i < l; i++) {
-    const sparse_triplet<elt_t> &d = sorted_data[static_cast<size_t>(i)];
+  index_t j = 0, last_row = -1, last_col = 0;
+  for (const auto &d : sorted_data) {
     if (d.row == last_row) {
       if (d.col == last_col) continue;
     } else {
@@ -125,6 +115,7 @@ CSRMatrix<elt_t> make_sparse(const Indices &rows, const Indices &cols,
   while (last_row < nrows) {
     row_start_.at(++last_row) = j;
   }
+  ncols = std::max(ncols, *std::max_element(column_.begin(), column_.end()));
   return CSRMatrix<elt_t>(Dimensions{nrows, ncols}, row_start_, column_, data_);
 }
 
@@ -143,12 +134,9 @@ static index number_of_nonzero(const Tensor<elt_t> &data) {
 template <typename elt_t>
 CSRMatrix<elt_t>::CSRMatrix(const Tensor<elt_t> &t)
     : dims_(t.dimensions()),
-      row_start_(static_cast<size_t>(t.rows()) + 1),
-      column_(),
-      data_() {
-  column_ = Indices(static_cast<size_t>(number_of_nonzero<elt_t>(t)));
-  data_ = Tensor<elt_t>::empty(column_.size());
-
+      row_start_(t.rows() + 1),
+      column_(number_of_nonzero<elt_t>(t)),
+      data_(Tensor<elt_t>::empty(column_.size())) {
   index nrows = rows();
   index ncols = columns();
 
@@ -206,7 +194,7 @@ CSRMatrix<elt_t> CSRMatrix<elt_t>::eye(index rows, index columns) {
   index nel = std::min(rows, columns);
   auto data = Tensor<elt_t>::empty(safe_size_t(nel));
   std::fill(data.begin(), data.end(), number_one<elt_t>());
-  Indices row_start(safe_size_t(rows) + 1);
+  Indices row_start(static_cast<index_t>(safe_size_t(rows + 1)));
   for (index i = 0; i <= rows; i++) {
     row_start.at(i) = std::min(i, nel);
   }
