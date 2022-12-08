@@ -91,14 +91,17 @@ template <typename elt_t>
 template <typename elt_t>
 ::testing::AssertionResult test_all_equal(const Tensor<elt_t> &a,
                                           const Tensor<elt_t> &b) {
-  if (const auto match = test_matching_sizes(a, b)) {
+  if (test_matching_sizes(a, b)) {
     if (all_equal(a, b)) {
       return ::testing::AssertionSuccess();
     } else {
-      return ::testing::AssertionFailure() << "unequal tensors";
+      return ::testing::AssertionFailure()
+             << "different tensors:\na=" << a << " vs\nb=" << b << '\n';
     }
   } else {
-    return match;
+    return ::testing::AssertionFailure()
+           << "tensors of unequal size:\na.dimensions()=" << a.dimensions()
+           << " vs\nb.dimensions()=" << b.dimensions() << '\n';
   }
 }
 
