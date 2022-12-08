@@ -88,10 +88,11 @@ std::vector<SparseTriplet<elt_t>> CSRMatrix<elt_t>::make_sparse_triplets(
 template <typename elt_t>
 CSRMatrix<elt_t> CSRMatrix<elt_t>::make_sparse(
     std::vector<SparseTriplet<elt_t>> sorted_data, index nrows, index ncols) {
-  if (sorted_data.size()) {
-    std::sort(sorted_data.begin(), sorted_data.end());
-    nrows = std::max(nrows, sorted_data.back().row);
+  if (sorted_data.size()==0) {
+	return CSRMatrix<elt_t>(nrows, ncols, 0);
   }
+  std::sort(sorted_data.begin(), sorted_data.end());
+  nrows = std::max(nrows, sorted_data.back().row);
 
   auto row_start_ = Indices(nrows + 1);
   auto column_ = Indices(ssize(sorted_data));

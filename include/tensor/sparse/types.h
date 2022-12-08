@@ -19,6 +19,7 @@
 #ifndef TENSOR_SPARSE_TYPES_H
 
 #include <vector>
+#include <tuple>
 #include <tensor/tensor.h>
 
 namespace tensor {
@@ -34,6 +35,18 @@ struct SparseTriplet {
   }
 };
 
+inline std::tuple<index_t, index_t> guess_diagonal_matrix_dimensions(
+    index_t max_diagonal_size, const Indices &diagonals) {
+  index_t rows = max_diagonal_size, columns = max_diagonal_size;
+  for (auto diagonal : diagonals) {
+    if (diagonal > 0)
+      columns = std::max(columns, max_diagonal_size + diagonal);
+    else
+      rows = std::max(rows, max_diagonal_size - diagonal);
+  }
+  return {rows, columns};
+}
+
 /**A sparse matrix. A sparse matrix is a compact representation of
      two-dimensional tensors that have a lot of zero elements. Our
      implementation behaves much like Matlab's sparse matrices, in the sense
@@ -47,6 +60,7 @@ class CSRMatrix {
  public:
   using elt_t = elt;
   using tensor = Tensor<elt>;
+  using triplet_t = SparseTriplet<elt>;
 
   /**Build an empty matrix.*/
   CSRMatrix();
@@ -112,6 +126,37 @@ class CSRMatrix {
 
   template <typename t>
   friend const Tensor<t> full(const CSRMatrix<t> &s);
+
+  static CSRMatrix diag(const RTensor &values, Indices which, index_t rows = 0,
+                        index_t columns = 0) {
+    std::vector<triplet_t> triplets;
+    triplets.reserve(values.size());
+    tensor_assert(values.rank() == 2);
+    tensor_assert(values.rows() == which.ssize());
+    if (rows == 0 && columns == 0) {
+      auto dims = guess_diagonal_matrix_dimensions(values.columns(), which);
+      rows = std::get<0>(dims);
+      columns = std::get<1>(dims);
+    }
+    for (index_t row = 0; row < values.rows(); ++row) {
+      index_t diagonal = which[row];
+      for (index_t column = 0; column < values.columns(); ++column) {
+        index_t actual_row = diagonal > 0 ? column : column - diagonal;
+        index_t actual_column = diagonal > 0 ? column + diagonal : column;
+        if (actual_row >= rows || actual_column >= columns) break;
+        triplets.emplace_back(
+            triplet_t{actual_row, actual_column, values(row, column)});
+      }
+    }
+    return CSRMatrix(triplets, rows, columns);
+  }
+
+  static CSRMatrix diag(const RTensor &values, index_t which, index_t rows = 0,
+                        index_t columns = 0) {
+    tensor_assert(values.rank() == 1);
+    return diag(reshape(values, 1, values.ssize()), Indices{which}, rows,
+                columns);
+  }
 
   const Dimensions &priv_dims() const { return dims_; }
   const Indices &priv_row_start() const { return row_start_; }
