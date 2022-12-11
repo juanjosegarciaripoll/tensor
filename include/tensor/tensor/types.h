@@ -353,7 +353,7 @@ class Tensor {
   index ref_count() const noexcept { return data_.ref_count(); }
 
   /**Take a diagonal from a tensor.*/
-  const Tensor<elt_t> diag(int which = 0, int ndx1 = 0, int ndx2 = -1) {
+  Tensor<elt_t> diag(int which = 0, int ndx1 = 0, int ndx2 = -1) const {
     return take_diag(*this, which, ndx1, ndx2);
   }
 
