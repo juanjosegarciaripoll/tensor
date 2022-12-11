@@ -33,6 +33,8 @@ struct SparseTriplet {
     if (row == other.row) return col < other.col;
     return false;
   }
+  SparseTriplet(index_t a_row, index_t a_column, elt_t a_value)
+      : row{a_row}, col{a_column}, value{a_value} {}
 };
 
 inline std::tuple<index_t, index_t> guess_diagonal_matrix_dimensions(
@@ -61,14 +63,14 @@ class CSRMatrix {
   using elt_t = elt;
   using tensor = Tensor<elt>;
   using triplet_t = SparseTriplet<elt>;
+  using coordinates_t = std::vector<triplet_t>;
 
   /**Build an empty matrix.*/
   CSRMatrix();
   /**Create a matrix with all elements set to zero.*/
   CSRMatrix(index_t rows, index_t cols, index_t nonzero = 0);
   /**Create a matrix from a collection of coordinates and values.*/
-  CSRMatrix(std::vector<SparseTriplet<elt>> coordinates, index_t rows = 0,
-            index_t columns = 0);
+  CSRMatrix(coordinates_t coordinates, index_t rows = 0, index_t columns = 0);
   /**Create a sparse matrix from the coordinates and values. */
   CSRMatrix(const Indices &row_indices, const Indices &column_indices,
             const Tensor<elt_t> &data, index_t rows = 0, index_t columns = 0);
@@ -129,7 +131,7 @@ class CSRMatrix {
 
   static CSRMatrix diag(const RTensor &values, Indices which, index_t rows = 0,
                         index_t columns = 0) {
-    std::vector<triplet_t> triplets;
+    coordinates_t triplets;
     triplets.reserve(values.size());
     tensor_assert(values.rank() == 2);
     tensor_assert(values.rows() == which.ssize());
@@ -144,8 +146,7 @@ class CSRMatrix {
         index_t actual_row = diagonal > 0 ? column : column - diagonal;
         index_t actual_column = diagonal > 0 ? column + diagonal : column;
         if (actual_row >= rows || actual_column >= columns) break;
-        triplets.emplace_back(
-            triplet_t{actual_row, actual_column, values(row, column)});
+        triplets.emplace_back(actual_row, actual_column, values(row, column));
       }
     }
     return CSRMatrix(triplets, rows, columns);
@@ -173,11 +174,12 @@ class CSRMatrix {
   /** The single data entries. */
   Tensor<elt_t> data_;
 
-  static std::vector<SparseTriplet<elt_t>> make_sparse_triplets(
-      const Indices &rows, const Indices &cols, const Tensor<elt_t> &data);
+  static coordinates_t make_sparse_triplets(const Indices &rows,
+                                            const Indices &cols,
+                                            const Tensor<elt_t> &data);
 
-  static CSRMatrix make_sparse(std::vector<SparseTriplet<elt_t>> sorted_data,
-                               index nrows, index ncols);
+  static CSRMatrix make_sparse(coordinates_t sorted_data, index nrows,
+                               index ncols);
 };
 
 template <typename elt_t>

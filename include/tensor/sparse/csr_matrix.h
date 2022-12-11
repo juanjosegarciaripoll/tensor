@@ -79,7 +79,7 @@ std::vector<SparseTriplet<elt_t>> CSRMatrix<elt_t>::make_sparse_triplets(
   for (index_t i = 0; i < l; ++i) {
     auto d = data[i];
     if (d != number_zero<elt_t>()) {
-      output.emplace_back(SparseTriplet<elt_t>{rows[i], cols[i], d});
+      output.emplace_back(rows[i], cols[i], d);
     }
   }
   return output;
