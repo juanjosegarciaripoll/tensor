@@ -22,7 +22,6 @@
 
 #include <algorithm>
 #include <memory>
-#include <cstring>
 #include <tensor/numbers.h>
 #include <tensor/exceptions.h>
 
