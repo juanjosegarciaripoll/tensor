@@ -21,6 +21,7 @@
 #include <numeric>
 #include <tensor/jobs.h>
 #include <fstream>
+#include <cstring>
 
 using namespace jobs;
 
