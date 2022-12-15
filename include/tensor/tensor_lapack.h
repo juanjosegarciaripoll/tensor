@@ -61,6 +61,12 @@ void F77NAME(dsyev)(char *jobz, char *uplo, __CLPK_integer *n,
                     __CLPK_doublereal *a, __CLPK_integer *lda,
                     __CLPK_doublereal *w, __CLPK_doublereal *work,
                     __CLPK_integer *lwork, __CLPK_integer *info);
+void F77NAME(dsygv)(__CLPK_integer *itype, char *jobz, char *uplo,
+                    __CLPK_integer *n, __CLPK_doublereal *a,
+                    __CLPK_integer *lda, __CLPK_doublereal *b,
+                    __CLPK_integer *ldb, __CLPK_doublereal *w,
+                    __CLPK_doublereal *work, __CLPK_integer *lwork,
+                    __CLPK_integer *info);
 int F77NAME(zgeev)(char *jobvl, char *jobvr, __CLPK_integer *n,
                    __CLPK_doublecomplex *a, __CLPK_integer *lda,
                    __CLPK_doublecomplex *w, __CLPK_doublecomplex *vl,
@@ -87,6 +93,12 @@ void F77NAME(zheev)(char *jobz, char *uplo, __CLPK_integer *n,
                     __CLPK_doublereal *w, __CLPK_doublecomplex *work,
                     __CLPK_integer *lwork, __CLPK_doublereal *rwork,
                     __CLPK_integer *info);
+void F77NAME(zhegv)(__CLPK_integer *itype, char *jobz, char *uplo,
+                    __CLPK_integer *n, __CLPK_doublecomplex *a,
+                    __CLPK_integer *lda, __CLPK_doublecomplex *b,
+                    __CLPK_integer *ldb, __CLPK_doublereal *w,
+                    __CLPK_doublecomplex *work, __CLPK_integer *lwork,
+                    __CLPK_doublereal *rwork, __CLPK_integer *info);
 }
 #endif
 

@@ -129,6 +129,8 @@ template <typename elt_t>
 #define ASSERT_CEQ(a, b) ASSERT_TRUE(simeq(a, b))
 #define EXPECT_ALL_EQUAL(a, b) EXPECT_TRUE(test_all_equal(a, b))
 #define ASSERT_ALL_EQUAL(a, b) ASSERT_TRUE(test_all_equal(a, b))
+#define EXPECT_ALL_NEAR(a, b, c) EXPECT_TRUE(simeq(a, b, c))
+#define ASSERT_ALL_NEAR(a, b, c) ASSERT_TRUE(simeq(a, b, c))
 
 template <typename elt_t>
 ::testing::AssertionResult unitaryp(const Tensor<elt_t> &U,

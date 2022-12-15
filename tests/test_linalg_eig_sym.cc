@@ -49,25 +49,66 @@ void test_eye_eig_sym(int n) {
 
 template <typename elt_t>
 void test_random_eig_sym(int n) {
+  if (n > 0) {
+    for (int times = 10; times; --times) {
+      Tensor<elt_t> R, A = Tensor<elt_t>::random(n, n);
+      A = mmult(A, adjoint(A)) / norm0(A);
+      RTensor s = linalg::eig_sym(A, &R);
+      Tensor<elt_t> L = adjoint(R);
+      RTensor dS = diag(s);
+      constexpr double epsilon = 1e-12;
+      EXPECT_TRUE(norm0(abs(s) - s) < 1e-13);
+      EXPECT_TRUE(unitaryp(R, 1e-10));
+      EXPECT_CEQ3(mmult(A, R), mmult(R, dS), epsilon);
+      EXPECT_CEQ3(mmult(L, A), mmult(dS, L), epsilon);
+      EXPECT_CEQ3(A, mmult(R, mmult(dS, L)), epsilon);
+    }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////
+// GENERALIZED EIGENVALUE DECOMPOSITIONS
+//
+
+template <typename elt_t>
+void test_eye_eig_sym_gen(int n) {
   if (n == 0) {
 #ifdef TENSOR_DEBUG
-    ASSERT_THROW_DEBUG(linalg::eig_sym(Tensor<elt_t>::eye(n, n)),
-                       ::tensor::invalid_assertion);
+    ASSERT_THROW_DEBUG(
+        linalg::eig_sym(Tensor<elt_t>::eye(n, n), Tensor<elt_t>::eye(n, n)),
+        ::tensor::invalid_assertion);
 #endif
     return;
   }
-  for (int times = 10; times; --times) {
-    Tensor<elt_t> R, A = Tensor<elt_t>::random(n, n);
-    A = mmult(A, adjoint(A)) / norm0(A);
-    RTensor s = linalg::eig_sym(A, &R);
-    Tensor<elt_t> L = adjoint(R);
-    RTensor dS = diag(s);
-    constexpr double epsilon = 1e-12;
-    EXPECT_TRUE(norm0(abs(s) - s) < 1e-13);
-    EXPECT_TRUE(unitaryp(R, 1e-10));
-    EXPECT_CEQ3(mmult(A, R), mmult(R, dS), epsilon);
-    EXPECT_CEQ3(mmult(L, A), mmult(dS, L), epsilon);
-    EXPECT_CEQ3(A, mmult(R, mmult(dS, L)), epsilon);
+  ASSERT_THROW_DEBUG(linalg::eig_sym(Tensor<elt_t>::eye(n, n),
+                                     Tensor<elt_t>::eye(n + 1, n + 1)),
+                     ::tensor::invalid_assertion);
+  auto Inn = Tensor<elt_t>::eye(n, n);
+  RTensor d = linspace(n, 1.0, n);
+  auto Bnn = diag(d);
+  Tensor<elt_t> U;
+  RTensor s = linalg::eig_sym(Inn, Bnn, &U);
+  EXPECT_ALL_NEAR(diag(elt_t(1.0) / sqrt(d)), U, EPSILON);
+  EXPECT_ALL_NEAR(s, 1.0 / d, EPSILON);
+}
+
+template <typename elt_t>
+void test_random_eig_sym_gen(int n) {
+  if (n > 0) {
+    for (int times = 10; times; --times) {
+      Tensor<elt_t> A = Tensor<elt_t>::random(n, n), B = Tensor<elt_t>::eye(n),
+                    R;
+      A = mmult(A, adjoint(A)) / norm0(A);
+      RTensor s = linalg::eig_sym(A, B, &R);
+      Tensor<elt_t> L = adjoint(R);
+      RTensor dS = diag(s);
+      constexpr double epsilon = 1e-12;
+      EXPECT_TRUE(norm0(abs(s) - s) < 1e-13);
+      EXPECT_TRUE(unitaryp(R, 1e-10));
+      EXPECT_ALL_NEAR(mmult(A, R), mmult(R, dS), epsilon);
+      EXPECT_ALL_NEAR(mmult(L, A), mmult(dS, L), epsilon);
+      EXPECT_ALL_NEAR(A, mmult(R, mmult(dS, L)), epsilon);
+    }
   }
 }
 
@@ -75,24 +116,42 @@ void test_random_eig_sym(int n) {
 // REAL SPECIALIZATIONS
 //
 
-TEST(RMatrixTest, EyeEigTest) {
-  test_over_integers(0, 32, test_eye_eig_sym<double>);
+constexpr int max_tensor_size = 3;
+
+TEST(RMatrixTest, EyeEigSymTest) {
+  test_over_integers(0, max_tensor_size, test_eye_eig_sym<double>);
 }
 
-TEST(RMatrixTest, RandomEigTest) {
-  test_over_integers(0, 32, test_random_eig_sym<double>);
+TEST(RMatrixTest, RandomEigSymTest) {
+  test_over_integers(0, max_tensor_size, test_random_eig_sym<double>);
+}
+
+TEST(RMatrixTest, EyeEigSymGenTest) {
+  test_over_integers(0, max_tensor_size, test_eye_eig_sym_gen<double>);
+}
+
+TEST(RMatrixTest, RandomEigSymGenTest) {
+  test_over_integers(0, max_tensor_size, test_random_eig_sym_gen<double>);
 }
 
 //////////////////////////////////////////////////////////////////////
 // COMPLEX SPECIALIZATIONS
 //
 
-TEST(CMatrixTest, EyeEigTest) {
-  test_over_integers(0, 32, test_eye_eig_sym<cdouble>);
+TEST(CMatrixTest, EyeEigSymTest) {
+  test_over_integers(0, max_tensor_size, test_eye_eig_sym<cdouble>);
 }
 
-TEST(CMatrixTest, RandomEigTest) {
-  test_over_integers(0, 32, test_random_eig_sym<cdouble>);
+TEST(CMatrixTest, RandomEigSymTest) {
+  test_over_integers(0, max_tensor_size, test_random_eig_sym<cdouble>);
+}
+
+TEST(CMatrixTest, EyeEigSymGenTest) {
+  test_over_integers(0, max_tensor_size, test_eye_eig_sym_gen<cdouble>);
+}
+
+TEST(CMatrixTest, RandomEigSymGenTest) {
+  test_over_integers(0, max_tensor_size, test_random_eig_sym_gen<cdouble>);
 }
 
 }  // namespace tensor_test

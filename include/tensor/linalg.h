@@ -135,8 +135,10 @@ tensor::cdouble eig_power(const LinearMap<CTensor> &A, size_t dimension,
                           CTensor *eigenvector, size_t iterations = 0,
                           double tol = 1e-11);
 
-RTensor eig_sym(const RTensor &A, RTensor *pR = 0);
-RTensor eig_sym(const CTensor &A, CTensor *pR = 0);
+RTensor eig_sym(const RTensor &A, RTensor *pR = nullptr);
+RTensor eig_sym(const CTensor &A, CTensor *pR = nullptr);
+RTensor eig_sym(const RTensor &A, const RTensor &B, RTensor *pR = nullptr);
+RTensor eig_sym(const CTensor &A, const CTensor &B, CTensor *pR = nullptr);
 
 RTensor expm(const RTensor &A, unsigned int order = 7);
 CTensor expm(const CTensor &A, unsigned int order = 7);

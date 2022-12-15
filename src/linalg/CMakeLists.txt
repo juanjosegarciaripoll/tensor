@@ -25,4 +25,6 @@ target_sources(tensor
     eig_power_map_d.cc
     eig_power_map_z.cc
     eig_sym_d.cc
-    eig_sym_z.cc)
+    eig_sym_z.cc
+	eig_sym_gen_d.cc
+	eig_sym_gen_z.cc)
