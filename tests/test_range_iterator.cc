@@ -38,7 +38,7 @@ template <typename elt_t>
 std::ostream &operator<<(std::ostream &out, const std::vector<elt_t> &v) {
   const char *comma = "";
   out << '[';
-  for (auto &x : v) {
+  for (const auto &x : v) {
     out << comma << x;
     comma = ",";
   }
@@ -475,8 +475,8 @@ Tensor<elt_t> slow_index_range_test1(const Tensor<elt_t> &P) {
   for (index attempts = 10; attempts; --attempts) {
     const Indices ndx = random_indices(P.size());
     SimpleVector<Range> ranges{range(ndx)};
-    Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
-    RangeIterator it = RangeIterator::begin(ranges);
+    RangeIterator it = (dimensions_from_ranges(ranges, P.dimensions()),
+                        RangeIterator::begin(ranges));
     for (index i = 0; i < ndx.size(); ++i, ++it) {
       EXPECT_EQ(ndx[i], *it);
       if (ndx[i] != *it) {
@@ -503,8 +503,8 @@ Tensor<elt_t> slow_index_range_test2a(const Tensor<elt_t> &P) {
   for (index attempts = 10; attempts; --attempts) {
     const Indices ndx = random_indices(P.dimension(0));
     SimpleVector<Range> ranges{range(ndx), _};
-    Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
-    RangeIterator it = RangeIterator::begin(ranges);
+    RangeIterator it = (dimensions_from_ranges(ranges, P.dimensions()),
+                        RangeIterator::begin(ranges));
     for (index j = 0; j < P.dimension(1); ++j) {
       for (index i = 0; i < ndx.size(); ++i, ++it) {
         index pos = ndx[i] + j * P.dimension(0);
@@ -530,8 +530,8 @@ Tensor<elt_t> slow_index_range_test2b(const Tensor<elt_t> &P) {
   for (index attempts = 10; attempts; --attempts) {
     const Indices ndx = random_indices(P.dimension(1));
     SimpleVector<Range> ranges{_, range(ndx)};
-    Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
-    RangeIterator it = RangeIterator::begin(ranges);
+    RangeIterator it = (dimensions_from_ranges(ranges, P.dimensions()),
+                        RangeIterator::begin(ranges));
     for (index j = 0; j < ndx.size(); ++j) {
       for (index i = 0; i < P.dimension(0); ++i, ++it) {
         index pos = i + ndx[j] * P.dimension(0);

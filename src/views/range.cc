@@ -125,9 +125,9 @@ Range::Range(Indices indices)
   } else if (indices_.size() == 1) {
     *this = Range(indices_[0], indices_[0]);
   } else if (equispaced(indices_)) {
-    index first = indices_[0];
-    index last = indices_[indices_.ssize() - 1];
-    *this = Range(first, last, indices_[1] - first);
+    index first_index = indices_[0];
+    index last_index = indices_[indices_.ssize() - 1];
+    *this = Range(first_index, last_index, indices_[1] - first_index);
   }
 }
 
@@ -187,9 +187,10 @@ bool Range::maybe_combine(const Range &other) {
 }
 
 static void normalize_all_indices(Indices &indices, index dimension) {
-  for (auto &x : indices) {
-    x = Dimensions::normalize_index_safe(x, dimension);
-  }
+  std::transform(indices.begin(), indices.end(), indices.begin(),
+                 [dimension](index_t x) -> index_t {
+                   return Dimensions::normalize_index_safe(x, dimension);
+                 });
 }
 
 void Range::set_dimension(index new_dimension) {
@@ -271,12 +272,12 @@ RangeIterator::RangeIterator(const RangeIterator &r)
 RangeIterator RangeIterator::make_next_iterator(RangeSpan &ranges,
                                                 index factor) {
   Range r = ranges.next_range();
-  RangeIterator *next = nullptr;
+  RangeIterator *next_iterator = nullptr;
   if (ranges.more()) {
-    next =
+    next_iterator =
         new RangeIterator(make_next_iterator(ranges, factor * r.dimension()));
   }
-  return RangeIterator(r, factor, next);
+  return RangeIterator(r, factor, next_iterator);
 }
 
 RangeIterator::RangeIterator(const Range &r, index factor, RangeIterator *next)

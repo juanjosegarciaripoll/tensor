@@ -260,8 +260,8 @@ TEST(CSparseTest, CSparseRandomSmall) { test_sparse_random_small<cdouble>(); }
 // SPARSE RANDOM MATRICES ARBITRARY SIZES
 //
 template <typename elt_t>
-void test_sparse_random(Tensor<elt_t>& t) {
-  tensor::index rows = t.rows(), cols = t.columns();
+void test_sparse_random(Tensor<elt_t>& ignored) {
+  tensor::index rows = ignored.rows(), cols = ignored.columns();
   {
     Sparse<elt_t> s = Sparse<elt_t>::random(rows, cols);
     EXPECT_EQ(rows, s.rows());

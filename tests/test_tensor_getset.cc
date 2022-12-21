@@ -116,13 +116,15 @@ void test_tensor_set(Tensor<elt_t> &P) {
 // When we modify one of the copies, the other one remains intact.
 template <typename elt_t>
 void test_tensor_set_appropiates(Tensor<elt_t> &P) {
+  auto modify_tensor = [](Tensor<elt_t> &P) {
+    std::transform(P.begin(), P.end(), P.begin(),
+                   [](elt_t x) { return x + number_one<elt_t>(); });
+  };
   {
     typename Tensor<elt_t>::const_iterator old_p = P.cbegin();
     Tensor<elt_t> P2(P);
     unchanged(P2, P, 2);
-    for (auto &x : P2) {
-      x += number_one<elt_t>();
-    }
+    modify_tensor(P2);
     unique(P);
     unique(P2);
     EXPECT_EQ(old_p, P.cbegin());
@@ -134,9 +136,7 @@ void test_tensor_set_appropiates(Tensor<elt_t> &P) {
     typename Tensor<elt_t>::const_iterator old_p = P.cbegin();
     Tensor<elt_t> P2(P);
     unchanged(P2, P, 2);
-    for (auto &x : P) {
-      x += number_one<elt_t>();
-    }
+    modify_tensor(P);
     unique(P);
     unique(P2);
     EXPECT_EQ(old_p, P2.cbegin());

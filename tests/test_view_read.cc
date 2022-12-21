@@ -34,11 +34,9 @@ using tensor::index;
 template <typename elt_t>
 Tensor<elt_t> slow_range1(const Tensor<elt_t> &P, index i0, index i2,
                           index i1) {
-  Indices i(1);
-  i.at(0) = (i2 - i0) / i1 + 1;
-  Tensor<elt_t> t(i);
-  for (index i = i0, x = 0; i <= i2; i += i1, x++) {
-    t.at(x) = P(i);
+  Tensor<elt_t> t(Dimensions{(i2 - i0) / i1 + 1});
+  for (index j = i0, x = 0; j <= i2; j += i1, x++) {
+    t.at(x) = P(j);
   }
   return t;
 }
@@ -46,10 +44,7 @@ Tensor<elt_t> slow_range1(const Tensor<elt_t> &P, index i0, index i2,
 template <typename elt_t>
 Tensor<elt_t> slow_range2(const Tensor<elt_t> &P, index i0, index i2, index i1,
                           index j0, index j2, index j1) {
-  Indices i(2);
-  i.at(0) = (i2 - i0) / i1 + 1;
-  i.at(1) = (j2 - j0) / j1 + 1;
-  Tensor<elt_t> t(i);
+  Tensor<elt_t> t(Dimensions{(i2 - i0) / i1 + 1, (j2 - j0) / j1 + 1});
   for (index i = i0, x = 0; i <= i2; i += i1, x++) {
     for (index j = j0, y = 0; j <= j2; j += j1, y++) {
       t.at(x, y) = P(i, j);
@@ -62,11 +57,8 @@ template <typename elt_t>
 Tensor<elt_t> slow_range3(const Tensor<elt_t> &P, index i0, index i2, index i1,
                           index j0, index j2, index j1, index k0, index k2,
                           index k1) {
-  Indices i(3);
-  i.at(0) = (i2 - i0) / i1 + 1;
-  i.at(1) = (j2 - j0) / j1 + 1;
-  i.at(2) = (k2 - k0) / k1 + 1;
-  Tensor<elt_t> t(i);
+  Tensor<elt_t> t(
+      Dimensions{(i2 - i0) / i1 + 1, (j2 - j0) / j1 + 1, (k2 - k0) / k1 + 1});
   for (index i = i0, x = 0; i <= i2; i += i1, x++) {
     for (index j = j0, y = 0; j <= j2; j += j1, y++) {
       for (index k = k0, z = 0; k <= k2; k += k1, z++) {
@@ -81,12 +73,8 @@ template <typename elt_t>
 Tensor<elt_t> slow_range4(const Tensor<elt_t> &P, index i0, index i2, index i1,
                           index j0, index j2, index j1, index k0, index k2,
                           index k1, index l0, index l2, index l1) {
-  Indices i(4);
-  i.at(0) = (i2 - i0) / i1 + 1;
-  i.at(1) = (j2 - j0) / j1 + 1;
-  i.at(2) = (k2 - k0) / k1 + 1;
-  i.at(3) = (l2 - l0) / l1 + 1;
-  Tensor<elt_t> t(i);
+  Tensor<elt_t> t(Dimensions{(i2 - i0) / i1 + 1, (j2 - j0) / j1 + 1,
+                             (k2 - k0) / k1 + 1, (l2 - l0) / l1 + 1});
   for (index i = i0, x = 0; i <= i2; i += i1, x++) {
     for (index j = j0, y = 0; j <= j2; j += j1, y++) {
       for (index k = k0, z = 0; k <= k2; k += k1, z++) {

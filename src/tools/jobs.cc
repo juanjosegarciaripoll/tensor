@@ -138,7 +138,7 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
   bool job_blocks_found = false;
   bool this_job_found = false;
   index blocks{0};
-  index current_job{0};
+  index current_job_number{0};
 
   const auto argv_end = argv + argc;
   auto arguments_left = [&]() { return argv != argv_end; };
@@ -187,7 +187,7 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
     } else if (!strcmp(option, "--print-jobs")) {
       print_jobs = true;
     } else if (!strcmp(option, "--this-job")) {
-      current_job = parse_integer(get_option_argument("--this-job"));
+      current_job_number = parse_integer(get_option_argument("--this-job"));
       this_job_found = true;
     } else if (!strcmp(option, "--job-blocks")) {
       blocks = parse_integer(get_option_argument("--job-blocks"));
@@ -229,7 +229,7 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
       abort();
     }
     index delta = (number_of_jobs_ + blocks - 1) / blocks;
-    first_job_ = current_job = std::min(current_job * delta, number_of_jobs_);
+    first_job_ = current_job_number = std::min(current_job_number * delta, number_of_jobs_);
     last_job_ = std::min(number_of_jobs_ - 1, first_job_ + delta - 1);
   } else if (first_job_found) {
     /*
@@ -253,20 +253,20 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
         abort();
       }
     }
-    current_job = first_job_;
+    current_job_number = first_job_;
   } else if (this_job_found) {
     /*
      * Only --this-job, which allows us to do only one thing
      */
-    first_job_ = last_job_ = current_job;
+    first_job_ = last_job_ = current_job_number;
   } else {
     /*
      * No options: we run over all jobs
      */
-    first_job_ = current_job = 0;
+    first_job_ = current_job_number = 0;
     last_job_ = number_of_jobs_ - 1;
   }
-  select_job(current_job);
+  select_job(current_job_number);
 }
 
 tensor::index Job::compute_number_of_jobs() const {

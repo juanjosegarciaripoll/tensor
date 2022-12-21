@@ -43,7 +43,7 @@ template <typename elt_t>
 inline std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t) {
   s << '[';
   const char *comma = "";
-  for (auto &x : t) {
+  for (const auto &x : t) {
     s << comma << x;
     comma = ",";
   }
@@ -55,7 +55,7 @@ template <typename elt_t>
 inline std::ostream &operator<<(std::ostream &s, const SimpleVector<elt_t> &t) {
   s << '[';
   const char *comma = "";
-  for (auto &x : t) {
+  for (const auto &x : t) {
     s << comma << x;
     comma = ",";
   }
