@@ -51,7 +51,7 @@ RTensor eigs_small(const RTensor &A, EigType eig_type, size_t neig,
   RTensor vectors;
   RTensor values = eig_sym(A, eigenvectors ? &vectors : nullptr);
   Indices ndx = RArpack::sort_values(values, eig_type);
-  Indices ndx_out(neig);
+  Indices ndx_out(static_cast<index_t>(neig));
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
   if (eigenvectors) {
     *eigenvectors = vectors(_, range(ndx_out));

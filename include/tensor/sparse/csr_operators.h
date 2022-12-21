@@ -78,10 +78,10 @@ Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
 
   if (rows == 0 || cols == 0) return Sparse<result_type>(rows, cols);
 
-  size_t max_size = m1.priv_data().size() + m2.priv_data().size();
+  index_t max_size = m1.priv_data().ssize() + m2.priv_data().ssize();
   Tensor<result_type> data(Dimensions{max_size});
   Indices column(max_size);
-  Indices row_start(static_cast<size_t>(rows) + 1);
+  Indices row_start(rows + 1);
 
   auto out_data = data.begin();
   auto out_column = column.begin();
@@ -101,7 +101,7 @@ Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
   index j2 = *(m2_row_start++);     // data start for this row in M2
   index l2 = (*m2_row_start) - j2;  // # elements in this row in M2
   *out_row_start = 0;
-  while (1) {
+  while (true) {
     // We look for the next unprocessed matrix element on this row,
     // for both matrices. c1 and c2 are the columns associated to
     // each element on each matrix.
@@ -156,7 +156,7 @@ Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
     }
   }
   index j = out_data - out_begin;
-  Indices the_column(safe_size_t(j));
+  Indices the_column(j);
   std::copy(column.begin(), column.begin() + j, the_column.begin());
   Tensor<result_type> the_data(Dimensions{j});
   std::copy(data.begin(), data.begin() + j, the_data.begin());

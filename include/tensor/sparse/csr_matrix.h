@@ -51,7 +51,7 @@ CSRMatrix<elt_t>::CSRMatrix(Indices dims, Indices row_start, Indices column,
       row_start_(std::move(row_start)),
       column_(std::move(column)),
       data_(std::move(data)) {
-  tensor_assert(row_start.ssize() == dims[0] + 1);
+  tensor_assert(row_start_.ssize() == dims_[0] + 1);
 }
 
 template <typename elt_t>

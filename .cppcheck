@@ -1,2 +1,3 @@
 funcArgNamesDifferent
 mismatchingContainerExpression:tests/test_vector.cc
+mismatchingContainerExpression:tests/loops.h

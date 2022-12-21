@@ -35,8 +35,8 @@ static Sparse<elt_t> do_kron(const Sparse<elt_t> &s2, const Sparse<elt_t> &s1) {
   if (number_nonzero == 0) return Sparse<elt_t>(total_rows, total_cols);
 
   auto output_data = Tensor<elt_t>::empty(number_nonzero);
-  Indices output_column(static_cast<size_t>(number_nonzero));
-  Indices output_row_start(static_cast<size_t>(total_rows) + 1);
+  Indices output_column(number_nonzero);
+  Indices output_row_start(total_rows + 1);
 
   typename Tensor<elt_t>::iterator out_data = output_data.begin();
   typename Indices::iterator out_column = output_column.begin();

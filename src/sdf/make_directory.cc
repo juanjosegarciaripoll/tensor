@@ -18,7 +18,9 @@
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #include <direct.h>
-#define mkdir(x, mode) _mkdir(x)
+static int mkdir(const char *x, int) {
+  return _mkdir(x);
+}
 #else
 #include <sys/stat.h>
 #endif

@@ -107,7 +107,7 @@ void InDataFile::read_raw(int *data, size_t n) {
   read_raw_with_endian(_stream, data, n);
 }
 
-void InDataFile::read_raw(tensor::index *data, size_t n) {
+void InDataFile::read_raw(index_t *data, size_t n) {
   tensor_assert(is_open());
   read_raw_with_endian(_stream, data, n);
 }
@@ -127,8 +127,8 @@ void InDataFile::read_raw(cdouble *data, size_t n) {
   read_raw_with_endian(_stream, reinterpret_cast<double *>(data), 2 * n);
 }
 
-tensor::index InDataFile::read_tag_code() {
-  tensor::index output{};
+index_t InDataFile::read_tag_code() {
+  index_t output{};
   read_raw(output);
   return output;
 }
@@ -140,7 +140,7 @@ std::string InDataFile::read_variable_name() {
   return output;
 }
 
-void InDataFile::read_tag(const std::string &record_name, tensor::index tag) {
+void InDataFile::read_tag(const std::string &record_name, index_t tag) {
   std::string other_name = read_variable_name();
   if (record_name.size() && (record_name != other_name)) {
     std::cerr << "While reading file " << _filename << ", variable "
@@ -148,7 +148,7 @@ void InDataFile::read_tag(const std::string &record_name, tensor::index tag) {
               << '\n';
     abort();
   }
-  tensor::index other_tag = read_tag_code();
+  index_t other_tag = read_tag_code();
   if (tag != other_tag) {
     std::cerr << "While reading file " << _filename << ", an object of type "
               << tag_to_name(tag) << " was expected but found a "
@@ -157,25 +157,30 @@ void InDataFile::read_tag(const std::string &record_name, tensor::index tag) {
   }
 }
 
-template <class Vector>
-const Vector InDataFile::load_vector() {
-  size_t length{};
+Indices InDataFile::load_indices() {
+  index_t length{};
   read_raw(length);
-  Vector v(length);
-  read_raw(v.begin(), length);
+  Indices v(length);
+  read_raw(v.begin(), v.size());
   return v;
 }
 
 void InDataFile::load(RTensor *t, const std::string &name) {
   read_tag(name, TAG_RTENSOR);
-  Indices dims = load_vector<Indices>();
-  *t = RTensor(dims, load_vector<Vector<double>>());
+  *t = RTensor(load_indices());
+  index_t length{};
+  read_raw(length);
+  tensor_assert(length == t->ssize());
+  read_raw(t->begin(), t->size());
 }
 
 void InDataFile::load(CTensor *t, const std::string &name) {
   read_tag(name, TAG_CTENSOR);
-  Indices dims = load_vector<Indices>();
-  *t = CTensor(dims, load_vector<Vector<cdouble>>());
+  *t = CTensor(load_indices());
+  index_t length{};
+  read_raw(length);
+  tensor_assert(length == t->ssize());
+  read_raw(t->begin(), t->size());
 }
 
 void InDataFile::load(std::vector<RTensor> *m, const std::string &name) {
@@ -245,8 +250,8 @@ void InDataFile::read_header() {
   int file_int_size = var_name[3] - '0';
   int file_index_size = var_name[4] - '0';
   int file_endianness = var_name[5] - '0';
-  if (file_int_size != sizeof(int) ||
-      file_index_size != sizeof(tensor::index) || file_endianness != endian) {
+  if (file_int_size != sizeof(int) || file_index_size != sizeof(index_t) ||
+      file_endianness != endian) {
     std::cerr << "File " << _filename << " has word sizes (" << file_int_size
               << ',' << file_index_size
               << ") and cannot be read by this computer";

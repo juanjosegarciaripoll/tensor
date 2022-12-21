@@ -65,7 +65,7 @@ class DataFile {
 
   explicit DataFile(std::string a_filename, int a_flags = SDF_SHARED);
   ~DataFile();
-  const char *tag_to_name(tensor::index tag) const;
+  const char *tag_to_name(index_t tag) const;
   void close();
   bool is_open() const { return _open; }
   bool is_locked() const { return _lock; }
@@ -93,7 +93,7 @@ class OutDataFile : public DataFile {
 
   void write_raw(const char *data, size_t n);
   void write_raw(const int *data, size_t n);
-  void write_raw(const tensor::index *data, size_t n);
+  void write_raw(const index_t *data, size_t n);
   void write_raw(const size_t *data, size_t n);
   void write_raw(const double *data, size_t n);
   void write_raw(const cdouble *data, size_t n);
@@ -111,7 +111,7 @@ class OutDataFile : public DataFile {
 
   void write_header();
   void write_variable_name(const std::string &name);
-  void write_tag(const std::string &name, tensor::index tag);
+  void write_tag(const std::string &name, index_t tag);
 };
 
 class InDataFile : public DataFile {
@@ -135,23 +135,25 @@ class InDataFile : public DataFile {
   void read_raw(char *data, size_t n);
   void read_raw(int *data, size_t n);
   void read_raw(size_t *data, size_t n);
-  void read_raw(tensor::index *data, size_t n);
+  void read_raw(index_t *data, size_t n);
   void read_raw(double *data, size_t n);
   void read_raw(cdouble *data, size_t n);
+
+  Indices load_indices();
 
   template <typename t>
   void read_raw(t &v) {
     read_raw(&v, 1);
   }
 
-  template <class Vector>
+  template <class Vector, typename size_t = size_t>
   const Vector load_vector();
 
-  tensor::index read_tag_code();
+  index_t read_tag_code();
   std::string read_variable_name();
 
   void read_header();
-  void read_tag(const std::string &record_name, tensor::index tag);
+  void read_tag(const std::string &record_name, index_t tag);
 };
 
 }  // namespace sdf

@@ -18,5 +18,5 @@
 
 #include "alloc_informer.h"
 
-int AllocInformer::allocations = 0;
-int AllocInformer::deallocations = 0;
+int AllocInformer::allocations = 0; // NOLINT
+int AllocInformer::deallocations = 0; // NOLINT

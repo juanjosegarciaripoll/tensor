@@ -21,7 +21,7 @@
 namespace tensor {
 
 const Indices sparse_rows(const Indices &row_start, const Indices &column) {
-  Indices output(column.size());
+  Indices output(column.ssize());
   for (index n = 0, i = 0, rows = row_start.ssize() - 1; i < rows; i++) {
     for (index j = row_start[i], j_end = row_start[i + 1]; j < j_end; j++) {
       output.at(n++) = i;

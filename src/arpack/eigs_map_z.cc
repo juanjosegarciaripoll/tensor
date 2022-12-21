@@ -45,12 +45,14 @@ CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
   return M;
 }
 
+// TODO: make 'neig' int in all eigs routines
+
 CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
                    CTensor *eigenvectors, bool *converged) {
   CTensor vectors;
   CTensor values = eig(A, nullptr, eigenvectors ? &vectors : nullptr);
   Indices ndx = RArpack::sort_values(values, eig_type);
-  Indices ndx_out(neig);
+  Indices ndx_out(static_cast<index_t>(neig));
   std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
   if (eigenvectors) {
     *eigenvectors = tensor::real(vectors(_, range(ndx_out)));

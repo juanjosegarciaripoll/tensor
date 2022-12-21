@@ -184,7 +184,14 @@ inline blas::integer size_t_to_blas(size_t value) {
 }
 
 inline tensor::cdouble cdouble_to_tensor(blas::cdouble z) {
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#endif
   return *reinterpret_cast<tensor::cdouble *>(&z);
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 }
 
 template <typename elt_t>
