@@ -35,7 +35,7 @@ static std::streamsize safe_streamsize(size_t size) {
 
 template <class number>
 void write_raw_with_endian(std::ofstream &s, const number *data, size_t n) {
-  s.write(reinterpret_cast<const char *>(data),
+  s.write(reinterpret_cast<const char *>(data), // NOLINT
           safe_streamsize(n * sizeof(number)));
   if (s.bad()) {
     std::cerr << "I/O error when writing to SDF stream";
@@ -52,7 +52,7 @@ template <class number>
 void write_raw_with_endian(std::ofstream &s, const number *data, size_t n) {
   const int size = sizeof(number);
   if (size == 1) {
-    s.write(reinterpret_cast<const char *>(data),
+    s.write(reinterpret_cast<const char *>(data), // NOLINT
             safe_streamsize(n * sizeof(number)));
     if (s.bad()) {
       std::cerr << "I/O error when writing to SDF stream";
@@ -106,7 +106,7 @@ void write_raw_with_endian(std::ofstream &s, const number *data, size_t n) {
 //
 
 OutDataFile::OutDataFile(std::string a_filename, int a_flags)
-    : DataFile(a_filename, a_flags) {
+  : DataFile(std::move(a_filename), a_flags) {
   bool existed = file_exists(actual_filename());
   _stream.open(actual_filename().c_str(),
                std::ofstream::app | std::ofstream::binary);
@@ -152,7 +152,7 @@ void OutDataFile::write_raw(const double *data, size_t n) {
 
 void OutDataFile::write_raw(const cdouble *data, size_t n) {
   tensor_assert(is_open());
-  write_raw_with_endian(_stream, reinterpret_cast<const double *>(data), 2 * n);
+  write_raw_with_endian(_stream, reinterpret_cast<const double *>(data), 2 * n); // NOLINT
 }
 
 void OutDataFile::write_variable_name(const std::string &name) {

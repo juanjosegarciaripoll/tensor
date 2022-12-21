@@ -51,7 +51,7 @@ void test_mmult(index max_dim) {
 // REAL SPECIALIZATIONS
 //
 
-#define MATRIX_MAX_DIM 24
+static constexpr int MATRIX_MAX_DIM = 24;
 
 TEST(MmultTest, MmultDoubleDoubleTest) {
   test_mmult<double, double>(MATRIX_MAX_DIM);

@@ -90,7 +90,7 @@ void read_raw_with_endian(std::ifstream &s, number *data, size_t n) {
 #endif
 
 InDataFile::InDataFile(std::string a_filename, int a_flags)
-    : DataFile(a_filename, a_flags),
+    : DataFile(std::move(a_filename), a_flags),
       _stream(actual_filename().c_str(),
               std::ios_base::in | std::ios_base::binary) {
   _stream.seekg(std::ios_base::beg);

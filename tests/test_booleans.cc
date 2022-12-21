@@ -26,9 +26,8 @@ namespace tensor_test {
 Booleans randomBoolean(int size) {
   Booleans retval(size);
 
-  for (Booleans::iterator it = retval.begin(); it != retval.end(); ++it) {
-    *it = (rand<int>() % 2 == 1);
-  }
+  std::generate(retval.begin(), retval.end(),
+                []() -> bool { return rand<int>() % 2 == 1; });
 
   return retval;
 }

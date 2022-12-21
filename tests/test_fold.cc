@@ -98,7 +98,7 @@ void test_fold_throws() {
 // REAL SPECIALIZATIONS
 //
 
-#define MATRIX_MAX_DIM 8
+static constexpr int MATRIX_MAX_DIM = 8;
 
 TEST(FoldTest, FoldDoubleDoubleTest) {
   test_fold<double, double>(MATRIX_MAX_DIM);
