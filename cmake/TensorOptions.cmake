@@ -220,6 +220,7 @@ macro(tensor_enable_cppcheck)
           --suppress=unmatchedSuppression
           # noExplicitConstructor gives false positives on move constructors
           --suppress=noExplicitConstructor
+		  --suppressions-list=${PROJECT_SOURCE_DIR}/.cppcheck
           --inconclusive)
         if(${CMAKE_CXX_STANDARD})
             set(CMAKE_CXX_CPPCHECK ${CMAKE_CXX_CPPCHECK} --std=c++${CMAKE_CXX_STANDARD})
