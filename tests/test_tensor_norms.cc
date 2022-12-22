@@ -23,6 +23,8 @@
 
 namespace tensor_test {
 
+#ifndef __cppcheck__
+
 template <typename T>
 class NormTest : public TensorTest<T> {};
 
@@ -104,5 +106,7 @@ TYPED_TEST(NormTest, Norm2IsAccurateInLargeVectors) {
     ASSERT_NEAR(norm2(invP), exact_norm2, tolerance);
   }
 }
+
+#endif
 
 }  // namespace tensor_test

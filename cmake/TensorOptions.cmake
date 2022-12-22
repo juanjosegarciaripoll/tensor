@@ -214,6 +214,7 @@ macro(tensor_enable_cppcheck)
           --enable=style,performance,warning,portability
           --inline-suppr
 		  --library=googletest
+		  -D__cppcheck__
           # We cannot act on a bug/missing feature of cppcheck
           --suppress=internalAstError
           # if a file does not have an internalAstError, we get an unmatchedSuppression error

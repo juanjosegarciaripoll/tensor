@@ -26,6 +26,7 @@ namespace tensor_test {
 //
 // Linspace with number arguments
 //
+#ifndef __cppcheck__
 
 template <typename T>
 class TestNumberLinspace : public TensorTest<T> {};
@@ -203,5 +204,7 @@ TYPED_TEST(TestTensorLinspace, WithCommensurateSizeProducesIntegerVectors) {
     ASSERT_EQ(tensor(1, i), this->to_value_type(i + 3));
   }
 }
+
+#endif // __cppcheck__
 
 }  // namespace tensor_test
