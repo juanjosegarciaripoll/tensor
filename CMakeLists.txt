@@ -17,7 +17,8 @@ project(tensor
 
 # specify the C++ standard
 # GoogleTest requires C++14 or better
-set(CMAKE_CXX_STANDARD 14)
+option(TENSOR_CXX_STANDARD "Numeric value (11, 14, 17, 20) defining the C++ standard to use" 14)
+set(CMAKE_CXX_STANDARD ${TENSOR_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Used modules
