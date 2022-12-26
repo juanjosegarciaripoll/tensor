@@ -17,7 +17,8 @@ project(tensor
 
 # specify the C++ standard
 # GoogleTest requires C++14 or better
-option(TENSOR_CXX_STANDARD "Numeric value (11, 14, 17, 20) defining the C++ standard to use" 14)
+set(TENSOR_CXX_STANDARD 14 CACHE FILEPATH
+    "Numeric value (11, 14, 17, 20) defining the C++ standard to use")
 set(CMAKE_CXX_STANDARD ${TENSOR_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
