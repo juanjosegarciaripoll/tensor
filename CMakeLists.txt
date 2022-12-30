@@ -17,8 +17,12 @@ project(tensor
 
 # specify the C++ standard
 # GoogleTest requires C++14 or better
-set(TENSOR_CXX_STANDARD 14 CACHE FILEPATH
-    "Numeric value (11, 14, 17, 20) defining the C++ standard to use")
+set(TENSOR_CXX_STANDARD 14 CACHE STRING
+  "Numeric value (14, 17, 20) defining the C++ standard to use")
+string(REGEX MATCH "\(14|17|20\)" CMAKE_CXX_STANDARD ${TENSOR_CXX_STANDARD})
+if(NOT ${CMAKE_CXX_STANDARD} STREQUAL ${TENSOR_CXX_STANDARD})
+  message(SEND_ERROR "Illegal value of TENSOR_CXX_STANDARD ${TENSOR_CXX_STANDARD}, not in 14, 17 or 20")
+endif()
 set(CMAKE_CXX_STANDARD ${TENSOR_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
