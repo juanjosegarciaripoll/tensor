@@ -17,6 +17,7 @@
 */
 
 #include <algorithm>
+#include <cstring>
 #include <tensor/arpack.h>
 #include "arpackf.h"
 

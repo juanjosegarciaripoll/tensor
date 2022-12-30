@@ -16,6 +16,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <cstring>
 #include <tensor/tensor.h>
 
 namespace tensor {
@@ -25,7 +26,7 @@ static Tensor change_dimension_inner(const Tensor &a, index dim,
                                      index new_size) {
   dim = Dimensions::normalize_index(dim, a.rank());
   Indices d = a.dimensions();
-  index old_size = d[dim];
+  index_t old_size = d[dim];
   if (old_size == new_size) return a;
 
   d.at(dim) = new_size;
@@ -34,11 +35,11 @@ static Tensor change_dimension_inner(const Tensor &a, index dim,
 
   typename Tensor::iterator p_new = output.begin();
   typename Tensor::const_iterator p_old = a.begin();
-  index i_len, k_len;
+  index_t i_len, k_len;
   surrounding_dimensions(d, dim, &i_len, &new_size, &k_len);
 
-  index dp_new = new_size * i_len;
-  index dp_old = old_size * i_len;
+  index_t dp_new = new_size * i_len;
+  index_t dp_old = old_size * i_len;
   auto data_size =
       static_cast<size_t>(std::min(dp_new, dp_old)) * sizeof(*p_new);
   while (k_len--) {
