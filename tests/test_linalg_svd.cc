@@ -142,14 +142,13 @@ TEST(RMatrixTest, EyeSvdTest) {
 }
 
 TEST(RMatrixTest, RowTest) {
-  bool block, economic;
   double z = 1 / sqrt(2.0);
   RTensor A{{z, z, 0.0}};
   RTensor exact_s{1.0};
   RTensor exact_U = RTensor::eye(1);
   RTensor exact_V{{z, z, 0.0}};
-  test_svd(A, exact_s, exact_U, exact_V, block = false, economic = true);
-  test_svd(A, exact_s, exact_U, exact_V, block = true, economic = true);
+  test_svd(A, exact_s, exact_U, exact_V, /* block = */ false, /* economic = */ true);
+  test_svd(A, exact_s, exact_U, exact_V, /* block = */ true, /* economic = */ true);
 }
 
 TEST(RMatrixTest, RandomSvdTest) {

@@ -95,7 +95,7 @@ template <class Tensor>
 void test_cgs_functor(int n) {
   for (int cols = 1; cols < n; cols++) {
     Tensor x = Tensor::random(n, cols);
-    Tensor y = f<Tensor>(x);
+    auto y = f<Tensor>(x);
 
     // If the initial state is a solution, this should be ok
     Tensor x0 = cgs(f<Tensor>, y, &x, 0, 2 * EPSILON);

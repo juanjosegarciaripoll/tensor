@@ -275,7 +275,7 @@ void test_sparse_random(Tensor<elt_t>& ignored) {
     EXPECT_EQ(nonzero, s.priv_column().size());
     EXPECT_EQ(rows + 1, s.priv_row_start().size());
   }
-  for (double x = 0.0; x <= 1.0; x += 0.1) {
+  for (double x : linspace(0.0, 1.0, 11)) {
     Sparse<elt_t> s = Sparse<elt_t>::random(rows, cols, x);
     EXPECT_EQ(rows, s.rows());
     EXPECT_EQ(cols, s.columns());

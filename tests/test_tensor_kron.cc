@@ -59,8 +59,7 @@ template <typename elt_t>
 void test_kron_small() {
   kron_2d_fixture<elt_t> fixture;
 
-  for (typename kron_2d_fixture<elt_t>::const_iterator it = fixture.begin();
-       it != fixture.end();) {
+  for (auto it = fixture.begin(); it != fixture.end();) {
     Tensor<elt_t> a(*(it++));
     Tensor<elt_t> b(*(it++));
     Tensor<elt_t> k(*(it++));

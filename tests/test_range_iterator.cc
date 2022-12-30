@@ -136,8 +136,8 @@ TEST(RangeIteratorTest, RangeIterator1DSize1) {
   Range r(/*start*/ 0, /*end*/ 0);  // = [0]
   r.set_dimension(3);
   RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
-  index last;
-  ASSERT_EQ(last = *it, 0);
+  auto last = *it;
+  ASSERT_EQ(last, 0);
   ASSERT_FALSE(it.finished());
   ++it;
   ASSERT_TRUE(it.finished());
@@ -150,9 +150,9 @@ TEST(RangeIteratorTest, RangeIterator1DSize1) {
 TEST(RangeIteratorTest, RangeIterator1DSize1Start1) {
   Range r(/*start*/ 1, /*end*/ 1);  // = [1, 1]
   r.set_dimension(3);
-  index last;
   RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
-  ASSERT_EQ(last = *it, 1);
+  auto last = *it;
+  ASSERT_EQ(last, 1);
   ASSERT_FALSE(it.finished());
   ++it;
   ASSERT_TRUE(it.finished());
@@ -165,9 +165,9 @@ TEST(RangeIteratorTest, RangeIterator1DSize1Start1) {
 TEST(RangeIteratorTest, RangeIterator1DSize2) {
   Range r(/*start*/ 0, /*end*/ 1);  // = [0, 1]
   r.set_dimension(3);
-  index last;
   RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
-  ASSERT_EQ(last = *it, 0);
+  auto last = *it;
+  ASSERT_EQ(last, 0);
   ASSERT_FALSE(it.finished());
   ++it;
   ASSERT_FALSE(it.finished());
@@ -183,9 +183,9 @@ TEST(RangeIteratorTest, RangeIterator1DSize2) {
 TEST(RangeIteratorTest, RangeIterator1DSize1Step2) {
   Range r(/*start*/ 0, /*end*/ 0, /*step*/ 2);  // = [0]
   r.set_dimension(3);
-  index last;
   RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
-  ASSERT_EQ(last = *it, 0);
+  auto last = *it;
+  ASSERT_EQ(last, 0);
   ASSERT_FALSE(it.finished());
   ++it;
   ASSERT_TRUE(it.finished());
@@ -197,9 +197,9 @@ TEST(RangeIteratorTest, RangeIterator1DSize1Step2) {
 
 TEST(RangeIteratorTest, RangeIterator1DSize2Step2) {
   Range r(/*start*/ 0, /*end*/ 1, /*step*/ 2, /*dimension*/ 2);  // = [0]
-  index last;
   RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
-  ASSERT_EQ(last = *it, 0);
+  auto last = *it;
+  ASSERT_EQ(last, 0);
   ASSERT_FALSE(it.finished());
   ++it;
   ASSERT_TRUE(it.finished());
@@ -216,11 +216,11 @@ TEST(RangeIteratorTest, RangeIterator1DSize2Step2) {
 TEST(RangeIteratorTest, RangeIterator1DNegativeStep) {
   Range r(/*start*/ 1, /*end*/ 0, /*step*/ -1, /*dimension*/ 2);  // = [1, 0]
   RangeIterator it = RangeIterator::begin(SimpleVector<Range>{r});
-  index last;
   ASSERT_EQ(*it, 1);
   ++it;
   ASSERT_FALSE(it.finished());
-  ASSERT_EQ(last = *it, 0);
+  auto last = *it;
+  ASSERT_EQ(last, 0);
   ++it;
   ASSERT_TRUE(it.finished());
   ASSERT_EQ(*it, last);

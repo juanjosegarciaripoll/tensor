@@ -73,7 +73,7 @@ TEST(RandTest, ComplexUncorrelated) {
   int total = 10000;
   double corr = 0;
   for (int i = 1; i < total; ++i) {
-    cdouble z = rand<cdouble>();
+    auto z = rand<cdouble>();
     corr += (real(z) - 0.5) * (imag(z) - 0.5);
   }
   corr = std::abs(corr) / total;

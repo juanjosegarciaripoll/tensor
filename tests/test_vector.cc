@@ -29,7 +29,7 @@ using tensor::Vector;
 TEST(VectorTest, DefaultConstructor) {
   const Vector<int> r;
   EXPECT_EQ(0, r.size());
-  EXPECT_EQ(0, r.cbegin());
+  EXPECT_EQ(nullptr, r.cbegin());
 #ifdef TENSOR_REFCOUNT_H
   EXPECT_EQ(1, r.ref_count());
 #endif

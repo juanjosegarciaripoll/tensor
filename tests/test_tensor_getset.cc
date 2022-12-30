@@ -30,26 +30,25 @@ namespace tensor_test {
 template <typename elt_t>
 void store_nd(Tensor<elt_t> &P, size_t row_major_ndx, elt_t x) {
   const Indices &d = P.dimensions();
-  size_t i1, i2, i3, i4;
   if (P.rank() == 1) {
     P.at(row_major_ndx) = x;
   } else if (P.rank() == 2) {
-    i1 = row_major_ndx % d[0];
-    i2 = row_major_ndx / d[0];
+    auto i1 = row_major_ndx % d[0];
+    auto i2 = row_major_ndx / d[0];
     P.at(i1, i2) = x;
   } else if (P.rank() == 3) {
-    i1 = row_major_ndx % d[0];
+    auto i1 = row_major_ndx % d[0];
     row_major_ndx /= d[0];
-    i2 = row_major_ndx % d[1];
-    i3 = row_major_ndx / d[1];
+    auto i2 = row_major_ndx % d[1];
+    auto i3 = row_major_ndx / d[1];
     P.at(i1, i2, i3) = x;
   } else if (P.rank() == 4) {
-    i1 = row_major_ndx % d[0];
+    auto i1 = row_major_ndx % d[0];
     row_major_ndx /= d[0];
-    i2 = row_major_ndx % d[1];
+    auto i2 = row_major_ndx % d[1];
     row_major_ndx /= d[1];
-    i3 = row_major_ndx % d[2];
-    i4 = row_major_ndx / d[2];
+    auto i3 = row_major_ndx % d[2];
+    auto i4 = row_major_ndx / d[2];
     P.at(i1, i2, i3, i4) = x;
   } else {
     std::cerr << "Tester does not support tensors with more than 4 dimensions";
@@ -60,26 +59,25 @@ void store_nd(Tensor<elt_t> &P, size_t row_major_ndx, elt_t x) {
 template <typename elt_t>
 elt_t get_nd(Tensor<elt_t> &P, size_t row_major_ndx) {
   const Indices &d = P.dimensions();
-  size_t i1, i2, i3, i4;
   if (P.rank() == 1) {
     return P(row_major_ndx);
   } else if (P.rank() == 2) {
-    i1 = row_major_ndx % d[0];
-    i2 = row_major_ndx / d[0];
+    auto i1 = row_major_ndx % d[0];
+    auto i2 = row_major_ndx / d[0];
     return P(i1, i2);
   } else if (P.rank() == 3) {
-    i1 = row_major_ndx % d[0];
+    auto i1 = row_major_ndx % d[0];
     row_major_ndx /= d[0];
-    i2 = row_major_ndx % d[1];
-    i3 = row_major_ndx / d[1];
+    auto i2 = row_major_ndx % d[1];
+    auto i3 = row_major_ndx / d[1];
     return P(i1, i2, i3);
   } else if (P.rank() == 4) {
-    i1 = row_major_ndx % d[0];
+    auto i1 = row_major_ndx % d[0];
     row_major_ndx /= d[0];
-    i2 = row_major_ndx % d[1];
+    auto i2 = row_major_ndx % d[1];
     row_major_ndx /= d[1];
-    i3 = row_major_ndx % d[2];
-    i4 = row_major_ndx / d[2];
+    auto i3 = row_major_ndx % d[2];
+    auto i4 = row_major_ndx / d[2];
     return P(i1, i2, i3, i4);
   } else {
     std::cerr << "Tester does not support tensors with more than 4 dimensions";

@@ -24,7 +24,6 @@ namespace tensor_test {
 
 template <typename elt_t>
 void test_sparse_index() {
-  int i;
   Indices row, col;
   for (int N = 2; N < 3; N++) {
     Tensor<elt_t> aux = Tensor<elt_t>::random(N, N);
