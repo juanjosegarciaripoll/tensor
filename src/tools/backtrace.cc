@@ -34,10 +34,13 @@
 #include <execinfo.h>
 #endif
 
+#if defined(HAVE_BACKTRACE_SYMBOLS)
+constexpr int max_backtrace_size = 32;
+#endif
+
 #if !defined(HAVE_BACKTRACE) && defined(HAVE___BUILTIN_RETURN_ADDRESS) && \
     defined(HAVE_BACKTRACE_SYMBOLS)
 #define HAVE_BACKTRACE
-constexpr int max_backtrace_size = 32;
 
 static int backtrace(void **buffer, int n) {
   int nframes = std::min(max_backtrace_size, n);
