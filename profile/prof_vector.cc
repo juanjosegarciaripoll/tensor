@@ -30,6 +30,8 @@
 namespace benchmark {
 
 using namespace tensor;
+using index_t = tensor::index;
+#define _ range()
 
 template <class T1, class T2>
 void add(std::tuple<T1, T2> &args) {
@@ -136,7 +138,7 @@ void copy_first_column_index(std::tuple<T, T, Indices> &args) {
   T &A = std::get<0>(args);
   T &B = std::get<1>(args);
   Indices &ndx = std::get<2>(args);
-  A.at(ndx, range(0)) = B(ndx, range(0));
+  A.at(range(ndx), range(0)) = B(range(ndx), range(0));
 }
 
 template <class T>
@@ -144,7 +146,7 @@ void copy_first_row_index(std::tuple<T, T, Indices> &args) {
   T &A = std::get<0>(args);
   T &B = std::get<1>(args);
   Indices &ndx = std::get<2>(args);
-  A.at(range(0), ndx) = B(range(0), ndx);
+  A.at(range(0), range(ndx)) = B(range(0), range(ndx));
 }
 
 template <class T>
@@ -220,7 +222,7 @@ void mmult_T_T(std::tuple<T, T> &args) {
 template <class T>
 void warmup(size_t size) {
   for (int i = 0; i < 10; ++i) {
-    std::unique_ptr<T> p{new T(Dimensions{size})};
+    std::unique_ptr<T> p{new T{T::zeros(size,1)}};
     force(*p);
   }
 }
@@ -253,9 +255,7 @@ std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
 template <class T>
 std::tuple<T, T> make_two_columns(size_t size) {
   size_t columns = 50;
-  Dimensions d = {static_cast<tensor::index>(size),
-                  static_cast<tensor::index>(columns)};
-  return std::tuple<T, T>(T::random(d), T::random(d));
+  return std::tuple<T, T>(T::random(size, columns), T::random(size, columns));
 }
 
 template <class T>
@@ -268,9 +268,7 @@ std::tuple<T, T, Indices> make_two_columns_and_index(size_t size) {
 template <class T>
 std::tuple<T, T> make_two_rows(size_t size) {
   size_t rows = 50;
-  Dimensions d = {static_cast<tensor::index>(rows),
-                  static_cast<tensor::index>(size)};
-  return std::tuple<T, T>(T::random(d), T::random(d));
+  return std::tuple<T, T>(T::random(rows, size), T::random(rows, size));
 }
 
 template <class T>
@@ -282,9 +280,7 @@ std::tuple<T, T, Indices> make_two_rows_and_index(size_t size) {
 
 template <class T>
 std::tuple<T, T> make_two_matrices(size_t size) {
-  Dimensions d = {static_cast<tensor::index>(size),
-                  static_cast<tensor::index>(size)};
-  return std::tuple<T, T>(T::random(d), T::random(d));
+  return std::tuple<T, T>(T::random(size, size), T::random(size, size));
 }
 
 template <typename T>
