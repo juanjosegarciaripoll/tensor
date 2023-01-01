@@ -204,12 +204,8 @@ struct BenchmarkItem {
 };
 
 struct BenchmarkGroup {
-  using warmup_function_t = std::function<void()>;
-
   std::string name{};
   std::vector<BenchmarkItem> items{};
-  bool warmup_run{false};
-  warmup_function_t warmup_function{[] {}};
 
   BenchmarkGroup(std::string aname) : name(std::move(aname)), items{} {}
 
@@ -222,35 +218,38 @@ struct BenchmarkGroup {
   BenchmarkGroup &add(const char *aname, run f, setup s,
                       const std::vector<size_t> &sizes = {},
                       bool run_now = false) {
-    if (run_now) maybe_warmup();
     items.emplace_back(aname, f, s, sizes, run_now);
     return *this;
   }
 
-  void set_warmup_function(warmup_function_t f) {
-    warmup_function = std::move(f);
-  }
-
-  void run() {
-    std::cerr << "------------------\nStarting group " << name << '\n';
-    maybe_warmup();
+  void run(const std::string &item_filter = "") {
+    bool started = false;
     for (auto &item : items) {
-      item.run();
+      if (item.name.find(item_filter) != item.name.npos) {
+        if (!started) {
+          std::cerr << "------------------\nStarting group " << name << '\n';
+          started = true;
+        }
+        item.run();
+      }
     }
   }
 
-  void maybe_warmup() {
-    if (!warmup_run) {
-      warmup_function();
-      warmup_run = true;
+  void list(std::ostream &out) {
+    for (auto &item : items) {
+      out << name << " / " << item.name << '\n';
     }
   }
 };
 
 struct BenchmarkSet {
+  using warmup_function_t = std::function<void()>;
+
   std::string name = tensor_acronym();
   std::string environment = tensor_environment();
   std::vector<BenchmarkGroup> groups{};
+  bool warmup_run{false};
+  warmup_function_t warmup_function{[] {}};
 
   BenchmarkSet(std::string aname) : name(std::move(aname)), groups{} {}
 
@@ -259,12 +258,35 @@ struct BenchmarkSet {
     return *this;
   }
 
-  void run() {
+  void run(const std::string &group_filter = "",
+           const std::string &item_filter = "") {
     std::cerr << "===================\nStarting set " << name << '\n'
               << "Environment: " << environment << '\n';
     for (auto &group : groups) {
-      group.run();
+      if (group.name.find(group_filter) != group.name.npos) {
+        maybe_warmup();
+        group.run(item_filter);
+      }
     }
+  }
+
+  void set_warmup_function(warmup_function_t f) {
+    warmup_function = std::move(f);
+  }
+
+  void maybe_warmup() {
+    if (!warmup_run) {
+      warmup_function();
+      warmup_run = true;
+    }
+  }
+
+  void list(std::ostream &out) {
+    out << "Set " << name << " {\n";
+    for (auto &group : groups) {
+      group.list(out);
+    }
+    out << "}\n";
   }
 };
 

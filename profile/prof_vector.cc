@@ -293,8 +293,6 @@ void add_tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
   std::vector<size_t> small_sizes = make_sizes(4, 2048, 2);
   {
     BenchmarkGroup group(name + " access");
-    // Warm up to largest occupied memory
-    group.set_warmup_function([] { warmup<T>(4194304 * 100); });
     group.add("extract_i0", extract_first_column<T>, make_two_columns<T>);
     group.add("extract_0i", extract_first_row<T>, make_two_rows<T>);
     group.add("copy_i0", copy_first_column<T>, make_two_columns<T>);
@@ -320,8 +318,6 @@ void add_tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
   }
   {
     BenchmarkGroup group(name);
-    // Warm up to largest occupied memory
-    group.set_warmup_function([] { warmup<T>(4194304 * 100); });
     group.add("plus", add<T, T>, make_two_vectors<T>);
     group.add("minus", subtract<T, T>, make_two_vectors<T>);
     group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
@@ -342,25 +338,6 @@ void add_tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
     group.add("exp", apply_exp<T>, make_vector<T>);
     set << group;
   }
-}  // namespace benchmark
-
-void run_all(std::ostream &out, const std::string &version = "") {
-  //
-  // VECTOR - VECTOR OPERATIONS
-  //
-
-  std::string name = tensor_acronym();
-  if (version.size()) {
-    name = name + " " + version;
-  }
-
-  auto set = BenchmarkSet(name);
-
-  add_tensor_benchmarks<RTensor>(set, "RTensor");
-  add_tensor_benchmarks<CTensor>(set, "CTensor");
-  set.run();
-
-  out << set << std::endl;
 }
 
 }  // namespace benchmark
@@ -377,21 +354,74 @@ std::string currentISO8601TimeUTC() {
   return ss.str();
 }
 
+using namespace benchmark;
+using namespace tensor;
+
 int main(int argn, char **argv) {
   std::string filename;
   std::string time = currentISO8601TimeUTC();
-  std::string tag = "Tensor library";
-  if (argn > 2) {
-    tag = std::string(argv[2]);
-  } else {
-    tag = time;
+  std::string version = "Tensor library";
+  std::string group_filter, item_filter;
+  bool only_list = false;
+
+  for (int i = 1, end = argn; i < end;) {
+    std::string option(argv[i]);
+    ++i;
+    //std::cerr << "Processing option " << option << '\n';
+    if (option == "--group") {
+      if (i < end) {
+        group_filter = std::string(argv[i]);
+        ++i;
+      } else {
+        std::cerr << "Missing argument to --group\n";
+        return -1;
+      }
+    } else if (option == "--item") {
+      if (i < end) {
+        item_filter = argv[i];
+        ++i;
+      } else {
+        std::cerr << "Missing argument to --item\n";
+        return -1;
+      }
+    } else if (option == "--list") {
+      only_list = true;
+    } else if (option == "--nojson") {
+      filename = "nul";
+    } else if (option.find("--") == 0) {
+      std::cerr << "Unknown command line option " << option << '\n';
+      return -1;
+    } else if (filename.size() == 0) {
+      filename = option;
+    } else {
+      version = option;
+    }
   }
-  if (argn > 1) {
-    filename = argv[1];
-  } else {
+  if (version.size() == 0) {
+    version = time;
+  }
+  if (filename.size() == 0) {
     filename = "benchmark_tensor_" + time + ".json";
   }
-  std::cerr << "Writing output to file " << filename << std::endl;
-  std::ofstream mycout(filename);
-  benchmark::run_all(mycout, tag);
+
+  std::string name = tensor_acronym();
+  if (version.size()) {
+    name = name + " " + version;
+  }
+  auto set = BenchmarkSet(name);
+  // Warm up to largest occupied memory
+  set.set_warmup_function([] { warmup<CTensor>(4194304 * 10); });
+  add_tensor_benchmarks<RTensor>(set, "RTensor");
+  add_tensor_benchmarks<CTensor>(set, "CTensor");
+
+  if (only_list) {
+    set.list(std::cerr);
+  } else {
+    set.run(group_filter, item_filter);
+    if (filename != "nul") {
+      std::ofstream mycout(filename);
+      mycout << set << '\n';
+    }
+  }
+  return 0;
 }
