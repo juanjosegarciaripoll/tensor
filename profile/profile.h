@@ -196,7 +196,8 @@ struct BenchmarkItem {
     times.clear();
     for (size_t i = 0; i < sizes.size(); i++) {
       auto size = sizes[i];
-      auto time = times[i] = benchmark(size);
+      auto time = benchmark(size);
+      times.push_back(time);
       std::cerr << "Executing item " << name << " at size " << size << " took "
                 << time << " seconds per iteration\n";
     }
