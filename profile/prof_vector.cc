@@ -276,7 +276,7 @@ std::tuple<T, T> make_two_rows(size_t size) {
 template <class T>
 std::tuple<T, T, Indices> make_two_rows_and_index(size_t size) {
   auto aux = make_two_rows<T>(size);
-  Indices ndx = iota(0, size - 1, 2);
+  Indices ndx = iota(0, static_cast<index_t>(size - 1), 2);
   return std::tuple<T, T, Indices>(std::get<0>(aux), std::get<1>(aux), ndx);
 }
 
@@ -288,13 +288,13 @@ std::tuple<T, T> make_two_matrices(size_t size) {
 }
 
 template <typename T>
-void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
+void add_tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
   using elt_t = typename T::elt_t;
   std::vector<size_t> small_sizes = make_sizes(4, 2048, 2);
-  // Warm up to largest occupied memory
-  warmup<T>(4194304 * 100);
   {
     BenchmarkGroup group(name + " access");
+    // Warm up to largest occupied memory
+    group.set_warmup_function([] { warmup<T>(4194304 * 100); });
     group.add("extract_i0", extract_first_column<T>, make_two_columns<T>);
     group.add("extract_0i", extract_first_row<T>, make_two_rows<T>);
     group.add("copy_i0", copy_first_column<T>, make_two_columns<T>);
@@ -320,6 +320,8 @@ void tensor_benchmarks(BenchmarkSet &set, const std::string &name) {
   }
   {
     BenchmarkGroup group(name);
+    // Warm up to largest occupied memory
+    group.set_warmup_function([] { warmup<T>(4194304 * 100); });
     group.add("plus", add<T, T>, make_two_vectors<T>);
     group.add("minus", subtract<T, T>, make_two_vectors<T>);
     group.add("multiplies", multiply<T, T>, make_two_vectors<T>);
@@ -354,8 +356,9 @@ void run_all(std::ostream &out, const std::string &version = "") {
 
   auto set = BenchmarkSet(name);
 
-  tensor_benchmarks<RTensor>(set, "RTensor");
-  tensor_benchmarks<CTensor>(set, "CTensor");
+  add_tensor_benchmarks<RTensor>(set, "RTensor");
+  add_tensor_benchmarks<CTensor>(set, "CTensor");
+  set.run();
 
   out << set << std::endl;
 }
