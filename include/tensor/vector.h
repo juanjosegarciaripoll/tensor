@@ -21,9 +21,10 @@
 #define TENSOR_VECTOR_H
 
 #include <algorithm>
-#include <memory>
 #include <tensor/numbers.h>
 #include <tensor/exceptions.h>
+//#define TENSOR_SHARED_ARRAY_PTR 1
+#include <tensor/detail/shared_ptr.h>
 
 namespace tensor {
 
@@ -59,8 +60,7 @@ class Vector {
 
   explicit Vector(size_type size)
       : size_{size},
-        base_{size ? new elt_t[size] : nullptr},
-        data_(base_, std::default_delete<elt_t[]>()) {}  // NOLINT
+        data_{make_shared_array<elt_t>(size)} {}  // NOLINT
 
   static inline Vector<elt_t> empty(size_type size) { return Vector(size); }
 
@@ -72,13 +72,13 @@ class Vector {
   template <typename other_elt>
   // cppcheck-suppress noExplicitConstructor
   Vector(const std::initializer_list<other_elt> &l) : Vector(l.size()) {
-    std::copy(l.begin(), l.end(), base_);
+    std::copy(l.begin(), l.end(), data_.get());
   }
 
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
   Vector(const SimpleVector<elt_t> &v) : Vector(v.size()) {
-    std::copy(v.begin(), v.end(), base_);
+    std::copy(v.begin(), v.end(), data_.get());
   }
 
   /* Copy constructor and copy operator */
@@ -91,7 +91,7 @@ class Vector {
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */
-  Vector(size_type size, elt_t *data) : size_{size}, base_{data}, data_{} {}
+  Vector(size_type size, elt_t *data) : size_{size}, data_{make_shared_array_from_ptr(data)} {}
 
   constexpr size_type size() const noexcept { return size_; }
   constexpr difference_type ssize() const noexcept {
@@ -112,37 +112,38 @@ class Vector {
 
   /**\todo Make begin() and end() no except when we remove copy-on-write. */
   iterator begin() { return appropriate(); }
-  const_iterator begin() const noexcept { return base_; }
-  const_iterator cbegin() const noexcept { return base_; }
-  const_iterator cend() const noexcept { return cbegin() + size_; }
-  const_iterator end() const noexcept { return cbegin() + size_; }
+  const_iterator begin() const noexcept { return data_.get(); }
+  const_iterator cbegin() const noexcept { return data_.get(); }
+  const_iterator cend() const noexcept { return data_.get() + size_; }
+  const_iterator end() const noexcept { return data_.get() + size_; }
   iterator end() { return begin() + size_; }
 
   // Only for testing purposes
   difference_type ref_count() const noexcept { return data_.use_count(); }
 
   Vector<elt_t> copy() const {
-    auto output = empty(size());
+    Vector<elt_t> output(size());
     std::copy(cbegin(), cend(), output.begin());
     return output;
   }
 
  private:
   size_type size_{0};
-  elt_t *base_{nullptr};
-  std::shared_ptr<elt_t> data_{};
+  shared_array<elt_t> data_{};
 
   elt_t *appropriate() {
     // NOLINTBEGIN
-    if (data_.use_count() > 1) {
-      std::shared_ptr<elt_t> tmp(new elt_t[size_],
-                                 std::default_delete<elt_t[]>());
-      std::copy(base_, base_ + size_, tmp.get());
-      std::swap(data_, tmp);
-      return base_ = data_.get();
+    if tensor_unlikely (!data_.unique()) {
+      copy_shared_data();
     }
     // NOLINTEND
-    return base_;
+    return data_.get();
+  }
+
+  void copy_shared_data() {
+	auto tmp = make_shared_array<elt_t>(size_);
+    std::copy(data_.get(), data_.get() + size_, tmp.get());
+    data_.swap(tmp);
   }
 };
 

@@ -25,6 +25,19 @@
 
 namespace tensor {
 
+#if __cplusplus >= 202002L
+#define tensor_unlikely(x) (x) [[unlikely]]
+#define tensor_likely(x) (x) [[likely]]
+#else
+#if defined(__GNUC__) || defined(__clang__)
+#define tensor_unlikely(x) (__builtin_expect((x), 0))
+#define tensor_likely(x) (__builtin_expect((x), 1))
+#else
+#define tensor_unlikely(x) (x)
+#define tensor_likely(x) (x)
+#endif
+#endif
+
 struct invalid_assertion : public std::logic_error {
   invalid_assertion(const char *message, const char *a_filename, int a_line)
       : std::logic_error(message), filename{a_filename}, line{a_line} {}
