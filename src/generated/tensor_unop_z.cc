@@ -26,46 +26,43 @@ namespace tensor {
 using tensor::mapping::ufunc1;
 
 RTensor abs(const CTensor &t) {
-  auto output = RTensor::empty(t.dimensions());
-  std::transform(t.cbegin(), t.cend(), output.begin(),
-                 [](const cdouble &z) -> double { return std::abs(z); });
-  return output;
+  return ufunc1(t, static_cast<double(*)(const std::complex<double> &z)>(std::abs));
 }
 
 CTensor sqrt(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::sqrt(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::sqrt));
 }
 
 CTensor sin(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::sin(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::sin));
 }
 
 CTensor cos(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::cos(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::cos));
 }
 
 CTensor tan(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::tan(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::tan));
 }
 
 CTensor exp(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::exp(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::exp));
 }
 
 CTensor log(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::log(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::log));
 }
 
 CTensor sinh(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::sinh(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::sinh));
 }
 
 CTensor cosh(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::cosh(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::cosh));
 }
 
 CTensor tanh(const CTensor &t) {
-  return ufunc1(t, [](const cdouble &z) { return std::tanh(z); });
+  return ufunc1(t, static_cast<cdouble(*)(const cdouble &z)>(std::tanh));
 }
 
 CTensor pow(const CTensor &t, double expt) {

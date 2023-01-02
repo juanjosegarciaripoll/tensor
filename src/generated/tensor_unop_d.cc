@@ -24,45 +24,25 @@ namespace tensor {
 
 using tensor::mapping::ufunc1;
 
-RTensor abs(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::abs(r); });
-}
+RTensor abs(const RTensor &t) { return ufunc1(t, ::fabs); }
 
-RTensor sqrt(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::sqrt(r); });
-}
+RTensor sqrt(const RTensor &t) { return ufunc1(t, ::sqrt); }
 
-RTensor sin(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::sin(r); });
-}
+RTensor sin(const RTensor &t) { return ufunc1(t, ::sin); }
 
-RTensor cos(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::cos(r); });
-}
+RTensor cos(const RTensor &t) { return ufunc1(t, ::cos); }
 
-RTensor tan(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::tan(r); });
-}
+RTensor tan(const RTensor &t) { return ufunc1(t, ::tan); }
 
-RTensor exp(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::exp(r); });
-}
+RTensor exp(const RTensor &t) { return ufunc1(t, ::exp); }
 
-RTensor log(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::log(r); });
-}
+RTensor log(const RTensor &t) { return ufunc1(t, ::log); }
 
-RTensor sinh(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::sinh(r); });
-}
+RTensor sinh(const RTensor &t) { return ufunc1(t, ::sinh); }
 
-RTensor cosh(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::cosh(r); });
-}
+RTensor cosh(const RTensor &t) { return ufunc1(t, ::cosh); }
 
-RTensor tanh(const RTensor &t) {
-  return ufunc1(t, [](double r) { return std::tanh(r); });
-}
+RTensor tanh(const RTensor &t) { return ufunc1(t, ::tanh); }
 
 RTensor pow(const RTensor &t, double expt) {
   return ufunc1(t, [=](double r) { return std::pow(r, expt); });

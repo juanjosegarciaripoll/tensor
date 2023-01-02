@@ -28,9 +28,9 @@ namespace mapping {
 using namespace tensor;
 
 template <class elt_t, typename op>
-inline Tensor<elt_t> ufunc1(const Tensor<elt_t> &a, op b) {
-  auto output = Tensor<elt_t>::empty(a.dimensions());
-  std::transform(std::begin(a), std::end(a), std::begin(output), b);
+inline auto ufunc1(const Tensor<elt_t> &a, op b) {
+  Tensor<decltype(b(a[0]))> output(a.dimensions());
+  std::transform(a.cbegin(), a.cend(), output.unsafe_begin_not_shared(), b);
   return output;
 }
 
