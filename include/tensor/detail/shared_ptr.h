@@ -6,14 +6,14 @@
 
 namespace tensor {
 
-#ifdef TENSOR_SHARED_PTR
+#ifdef TENSOR_SHARED_ARRAY_PTR
 
 template <typename elt>
 class shared_array {
  public:
   shared_array() = default;
   shared_array(const shared_array &other)
-      : counter_{other.get_counter()}, pointer_{other.pointer_} {}
+      : pointer_{other.pointer_}, counter_{other.get_counter()} {}
   shared_array(shared_array &&other) { this->swap(other); }
   shared_array &operator=(const shared_array &other) {
     if tensor_likely (&other != this) {
@@ -97,8 +97,8 @@ class shared_array {
   };
   using counter_ptr_t = counter_structure *;
 
-  mutable counter_ptr_t counter_{nullptr};
   elt *pointer_{nullptr};
+  mutable counter_ptr_t counter_{nullptr};
 };
 
 template <class T>
@@ -108,7 +108,7 @@ inline shared_array<T> make_shared_array(size_t size) {
 
 template <class T>
 inline shared_array<T> make_shared_array_from_ptr(T *data) {
-  return shared_array<T>(T, true);
+  return shared_array<T>(data, true);
 }
 
 #else  // !TENSOR_SHARED_PTR
