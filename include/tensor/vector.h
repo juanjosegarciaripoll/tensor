@@ -127,6 +127,9 @@ class Vector {
     return output;
   }
 
+  iterator unsafe_begin_not_shared() { return data_.get(); }
+  iterator unsafe_end_not_shared() { return unsafe_begin_not_shared() + size_; }
+
  private:
   size_type size_{0};
   shared_array<elt_t> data_{};
