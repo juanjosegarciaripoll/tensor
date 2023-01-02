@@ -18,6 +18,7 @@
 
 #define TENSOR_LOAD_IMPL
 #include <tensor/tensor.h>
+#include <tensor/tensor/implementation.h>
 
 //
 // Explicitely instantiate an specialization of Tensor. This generates

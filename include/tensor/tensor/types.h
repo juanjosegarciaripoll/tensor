@@ -73,32 +73,21 @@ class Tensor {
   ~Tensor() = default;
 
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
-  explicit Tensor(const Dimensions &new_dims)
-      : data_(static_cast<size_t>(new_dims.total_size())), dims_(new_dims){};
+  explicit Tensor(const Dimensions &new_dims);
 
   /**Constructs an N-D Tensor with given initial data.*/
-  Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other)
-      : data_(other.data_), dims_(new_dims) {
-    tensor_assert(dims_.total_size() == ssize());
-  }
+  Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other);
 
   /**Constructs a 1-D Tensor from a vector.*/
-  // NOLINTNEXTLINE(*-explicit-constructor)
-  // cppcheck-suppress noExplicitConstructor
-  Tensor(const vector_type &data) : data_(data), dims_{data_.size()} {}
+  Tensor(const vector_type &data);
 
   /**Constructs a 1-D Tensor from a vector (move version for temporaries).*/
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
-  Tensor(vector_type &&data) : data_(std::move(data)), dims_{data_.ssize()} {}
+  Tensor(vector_type &&data);
 
   /**Constructs a 1-D Tensor from a vector.*/
-  // NOLINTNEXTLINE(*-explicit-constructor)
-  // cppcheck-suppress noExplicitConstructor
-  Tensor(const std::vector<elt_t> &data)
-      : data_(data.size()), dims_{data_.ssize()} {
-    std::copy(data.begin(), data.end(), begin());
-  }
+  Tensor(const std::vector<elt_t> &data);
 
   /**Optimized copy constructor.*/
   Tensor(const Tensor &other) = default;
@@ -348,6 +337,9 @@ class Tensor {
   const_iterator end() const noexcept { return data_.cend(); }
   /**Iterator at the end.*/
   iterator end() { return data_.end(); }
+
+  iterator unsafe_begin_not_shared() { return data_.unsafe_begin_not_shared(); }
+  iterator unsafe_end_not_shared() { return data_.unsafe_end_not_shared(); }
 
   // Only for testing purposes
   index ref_count() const noexcept { return data_.ref_count(); }
