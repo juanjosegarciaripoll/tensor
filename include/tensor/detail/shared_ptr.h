@@ -28,9 +28,9 @@ class shared_array {
     this->swap(other);
     return *this;
   }
-  explicit shared_array(elt *pointer, bool owned = false)
+  explicit shared_array(elt *pointer, bool can_delete = true)
       : pointer_{pointer},
-        counter_{owned ? nullptr : new counter_structure{2}} {}
+        counter_{can_delete ? nullptr : new counter_structure{2, nullptr}} {}
   ~shared_array() { delete_pointer(); }
 
   elt &operator*() const noexcept { return *pointer_; }
@@ -68,6 +68,7 @@ class shared_array {
  private:
   struct counter_structure {
     long use_count{2};
+    elt *pointer{nullptr};
   };
 
   void delete_pointer() {
@@ -81,8 +82,8 @@ class shared_array {
 
   void complex_deletion() {
     if (--(counter_->use_count) <= 0) {
+      delete[] counter_->pointer;
       delete counter_;
-      delete[] pointer_;
     }
     counter_ = nullptr;
     pointer_ = nullptr;
@@ -90,7 +91,7 @@ class shared_array {
 
   counter_structure *get_counter() const {
     if tensor_likely (counter_ == nullptr) {
-      return counter_ = new counter_structure();
+      return counter_ = new counter_structure{2, pointer_};
     }
     ++(counter_->use_count);
     return counter_;
@@ -108,7 +109,7 @@ inline shared_array<T> make_shared_array(size_t size) {
 
 template <class T>
 inline shared_array<T> make_shared_array_from_ptr(T *data) {
-  return shared_array<T>(data, true);
+  return shared_array<T>(data, false);
 }
 
 #else  // !TENSOR_SHARED_PTR
