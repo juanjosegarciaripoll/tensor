@@ -56,6 +56,7 @@ option(TENSOR_COPY_ON_WRITE "Tensor data is stored and shared using a copy-on-wr
 option(TENSOR_FORCE_STATIC "Ignore BUILD_SHARED_LIBS forcefully")
 option(BUILD_SHARED_LIBS "Build as shared library" OFF)
 option(TENSOR_BUILD_PROFILE "Build profiling code" OFF)
+option(TENSOR_UNSAFE_SHARED_PTR "Non thread-safe version of shared_ptr" OFF)
 set(TENSOR_BLAS "OpenBLAS" CACHE STRING "BLAS backend to use. Values are OpenBLAS (default) or MKL (also brings LAPACK backend)")
 
 # Compiler settings and other tooling

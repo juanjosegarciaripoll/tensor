@@ -1,12 +1,11 @@
 #pragma once
 
 #include <memory>
-#include <iostream>
 #include <tensor/exceptions.h>
 
 namespace tensor {
 
-#ifdef TENSOR_SHARED_ARRAY_PTR
+#ifdef TENSOR_UNSAFE_SHARED_PTR
 
 template <typename elt>
 class shared_array {

@@ -23,7 +23,6 @@
 #include <algorithm>
 #include <tensor/numbers.h>
 #include <tensor/exceptions.h>
-//#define TENSOR_SHARED_ARRAY_PTR 1
 #include <tensor/detail/shared_ptr.h>
 
 namespace tensor {
@@ -59,8 +58,7 @@ class Vector {
   ~Vector() = default;
 
   explicit Vector(size_type size)
-      : size_{size},
-        data_{make_shared_array<elt_t>(size)} {}  // NOLINT
+      : size_{size}, data_{make_shared_array<elt_t>(size)} {}  // NOLINT
 
   static inline Vector<elt_t> empty(size_type size) { return Vector(size); }
 
@@ -91,7 +89,8 @@ class Vector {
 
   /* Create a vector that references data we do not own (own=false in the
      RefPointer constructor. */
-  Vector(size_type size, elt_t *data) : size_{size}, data_{make_shared_array_from_ptr(data)} {}
+  Vector(size_type size, elt_t *data)
+      : size_{size}, data_{make_shared_array_from_ptr(data)} {}
 
   constexpr size_type size() const noexcept { return size_; }
   constexpr difference_type ssize() const noexcept {
@@ -144,7 +143,7 @@ class Vector {
   }
 
   void copy_shared_data() {
-	auto tmp = make_shared_array<elt_t>(size_);
+    auto tmp = make_shared_array<elt_t>(size_);
     std::copy(data_.get(), data_.get() + size_, tmp.get());
     data_.swap(tmp);
   }
