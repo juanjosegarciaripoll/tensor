@@ -109,6 +109,7 @@ CSRMatrix<elt_t> CSRMatrix<elt_t>::make_sparse(
         row_start_.at(++last_row) = j;
       }
     }
+	ncols = std::max(ncols, d.col);
     column_.at(j) = d.col;
     data_.at(j) = d.value;
     j++;
@@ -116,7 +117,6 @@ CSRMatrix<elt_t> CSRMatrix<elt_t>::make_sparse(
   while (last_row < nrows) {
     row_start_.at(++last_row) = j;
   }
-  ncols = std::max(ncols, *std::max_element(column_.begin(), column_.end()));
   return CSRMatrix<elt_t>(Dimensions{nrows, ncols}, row_start_, column_, data_);
 }
 
