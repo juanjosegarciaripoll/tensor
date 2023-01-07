@@ -135,9 +135,15 @@ class Vector {
 
   elt_t *appropriate() {
     // NOLINTBEGIN
+#ifdef TENSOR_UNSAFE_SHARED_PTR
     if tensor_unlikely (!data_.unique()) {
       copy_shared_data();
     }
+#else
+    if tensor_unlikely (data_.use_count() > 1) {
+      copy_shared_data();
+    }
+#endif
     // NOLINTEND
     return data_.get();
   }
