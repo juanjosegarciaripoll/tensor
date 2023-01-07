@@ -24,25 +24,45 @@ namespace tensor {
 
 using tensor::mapping::ufunc1;
 
-RTensor abs(const RTensor &t) { return ufunc1(t, ::fabs); }
+RTensor abs(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::fabs));
+}
 
-RTensor sqrt(const RTensor &t) { return ufunc1(t, ::sqrt); }
+RTensor sqrt(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::sqrt));
+}
 
-RTensor sin(const RTensor &t) { return ufunc1(t, ::sin); }
+RTensor sin(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::sin));
+}
 
-RTensor cos(const RTensor &t) { return ufunc1(t, ::cos); }
+RTensor cos(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::cos));
+}
 
-RTensor tan(const RTensor &t) { return ufunc1(t, ::tan); }
+RTensor tan(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::tan));
+}
 
-RTensor exp(const RTensor &t) { return ufunc1(t, ::exp); }
+RTensor exp(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::exp));
+}
 
-RTensor log(const RTensor &t) { return ufunc1(t, ::log); }
+RTensor log(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::log));
+}
 
-RTensor sinh(const RTensor &t) { return ufunc1(t, ::sinh); }
+RTensor sinh(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::sinh));
+}
 
-RTensor cosh(const RTensor &t) { return ufunc1(t, ::cosh); }
+RTensor cosh(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::cosh));
+}
 
-RTensor tanh(const RTensor &t) { return ufunc1(t, ::tanh); }
+RTensor tanh(const RTensor &t) {
+  return ufunc1(t, static_cast<double (*)(double)>(std::tanh));
+}
 
 RTensor pow(const RTensor &t, double expt) {
   return ufunc1(t, [=](double r) { return std::pow(r, expt); });
