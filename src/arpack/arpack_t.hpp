@@ -86,14 +86,18 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t a_n, enum EigType a_t,
 
   // Reserve space for the lanczos basis in which the eigenvectors are
   // approximated.
-  ncv = std::min<blas::integer>(std::max<blas::integer>(2 * nev, 20), n);
+  ncv = std::min<blas::integer>(std::max<blas::integer>(2 * nev + 1, 20), n);
   V = std::make_unique<elt_t[]>(static_cast<size_t>(n * ncv));
 
+#if 0
   // Conservative estimate by Matlab
-
   maxit = std::max(blas::integer(300),
                    static_cast<blas::integer>(
                        ceil(2.0 * n / std::max(ncv, blas::integer(1)))));
+#else
+  // Estimate from Scipy
+  maxit = 10 * n;
+#endif
 
   // Parameters for the algorithm: the (-1) in the index is to make it
   // look like FORTRAN.
