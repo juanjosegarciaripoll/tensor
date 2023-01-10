@@ -62,7 +62,7 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t a_n, enum EigType a_t,
   which = eigenvalue_selector<elt_t>(a_t);
 
   // Default tolerance is machine precision
-  tol = -1.0;
+  tol = std::numeric_limits<double>::epsilon();
 
   // Select the problem size
   n = blas::size_t_to_blas(a_n);
@@ -95,8 +95,8 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t a_n, enum EigType a_t,
                    static_cast<blas::integer>(
                        ceil(2.0 * n / std::max(ncv, blas::integer(1)))));
 #else
-  // Estimate from Scipy
-  maxit = 10 * n;
+  // Increase over the stimate from Scipy (10 * n)
+  maxit = 20 * n;
 #endif
 
   // Parameters for the algorithm: the (-1) in the index is to make it
