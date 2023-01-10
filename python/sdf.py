@@ -45,18 +45,21 @@ class SDF:
     # Python array code for complex doubles
     cdouble = endian_char(sys.byteorder)+'c16'
 
-    def __init__(self, filename):
+    def __init__(self, filename, ignored_fields={}):
         self.f = []
         self.filename = pathlib.Path(filename)
         self.long_type = self.int32
         self.endian = sys.byteorder
         self.interpret = False # is the same endian?
+        self.ignored_fields = ignored_fields
 
     def load(self):
         self.f = self.filename.open('rb')
         output = {}
         while self.f.readable():
             obj, name = self.load_record()
+            if name is None:
+                continue
             if len(name):
                 output[name] = obj
             else:
@@ -69,59 +72,72 @@ class SDF:
         self.endian = newendian
         self.interpret = sys.byteorder != newendian
 
-    def load_record(self):
+    def load_record(self, skip=False):
         name, code = self.load_tag()
+        if name in self.ignored_fields:
+            name = None
+            skip = True
         obj = []
         if code == -1:
             name = '';
             obj = [];
         elif code == 0:
-            obj = self.load_tensor(False)
+            obj = self.load_tensor(False, skip)
         elif code == 1:
-            obj = self.load_tensor(True)
+            obj = self.load_tensor(True, skip)
         elif code == 2:
-            obj = self.load_mp(False)
+            obj = self.load_mp(False, skip)
         elif code == 3:
-            obj = self.load_mp(True)
+            obj = self.load_mp(True, skip)
         else:
             raise Error('Unknown SDF tag')
         return obj, name
 
-    def load_mp(self, iscomplex):
+    def load_mp(self, iscomplex, skip):
         L = self.read_longs(1)[0]
-        [self.load_record()[0] for i in range(L)]
-        return []
+        if skip:
+            for i in range(L):
+                self.load_record(skip)
+            return None
+        else:
+            return [self.load_record()[0] for i in range(L)]
 
-    def load_tensor(self, iscomplex):
+    def load_tensor(self, iscomplex, skip):
         rank = self.read_longs(1)[0]
         dims = self.read_longs(rank)
         L = self.read_longs(1)[0]
-        if iscomplex:
+        if skip:
+            return self.skip_doubles(2 * L if iscomplex else L)
+        elif iscomplex:
             data = self.read_complex(L)
         else:
             data = self.read_doubles(L)
-        return np.ndarray(shape=dims,buffer=data,dtype=data.dtype,order='F')
+        return np.ndarray(shape=dims, buffer=data, dtype=data.dtype, order='F')
 
     def read_longs(self, n):
-        output = np.ndarray(shape=(n,),dtype=self.long_type)
+        output = np.ndarray(shape=(n,), dtype=self.long_type)
         self.f.readinto(output)
         if self.interpret:
             output.byteswwap()
         return output
 
     def read_doubles(self, n):
-        output = np.ndarray(shape=(n,),dtype=self.double)
+        output = np.ndarray(shape=(n,), dtype=self.double)
         self.f.readinto(output)
         if self.interpret:
             output.byteswwap()
         return output
-    
+
     def read_complex(self, n):
-        output = np.ndarray(shape=(n,),dtype=self.cdouble)
+        output = np.ndarray(shape=(n,), dtype=self.cdouble)
         self.f.readinto(output)
         if self.interpret:
             output.byteswwap()
         return output
+
+    def skip_doubles(self, n):
+        self.f.seek(n * 8, 1)
+        return None
 
     def load_tag(self):
         name = self.f.read(64)
