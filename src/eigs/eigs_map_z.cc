@@ -1,0 +1,50 @@
+/*
+    Copyright (c) 2010 Juan Jose Garcia Ripoll
+
+    Tensor is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Library General Public License as published
+    by the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Library General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+#include <tensor/linalg.h>
+
+namespace linalg {
+
+using namespace tensor;
+
+CTensor eigs_gen(const LinearMap<CTensor> &A, size_t n, EigType eig_type,
+                 size_t neig, CTensor *eigenvectors, bool *converged) {
+  return eigs_gen(
+      [&](const CTensor &input, CTensor &output) -> void {
+        CTensor aux = A(input);
+        tensor_assert(aux.dimensions() == output.dimensions());
+        std::copy(aux.begin(), aux.end(), output.begin());
+      },
+      n, eig_type, neig, eigenvectors, converged);
+}
+
+CTensor eigs_gen(const InPlaceLinearMap<CTensor> &A, size_t n, EigType eig_type,
+                 size_t neig, CTensor *eigenvectors, bool *converged) {
+  const EigsDriver driver = get_default_eigs_driver();
+#ifdef TENSOR_USE_ARPACK
+  if (driver == ArpackDriver) {
+    return linalg::arpack::eigs_gen(A, n, eig_type, neig, eigenvectors,
+                                    converged);
+  }
+#endif
+#ifdef TENSOR_USE_PRIMME
+  return linalg::primme::eigs_gen(A, n, eig_type, neig, eigenvectors,
+                                  converged);
+#endif
+}
+
+}  // namespace linalg

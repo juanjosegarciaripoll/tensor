@@ -49,6 +49,7 @@ include(TensorOpenBLAS)
 option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" ON)
 option(TENSOR_FFTW "Enable support for FFTW" OFF)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
+option(TENSOR_PRIMME "Enable support for Primme" OFF)
 option(TENSOR_TEST "Enable support for tests with GoogleTest" ON)
 option(TENSOR_BENCHMARK "Enable benchmarking code after building" OFF)
 option(TENSOR_RANGE_SQUEEZE "Selecting ranges from a tensor can remove dimensions" ON)
@@ -115,6 +116,7 @@ endif()
 # Fortran name mangling
 #
 if(TENSOR_ARPACK)
+  set(TENSOR_USE_ARPACK TRUE)
   tensor_find_dependency(
     NAME arpack
     OUTVAR tensor_arpack_target
@@ -164,6 +166,19 @@ if(TENSOR_FFTW)
   )
   set(TENSOR_USE_FFTW3 TRUE)
 endif()
+
+if(TENSOR_PRIMME)
+  set(TENSOR_USE_PRIMME TRUE)
+  # We could simplify this if CMake version was 3.24 or later,
+  # because it can default to find_package
+  FetchContent_Declare(
+	primme
+	GIT_REPOSITORY https://github.com/juanjosegarciaripoll/primme.git
+	GIT_TAG 5453190ca5ef9b13d1954feef2419cdd5d8c0deb
+  )
+  FetchContent_MakeAvailable(primme)
+endif()
+
 configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/config.h)
 
 ############################################################
@@ -185,6 +200,9 @@ if(TENSOR_FFTW)
 endif()
 if(TENSOR_ARPACK)
   target_link_libraries(tensor PUBLIC ${tensor_arpack_target})
+endif()
+if(TENSOR_PRIMME)
+  target_link_libraries(tensor PUBLIC primme)
 endif()
 if(TENSOR_USE_LAPACK)
   target_link_libraries(tensor PRIVATE ${tensor_lapack_target})

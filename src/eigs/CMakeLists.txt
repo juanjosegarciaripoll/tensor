@@ -1,0 +1,16 @@
+target_sources(tensor
+  PRIVATE
+  eigs_d.cc
+  eigs_map_d.cc
+  eigs_map_z.cc
+  eigs_sp_d.cc
+  eigs_sp_z.cc
+  eigs_sym_d.cc
+  eigs_sym_z.cc
+  eigs_sym_map_d.cc
+  eigs_sym_map_z.cc
+  eigs_sym_sp_d.cc
+  eigs_sym_sp_z.cc
+  eigs_sym_z.cc
+  eigs_z.cc
+)

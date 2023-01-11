@@ -9,10 +9,18 @@ add_subdirectory(linalg)
 add_subdirectory(views)
 add_subdirectory(sdf)
 
+if(TENSOR_PRIMME)
+  add_subdirectory(primme)
+endif()
+
 if(TENSOR_FFTW)
   add_subdirectory(fftw)
 endif()
 
 if(TENSOR_ARPACK)
   add_subdirectory(arpack)
+endif()
+
+if(TENSOR_ARPACK OR TENSOR_PRIMME)
+  add_subdirectory(eigs)
 endif()

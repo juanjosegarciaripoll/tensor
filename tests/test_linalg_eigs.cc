@@ -92,23 +92,28 @@ void test_eigs_permuted_diagonal(int n) {
   EXPECT_CEQ(1.0, abs(fold(en, 0, U, 0))(0));
 }
 
+#ifdef TENSOR_USE_ARPACK
 //////////////////////////////////////////////////////////////////////
 // REAL SPECIALIZATIONS
 //
 
 TEST(RArpackTest, EigsEye) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(0, 22, test_eigs_eye<RTensor>);
 }
 
 TEST(RArpackTest, EigsPermutedDiagonal) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(1, 22, test_eigs_permuted_diagonal<RTensor>);
 }
 
 TEST(RArpackTest, EigsRSparseEye) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(0, 22, test_eigs_eye<RSparse>);
 }
 
 TEST(RArpackTest, EigsRSparsePermutedDiagonal) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(1, 22, test_eigs_permuted_diagonal<RTensor>);
 }
 
@@ -117,19 +122,74 @@ TEST(RArpackTest, EigsRSparsePermutedDiagonal) {
 //
 
 TEST(CArpackTest, EigsEye) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(0, 22, test_eigs_eye<CTensor>);
 }
 
 TEST(CArpackTest, EigsPermutedDiagonal) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(1, 22, test_eigs_permuted_diagonal<CTensor>);
 }
 
 TEST(CArpackTest, EigsCSparseEye) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(0, 22, test_eigs_eye<CSparse>);
 }
 
 TEST(CArpackTest, EigsCSparsePermutedDiagonal) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(1, 22, test_eigs_permuted_diagonal<CTensor>);
 }
+#endif
+
+#ifdef TENSOR_USE_PRIMME
+//////////////////////////////////////////////////////////////////////
+// REAL SPECIALIZATIONS
+//
+
+TEST(RPrimmeTest, EigsEye) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(0, 22, test_eigs_eye<RTensor>);
+}
+
+TEST(RPrimmeTest, EigsPermutedDiagonal) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(1, 22, test_eigs_permuted_diagonal<RTensor>);
+}
+
+TEST(RPrimmeTest, EigsRSparseEye) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(0, 22, test_eigs_eye<RSparse>);
+}
+
+TEST(RPrimmeTest, EigsRSparsePermutedDiagonal) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(1, 22, test_eigs_permuted_diagonal<RTensor>);
+}
+
+//////////////////////////////////////////////////////////////////////
+// COMPLEX SPECIALIZATIONS
+//
+
+TEST(CPrimmeTest, EigsEye) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(0, 22, test_eigs_eye<CTensor>);
+}
+
+TEST(CPrimmeTest, EigsPermutedDiagonal) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(1, 22, test_eigs_permuted_diagonal<CTensor>);
+}
+
+TEST(CPrimmeTest, EigsCSparseEye) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(0, 22, test_eigs_eye<CSparse>);
+}
+
+TEST(CPrimmeTest, EigsCSparsePermutedDiagonal) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(1, 22, test_eigs_permuted_diagonal<CTensor>);
+}
+#endif
 
 }  // namespace tensor_test

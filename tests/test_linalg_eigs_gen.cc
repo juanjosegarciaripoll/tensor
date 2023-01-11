@@ -63,11 +63,11 @@ void test_eigs_gen_permuted_diagonal(int n) {
   RTensor pinv = adjoint(p);
   RTensor d = diag(linspace((double)1.0, n, n), 0);
 
-  Tensor<elt_t> e1 = RTensor::zeros(n);
+  Tensor<elt_t> e1 = Tensor<elt_t>::zeros(n);
   e1.at(0) = 1.0;
   e1 = mmult(pinv, e1);
 
-  Tensor<elt_t> en = RTensor::zeros(n);
+  Tensor<elt_t> en = Tensor<elt_t>::zeros(n);
   en.at(n - 1) = 1.0;
   en = mmult(pinv, en);
 
@@ -96,20 +96,52 @@ void test_eigs_gen_permuted_diagonal(int n) {
 // REAL SPECIALIZATIONS
 //
 
+#ifdef TENSOR_USE_ARPACK
 TEST(RArpackTest, EigsGenEye) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(0, 22, test_eigs_gen_eye<RTensor>);
 }
 
 TEST(RArpackTest, EigsGenPermutedDiagonal) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(1, 22, test_eigs_gen_permuted_diagonal<RTensor>);
 }
 
 TEST(RArpackTest, EigsGenRSparseEye) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(0, 22, test_eigs_gen_eye<RSparse>);
 }
 
 TEST(RArpackTest, EigsGenRSparsePermutedDiagonal) {
+  set_default_eigs_driver(ArpackDriver);
   test_over_integers(1, 22, test_eigs_gen_permuted_diagonal<RTensor>);
 }
+#endif
+
+//////////////////////////////////////////////////////////////////////
+// COMPLEX SPECIALIZATIONS
+//
+
+#ifdef TENSOR_USE_PRIMME
+TEST(RPrimmeTest, EigsGenEye) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(0, 22, test_eigs_gen_eye<CTensor>);
+}
+
+TEST(RPrimmeTest, EigsGenPermutedDiagonal) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(1, 22, test_eigs_gen_permuted_diagonal<CTensor>);
+}
+
+TEST(RPrimmeTest, EigsGenRSparseEye) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(0, 22, test_eigs_gen_eye<CSparse>);
+}
+
+TEST(RPrimmeTest, EigsGenRSparsePermutedDiagonal) {
+  set_default_eigs_driver(PrimmeDriver);
+  test_over_integers(1, 22, test_eigs_gen_permuted_diagonal<CTensor>);
+}
+#endif
 
 }  // namespace tensor_test

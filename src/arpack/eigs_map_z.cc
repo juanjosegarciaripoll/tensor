@@ -16,22 +16,14 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "eigs_tools.h"
+#include <tensor/linalg.h>
+#include <tensor/arpack.h>
 
 namespace linalg {
 
-using namespace tensor;
+namespace arpack {
 
-CTensor eigs(const LinearMap<CTensor> &A, size_t n, EigType eig_type,
-             size_t neig, CTensor *eigenvectors, bool *converged) {
-  return eigs(
-      [&](const CTensor &input, CTensor &output) -> void {
-        CTensor aux = A(input);
-        tensor_assert(aux.dimensions() == output.dimensions());
-        std::copy(aux.begin(), aux.end(), output.begin());
-      },
-      n, eig_type, neig, eigenvectors, converged);
-}
+using namespace tensor;
 
 CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
   auto M = CTensor::empty(n, n);
@@ -47,8 +39,24 @@ CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
 
 // TODO: make 'neig' int in all eigs routines
 
-CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
+RTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
                    CTensor *eigenvectors, bool *converged) {
+  CTensor vectors;
+  auto values = eig_sym(A, eigenvectors ? &vectors : nullptr);
+  Indices ndx = RArpack::sort_values(values, eig_type);
+  Indices ndx_out(static_cast<index_t>(neig));
+  std::copy(ndx.begin(), ndx.begin() + neig, ndx_out.begin());
+  if (eigenvectors) {
+    *eigenvectors = tensor::real(vectors(_, range(ndx_out)));
+  }
+  if (converged) {
+    *converged = true;
+  }
+  return values(range(ndx_out));
+}
+
+CTensor eigs_gen_small(const CTensor &A, EigType eig_type, size_t neig,
+                       CTensor *eigenvectors, bool *converged) {
   CTensor vectors;
   CTensor values = eig(A, nullptr, eigenvectors ? &vectors : nullptr);
   Indices ndx = RArpack::sort_values(values, eig_type);
@@ -60,7 +68,7 @@ CTensor eigs_small(const CTensor &A, EigType eig_type, size_t neig,
   if (converged) {
     *converged = true;
   }
-  return tensor::real(values(range(ndx_out)));
+  return values(range(ndx_out));
 }
 
 CTensor eigs(const InPlaceLinearMap<CTensor> &A, size_t dim, EigType eig_type,
@@ -72,7 +80,7 @@ CTensor eigs(const InPlaceLinearMap<CTensor> &A, size_t dim, EigType eig_type,
     abort();
   }
 
-  if (dim <= min_arpack_size) {
+  if (dim <= linalg::arpack::min_arpack_size) {
     /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
@@ -103,5 +111,13 @@ CTensor eigs(const InPlaceLinearMap<CTensor> &A, size_t dim, EigType eig_type,
     }
   }
 }
+
+CTensor eigs_gen(const InPlaceLinearMap<CTensor> &A, size_t dim,
+                 EigType eig_type, size_t neig, CTensor *eigenvectors,
+                 bool *converged) {
+  return linalg::arpack::eigs(A, dim, eig_type, neig, eigenvectors, converged);
+}
+
+}  // namespace arpack
 
 }  // namespace linalg

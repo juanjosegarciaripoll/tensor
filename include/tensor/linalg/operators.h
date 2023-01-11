@@ -1,3 +1,4 @@
+#pragma once
 /*
     Copyright (c) 2010 Juan Jose Garcia Ripoll
 
@@ -15,28 +16,30 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+#ifndef TENSOR_LINALG_OPERATORS_H
+#define TENSOR_LINALG_OPERATORS_H
 
-//----------------------------------------------------------------------
-// ARPACK DRIVER FOR NONSYMMETRIC SPARSE EIGENVALUE PROBLEMS
-//
-
-#include "eigs_tools.h"
+#include <functional>
+#include <tensor/tensor.h>
+#include <tensor/sparse.h>
 
 namespace linalg {
 
-CTensor eigs(const CSparse &A, EigType eig_type, size_t neig,
-             CTensor *eigenvectors, bool *converged) {
-  auto n = A.columns();
-  if (n <= 4) {
-    /* For small sizes, the ARPACK solver produces wrong results!
-       * In any case, for these sizes it is more efficient to do the solving
-       * using the full routine.
-       */
-    return eigs_small(full(A), eig_type, neig, eigenvectors, converged);
-  }
-  return eigs([&](const CTensor &x) { return mmult(A, x); },
-              static_cast<size_t>(A.columns()), eig_type, neig, eigenvectors,
-              converged);
+using tensor::CSparse;
+using tensor::CTensor;
+using tensor::RSparse;
+using tensor::RTensor;
+
+
+/** Template for functions that transform tensors into tensors linearly. */
+template <typename Tensor>
+using LinearMap = std::function<Tensor(const Tensor &)>;
+
+/** Templates for functions that transform tensors into tensors, modifying the input tensor.*/
+template <typename Tensor>
+using InPlaceLinearMap =
+    std::function<void(const Tensor &input, Tensor &output)>;
+
 }
 
-}  // namespace linalg
+#endif // TENSOR_LINALG_OPERATORS_H

@@ -20,23 +20,29 @@
 // ARPACK DRIVER FOR NONSYMMETRIC SPARSE EIGENVALUE PROBLEMS
 //
 
-#include "eigs_tools.h"
+#include <tensor/linalg.h>
 
 namespace linalg {
 
 CTensor eigs_gen(const RSparse &A, EigType eig_type, size_t neig,
                  CTensor *eigenvectors, bool *converged) {
   auto n = A.columns();
-  if (n < min_arpack_size) {
+  if (get_default_eigs_driver() == ArpackDriver &&
+      n < linalg::arpack::min_arpack_size) {
     /* For small sizes, the ARPACK solver produces wrong results!
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-    return eigs_gen_small(full(A), eig_type, neig, eigenvectors, converged);
+    return linalg::arpack::eigs_gen_small(full(A), eig_type, neig, eigenvectors,
+                                          converged);
   }
-  return eigs_gen([&](const RTensor &x) -> RTensor { return mmult(A, x); },
-                  static_cast<size_t>(A.columns()), eig_type, neig,
-                  eigenvectors, converged);
+  return eigs_gen(
+      [&](const RTensor &x, RTensor &y) {
+        auto new_y = mmult(A, x);
+        std::copy(new_y.begin(), new_y.end(), y.begin());
+      },
+      static_cast<size_t>(A.columns()), eig_type, neig, eigenvectors,
+      converged);
 }
 
 }  // namespace linalg

@@ -20,24 +20,26 @@
 // ARPACK DRIVER FOR NONSYMMETRIC EIGENVALUE PROBLEMS
 //
 
-#include "eigs_tools.h"
+#include <tensor/linalg/eigs.h>
 #include "gemv.cc"
 
 namespace linalg {
 
 using namespace tensor;
 
-CTensor eigs(const CTensor &A, EigType eig_type, size_t neig,
-             CTensor *eigenvectors, bool *converged) {
+CTensor eigs_gen(const CTensor &A, EigType eig_type, size_t neig,
+                 CTensor *eigenvectors, bool *converged) {
   auto n = blas::tensor_columns(A);
-  if (n <= 4) {
+  if (get_default_eigs_driver() == ArpackDriver &&
+      n <= linalg::arpack::min_arpack_size) {
     /* For small sizes, the ARPACK solver produces wrong results!
-       * In any case, for these sizes it is more efficient to do the solving
-       * using the full routine.
-       */
-    return eigs_small(A, eig_type, neig, eigenvectors, converged);
+	 * In any case, for these sizes it is more efficient to do the solving
+	 * using the full routine.
+	 */
+    return linalg::arpack::eigs_gen_small(A, eig_type, neig, eigenvectors,
+                                          converged);
   }
-  return eigs(
+  return eigs_gen(
       [&](const CTensor &in, CTensor &out) -> void {
         blas::gemv('N', n, n, number_one<cdouble>(), A.begin(), n, in.begin(),
                    1, number_zero<cdouble>(), out.begin(), 1);

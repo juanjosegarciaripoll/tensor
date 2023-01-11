@@ -16,23 +16,14 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "eigs_tools.h"
-#include "gemv.cc"
+#include <tensor/linalg.h>
+#include <tensor/arpack.h>
 
 namespace linalg {
 
-using namespace tensor;
+namespace arpack {
 
-RTensor eigs(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
-             size_t neig, RTensor *eigenvectors, bool *converged) {
-  return eigs(
-      [&](const RTensor &input, RTensor &output) {
-        RTensor aux = A(input);
-        tensor_assert(aux.dimensions() == output.dimensions());
-        std::copy(aux.begin(), aux.end(), output.begin());
-      },
-      n, eig_type, neig, eigenvectors, converged);
-}
+using namespace tensor;
 
 RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n) {
   auto M = RTensor::empty(n, n);
@@ -104,5 +95,7 @@ RTensor eigs(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
     }
   }
 }
+
+}  // namespace arpack
 
 }  // namespace linalg

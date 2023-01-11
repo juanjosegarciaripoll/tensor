@@ -3,13 +3,7 @@ target_sources(tensor
     arpack_d.cc
     arpack_d_sym.cc
     arpack_z.cc
-    eigs_d.cc
-    eigs_z.cc
-    eigs_sp_d.cc
-    eigs_sp_z.cc
     eigs_map_d.cc
     eigs_map_z.cc
-    eigs_sym_d.cc
-    eigs_sym_sp_d.cc
     eigs_sym_map_d.cc
     )

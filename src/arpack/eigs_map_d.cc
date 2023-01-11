@@ -16,23 +16,14 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "eigs_tools.h"
-#include "gemv.cc"
+#include <tensor/arpack.h>
+#include <tensor/linalg.h>
 
 namespace linalg {
 
-using namespace tensor;
+namespace arpack {
 
-CTensor eigs_gen(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
-                 size_t neig, CTensor *eigenvectors, bool *converged) {
-  return eigs_gen(
-      [&](const RTensor &input, RTensor &output) {
-        RTensor aux = A(input);
-        tensor_assert(aux.dimensions() == output.dimensions());
-        std::copy(aux.begin(), aux.end(), output.begin());
-      },
-      n, eig_type, neig, eigenvectors, converged);
-}
+using namespace tensor;
 
 CTensor eigs_gen_small(const RTensor &A, EigType eig_type, size_t neig,
                        CTensor *eigenvectors, bool *converged) {
@@ -64,8 +55,8 @@ CTensor eigs_gen(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
        * In any case, for these sizes it is more efficient to do the solving
        * using the full routine.
        */
-    return eigs_small(make_matrix(A, n), eig_type, neig, eigenvectors,
-                      converged);
+    return eigs_small(linalg::arpack::make_matrix(A, n), eig_type, neig,
+                      eigenvectors, converged);
   }
 
   Arpack<double, false> data(n, eig_type, neig);
@@ -94,5 +85,7 @@ CTensor eigs_gen(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
     }
   }
 }
+
+}  // namespace arpack
 
 }  // namespace linalg
