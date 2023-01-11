@@ -177,6 +177,7 @@ if(TENSOR_PRIMME)
 	GIT_TAG 5453190ca5ef9b13d1954feef2419cdd5d8c0deb
   )
   FetchContent_MakeAvailable(primme)
+  set(TENSOR_DEPENDENCIES "${TENSOR_DEPENDENCIES}\nfind_dependency(primme)")
 endif()
 
 configure_file(include/config.h.cmake.in ${PROJECT_BINARY_DIR}/include/tensor/config.h)
