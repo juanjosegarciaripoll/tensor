@@ -25,20 +25,24 @@ namespace tensor {
 
 struct Clock {
   std::chrono::steady_clock inner_clock{};
-  std::chrono::time_point<std::chrono::steady_clock> now{inner_clock.now()};
+  std::chrono::time_point<std::chrono::steady_clock> start{inner_clock.now()};
+  double now{0.0};
+
+  double from_start() const{
+    auto duration = inner_clock.now() - start;
+    return std::chrono::duration_cast<std::chrono::duration<double>>(duration)
+	  .count();
+  }
 
   double tic() {
-    now = inner_clock.now();
-    return 0.0;
+    return now = from_start();
   }
 
   double toc() {
-    auto duration = inner_clock.now() - now;
-    return std::chrono::duration_cast<std::chrono::duration<double>>(duration)
-        .count();
+	return toc(now);
   }
 
-  double toc(double when) { return toc() - when; }
+  double toc(double when) { return from_start() - when; }
 };
 
 static Clock inner_clock;  // NOLINT
