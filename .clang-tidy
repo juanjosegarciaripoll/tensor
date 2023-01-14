@@ -1,4 +1,4 @@
 ---
-Checks:          'clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers,performance-*'
+Checks:          'clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers,performance-*,-modernize-use-nodiscard'
 WarningsAsErrors: true
 ---
