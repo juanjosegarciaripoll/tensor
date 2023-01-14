@@ -23,20 +23,19 @@
 namespace tensor_test {
 
 using namespace tensor;
-using tensor::index;
 
 template <typename elt_t>
 elt_t slow_trace(const Tensor<elt_t> &A) {
   auto output = number_zero<elt_t>();
-  for (index i = 0; i < std::min(A.rows(), A.columns()); i++)
+  for (index_t i = 0; i < std::min(A.rows(), A.columns()); i++)
     output = output + A(i, i);
   return output;
 }
 
 template <typename elt_t>
 void test_matrix_trace() {
-  for (index rows = 1; rows <= 4; rows++) {
-    for (index cols = 1; cols <= 4; cols++) {
+  for (index_t rows = 1; rows <= 4; rows++) {
+    for (index_t cols = 1; cols <= 4; cols++) {
       Tensor<elt_t> A = Tensor<elt_t>::random(rows, cols);
       elt_t t = slow_trace(A);
       Tensor<elt_t> T{t};

@@ -117,7 +117,7 @@ void DataFile::close() {
   }
 }
 
-const char *DataFile::tag_to_name(tensor::index tag) const {
+const char *DataFile::tag_to_name(index_t tag) const {
   const std::array<const char *, 4> names = {"RTensor", "CTensor", "Real MPS",
                                              "Complex MPS"};
   if (tag > 4 || tag < 0) {

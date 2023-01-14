@@ -24,7 +24,6 @@
 namespace tensor_test {
 
 using namespace tensor;
-using tensor::index;
 
 static bool is_empty_range(const Range &r) {
   return r.size() == 0 && !r.has_indices();
@@ -313,13 +312,13 @@ TEST(RangeIteratorTest, RangeIterator2DSize2x2Dim3x4) {
 //
 
 template <typename elt_t>
-Tensor<elt_t> slow_range_test1(const Tensor<elt_t> &P, index i0, index i2,
-                               index i1) {
+Tensor<elt_t> slow_range_test1(const Tensor<elt_t> &P, index_t i0, index_t i2,
+                               index_t i1) {
   SimpleVector<Range> ranges{range(i0, i2, i1)};
   Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
   RangeIterator it = RangeIterator::begin(ranges);
-  index count = 0;
-  for (index i = i0; i <= i2; i += i1, ++it, ++count) {
+  index_t count = 0;
+  for (index_t i = i0; i <= i2; i += i1, ++it, ++count) {
     EXPECT_EQ(i, *it);
     if (i != *it) {
       std::stringstream out;
@@ -337,10 +336,10 @@ Tensor<elt_t> slow_range_test1(const Tensor<elt_t> &P, index i0, index i2,
 TEST(RangeIteratorTest, Test1D) {
   test_over_fixed_rank_tensors<double>(
       [](const Tensor<double> &P) {
-        index d0 = P.dimension(0);
-        for (index i1 = 1; i1 < 4; i1++) {
-          for (index i0 = 0; i0 < d0; i0++) {
-            for (index i2 = i0; i2 < d0; i2++) {
+        index_t d0 = P.dimension(0);
+        for (index_t i1 = 1; i1 < 4; i1++) {
+          for (index_t i0 = 0; i0 < d0; i0++) {
+            for (index_t i2 = i0; i2 < d0; i2++) {
               slow_range_test1(P, i0, i2, i1);
             }
           }
@@ -350,15 +349,15 @@ TEST(RangeIteratorTest, Test1D) {
 }
 
 template <typename elt_t>
-Tensor<elt_t> slow_range_test2(const Tensor<elt_t> &P, index i0, index i2,
-                               index i1, index j0, index j2, index j1) {
+Tensor<elt_t> slow_range_test2(const Tensor<elt_t> &P, index_t i0, index_t i2,
+                               index_t i1, index_t j0, index_t j2, index_t j1) {
   SimpleVector<Range> ranges{range(i0, i2, i1), range(j0, j2, j1)};
   Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
   RangeIterator it = RangeIterator::begin(ranges);
-  index count = 0;
-  for (index j = j0; j <= j2; j += j1) {
-    for (index i = i0; i <= i2; i += i1) {
-      index pos = i + j * P.dimension(0);
+  index_t count = 0;
+  for (index_t j = j0; j <= j2; j += j1) {
+    for (index_t i = i0; i <= i2; i += i1) {
+      index_t pos = i + j * P.dimension(0);
       EXPECT_EQ(pos, *it);
       if (pos != *it) {
         std::stringstream out;
@@ -379,14 +378,14 @@ Tensor<elt_t> slow_range_test2(const Tensor<elt_t> &P, index i0, index i2,
 TEST(RangeIteratorTest, Test2D) {
   test_over_fixed_rank_tensors<double>(
       [](const Tensor<double> &P) {
-        index rows = P.dimension(0);
-        index cols = P.dimension(1);
-        for (index i1 = 1; i1 < 4; i1++) {
-          for (index j1 = 1; j1 < 4; j1++) {
-            for (index i0 = 0; i0 < rows; i0++) {
-              for (index j0 = 0; j0 < cols; j0++) {
-                for (index i2 = i0; i2 < rows; i2++) {
-                  for (index j2 = j0; j2 < cols; j2++) {
+        index_t rows = P.dimension(0);
+        index_t cols = P.dimension(1);
+        for (index_t i1 = 1; i1 < 4; i1++) {
+          for (index_t j1 = 1; j1 < 4; j1++) {
+            for (index_t i0 = 0; i0 < rows; i0++) {
+              for (index_t j0 = 0; j0 < cols; j0++) {
+                for (index_t i2 = i0; i2 < rows; i2++) {
+                  for (index_t j2 = j0; j2 < cols; j2++) {
                     slow_range_test2(P, i0, i2, i1, j0, j2, j1);
                   }
                 }
@@ -400,18 +399,18 @@ TEST(RangeIteratorTest, Test2D) {
 
 #if 0
 template <typename elt_t>
-Tensor<elt_t> slow_range_test3(const Tensor<elt_t> &P, index i0, index i2,
-                               index i1, index j0, index j2, index j1, index k0,
-                               index k2, index k1) {
+Tensor<elt_t> slow_range_test3(const Tensor<elt_t> &P, index_t i0, index_t i2,
+                               index_t i1, index_t j0, index_t j2, index_t j1, index_t k0,
+                               index_t k2, index_t k1) {
   SimpleVector<Range> ranges{range(i0, i2, i1), range(j0, j2, j1),
                              range(k0, k2, k1)};
   Dimensions dims = dimensions_from_ranges(ranges, P.dimensions());
   RangeIterator it = RangeIterator::begin(ranges);
-  index count = 0;
-  for (index k = k0; k <= k2; k += k1) {
-    for (index j = j0; j <= j2; j += j1) {
-      for (index i = i0; i <= i2; i += i1, ++it, ++count) {
-        index pos = i + P.dimension(0) * (j + k * P.dimension(1));
+  index_t count = 0;
+  for (index_t k = k0; k <= k2; k += k1) {
+    for (index_t j = j0; j <= j2; j += j1) {
+      for (index_t i = i0; i <= i2; i += i1, ++it, ++count) {
+        index_t pos = i + P.dimension(0) * (j + k * P.dimension(1));
         EXPECT_EQ(pos, *it);
         if (pos != *it) {
           std::stringstream out;
@@ -434,18 +433,18 @@ Tensor<elt_t> slow_range_test3(const Tensor<elt_t> &P, index i0, index i2,
 TEST(RangeIteratorTest, Test3D) {
   test_over_fixed_rank_tensors<double>(
       [](const Tensor<double> &P) {
-        index d0 = P.dimension(0);
-        index d1 = P.dimension(1);
-        index d2 = P.dimension(2);
-        for (index i1 = 1; i1 < 3; i1++) {
-          for (index j1 = 1; j1 < 3; j1++) {
-            for (index k1 = 1; k1 < 3; k1++) {
-              for (index i0 = 0; i0 < d0; i0++) {
-                for (index j0 = 0; j0 < d1; j0++) {
-                  for (index k0 = 0; k0 < d2; k0++) {
-                    for (index i2 = i0; i2 < d0; i2++) {
-                      for (index j2 = j0; j2 < d1; j2++) {
-                        for (index k2 = k0; k2 < d2; k2++) {
+        index_t d0 = P.dimension(0);
+        index_t d1 = P.dimension(1);
+        index_t d2 = P.dimension(2);
+        for (index_t i1 = 1; i1 < 3; i1++) {
+          for (index_t j1 = 1; j1 < 3; j1++) {
+            for (index_t k1 = 1; k1 < 3; k1++) {
+              for (index_t i0 = 0; i0 < d0; i0++) {
+                for (index_t j0 = 0; j0 < d1; j0++) {
+                  for (index_t k0 = 0; k0 < d2; k0++) {
+                    for (index_t i2 = i0; i2 < d0; i2++) {
+                      for (index_t j2 = j0; j2 < d1; j2++) {
+                        for (index_t k2 = k0; k2 < d2; k2++) {
                           slow_range_test3(P, i0, i2, i1, j0, j2, j1, k0, k2,
                                            k1);
                         }
@@ -466,18 +465,18 @@ TEST(RangeIteratorTest, Test3D) {
 // 1) WITH INDICES
 //
 
-Indices random_indices(index size) {
+Indices random_indices(index_t size) {
   return which(RTensor::random(size) < 0.5);
 }
 
 template <typename elt_t>
 Tensor<elt_t> slow_index_range_test1(const Tensor<elt_t> &P) {
-  for (index attempts = 10; attempts; --attempts) {
+  for (index_t attempts = 10; attempts; --attempts) {
     const Indices ndx = random_indices(P.size());
     SimpleVector<Range> ranges{range(ndx)};
     RangeIterator it = (dimensions_from_ranges(ranges, P.dimensions()),
                         RangeIterator::begin(ranges));
-    for (index i = 0; i < ndx.size(); ++i, ++it) {
+    for (index_t i = 0; i < ndx.size(); ++i, ++it) {
       EXPECT_EQ(ndx[i], *it);
       if (ndx[i] != *it) {
         std::stringstream out;
@@ -500,14 +499,14 @@ TEST(RangeIteratorTest, Test1DIndices) {
 
 template <typename elt_t>
 Tensor<elt_t> slow_index_range_test2a(const Tensor<elt_t> &P) {
-  for (index attempts = 10; attempts; --attempts) {
+  for (index_t attempts = 10; attempts; --attempts) {
     const Indices ndx = random_indices(P.dimension(0));
     SimpleVector<Range> ranges{range(ndx), _};
     RangeIterator it = (dimensions_from_ranges(ranges, P.dimensions()),
                         RangeIterator::begin(ranges));
-    for (index j = 0; j < P.dimension(1); ++j) {
-      for (index i = 0; i < ndx.size(); ++i, ++it) {
-        index pos = ndx[i] + j * P.dimension(0);
+    for (index_t j = 0; j < P.dimension(1); ++j) {
+      for (index_t i = 0; i < ndx.size(); ++i, ++it) {
+        index_t pos = ndx[i] + j * P.dimension(0);
         EXPECT_EQ(pos, *it);
         if (pos != *it) {
           std::stringstream out;
@@ -527,14 +526,14 @@ Tensor<elt_t> slow_index_range_test2a(const Tensor<elt_t> &P) {
 
 template <typename elt_t>
 Tensor<elt_t> slow_index_range_test2b(const Tensor<elt_t> &P) {
-  for (index attempts = 10; attempts; --attempts) {
+  for (index_t attempts = 10; attempts; --attempts) {
     const Indices ndx = random_indices(P.dimension(1));
     SimpleVector<Range> ranges{_, range(ndx)};
     RangeIterator it = (dimensions_from_ranges(ranges, P.dimensions()),
                         RangeIterator::begin(ranges));
-    for (index j = 0; j < ndx.size(); ++j) {
-      for (index i = 0; i < P.dimension(0); ++i, ++it) {
-        index pos = i + ndx[j] * P.dimension(0);
+    for (index_t j = 0; j < ndx.size(); ++j) {
+      for (index_t i = 0; i < P.dimension(0); ++i, ++it) {
+        index_t pos = i + ndx[j] * P.dimension(0);
         EXPECT_EQ(pos, *it);
         if (pos != *it) {
           std::stringstream out;

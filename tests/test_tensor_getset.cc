@@ -90,7 +90,7 @@ elt_t get_nd(Tensor<elt_t> &P, size_t row_major_ndx) {
 template <typename elt_t>
 void test_tensor_get(Tensor<elt_t> &P) {
   Tensor<elt_t> P2(P);
-  for (tensor::index i = 0; i < P.size(); i++) {
+  for (index_t i = 0; i < P.size(); i++) {
     EXPECT_EQ(P[i], get_nd<elt_t>(P2, i));
     EXPECT_EQ(P[i], get_nd<elt_t>(P2, i));
   }
@@ -101,7 +101,7 @@ void test_tensor_get(Tensor<elt_t> &P) {
 template <typename elt_t>
 void test_tensor_set(Tensor<elt_t> &P) {
   Tensor<elt_t> P2(P);
-  for (tensor::index i = 0; i < P.size(); i++) {
+  for (index_t i = 0; i < P.size(); i++) {
     elt_t x = P2[i] + number_one<elt_t>();
     ASSERT_NE(x, P2[i]);
     store_nd<elt_t>(P2, i, x);

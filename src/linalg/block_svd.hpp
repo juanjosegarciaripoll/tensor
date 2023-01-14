@@ -24,19 +24,17 @@
 
 namespace linalg {
 
-using tensor::index;
-
 template <class Tensor>
 RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
-  index rows = A.rows();
-  index cols = A.columns();
+  index_t rows = A.rows();
+  index_t cols = A.columns();
   if (rows != cols && !economic) return svd(A, pU, pVT, economic);
 
   std::vector<Indices> row_indices, column_indices;
   if (!find_blocks<Tensor>(A, row_indices, column_indices)) {
     return svd(A, pU, pVT, economic);
   }
-  index L = std::min(rows, cols);
+  index_t L = std::min(rows, cols);
   RTensor s = RTensor::zeros(L);
   if (pU) {
     *pU = Tensor::zeros(rows, economic ? L : rows);
@@ -49,7 +47,7 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
   Tensor Utemp, Vtemp;
   Tensor *pUtemp = pU ? &Utemp : nullptr;
   Tensor *pVtemp = pVT ? &Vtemp : nullptr;
-  for (index nblocks = ssize(row_indices), b = 0, sndx = 0; b < nblocks; b++) {
+  for (index_t nblocks = ssize(row_indices), b = 0, sndx = 0; b < nblocks; b++) {
     const auto &block_rows = row_indices[static_cast<size_t>(b)];
     auto M = block_rows.ssize();
     const auto &block_columns = column_indices[static_cast<size_t>(b)];
@@ -66,7 +64,7 @@ RTensor do_block_svd(const Tensor &A, Tensor *pU, Tensor *pVT, bool economic) {
         stemp = svd(A(range(block_rows), range(block_columns)), pUtemp, pVtemp,
                     economic);
       }
-      index slast = sndx + L - 1;
+      index_t slast = sndx + L - 1;
       s.at(range(sndx, slast)) = stemp;
       if (pU) {
         (*pU).at(range(block_rows), range(sndx, slast)) = Utemp;

@@ -23,7 +23,6 @@
 namespace tensor_test {
 
 using namespace tensor;
-using tensor::index;
 
 #include "test_view_common.cc"
 

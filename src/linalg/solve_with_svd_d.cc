@@ -29,7 +29,7 @@ using namespace tensor;
      This function solves the system of equations A * X = B using the SVD
      of the matrix A = U * S * VT, through the formula X = V * (S^-1) * UT * B.
      When computing (S^-1), singular values below the tolerance are discarded.
-     
+
      \ingroup Linalg
   */
 RTensor solve_with_svd(const RTensor &A, const RTensor &B, double tol) {
@@ -38,7 +38,7 @@ RTensor solve_with_svd(const RTensor &A, const RTensor &B, double tol) {
   if (tol <= 0) {
     tol = DBL_EPSILON;
   }
-  for (tensor::index i = 0; i < s.ssize(); i++) {
+  for (index_t i = 0; i < s.ssize(); i++) {
     if (s[i] <= tol) {
       U = U(_, range(0, i - 1));
       s = s(range(0, i - 1));

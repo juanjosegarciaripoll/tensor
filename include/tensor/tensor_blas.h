@@ -171,7 +171,7 @@ inline double real(cdouble &z) {
   return tensor::real(*reinterpret_cast<tensor::cdouble *>(&z));
 }
 
-inline blas::integer index_to_blas(tensor::index value) {
+inline blas::integer index_to_blas(tensor::index_t value) {
   tensor_assert2(value <= std::numeric_limits<blas::integer>::max(),
                  blas_integer_overflow());
   return static_cast<blas::integer>(value);

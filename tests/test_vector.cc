@@ -20,7 +20,7 @@
 #include <tensor/vector.h>
 #include <gtest/gtest.h>
 
-using tensor::Vector;
+using namespace tensor;
 
 //////////////////////////////////////////////////////////////////////
 // REFPOINTER
@@ -38,7 +38,7 @@ TEST(VectorTest, DefaultConstructor) {
 // Verify proper size of object and that the exact number of elements
 // are allocated.
 TEST(VectorTest, SizeConstructor) {
-  for (tensor::index i = 1; i < 10; ++i) {
+  for (index_t i = 1; i < 10; ++i) {
     {
       AllocInformer::reset_counters();
       const Vector<AllocInformer> r(i);

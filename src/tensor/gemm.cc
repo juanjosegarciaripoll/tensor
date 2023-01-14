@@ -27,16 +27,16 @@
 
 namespace blas {
 
-using tensor::index;
+using tensor::index_t;
 
-inline void gemm(char op1, char op2, index m, index n, index k, double alpha,
-                 const double *A, index lda, const double *B, index ldb,
-                 double beta, double *C, index ldc) {
+inline void gemm(char op1, char op2, index_t m, index_t n, index_t k, double alpha,
+                 const double *A, index_t lda, const double *B, index_t ldb,
+                 double beta, double *C, index_t ldc) {
 #ifdef _MSC_VER
 #pragma warning(disable : 4127)
 #endif
 #ifdef TENSOR_DEBUG
-  if (sizeof(blas::integer) < sizeof(tensor::index)) {
+  if (sizeof(blas::integer) < sizeof(index_t)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
     tensor_assert2(m <= limit && n <= limit && lda <= limit && ldb <= limit &&
                        ldc <= limit,
@@ -60,15 +60,15 @@ inline void gemm(char op1, char op2, index m, index n, index k, double alpha,
 #endif
 }
 
-inline void gemm(char op1, char op2, index m, index n, index k,
+inline void gemm(char op1, char op2, index_t m, index_t n, index_t k,
                  const tensor::cdouble &alpha, const tensor::cdouble *A,
-                 index lda, const tensor::cdouble *B, index ldb,
-                 const tensor::cdouble &beta, tensor::cdouble *C, index ldc) {
+                 index_t lda, const tensor::cdouble *B, index_t ldb,
+                 const tensor::cdouble &beta, tensor::cdouble *C, index_t ldc) {
 #ifdef _MSC_VER
 #pragma warning(disable : 4127)
 #endif
 #ifdef TENSOR_DEBUG
-  if (sizeof(blas::integer) < sizeof(tensor::index)) {
+  if (sizeof(blas::integer) < sizeof(index_t)) {
     constexpr auto limit = std::numeric_limits<blas::integer>::max();
     tensor_assert2(m <= limit && n <= limit && lda <= limit && ldb <= limit &&
                        ldc <= limit,

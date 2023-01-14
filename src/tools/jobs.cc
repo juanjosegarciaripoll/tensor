@@ -24,6 +24,7 @@
 #include <cstring>
 
 using namespace jobs;
+using namespace tensor;
 
 static inline bool is_separator(char c) {
   return (c == ' ') || (c == '\t') || (c == '\n') || (c == ',') || (c == ';');
@@ -229,7 +230,8 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
       abort();
     }
     index delta = (number_of_jobs_ + blocks - 1) / blocks;
-    first_job_ = current_job_number = std::min(current_job_number * delta, number_of_jobs_);
+    first_job_ = current_job_number =
+        std::min(current_job_number * delta, number_of_jobs_);
     last_job_ = std::min(number_of_jobs_ - 1, first_job_ + delta - 1);
   } else if (first_job_found) {
     /*
@@ -269,7 +271,7 @@ Job::Job(int argc, const char **argv) : filename_("no file") {
   select_job(current_job_number);
 }
 
-tensor::index Job::compute_number_of_jobs() const {
+index_t Job::compute_number_of_jobs() const {
   return std::accumulate(variables_.cbegin(), variables_.cend(), index(1),
                          [](index x, auto &v) { return x * v.size(); });
 }

@@ -79,7 +79,7 @@ TEST(CTensorKronTest, KronSmall) { test_kron_small<cdouble>(); }
 
 template <typename elt_t>
 Tensor<elt_t> slow_kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b) {
-  tensor::index a1, a2, b1, b2;
+  index_t a1, a2, b1, b2;
   a.get_dimensions(&a1, &a2);
   b.get_dimensions(&b1, &b2);
 
@@ -87,10 +87,10 @@ Tensor<elt_t> slow_kron(const Tensor<elt_t> &a, const Tensor<elt_t> &b) {
     return Tensor<elt_t>::empty(a1 * b1, b2 * a2);
 
   auto output = Tensor<elt_t>::empty(b1, a1, b2, a2);
-  for (tensor::index i = 0; i < b1; i++)
-    for (tensor::index j = 0; j < a1; j++)
-      for (tensor::index k = 0; k < b2; k++)
-        for (tensor::index l = 0; l < a2; l++)
+  for (index_t i = 0; i < b1; i++)
+    for (index_t j = 0; j < a1; j++)
+      for (index_t k = 0; k < b2; k++)
+        for (index_t l = 0; l < a2; l++)
           output.at(i, j, k, l) = b(i, k) * a(j, l);
   return reshape(output, b1 * a1, b2 * a2);
 }

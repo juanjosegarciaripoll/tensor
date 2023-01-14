@@ -24,11 +24,10 @@
 namespace tensor_test {
 
 using namespace tensor;
-using tensor::index;
 
 template <typename elt_t>
 void test_sparse_binop_zeros(Tensor<elt_t> &t) {
-  tensor::index rows = t.rows(), cols = t.columns();
+  index_t rows = t.rows(), cols = t.columns();
   // Operations among empty sparses must work. They did not because
   // we did not special-case them and there was an error in the code.
   {
@@ -57,7 +56,7 @@ TEST(CSparseTest, BinopZeros) {
 
 template <typename elt_t>
 void test_sparse_binop_random(Tensor<elt_t> &t) {
-  tensor::index rows = t.rows(), cols = t.columns();
+  index_t rows = t.rows(), cols = t.columns();
   for (int i = 0; i < rows * cols; i++) {
     {
       Sparse<elt_t> A = Sparse<elt_t>::random(rows, cols);

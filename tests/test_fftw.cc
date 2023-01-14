@@ -29,7 +29,7 @@ static constexpr auto M_PI = 3.14159265358979323846;
 namespace tensor_test {
 
 // Creates the matrix to do the DFT in the slow way.
-CTensor build_dft_transform(tensor::index N, int sign) {
+CTensor build_dft_transform(index_t N, int sign) {
   RTensor vector = linspace(0, (double)(N - 1), N);
   vector = reshape(vector, N, 1);
 
@@ -67,7 +67,7 @@ CTensor full_dft(const CTensor& input, int sign) {
 
 // Sets up the permutation matrix to use for fft shifts.
 // Slow, but rather transparent and simple.
-RTensor build_permutation_matrix(tensor::index N, int direction) {
+RTensor build_permutation_matrix(index_t N, int direction) {
   RTensor permute = RTensor::zeros(N, N);
 
   // even N is trivial, just swap the two half-spaces; both permutations are identical.
@@ -81,9 +81,9 @@ RTensor build_permutation_matrix(tensor::index N, int direction) {
   }
 
   // odd N is a bit more complicated
-  tensor::index center = (N - 1) / 2;
+  index_t center = (N - 1) / 2;
   permute.at(center, 0) = 1;
-  for (tensor::index i = 0; i < center; i++) {
+  for (index_t i = 0; i < center; i++) {
     permute.at(i, center + 1 + i) = 1;
     permute.at(center + 1 + i, i + 1) = 1;
   }

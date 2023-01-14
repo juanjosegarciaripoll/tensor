@@ -23,7 +23,6 @@
 namespace tensor_test {
 
 using namespace tensor;
-using tensor::index;
 
 #include "test_view_common.cc"
 
@@ -32,21 +31,21 @@ using tensor::index;
 //
 
 template <typename elt_t>
-Tensor<elt_t> slow_range1(const Tensor<elt_t> &P, index i0, index i2,
-                          index i1) {
+Tensor<elt_t> slow_range1(const Tensor<elt_t> &P, index_t i0, index_t i2,
+                          index_t i1) {
   auto t = Tensor<elt_t>::empty((i2 - i0) / i1 + 1);
-  for (index j = i0, x = 0; j <= i2; j += i1, x++) {
+  for (index_t j = i0, x = 0; j <= i2; j += i1, x++) {
     t.at(x) = P(j);
   }
   return t;
 }
 
 template <typename elt_t>
-Tensor<elt_t> slow_range2(const Tensor<elt_t> &P, index i0, index i2, index i1,
-                          index j0, index j2, index j1) {
+Tensor<elt_t> slow_range2(const Tensor<elt_t> &P, index_t i0, index_t i2,
+                          index_t i1, index_t j0, index_t j2, index_t j1) {
   auto t = Tensor<elt_t>::empty((i2 - i0) / i1 + 1, (j2 - j0) / j1 + 1);
-  for (index i = i0, x = 0; i <= i2; i += i1, x++) {
-    for (index j = j0, y = 0; j <= j2; j += j1, y++) {
+  for (index_t i = i0, x = 0; i <= i2; i += i1, x++) {
+    for (index_t j = j0, y = 0; j <= j2; j += j1, y++) {
       t.at(x, y) = P(i, j);
     }
   }
@@ -54,14 +53,14 @@ Tensor<elt_t> slow_range2(const Tensor<elt_t> &P, index i0, index i2, index i1,
 }
 
 template <typename elt_t>
-Tensor<elt_t> slow_range3(const Tensor<elt_t> &P, index i0, index i2, index i1,
-                          index j0, index j2, index j1, index k0, index k2,
-                          index k1) {
+Tensor<elt_t> slow_range3(const Tensor<elt_t> &P, index_t i0, index_t i2,
+                          index_t i1, index_t j0, index_t j2, index_t j1,
+                          index_t k0, index_t k2, index_t k1) {
   auto t = Tensor<elt_t>::empty((i2 - i0) / i1 + 1, (j2 - j0) / j1 + 1,
                                 (k2 - k0) / k1 + 1);
-  for (index i = i0, x = 0; i <= i2; i += i1, x++) {
-    for (index j = j0, y = 0; j <= j2; j += j1, y++) {
-      for (index k = k0, z = 0; k <= k2; k += k1, z++) {
+  for (index_t i = i0, x = 0; i <= i2; i += i1, x++) {
+    for (index_t j = j0, y = 0; j <= j2; j += j1, y++) {
+      for (index_t k = k0, z = 0; k <= k2; k += k1, z++) {
         t.at(x, y, z) = P(i, j, k);
       }
     }
@@ -70,15 +69,16 @@ Tensor<elt_t> slow_range3(const Tensor<elt_t> &P, index i0, index i2, index i1,
 }
 
 template <typename elt_t>
-Tensor<elt_t> slow_range4(const Tensor<elt_t> &P, index i0, index i2, index i1,
-                          index j0, index j2, index j1, index k0, index k2,
-                          index k1, index l0, index l2, index l1) {
+Tensor<elt_t> slow_range4(const Tensor<elt_t> &P, index_t i0, index_t i2,
+                          index_t i1, index_t j0, index_t j2, index_t j1,
+                          index_t k0, index_t k2, index_t k1, index_t l0,
+                          index_t l2, index_t l1) {
   auto t = Tensor<elt_t>((i2 - i0) / i1 + 1, (j2 - j0) / j1 + 1,
                          (k2 - k0) / k1 + 1, (l2 - l0) / l1 + 1);
-  for (index i = i0, x = 0; i <= i2; i += i1, x++) {
-    for (index j = j0, y = 0; j <= j2; j += j1, y++) {
-      for (index k = k0, z = 0; k <= k2; k += k1, z++) {
-        for (index l = l0, w = 0; l <= l2; l += l1, z++) {
+  for (index_t i = i0, x = 0; i <= i2; i += i1, x++) {
+    for (index_t j = j0, y = 0; j <= j2; j += j1, y++) {
+      for (index_t k = k0, z = 0; k <= k2; k += k1, z++) {
+        for (index_t l = l0, w = 0; l <= l2; l += l1, z++) {
           t.at(x, y, z, w) = P(i, j, k, l);
         }
       }
@@ -120,7 +120,7 @@ void test_full_size_range3(Tensor<elt_t> &P) {
 //
 
 template <typename elt_t>
-void test_extract_unit_size1(Tensor<elt_t> &P, index i) {
+void test_extract_unit_size1(Tensor<elt_t> &P, index_t i) {
   SCOPED_TRACE("extract unit range 1D");
   Tensor<elt_t> Paux = P;
   {
@@ -159,7 +159,7 @@ void test_extract_unit_size1(Tensor<elt_t> &P, index i) {
 }
 
 template <typename elt_t>
-void test_extract_unit_size2(Tensor<elt_t> &P, index i, index j) {
+void test_extract_unit_size2(Tensor<elt_t> &P, index_t i, index_t j) {
   SCOPED_TRACE("extract unit range 2D");
   Tensor<elt_t> Paux = P;
   {
@@ -231,7 +231,8 @@ void test_extract_unit_size2(Tensor<elt_t> &P, index i, index j) {
 }
 
 template <typename elt_t>
-void test_extract_unit_size3(Tensor<elt_t> &P, index i, index j, index k) {
+void test_extract_unit_size3(Tensor<elt_t> &P, index_t i, index_t j,
+                             index_t k) {
   SCOPED_TRACE("extract unit range 3D");
   Tensor<elt_t> Paux = P;
   {
@@ -332,7 +333,7 @@ void test_extract_unit_size3(Tensor<elt_t> &P, index i, index j, index k) {
 //
 
 template <typename elt_t>
-void test_view_extract1(Tensor<elt_t> &P, index i0, index i2, index i1) {
+void test_view_extract1(Tensor<elt_t> &P, index_t i0, index_t i2, index_t i1) {
   SCOPED_TRACE("extract view 1D");
   Tensor<elt_t> Paux = P;
 
@@ -357,8 +358,8 @@ void test_view_extract1(Tensor<elt_t> &P, index i0, index i2, index i1) {
 }
 
 template <typename elt_t>
-void test_view_extract(Tensor<elt_t> &P, index i0, index i2, index i1, index j0,
-                       index j2, index j1) {
+void test_view_extract(Tensor<elt_t> &P, index_t i0, index_t i2, index_t i1,
+                       index_t j0, index_t j2, index_t j1) {
   SCOPED_TRACE("extract view 2D");
   Tensor<elt_t> Paux = P;
   Tensor<elt_t> t1 = slow_range2(P, i0, i2, i1, j0, j2, j1);
@@ -409,8 +410,9 @@ void test_view_extract(Tensor<elt_t> &P, index i0, index i2, index i1, index j0,
 }
 
 template <typename elt_t>
-void test_view_extract(Tensor<elt_t> &P, index i0, index i2, index i1, index j0,
-                       index j2, index j1, index k0, index k2, index k1) {
+void test_view_extract(Tensor<elt_t> &P, index_t i0, index_t i2, index_t i1,
+                       index_t j0, index_t j2, index_t j1, index_t k0,
+                       index_t k2, index_t k1) {
   SCOPED_TRACE("extract view 3D");
   Tensor<elt_t> Paux = P;
 
@@ -429,13 +431,13 @@ template <typename elt_t>
 void test_range_extract1(Tensor<elt_t> &P) {
   test_full_size_range1(P);
 
-  index d0 = P.dimension(0);
-  for (index i = 0; i < d0; i++) {
+  index_t d0 = P.dimension(0);
+  for (index_t i = 0; i < d0; i++) {
     test_extract_unit_size1(P, i);
   }
-  for (index i1 = 1; i1 < 4; i1++) {
-    for (index i0 = 0; i0 < d0; i0++) {
-      for (index i2 = i0; i2 < d0; i2++) {
+  for (index_t i1 = 1; i1 < 4; i1++) {
+    for (index_t i0 = 0; i0 < d0; i0++) {
+      for (index_t i2 = i0; i2 < d0; i2++) {
         test_view_extract1(P, i0, i2, i1);
       }
     }
@@ -446,19 +448,19 @@ template <typename elt_t>
 void test_range_extract2(Tensor<elt_t> &P) {
   test_full_size_range2(P);
 
-  index rows = P.dimension(0);
-  index cols = P.dimension(1);
-  for (index i = 0; i < rows; i++) {
-    for (index j = 0; j < cols; j++) {
+  index_t rows = P.dimension(0);
+  index_t cols = P.dimension(1);
+  for (index_t i = 0; i < rows; i++) {
+    for (index_t j = 0; j < cols; j++) {
       test_extract_unit_size2(P, i, j);
     }
   }
-  for (index i1 = 1; i1 < 4; i1++) {
-    for (index j1 = 1; j1 < 4; j1++) {
-      for (index i0 = 0; i0 < rows; i0++) {
-        for (index j0 = 0; j0 < cols; j0++) {
-          for (index i2 = i0; i2 < rows; i2++) {
-            for (index j2 = j0; j2 < cols; j2++) {
+  for (index_t i1 = 1; i1 < 4; i1++) {
+    for (index_t j1 = 1; j1 < 4; j1++) {
+      for (index_t i0 = 0; i0 < rows; i0++) {
+        for (index_t j0 = 0; j0 < cols; j0++) {
+          for (index_t i2 = i0; i2 < rows; i2++) {
+            for (index_t j2 = j0; j2 < cols; j2++) {
               test_view_extract(P, i0, i2, i1, j0, j2, j1);
             }
           }
@@ -472,25 +474,25 @@ template <typename elt_t>
 void test_range_extract3(Tensor<elt_t> &P) {
   test_full_size_range3(P);
 
-  index d0 = P.dimension(0);
-  index d1 = P.dimension(1);
-  index d2 = P.dimension(2);
-  for (index i = 0; i < d0; i++) {
-    for (index j = 0; j < d1; j++) {
-      for (index k = 0; k < d2; k++) {
+  index_t d0 = P.dimension(0);
+  index_t d1 = P.dimension(1);
+  index_t d2 = P.dimension(2);
+  for (index_t i = 0; i < d0; i++) {
+    for (index_t j = 0; j < d1; j++) {
+      for (index_t k = 0; k < d2; k++) {
         test_extract_unit_size3(P, i, j, k);
       }
     }
   }
-  for (index i1 = 1; i1 < 3; i1++) {
-    for (index j1 = 1; j1 < 3; j1++) {
-      for (index k1 = 1; k1 < 3; k1++) {
-        for (index i0 = 0; i0 < d0; i0++) {
-          for (index j0 = 0; j0 < d1; j0++) {
-            for (index k0 = 0; k0 < d2; k0++) {
-              for (index i2 = i0; i2 < d0; i2++) {
-                for (index j2 = j0; j2 < d1; j2++) {
-                  for (index k2 = k0; k2 < d2; k2++) {
+  for (index_t i1 = 1; i1 < 3; i1++) {
+    for (index_t j1 = 1; j1 < 3; j1++) {
+      for (index_t k1 = 1; k1 < 3; k1++) {
+        for (index_t i0 = 0; i0 < d0; i0++) {
+          for (index_t j0 = 0; j0 < d1; j0++) {
+            for (index_t k0 = 0; k0 < d2; k0++) {
+              for (index_t i2 = i0; i2 < d0; i2++) {
+                for (index_t j2 = j0; j2 < d1; j2++) {
+                  for (index_t k2 = k0; k2 < d2; k2++) {
                     test_view_extract(P, i0, i2, i1, j0, j2, j1, k0, k2, k1);
                   }
                 }

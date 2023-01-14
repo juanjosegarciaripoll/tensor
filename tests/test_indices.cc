@@ -24,7 +24,6 @@
 namespace tensor_test {
 
 using namespace tensor;
-using tensor::index;
 
 TEST(Indices, EmptyIndices) {
   Indices ndx;
@@ -48,7 +47,7 @@ TEST(Indices, BracedInitialization) {
 
 TEST(Indices, FromVector) {
   {
-    Vector<index> v(3);
+    Vector<index_t> v(3);
     v.at(0) = 1;
     v.at(1) = 2;
     v.at(2) = 3;

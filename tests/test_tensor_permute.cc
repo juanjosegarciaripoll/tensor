@@ -23,8 +23,6 @@
 
 namespace tensor_test {
 
-using tensor::index;
-
 ////////////////////////////////////////////////////////////////////////
 //
 // TESTING TENSOR UNARY OPERATIONS
@@ -36,10 +34,10 @@ void error_wrong_code(int code) {
 
 template <typename elt_t>
 bool eq_permute_2(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
-  index a1, a2;
+  index_t a1, a2;
   A.get_dimensions(&a1, &a2);
-  for (index i = 0; i < a1; i++) {
-    for (index j = 0; j < a2; j++) {
+  for (index_t i = 0; i < a1; i++) {
+    for (index_t j = 0; j < a2; j++) {
       switch (code) {
         case 122:
         case 212:
@@ -58,11 +56,11 @@ bool eq_permute_2(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
 //
 template <typename elt_t>
 bool eq_permute_3(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
-  index a1, a2, a3;
+  index_t a1, a2, a3;
   A.get_dimensions(&a1, &a2, &a3);
-  for (index i = 0; i < a1; i++) {
-    for (index j = 0; j < a2; j++) {
-      for (index k = 0; k < a3; k++) {
+  for (index_t i = 0; i < a1; i++) {
+    for (index_t j = 0; j < a2; j++) {
+      for (index_t k = 0; k < a3; k++) {
         switch (code) {
           case 123:
             if (A(i, j, k) != P(j, i, k)) return false;
@@ -87,12 +85,12 @@ bool eq_permute_3(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
 //
 template <typename elt_t>
 bool eq_permute_4(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
-  index a1, a2, a3, a4;
+  index_t a1, a2, a3, a4;
   A.get_dimensions(&a1, &a2, &a3, &a4);
-  for (index i = 0; i < a1; i++) {
-    for (index j = 0; j < a2; j++) {
-      for (index k = 0; k < a3; k++) {
-        for (index l = 0; l < a4; l++) {
+  for (index_t i = 0; i < a1; i++) {
+    for (index_t j = 0; j < a2; j++) {
+      for (index_t k = 0; k < a3; k++) {
+        for (index_t l = 0; l < a4; l++) {
           switch (code) {
             case 124:
               if (A(i, j, k, l) != P(j, i, k, l)) return false;
@@ -128,13 +126,13 @@ bool eq_permute_4(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
 
 template <typename elt_t>
 bool eq_permute_5(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
-  index a1, a2, a3, a4, a5;
+  index_t a1, a2, a3, a4, a5;
   A.get_dimensions(&a1, &a2, &a3, &a4, &a5);
-  for (index i = 0; i < a1; i++) {
-    for (index j = 0; j < a2; j++) {
-      for (index k = 0; k < a3; k++) {
-        for (index l = 0; l < a4; l++) {
-          for (index m = 0; m < a5; m++) {
+  for (index_t i = 0; i < a1; i++) {
+    for (index_t j = 0; j < a2; j++) {
+      for (index_t k = 0; k < a3; k++) {
+        for (index_t l = 0; l < a4; l++) {
+          for (index_t m = 0; m < a5; m++) {
             switch (code) {
               case 125:
                 if (A(i, j, k, l, m) != P(j, i, k, l, m)) return false;
@@ -183,14 +181,14 @@ bool eq_permute_5(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
 
 template <typename elt_t>
 bool eq_permute_6(const Tensor<elt_t> &A, const Tensor<elt_t> &P, int code) {
-  index a1, a2, a3, a4, a5, a6;
+  index_t a1, a2, a3, a4, a5, a6;
   A.get_dimensions(&a1, &a2, &a3, &a4, &a5, &a6);
-  for (index i = 0; i < a1; i++) {
-    for (index j = 0; j < a2; j++) {
-      for (index k = 0; k < a3; k++) {
-        for (index l = 0; l < a4; l++) {
-          for (index m = 0; m < a5; m++) {
-            for (index n = 0; n < a6; n++) {
+  for (index_t i = 0; i < a1; i++) {
+    for (index_t j = 0; j < a2; j++) {
+      for (index_t k = 0; k < a3; k++) {
+        for (index_t l = 0; l < a4; l++) {
+          for (index_t m = 0; m < a5; m++) {
+            for (index_t n = 0; n < a6; n++) {
               switch (code) {
                 case 126:
                   if (A(i, j, k, l, m, n) != P(j, i, k, l, m, n)) return false;

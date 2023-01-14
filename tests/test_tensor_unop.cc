@@ -72,7 +72,7 @@ void test_unop(Tensor<elt_t> &P) {
   unchanged(P, Pcopy);
   unique(P2);
   EXPECT_TRUE(all_equal(P.dimensions(), P2.dimensions()));
-  for (tensor::index i = 0; i < P.size(); i++) {
+  for (index_t i = 0; i < P.size(); i++) {
     ASSERT_EQ(f(P[i]), P2[i]);
   }
 }

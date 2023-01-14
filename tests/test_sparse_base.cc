@@ -187,7 +187,7 @@ TEST(CSparseTest, CSparseEyeSmall) { test_sparse_eye_small<cdouble>(); }
 //
 template <typename elt_t>
 void test_sparse_eye(Tensor<elt_t>& t) {
-  tensor::index rows = t.rows(), cols = t.columns(), k = std::min(rows, cols);
+  index_t rows = t.rows(), cols = t.columns(), k = std::min(rows, cols);
   Tensor<elt_t> taux = Tensor<elt_t>::eye(rows, cols);
   Sparse<elt_t> saux = Sparse<elt_t>::eye(rows, cols);
 
@@ -199,7 +199,7 @@ void test_sparse_eye(Tensor<elt_t>& t) {
   EXPECT_EQ(rows, saux.rows());
   EXPECT_EQ(cols, saux.columns());
   EXPECT_EQ(rows + 1, saux.priv_row_start().size());
-  for (tensor::index i = 0; i <= rows; i++) {
+  for (index_t i = 0; i <= rows; i++) {
     EXPECT_EQ(saux.priv_row_start()[i], std::min(i, k));
   }
 }
@@ -261,15 +261,15 @@ TEST(CSparseTest, CSparseRandomSmall) { test_sparse_random_small<cdouble>(); }
 //
 template <typename elt_t>
 void test_sparse_random(Tensor<elt_t>& ignored) {
-  tensor::index rows = ignored.rows(), cols = ignored.columns();
+  index_t rows = ignored.rows(), cols = ignored.columns();
   {
     Sparse<elt_t> s = Sparse<elt_t>::random(rows, cols);
     EXPECT_EQ(rows, s.rows());
     EXPECT_EQ(cols, s.columns());
     Tensor<elt_t> t = full(s);
     EXPECT_TRUE(all_equal(Sparse<elt_t>(t), s));
-    tensor::index zero = std::count(t.begin(), t.end(), number_zero<elt_t>());
-    tensor::index nonzero = t.size() - zero;
+    index_t zero = std::count(t.begin(), t.end(), number_zero<elt_t>());
+    index_t nonzero = t.size() - zero;
     EXPECT_EQ(nonzero, s.length());
     EXPECT_EQ(nonzero, s.priv_data().size());
     EXPECT_EQ(nonzero, s.priv_column().size());
@@ -281,8 +281,8 @@ void test_sparse_random(Tensor<elt_t>& ignored) {
     EXPECT_EQ(cols, s.columns());
     Tensor<elt_t> t = full(s);
     EXPECT_TRUE(all_equal(Sparse<elt_t>(t), s));
-    tensor::index zero = std::count(t.begin(), t.end(), number_zero<elt_t>());
-    tensor::index nonzero = t.size() - zero;
+    index_t zero = std::count(t.begin(), t.end(), number_zero<elt_t>());
+    index_t nonzero = t.size() - zero;
     EXPECT_EQ(nonzero, s.length());
     EXPECT_EQ(nonzero, s.priv_data().size());
     EXPECT_EQ(nonzero, s.priv_column().size());
@@ -303,10 +303,10 @@ TEST(CSparseTest, CSparseRandom) {
 //
 template <typename elt_t>
 void test_full(Tensor<elt_t>& t) {
-  for (int times = 0; times <= (int)std::min<tensor::index>(100, t.size());
+  for (int times = 0; times <= (int)std::min<index_t>(100, t.size());
        times++) {
-    tensor::index zeros = std::count(t.begin(), t.end(), number_zero<elt_t>());
-    tensor::index nonzeros = t.size() - zeros;
+    index_t zeros = std::count(t.begin(), t.end(), number_zero<elt_t>());
+    index_t nonzeros = t.size() - zeros;
     Tensor<elt_t> tcopy = t;
     Sparse<elt_t> s(t);
 
@@ -318,8 +318,8 @@ void test_full(Tensor<elt_t>& t) {
     EXPECT_EQ(t.rows() + 1, s.priv_row_start().size());
 
     if (t.size()) {
-      tensor::index i = rand<int>(0, t.rows() - 1);
-      tensor::index j = rand<int>(0, t.columns() - 1);
+      index_t i = rand<int>(0, t.rows() - 1);
+      index_t j = rand<int>(0, t.columns() - 1);
       t.at(i, j) = number_zero<elt_t>();
     } else {
       break;

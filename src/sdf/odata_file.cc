@@ -135,7 +135,7 @@ void OutDataFile::write_raw(const int *data, size_t n) {
   write_raw_with_endian(_stream, data, n);
 }
 
-void OutDataFile::write_raw(const tensor::index *data, size_t n) {
+void OutDataFile::write_raw(const index_t *data, size_t n) {
   tensor_assert(is_open());
   write_raw_with_endian(_stream, data, n);
 }
@@ -162,7 +162,7 @@ void OutDataFile::write_variable_name(const std::string &name) {
   write_raw(buffer.c_str(), var_name_size);
 }
 
-void OutDataFile::write_tag(const std::string &name, tensor::index tag) {
+void OutDataFile::write_tag(const std::string &name, index_t tag) {
   write_variable_name(name);
   write_raw(tag);
 }
@@ -229,7 +229,7 @@ void OutDataFile::write_header() {
                              'd',
                              'f',
                              sizeof(int) + '0',
-                             sizeof(tensor::index) + '0',
+                             sizeof(index_t) + '0',
                              (endian == BIG_ENDIAN_FILE) ? '0' : '1',
                              0};
 

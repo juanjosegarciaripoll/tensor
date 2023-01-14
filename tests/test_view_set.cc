@@ -23,7 +23,6 @@
 namespace tensor_test {
 
 using namespace tensor;
-using tensor::index;
 
 #include "test_view_common.cc"
 
@@ -43,31 +42,31 @@ Tensor<elt_t> fill_continuous(const Tensor<elt_t> &P) {
 }
 
 template <typename elt_t>
-Tensor<elt_t> slow_range_set1(Tensor<elt_t> &P, index i0, index i2, index i1) {
+Tensor<elt_t> slow_range_set1(Tensor<elt_t> &P, index_t i0, index_t i2, index_t i1) {
   int n = 0;
-  for (index i = i0, x = 0; i <= i2; i += i1, ++x, ++n) {
+  for (index_t i = i0, x = 0; i <= i2; i += i1, ++x, ++n) {
     P.at(x) = number_zero<elt_t>() + (double)n;
   }
 }
 
 template <typename elt_t>
-Tensor<elt_t> slow_range_set2(const Tensor<elt_t> &P, index i0, index i2,
-                              index i1, index j0, index j2, index j1) {
+Tensor<elt_t> slow_range_set2(const Tensor<elt_t> &P, index_t i0, index_t i2,
+                              index_t i1, index_t j0, index_t j2, index_t j1) {
   int n = 0;
-  for (index i = i0, x = 0; i <= i2; i += i1, ++x) {
-    for (index j = j0, y = 0; j <= j2; j += j1, ++y) {
+  for (index_t i = i0, x = 0; i <= i2; i += i1, ++x) {
+    for (index_t j = j0, y = 0; j <= j2; j += j1, ++y) {
       P.at(x, y) = number_zero<elt_t>() + (double)n++;
     }
   }
 }
 
 template <typename elt_t>
-void slow_range_set3(Tensor<elt_t> &P, index i0, index i2, index i1, index j0,
-                     index j2, index j1, index k0, index k2, index k1) {
+void slow_range_set3(Tensor<elt_t> &P, index_t i0, index_t i2, index_t i1, index_t j0,
+                     index_t j2, index_t j1, index_t k0, index_t k2, index_t k1) {
   int n = 0;
-  for (index i = i0, x = 0; i <= i2; i += i1, ++x) {
-    for (index j = j0, y = 0; j <= j2; j += j1, ++y) {
-      for (index k = k0, z = 0; k <= k2; k += k1, ++z) {
+  for (index_t i = i0, x = 0; i <= i2; i += i1, ++x) {
+    for (index_t j = j0, y = 0; j <= j2; j += j1, ++y) {
+      for (index_t k = k0, z = 0; k <= k2; k += k1, ++z) {
         P.at(x, y, z) = number_zero<elt_t>() + (double)n++;
       }
     }

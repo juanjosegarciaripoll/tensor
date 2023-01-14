@@ -62,7 +62,7 @@ static Tensor<elt_t> do_trace(const Tensor<elt_t> &D, index i1, index i2) {
     abort();
   }
 
-  index new_rank = std::max(D.rank() - 2, tensor::index(1));
+  index new_rank = std::max(D.rank() - 2, index_t(1));
   Indices dimensions(new_rank);
   index rank = 0;
   dimensions.at(rank) = 1;

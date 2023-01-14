@@ -26,13 +26,15 @@ namespace arpack {
 using namespace tensor;
 
 RTensor make_matrix(const InPlaceLinearMap<RTensor> &A, size_t n) {
-  auto M = RTensor::empty(static_cast<index_t>(n), static_cast<index_t>(n));
-  for (tensor::index i = 0, l = static_cast<tensor::index>(n); i < l; i++) {
-    RTensor v = RTensor::zeros(l);
-    RTensor Av = RTensor::empty(l);
+  auto l = static_cast<index_t>(n);
+  auto M = RTensor::empty(l, l);
+  auto v = RTensor::zeros(l);
+  auto Av = RTensor::empty(l);
+  for (index_t i = 0; i < l; i++) {
     v.at(i) = 1.0;
     A(v, Av);
     M.at(_, range(i)) = Av;
+	v.at(i) = 0.0;
   }
   return M;
 }

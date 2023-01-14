@@ -26,7 +26,7 @@ using std::numeric_limits;
 using std::vector;
 
 int inline index_to_fftw_dimension(const Indices& dims, int which) {
-  const tensor::index d = dims[which];
+  auto d = dims[which];
   if (d > numeric_limits<int>::max()) {
     std::cerr << "Dimension " << which << " of array exceed maximum FFTW size "
               << numeric_limits<int>::max() << std::endl;

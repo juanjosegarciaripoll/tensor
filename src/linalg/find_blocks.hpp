@@ -24,7 +24,6 @@
 namespace linalg {
 
 using namespace tensor;
-using tensor::index;
 
 /*Find blocks in a block-diagonal matrix.*/
 /*If A is a block diagonal matrix, that means that, after appropiate reordering
@@ -105,7 +104,7 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
     }
   }
 
-  std::vector<index> buffer;
+  std::vector<index_t> buffer;
   buffer.reserve(std::max(N, M));
   column_indices.reserve(nblocks);
   row_indices.reserve(nblocks);
@@ -113,13 +112,13 @@ bool find_blocks(const Tensor &A, std::vector<Indices> &row_indices,
   auto extract_positions = [&](std::vector<size_t> &v, size_t start,
                                size_t which) {
     buffer.clear();
-    index count = 0;
+    index_t count = 0;
     for (size_t ndx = start; ndx < v.size(); ++ndx) {
       auto &x = v[ndx];
       if (x == which) {
         x = empty;
         ++count;
-        buffer.push_back(static_cast<index>(ndx));
+        buffer.push_back(static_cast<index_t>(ndx));
       }
     }
     Indices output = Indices::empty(count);

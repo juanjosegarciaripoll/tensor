@@ -24,7 +24,6 @@
 namespace tensor_test {
 
 using namespace tensor;
-using tensor::index;
 
 /////////////////////////////////////////////////////////////////////
 // RANGES

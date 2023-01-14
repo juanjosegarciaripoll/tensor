@@ -30,7 +30,7 @@ namespace jobs {
 class Job {
  public:
   using dataset = std::shared_ptr<sdf::OutDataFile>;
-  using index = tensor::index;
+  using index = tensor::index_t;
 
   Job() = delete;
   Job(const Job &) = delete;

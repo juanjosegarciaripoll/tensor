@@ -19,23 +19,23 @@
 #include <algorithm>
 #include <tensor/tensor.h>
 
+using namespace tensor;
+
 template <typename elt_t>
-static void do_diag(elt_t *output, const elt_t *input, tensor::index a1,
-                    tensor::index a2, tensor::index a2b, tensor::index a3,
-                    tensor::index a4, tensor::index a5, tensor::index which) {
+static void do_diag(elt_t *output, const elt_t *input, index_t a1, index_t a2,
+                    index_t a2b, index_t a3, index_t a4, index_t a5,
+                    index_t which) {
   // output(a1,a2b,a3,a5), input(a1,a2,a3,a4,a5)
-  tensor::index o1, o2;
+  index_t o1{0}, o2{0};
   if (which < 0) {
     o2 = -which;
-    o1 = 0;
   } else {
-    o2 = 0;
     o1 = which;
   }
-  for (tensor::index m = 0; m < a5; m++) {
-    for (tensor::index l = 0; l < a2b; l++) {
-      for (tensor::index k = 0; k < a3; k++) {
-        for (tensor::index i = 0; i < a1; i++) {
+  for (index_t m = 0; m < a5; m++) {
+    for (index_t l = 0; l < a2b; l++) {
+      for (index_t k = 0; k < a3; k++) {
+        for (index_t i = 0; i < a1; i++) {
           output[i + a1 * (l + a2b * (k + a3 * m))] =
               input[i + a1 * ((o1 + l) + a2 * (k + a3 * ((o2 + l) + a4 * m)))];
         }
@@ -46,19 +46,17 @@ static void do_diag(elt_t *output, const elt_t *input, tensor::index a1,
 
 /* Extract a diagonal from a matrix. */
 template <typename elt_t>
-const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
-                                         tensor::index which,
-                                         tensor::index ndx1,
-                                         tensor::index ndx2) {
+const Tensor<elt_t> do_take_diag(const Tensor<elt_t> &a, index_t which,
+                                 index_t ndx1, index_t ndx2) {
   if (ndx1 < 0) ndx1 += a.rank();
   tensor_assert((ndx1 < a.rank()) && (ndx1 >= 0));
   if (ndx2 < 0) ndx2 += a.rank();
   tensor_assert((ndx2 < a.rank()) && (ndx2 >= 0));
 
-  tensor::index new_rank = std::max(a.rank() - 1, tensor::index(1));
-  tensor::Indices new_dims(new_rank);
-  tensor::index i, rank = 0;
-  tensor::index a1, a2, a3, a4, a5, a2b;
+  index_t new_rank = std::max(a.rank() - 1, index_t(1));
+  Indices new_dims(new_rank);
+  index_t i{0}, rank = 0;
+  index_t a1{1}, a3{1}, a5{1};
   if (ndx1 > ndx2) {
     std::swap(ndx1, ndx2);
     which = -which;
@@ -68,14 +66,14 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
     new_dims.at(rank++) = di;
     a1 *= di;
   }
-  a2 = a.dimension(i++);
+  index_t a2 = a.dimension(i++);
   new_dims.at(rank++) = a2;
   for (a3 = 1; i < ndx2; i++) {
     auto di = a.dimension(i);
     new_dims.at(rank++) = di;
     a3 *= di;
   }
-  a4 = a.dimension(i++);
+  index_t a4 = a.dimension(i++);
   for (a5 = 1; i < a.rank(); i++) {
     auto di = a.dimension(i);
     new_dims.at(rank++) = di;
@@ -89,13 +87,10 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
   if (a2 == 1 && a4 == 1) {
     return reshape(a, new_dims);
   }
-  if (which < 0) {
-    a2b = std::max(tensor::index(0), std::min(a2 + which, a4));
-  } else {
-    a2b = std::max(tensor::index(0), std::min(a2, a4 - which));
-  }
+  index_t a2b = std::max<index_t>(
+      0, which < 0 ? std::min(a2 + which, a4) : std::min(a2, a4 - which));
   new_dims.at(ndx1) = a2b;
-  auto output = tensor::Tensor<elt_t>::empty(new_dims);
+  auto output = Tensor<elt_t>::empty(new_dims);
   which = -which;
   if (a2b) {
     do_diag<elt_t>(output.unsafe_begin_not_shared(), a.begin(), a1, a2, a2b, a3,
@@ -103,5 +98,3 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
   }
   return output;
 }
-
-// FIXME remove explicit references to tensor:: namespace
