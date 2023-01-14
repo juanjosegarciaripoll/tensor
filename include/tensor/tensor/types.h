@@ -148,9 +148,16 @@ class Tensor {
   inline const elt_t &operator[](index i) const noexcept {
     return cbegin()[i];
   };
+
   /**Return an element of a Tensor based on one or more indices. See \ref tensor_access*/
   template <typename... index_like>
-  inline const elt_t &operator()(index i0, index_like... irest) const noexcept {
+  inline elt_t operator()(index i0, index_like... irest) const & {
+    return cbegin()[dims_.column_major_position(i0, irest...)];
+  }
+
+  /**Return an element of a Tensor based on one or more indices. See \ref tensor_access*/
+  template <typename... index_like>
+  inline elt_t operator()(index i0, index_like... irest) && {
     return cbegin()[dims_.column_major_position(i0, irest...)];
   }
 
@@ -163,12 +170,12 @@ class Tensor {
   }
 
   /**Return the element referenced by the given indices, in column major order.*/
-  inline elt_t &element_at(const Indices &i) noexcept {
+  inline elt_t &element_at(const Indices &i) {
     return begin()[dims_.column_major_position(i)];
   };
 
   /**Return the element referenced by the given indices, in column major order.*/
-  inline const elt_t &element_at(const Indices &i) const noexcept {
+  inline const elt_t &element_at(const Indices &i) const {
     return cbegin()[dims_.column_major_position(i)];
   };
 
@@ -184,7 +191,7 @@ class Tensor {
   /**N-dimensional tensor one or more dimensions, filled with random numbers.*/
   template <typename... index_like>
   static inline Tensor<elt_t> random(index d0,
-                                     index_like... next_dimensions) noexcept {
+                                     index_like... next_dimensions) {
     return random(Dimensions{d0, static_cast<index_t>(next_dimensions)...});
   }
 
@@ -197,7 +204,7 @@ class Tensor {
   }
 
   /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
-  inline TensorView<elt_t> operator()(Range r) const {
+  inline TensorView<elt_t> operator()(Range r) const & {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
     std::array<Range, 1> ranges{std::move(r)};
@@ -207,10 +214,27 @@ class Tensor {
 
   /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
   template <typename... RangeLike>
-  inline TensorView<elt_t> operator()(Range r1, RangeLike... rnext) const {
+  inline TensorView<elt_t> operator()(Range r1, RangeLike... rnext) const & {
     std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
                                                    std::move(rnext)...};
     return TensorView<elt_t>(*this, RangeSpan(ranges));
+  }
+
+  /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
+  inline Tensor<elt_t> operator()(Range r) && {
+    // a(range) is valid for 1D and for ND tensors which are treated
+    // as being 1D
+    std::array<Range, 1> ranges{std::move(r)};
+    ranges.begin()->set_dimension(ssize());
+    return TensorView<elt_t>(*this, RangeSpan(ranges)).copy();
+  }
+
+  /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
+  template <typename... RangeLike>
+  inline Tensor<elt_t> operator()(Range r1, RangeLike... rnext) && {
+    std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
+                                                   std::move(rnext)...};
+    return TensorView<elt_t>(*this, RangeSpan(ranges)).copy();
   }
 
   /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
@@ -355,7 +379,7 @@ class TensorView {
   TensorView() = delete;
   ~TensorView() = default;
   TensorView(const TensorView<elt_t> &other) = default;
-  TensorView(TensorView<elt_t> &&other) = default;
+  TensorView(TensorView<elt_t> &&other) noexcept = default;
   TensorView &operator=(const TensorView &) = delete;
   TensorView &operator=(TensorView &&) = delete;
 
@@ -398,7 +422,7 @@ class MutableTensorView {
   MutableTensorView() = delete;
   ~MutableTensorView() = default;
   MutableTensorView(const MutableTensorView<elt_t> &other) = default;
-  MutableTensorView(MutableTensorView<elt_t> &&other) = default;
+  MutableTensorView(MutableTensorView<elt_t> &&other) noexcept = default;
 
   MutableTensorView(Tensor<elt_t> &tensor, RangeSpan ranges)
       : tensor_(tensor),
