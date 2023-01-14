@@ -11,7 +11,6 @@ target_sources(tensor
     matrix_transpose_z.cc
     tensor_change_dimension_d.cc
     tensor_change_dimension_z.cc
-    tensor_common.cc
     tensor_conj.cc
     tensor_d.cc
     tensor_accumulate.cc

@@ -413,14 +413,12 @@ class MutableTensorView {
         range_iterator_begin_(RangeIterator::begin(ranges)) {}
 
   MutableTensorView &operator=(const TensorView<elt_t> &t) {
-    tensor_assert(
-        verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
+    tensor_assert(dimensions() == t.dimensions());
     begin().copy_from(t.begin());
     return *this;
   }
   MutableTensorView &operator=(const Tensor<elt_t> &t) {
-    tensor_assert(
-        verify_tensor_dimensions_match(this->dimensions(), t.dimensions()));
+    tensor_assert(dimensions() == t.dimensions());
     begin().copy_from_contiguous_iterator(t.begin());
     return *this;
   }

@@ -53,16 +53,10 @@ Tensor<elt_t> flatten(const Tensor<elt_t> &t) {
 template <typename t>
 Tensor<t> operator-(const Tensor<t> &a) {
   Tensor<t> output(a.dimensions());
-  std::transform(a.begin(), a.end(), output.begin(),
+  std::transform(a.cbegin(), a.cend(), output.unsafe_begin_not_shared(),
                  [](const t &x) { return -x; });
   return output;
 }
-
-//
-// Binary operations
-//
-
-bool verify_tensor_dimensions_match(const Indices &d1, const Indices &d2);
 
 //
 // TENSOR <OP> TENSOR
@@ -71,11 +65,11 @@ template <
     typename t1, typename t2,
     typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator+(const t1 &a, const t2 &b) {
-  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
   tensor_assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(
-      a.begin(), a.end(), b.begin(), output.begin(),
+      a.cbegin(), a.cend(), b.cbegin(), output.unsafe_begin_not_shared(),
       [](tensor_scalar_t<t1> x, tensor_scalar_t<t2> y) { return x + y; });
   return output;
 }
@@ -84,11 +78,11 @@ template <
     typename t1, typename t2,
     typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator-(const t1 &a, const t2 &b) {
-  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
   tensor_assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(
-      a.begin(), a.end(), b.begin(), output.begin(),
+      a.cbegin(), a.cend(), b.cbegin(), output.unsafe_begin_not_shared(),
       [](tensor_scalar_t<t1> x, tensor_scalar_t<t2> y) { return x - y; });
   return output;
 }
@@ -96,11 +90,11 @@ template <
     typename t1, typename t2,
     typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator*(const t1 &a, const t2 &b) {
-  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
   tensor_assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(
-      a.begin(), a.end(), b.begin(), output.begin(),
+      a.cbegin(), a.cend(), b.cbegin(), output.unsafe_begin_not_shared(),
       [](tensor_scalar_t<t1> x, tensor_scalar_t<t2> y) { return x * y; });
   return output;
 }
@@ -108,11 +102,11 @@ template <
     typename t1, typename t2,
     typename = std::enable_if_t<is_tensor<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator/(const t1 &a, const t2 &b) {
-  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
   tensor_assert(a.size() == b.size());
   tensor_common_t<t1, t2> output(a.dimensions());
   std::transform(
-      a.begin(), a.end(), b.begin(), output.begin(),
+      a.cbegin(), a.cend(), b.cbegin(), output.unsafe_begin_not_shared(),
       [](tensor_scalar_t<t1> x, tensor_scalar_t<t2> y) { return x / y; });
   return output;
 }
@@ -125,7 +119,7 @@ template <
     typename = std::enable_if_t<is_scalar<t2>::value && is_tensor<t1>::value>>
 tensor_common_t<t1, t2> operator+(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
-  std::transform(a.begin(), a.end(), output.begin(),
+  std::transform(a.cbegin(), a.cend(), output.unsafe_begin_not_shared(),
                  [=](tensor_scalar_t<t1> x) { return x + b; });
   return output;
 }
@@ -135,7 +129,7 @@ template <
     typename = std::enable_if_t<is_scalar<t2>::value && is_tensor<t1>::value>>
 tensor_common_t<t1, t2> operator-(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
-  std::transform(a.begin(), a.end(), output.begin(),
+  std::transform(a.cbegin(), a.cend(), output.unsafe_begin_not_shared(),
                  [=](tensor_scalar_t<t1> x) { return x - b; });
   return output;
 }
@@ -145,7 +139,7 @@ template <
     typename = std::enable_if_t<is_scalar<t2>::value && is_tensor<t1>::value>>
 tensor_common_t<t1, t2> operator*(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
-  std::transform(a.begin(), a.end(), output.begin(),
+  std::transform(a.cbegin(), a.cend(), output.unsafe_begin_not_shared(),
                  [=](tensor_scalar_t<t1> x) { return x * b; });
   return output;
 }
@@ -155,7 +149,7 @@ template <
     typename = std::enable_if_t<is_scalar<t2>::value && is_tensor<t1>::value>>
 tensor_common_t<t1, t2> operator/(const t1 &a, t2 b) {
   tensor_common_t<t1, t2> output(a.dimensions());
-  std::transform(a.begin(), a.end(), output.begin(),
+  std::transform(a.cbegin(), a.cend(), output.unsafe_begin_not_shared(),
                  [=](tensor_scalar_t<t1> x) { return x / b; });
   return output;
 }
@@ -168,7 +162,7 @@ template <
     typename = std::enable_if_t<is_scalar<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator+(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
-  std::transform(b.begin(), b.end(), output.begin(),
+  std::transform(b.cbegin(), b.end(), output.unsafe_begin_not_shared(),
                  [=](tensor_scalar_t<t2> x) { return a + x; });
   return output;
 }
@@ -178,7 +172,7 @@ template <
     typename = std::enable_if_t<is_scalar<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator-(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
-  std::transform(b.begin(), b.end(), output.begin(),
+  std::transform(b.cbegin(), b.end(), output.unsafe_begin_not_shared(),
                  [=](tensor_scalar_t<t2> x) { return a - x; });
   return output;
 }
@@ -188,7 +182,7 @@ template <
     typename = std::enable_if_t<is_scalar<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator*(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
-  std::transform(b.begin(), b.end(), output.begin(),
+  std::transform(b.cbegin(), b.end(), output.unsafe_begin_not_shared(),
                  [=](tensor_scalar_t<t2> x) { return a * x; });
   return output;
 }
@@ -198,7 +192,7 @@ template <
     typename = std::enable_if_t<is_scalar<t1>::value && is_tensor<t2>::value>>
 tensor_common_t<t1, t2> operator/(t1 a, const t2 &b) {
   tensor_common_t<t1, t2> output(b.dimensions());
-  std::transform(b.begin(), b.end(), output.begin(),
+  std::transform(b.cbegin(), b.end(), output.unsafe_begin_not_shared(),
                  [=](tensor_scalar_t<t2> x) { return a / x; });
   return output;
 }
@@ -208,32 +202,44 @@ tensor_common_t<t1, t2> operator/(t1 a, const t2 &b) {
 //
 template <typename t1, typename t2>
 Tensor<t1> &operator+=(Tensor<t1> &a, const Tensor<t2> &b) {
-  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
-  std::transform(a.begin(), a.end(), b.begin(), a.begin(),
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
+  tensor_assert(a.size() == b.size());
+  auto start = a.begin();
+  auto end = a.unsafe_end_not_shared();
+  std::transform(start, end, b.cbegin(), start,
                  [](const t1 &x, const t2 &y) { return x + y; });
   return a;
 }
 
 template <typename t1, typename t2>
 Tensor<t1> &operator-=(Tensor<t1> &a, const Tensor<t2> &b) {
-  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
-  std::transform(a.begin(), a.end(), b.begin(), a.begin(),
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
+  tensor_assert(a.size() == b.size());
+  auto start = a.begin();
+  auto end = a.unsafe_end_not_shared();
+  std::transform(start, end, b.cbegin(), start,
                  [](const t1 &x, const t2 &y) { return x - y; });
   return a;
 }
 
 template <typename t1, typename t2>
 Tensor<t1> &operator*=(Tensor<t1> &a, const Tensor<t2> &b) {
-  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
-  std::transform(a.begin(), a.end(), b.begin(), a.begin(),
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
+  tensor_assert(a.size() == b.size());
+  auto start = a.begin();
+  auto end = a.unsafe_end_not_shared();
+  std::transform(start, end, b.cbegin(), start,
                  [](const t1 &x, const t2 &y) { return x * y; });
   return a;
 }
 
 template <typename t1, typename t2>
 Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t2> &b) {
-  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
-  std::transform(a.begin(), a.end(), b.begin(), a.begin(),
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
+  tensor_assert(a.size() == b.size());
+  auto start = a.begin();
+  auto end = a.unsafe_end_not_shared();
+  std::transform(start, end, b.cbegin(), start,
                  [](const t1 &x, const t2 y) { return x / y; });
   return a;
 }
@@ -243,25 +249,33 @@ Tensor<t1> &operator/=(Tensor<t1> &a, const Tensor<t2> &b) {
 //
 template <typename t1, typename t2>
 Tensor<t1> &operator+=(Tensor<t1> &a, t2 b) {
-  std::transform(a.begin(), a.end(), a.begin(),
+  auto start = a.begin();
+  auto end = a.unsafe_end_not_shared();
+  std::transform(start, end, start,
                  [=](const auto &value) { return value + b; });
   return a;
 }
 template <typename t1, typename t2>
 Tensor<t1> &operator-=(Tensor<t1> &a, t2 b) {
-  std::transform(a.begin(), a.end(), a.begin(),
+  auto start = a.begin();
+  auto end = a.unsafe_end_not_shared();
+  std::transform(start, end, start,
                  [=](const auto &value) { return value - b; });
   return a;
 }
 template <typename t1, typename t2>
 Tensor<t1> &operator*=(Tensor<t1> &a, t2 b) {
-  std::transform(a.begin(), a.end(), a.begin(),
+  auto start = a.begin();
+  auto end = a.unsafe_end_not_shared();
+  std::transform(start, end, start,
                  [=](const auto &value) { return value * b; });
   return a;
 }
 template <typename t1, typename t2>
 Tensor<t1> &operator/=(Tensor<t1> &a, t2 b) {
-  std::transform(a.begin(), a.end(), a.begin(),
+  auto start = a.begin();
+  auto end = a.unsafe_end_not_shared();
+  std::transform(start, end, start,
                  [=](const auto &value) { return value / b; });
   return a;
 }
@@ -274,16 +288,18 @@ namespace detail {
 template <typename t1, typename t2, class comparison>
 Booleans compare_tensors(const Tensor<t1> &a, const Tensor<t2> &b,
                          comparison fn) {
-  tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
+  tensor_assert(a.size() == b.size());
   Booleans output(a.size());
-  std::transform(a.cbegin(), a.cend(), b.cbegin(), output.begin(), fn);
+  std::transform(a.cbegin(), a.cend(), b.cbegin(),
+                 output.unsafe_begin_not_shared(), fn);
   return output;
 }
 
 template <typename t1, class test>
 Booleans test_tensor(const Tensor<t1> &a, test fn) {
   Booleans output(a.size());
-  std::transform(a.cbegin(), a.cend(), output.begin(), fn);
+  std::transform(a.cbegin(), a.cend(), output.unsafe_begin_not_shared(), fn);
   return output;
 }
 
@@ -329,7 +345,7 @@ Booleans operator>=(const Tensor<t1> &a, const Tensor<t2> &b) {
 
 template <typename t1, typename t2>
 bool all_equal(const Tensor<t1> &a, const Tensor<t2> &b) {
-  return verify_tensor_dimensions_match(a.dimensions(), b.dimensions()) &&
+  return (a.ssize() == b.ssize()) &&
          std::equal(a.cbegin(), a.cend(), b.cbegin());
 }
 
@@ -423,11 +439,12 @@ bool all_equal(t1 a, const Tensor<t1> &b) {
 
 template <typename e1, typename e2>
 auto pow(const Tensor<e1> &a, const Tensor<e2> &b) {
-  // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
+  // This should be: tensor_assert(a.dimensions() == b.dimensions());
   using e3 = typename std::common_type<e1, e2>::type;
   tensor_assert(a.size() == b.size());
   Tensor<e3> output(a.dimensions());
-  std::transform(a.begin(), a.end(), b.begin(), output.begin(),
+  std::transform(a.cbegin(), a.cend(), b.cbegin(),
+                 output.unsafe_begin_not_shared(),
                  [](e1 x, e2 y) { return std::pow(x, y); });
   return output;
 }
