@@ -62,22 +62,31 @@ class Indices : public Vector<index> {
 };
 
 class Dimensions {
-  using index = ::tensor::index;
+  using index_t = ::tensor::index_t;
 
-  SimpleVector<index> dimensions_{};
-  index total_size_{0};
+  SimpleVector<index_t> dimensions_{};
+  index_t total_size_{0};
 
-  static index compute_total_size(const SimpleVector<index> &dims);
+  static index_t compute_total_size(const SimpleVector<index_t> &dims);
+
+  template<typename other_elt>
+  static constexpr index_t compute_total_size(const std::initializer_list<other_elt> &l)
+  {
+	index_t output = 1;
+	for (auto x : l)
+	  output *= static_cast<index_t>(x);
+	return output;
+  }
 
  public:
-  using iterator = index *;
-  using const_iterator = const index *;
+  using iterator = index_t *;
+  using const_iterator = const index_t *;
 
   Dimensions() = default;
 
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
-  Dimensions(const SimpleVector<index> &dims)
+  Dimensions(const SimpleVector<index_t> &dims)
       : dimensions_(dims), total_size_{compute_total_size(dimensions_)} {}
 
   // NOLINTNEXTLINE(*-explicit-constructor)
@@ -89,39 +98,40 @@ class Dimensions {
   template <typename other_elt>
   // cppcheck-suppress noExplicitConstructor
   Dimensions(const std::initializer_list<other_elt> &l)
-      : dimensions_(l), total_size_{compute_total_size(dimensions_)} {}
+      : dimensions_(l), total_size_{compute_total_size(l)} {}
 
-  index total_size() const { return total_size_; }
-  index rank() const { return dimensions_.ssize(); }
+  index_t total_size() const { return total_size_; }
+  size_t total_size_t() const { return static_cast<size_t>(total_size()); }
+  index_t rank() const { return dimensions_.ssize(); }
 
-  index operator[](index pos) const { return dimensions_[pos]; }
+  index_t operator[](index_t pos) const { return dimensions_[pos]; }
   const_iterator begin() const { return dimensions_.begin(); }
   const_iterator end() const { return dimensions_.end(); }
-  const SimpleVector<index> &get_vector() const { return dimensions_; }
-  static inline index normalize_index(index i,
-                                      index dimension) tensor_noexcept {
+  const SimpleVector<index_t> &get_vector() const { return dimensions_; }
+  static inline index_t normalize_index(index_t i,
+                                      index_t dimension) tensor_noexcept {
     if (i < 0) i += dimension;
     tensor_assert2((i < dimension) && (i >= 0), out_of_bounds_index());
     return i;
   }
 
-  static inline index normalize_index_safe(index i, index dimension) {
+  static inline index normalize_index_safe(index_t i, index_t dimension) {
     if (i < 0) i += dimension;
     tensor_assert2((i < dimension) && (i >= 0), out_of_bounds_index());
     return i;
   }
 
   template <typename... index_like>
-  index column_major_position(index i0, index_like... in) const {
+  index_t column_major_position(index_t i0, index_like... in) const {
     tensor_expects(rank() == sizeof...(in) + 1);
     return column_major_inner(0, i0, in...);
   }
 
-  index column_major_position(const Indices &indices) const {
+  index_t column_major_position(const Indices &indices) const {
     tensor_expects(rank() == indices.ssize());
-    index output = 0;
-    index factor = 1;
-    for (index i = 0; i < rank(); ++i) {
+    index_t output = 0;
+    index_t factor = 1;
+    for (index_t i = 0; i < rank(); ++i) {
       auto d = dimensions_[i];
       output += factor * normalize_index(indices[i], d);
       factor *= d;
@@ -132,7 +142,7 @@ class Dimensions {
   template <typename... index_like>
   void get_values(index_like *...in) const {
     tensor_assert(rank() == sizeof...(in));
-    index n = 0;
+    index_t n = 0;
     auto ignored = {(*(in) = dimensions_[n++], 1)...};  // NOLINT
   }
 
@@ -143,14 +153,14 @@ class Dimensions {
 
  private:
   template <typename... index_like>
-  index column_major_inner(index n, index in, index_like... irest) const {
-    index dn = dimensions_[n];
+  index_t column_major_inner(index n, index in, index_like... irest) const {
+    index_t dn = dimensions_[n];
     in = normalize_index(in, dn);
     return in + dn * column_major_inner(n + 1, irest...);
   }
 
-  inline index column_major_inner(index n, index in) const {
-    index dn = dimensions_[n];
+  inline index_t column_major_inner(index_t n, index_t in) const {
+    index_t dn = dimensions_[n];
     in = normalize_index(in, dn);
     return in;
   }
