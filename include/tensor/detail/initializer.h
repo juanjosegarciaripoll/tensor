@@ -104,37 +104,43 @@ class nested_list_initializer {
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<1, elt_t>::type l) {
     auto output = Tensor<elt_t>::empty(dimensions(l));
-    copy_into(output.begin(), output.dimensions().begin(), 1, l);
+    copy_into(output.unsafe_begin_not_shared(), output.dimensions().begin(), 1,
+              l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<2, elt_t>::type l) {
     auto output = Tensor<elt_t>::empty(dimensions(l));
-    copy_into(output.begin(), output.dimensions().begin(), 1, l);
+    copy_into(output.unsafe_begin_not_shared(), output.dimensions().begin(), 1,
+              l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<3, elt_t>::type l) {
     auto output = Tensor<elt_t>::empty(dimensions(l));
-    copy_into(output.begin(), output.dimensions().begin(), 1, l);
+    copy_into(output.unsafe_begin_not_shared(), output.dimensions().begin(), 1,
+              l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<4, elt_t>::type l) {
     auto output = Tensor<elt_t>::empty(dimensions(l));
-    copy_into(output.begin(), output.dimensions().begin(), 1, l);
+    copy_into(output.unsafe_begin_not_shared(), output.dimensions().begin(), 1,
+              l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<5, elt_t>::type l) {
     auto output = Tensor<elt_t>::empty(dimensions(l));
-    copy_into(output.begin(), output.dimensions().begin(), 1, l);
+    copy_into(output.unsafe_begin_not_shared(), output.dimensions().begin(), 1,
+              l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<6, elt_t>::type l) {
     auto output = Tensor<elt_t>::empty(dimensions(l));
-    copy_into(output.begin(), output.dimensions().begin(), 1, l);
+    copy_into(output.unsafe_begin_not_shared(), output.dimensions().begin(), 1,
+              l);
     return output;
   }
 };
