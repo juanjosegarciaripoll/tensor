@@ -30,7 +30,7 @@
 namespace benchmark {
 
 using namespace tensor;
-using index_t = tensor::index;
+using index_t = index_t;
 #define _ range()
 
 template <class T1, class T2>
@@ -93,7 +93,7 @@ void vector_const_indexed_read(std::tuple<T, typename T::elt_t> &args) {
   const T &v = std::get<0>(args);
   auto n = std::get<1>(args);
   auto x = n;
-  for (tensor::index i = 0; i < static_cast<tensor::index>(v.size()); ++i) {
+  for (index_t i = 0; i < static_cast<index_t>(v.size()); ++i) {
     x += v[i];
   }
   force_nonzero(x);
@@ -104,7 +104,7 @@ void vector_indexed_read(std::tuple<T, typename T::elt_t> &args) {
   T &v = std::get<0>(args);
   auto n = std::get<1>(args);
   auto x = n;
-  for (tensor::index i = 0; i < static_cast<tensor::index>(v.size()); ++i) {
+  for (index_t i = 0; i < static_cast<index_t>(v.size()); ++i) {
     x += v[i];
   }
   force_nonzero(x);
@@ -114,7 +114,7 @@ template <class T>
 void vector_indexed_write(std::tuple<T, typename T::elt_t> &args) {
   T &v = std::get<0>(args);
   auto n = std::get<1>(args);
-  for (tensor::index i = 0; i < static_cast<tensor::index>(v.size()); ++i) {
+  for (index_t i = 0; i < static_cast<index_t>(v.size()); ++i) {
     v.at(i) = n;
   }
 }
@@ -231,44 +231,46 @@ template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_number(size_t size) {
   auto number = static_cast<typename T::elt_t>(3.0);
   return typename std::tuple<T, typename T::elt_t>(
-      T::random(static_cast<tensor::index>(size)), number);
+      T::random(static_cast<index_t>(size)), number);
 }
 
 template <class T>
 std::tuple<T, T> make_two_vectors(size_t size) {
-  return std::tuple<T, T>(T::random(static_cast<tensor::index>(size)),
-                          T::random(static_cast<tensor::index>(size)) + 1.0);
+  return std::tuple<T, T>{T::random(static_cast<index_t>(size)),
+                          T::random(static_cast<index_t>(size)) + 1.0};
 }
 
 template <class T>
 std::tuple<T> make_vector(size_t size) {
-  return typename std::tuple<T>(T::random(static_cast<tensor::index>(size)));
+  return typename std::tuple<T>(T::random(static_cast<index_t>(size)));
 }
 
 template <class T>
 std::tuple<T, typename T::elt_t> make_vector_and_one(size_t size) {
   auto number = static_cast<typename T::elt_t>(1.0);
   return typename std::tuple<T, typename T::elt_t>(
-      T::random(static_cast<tensor::index>(size)), number);
+      T::random(static_cast<index_t>(size)), number);
 }
 
 template <class T>
 std::tuple<T, T> make_two_columns(size_t size) {
-  size_t columns = 50;
-  return std::tuple<T, T>(T::random(size, columns), T::random(size, columns));
+  index_t columns = 50;
+  auto ssize = static_cast<index_t>(size);
+  return std::tuple<T, T>(T::random(ssize, columns), T::random(ssize, columns));
 }
 
 template <class T>
 std::tuple<T, T, Indices> make_two_columns_and_index(size_t size) {
   auto aux = make_two_columns<T>(size);
-  Indices ndx = iota(0, static_cast<tensor::index>(size) - 1, 2);
+  Indices ndx = iota(0, static_cast<index_t>(size) - 1, 2);
   return std::tuple<T, T, Indices>(std::get<0>(aux), std::get<1>(aux), ndx);
 }
 
 template <class T>
 std::tuple<T, T> make_two_rows(size_t size) {
-  size_t rows = 50;
-  return std::tuple<T, T>(T::random(rows, size), T::random(rows, size));
+  index_t rows = 50;
+  auto ssize = static_cast<index_t>(size);
+  return std::tuple<T, T>(T::random(rows, ssize), T::random(rows, ssize));
 }
 
 template <class T>
@@ -280,7 +282,8 @@ std::tuple<T, T, Indices> make_two_rows_and_index(size_t size) {
 
 template <class T>
 std::tuple<T, T> make_two_matrices(size_t size) {
-  return std::tuple<T, T>(T::random(size, size), T::random(size, size));
+  auto ssize = static_cast<index_t>(size);
+  return std::tuple<T, T>(T::random(ssize, ssize), T::random(ssize, ssize));
 }
 
 template <typename T>
