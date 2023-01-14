@@ -125,7 +125,29 @@ template <typename T>
 inline shared_array<T> make_shared_array_from_ptr(T *data) {
   return shared_array<T>(data, [](T *) {});
 }
-
 #endif
+
+template <typename T>
+inline void copy_shared_data(shared_array<T> &array, size_t size) {
+  auto tmp = make_shared_array<T>(size);
+  std::copy(array.get(), array.get() + size, tmp.get());
+  array.swap(tmp);
+}
+
+template <typename T>
+inline T *appropriate(shared_array<T> &array, size_t size) {
+  // NOLINTBEGIN
+#ifdef TENSOR_UNSAFE_SHARED_PTR
+  if tensor_likely (array.unique()) {
+    copy_shared_data(array, size);
+  }
+#else
+  if tensor_unlikely (array.use_count() > 1) {
+    copy_shared_data(array, size);
+  }
+#endif
+  // NOLINTEND
+  return array.get();
+}
 
 }  // namespace tensor

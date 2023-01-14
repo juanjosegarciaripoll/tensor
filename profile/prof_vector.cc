@@ -221,8 +221,9 @@ void mmult_T_T(std::tuple<T, T> &args) {
 
 template <class T>
 void warmup(size_t size) {
+  auto ssize = static_cast<index_t>(size);
   for (int i = 0; i < 10; ++i) {
-    std::unique_ptr<T> p{new T{T::zeros(size,1)}};
+    std::unique_ptr<T> p{new T{T::zeros(ssize,1)}};
     force(*p);
   }
 }

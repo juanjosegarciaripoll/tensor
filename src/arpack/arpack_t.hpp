@@ -135,8 +135,8 @@ Arpack<elt_t, is_symmetric>::Arpack(size_t a_n, enum EigType a_t,
   rwork = std::make_unique<double[]>(static_cast<size_t>(ncv));
   for (size_t i = 0; i < 15; i++) ipntr[i] = 0;
   for (size_t i = 0; i < 3; i++) {
-    work_vectors[i] = Tensor(Vector<elt_t>(static_cast<size_t>(n),
-                                           &workd[i * static_cast<size_t>(n)]));
+    work_vectors[i] = Tensor::from_pointer(Dimensions{n},
+                                           &workd[i * static_cast<size_t>(n)]);
   }
 
   // We have initialized this structure

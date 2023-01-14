@@ -33,14 +33,14 @@ namespace tensor {
 
 template <typename elt_t>
 CSRMatrix<elt_t>::CSRMatrix()
-    : dims_{0, 0}, row_start_({0}), column_(0), data_{Vector<elt_t>()} {}
+    : dims_{0, 0}, row_start_({0}), column_(0), data_{} {}
 
 template <typename elt_t>
 CSRMatrix<elt_t>::CSRMatrix(index rows, index cols, index nonzero)
     : dims_{rows, cols},
       row_start_(static_cast<index_t>(safe_size_t(rows + 1))),
       column_(static_cast<index_t>(safe_size_t(nonzero))),
-      data_(Vector<elt_t>(column_.size())) {
+      data_(Tensor<elt_t>::empty(column_.size())) {
   std::fill(row_start_.begin(), row_start_.end(), 0);
 }
 

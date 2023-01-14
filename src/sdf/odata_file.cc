@@ -207,12 +207,12 @@ void OutDataFile::dump(const std::vector<CTensor> &t, const std::string &name) {
 }
 
 void OutDataFile::dump(const double value, const std::string &name) {
-  RTensor t(Dimensions{1}, Vector<double>({value}));
+  RTensor t({value});
   dump(t, name);
 }
 
 void OutDataFile::dump(const cdouble value, const std::string &name) {
-  CTensor t(Dimensions{1}, Vector<cdouble>({value}));
+  CTensor t({value});
   dump(t, name);
 }
 

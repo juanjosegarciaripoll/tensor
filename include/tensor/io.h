@@ -34,6 +34,18 @@ inline std::istream &operator>>(std::istream &s, cdouble &z) {
   return s;
 }
 
+template<typename sequence>
+inline std::ostream &output_as_vector(std::ostream &s, const sequence &data)
+{
+  s << '[';
+  const char *comma = "";
+  for (const auto &x : data) {
+    s << comma << x;
+    comma = ",";
+  }
+  return s << ']';
+}
+
 inline std::ostream &operator<<(std::ostream &s, const cdouble &d) {
   return s << real(d) << ' ' << imag(d);
 }
@@ -41,25 +53,13 @@ inline std::ostream &operator<<(std::ostream &s, const cdouble &d) {
 /**Simple text representation of vector.*/
 template <typename elt_t>
 inline std::ostream &operator<<(std::ostream &s, const Vector<elt_t> &t) {
-  s << '[';
-  const char *comma = "";
-  for (const auto &x : t) {
-    s << comma << x;
-    comma = ",";
-  }
-  return s << ']';
+  return output_as_vector(s, t);
 }
 
 /**Simple text representation of vector.*/
 template <typename elt_t>
 inline std::ostream &operator<<(std::ostream &s, const SimpleVector<elt_t> &t) {
-  s << '[';
-  const char *comma = "";
-  for (const auto &x : t) {
-    s << comma << x;
-    comma = ",";
-  }
-  return s << ']';
+  return output_as_vector(s, t);
 }
 
 /**Simple text representation of dimensions.*/
@@ -70,7 +70,8 @@ inline std::ostream &operator<<(std::ostream &s, const Dimensions &d) {
 /**Simple text representation of tensor.*/
 template <typename elt_t>
 std::ostream &operator<<(std::ostream &s, const Tensor<elt_t> &t) {
-  return s << '(' << t.dimensions() << ")/" << static_cast<Vector<elt_t>>(t);
+  s << '(' << t.dimensions() << ")/";
+  return output_as_vector(s, t);
 }
 
 /**Simple text representation of a sparse matrix (undistinguishable from a tensor).*/

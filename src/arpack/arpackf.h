@@ -217,8 +217,7 @@ static inline CTensor gen_eupp(CTensor *eigenvectors, tensor::cdouble sigma,
   blas::integer rvec;
   double sigmar = real(sigma), sigmai = imag(sigma);
   if (eigenvectors) {
-    Z = RTensor(tensor::Dimensions{n, ncv},
-                tensor::Vector<double>(static_cast<size_t>(n * ncv), V));
+    Z = RTensor::from_pointer(tensor::Dimensions{n, ncv}, V);
     HowMny = 'A';
     ldz = n;
     rvec = 1;

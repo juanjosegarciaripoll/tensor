@@ -15,12 +15,12 @@ static void realMatrixMatvec(void *x, PRIMME_INT *ldx, void *y, PRIMME_INT *ldy,
                              int *blockSize, primme_params *primme,
                              int * /*ierr*/) {
   auto A = static_cast<const InPlaceLinearMap<Tensor<elt_t>> *>(primme->matrix);
-  Tensor<elt_t> xvector(Indices{*ldx, *blockSize},
-                        Vector<elt_t>(static_cast<size_t>(*ldx * *blockSize),
-                                      static_cast<elt_t *>(x)));
-  Tensor<elt_t> yvector(Indices{*ldy, *blockSize},
-                        Vector<elt_t>(static_cast<size_t>(*ldx * *blockSize),
-                                      static_cast<elt_t *>(y)));
+  auto xvector = Tensor<elt_t>::from_pointer(
+      Dimensions{static_cast<index_t>(*ldx), static_cast<index_t>(*blockSize)},
+      static_cast<elt_t *>(x));
+  auto yvector = Tensor<elt_t>::from_pointer(
+      Dimensions{static_cast<index_t>(*ldy), static_cast<index_t>(*blockSize)},
+      static_cast<elt_t *>(y));
   (*A)(xvector, yvector);
 }
 

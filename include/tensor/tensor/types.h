@@ -59,13 +59,6 @@ class Tensor {
   using iterator = elt_t *;
   /** Random access iterator type to const */
   using const_iterator = const elt_t *;
-#ifdef TENSOR_COPY_ON_WRITE
-  /** Container for this tensor's data */
-  using vector_type = Vector<elt_t>;
-#else
-  /** Container for this tensor's data */
-  using vector_type = SimpleVector<elt_t>;
-#endif
 
   /**Constructs an empty Tensor.*/
   Tensor() = default;
@@ -79,28 +72,20 @@ class Tensor {
   Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other);
 
   /**Constructs a 1-D Tensor from a vector.*/
-  Tensor(const vector_type &data);
-
-  /**Constructs a 1-D Tensor from a vector (move version for temporaries).*/
-  // NOLINTNEXTLINE(*-explicit-constructor)
-  // cppcheck-suppress noExplicitConstructor
-  Tensor(vector_type &&data);
-
-  /**Constructs a 1-D Tensor from a vector.*/
   Tensor(const std::vector<elt_t> &data);
 
   /**Optimized copy constructor.*/
   Tensor(const Tensor &other) = default;
 
   /**Optimized move constructor. */
-  Tensor(Tensor &&other) = default;
+  Tensor(Tensor &&other) noexcept = default;
 
   /**Implicit coercion and transformation to a different type. */
   // NOLINTNEXTLINE(*-explicit-constructor)
   template <typename e2>
   // cppcheck-suppress noExplicitConstructor
   Tensor(const Tensor<e2> &other)
-      : data_(other.size()), dims_(other.dimensions()) {
+	: data_(make_shared_array<elt>(other.size())), dims_(other.dimensions()) {
     std::copy(other.begin(), other.end(), begin());
   }
 
@@ -140,9 +125,6 @@ class Tensor {
   Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
 #endif
 
-  /**Explicit copy of this tensor's data as a vector.*/
-  explicit operator vector_type() const { return data_; }
-
   /**Assignment operator. Can result in both tensors sharing data.*/
   Tensor &operator=(const Tensor<elt_t> &other) = default;
 
@@ -150,11 +132,11 @@ class Tensor {
   Tensor &operator=(Tensor<elt_t> &&other) = default;
 
   /**Returns total number of elements in Tensor.*/
-  size_t size() const noexcept { return data_.size(); }
+  size_t size() const noexcept { return dims_.total_size_t(); }
   /**Returns total number of elements in Tensor (signed type).*/
-  index ssize() const noexcept { return data_.ssize(); }
+  index ssize() const noexcept { return dims_.total_size(); }
   /**Does the tensor have elements?*/
-  bool is_empty() const noexcept { return size() == 0; }
+  bool is_empty() const noexcept { return ssize() == 0; }
 
   /**Number of Tensor indices.*/
   index rank() const noexcept { return dims_.rank(); }
@@ -183,29 +165,29 @@ class Tensor {
   }
 
   /**Return the i-th element, accessed in column major order. See \ref tensor_access*/
-  inline const elt_t &operator[](index i) const noexcept { return data_[i]; };
+  inline const elt_t &operator[](index i) const noexcept { return cbegin()[i]; };
   /**Return an element of a Tensor based on one or more indices. See \ref tensor_access*/
   template <typename... index_like>
   inline const elt_t &operator()(index i0, index_like... irest) const noexcept {
-    return data_[dims_.column_major_position(i0, irest...)];
+    return cbegin()[dims_.column_major_position(i0, irest...)];
   }
 
   /**Return a mutable reference to the i-th element of a Tensor, in column major order.  See \ref tensor_access*/
-  inline elt_t &at_seq(index i) { return data_.at(i); };
+  inline elt_t &at_seq(index i) { return begin()[i]; };
   /**Return a mutable reference to an element of a Tensor based on one or more indices.  See \ref tensor_access*/
   template <typename... index_like>
   inline elt_t &at(index i0, index_like... irest) {
-    return data_.at(dims_.column_major_position(i0, irest...));
+    return begin()[dims_.column_major_position(i0, irest...)];
   }
 
   /**Return the element referenced by the given indices, in column major order.*/
   inline elt_t &element_at(const Indices &i) noexcept {
-    return data_.at(dims_.column_major_position(i));
+    return begin()[dims_.column_major_position(i)];
   };
 
   /**Return the element referenced by the given indices, in column major order.*/
   inline const elt_t &element_at(const Indices &i) const noexcept {
-    return data_[dims_.column_major_position(i)];
+    return cbegin()[dims_.column_major_position(i)];
   };
 
   /**Destructively fill this tensor with the given value. Consider using fill() instead.*/
@@ -272,7 +254,9 @@ class Tensor {
 
   /**Creates a fresh new copy of this tensor, sharing memory with no other object.*/
   Tensor<elt_t> copy() const {
-    return Tensor<elt_t>(dimensions(), data_.copy());
+	auto output = Tensor<elt_t>::empty(dimensions());
+	std::copy(cbegin(), cend(), output.unsafe_begin_not_shared());
+	return output;
   }
 
   //
@@ -282,8 +266,7 @@ class Tensor {
   static inline Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
   /**Rectangular identity matrix.*/
   static Tensor<elt_t> eye(index rows, index cols) {
-    auto output = empty(rows, cols);
-    output.fill_with_zeros();
+    auto output = zeros(rows, cols);
     for (index i = 0; i < rows && i < cols; ++i) {
       output.at(i, i) = number_one<elt_t>();
     }
@@ -326,33 +309,39 @@ class Tensor {
 
   /**Iterator at the beginning.
    * \todo Make begin() noexcept when we remove copy-on-write*/
-  iterator begin() { return data_.begin(); }
+  iterator begin() { return appropriate(data_, size()); }
   /**Iterator at the beginning.*/
-  const_iterator begin() const noexcept { return data_.cbegin(); }
+  const_iterator begin() const noexcept { return data_.get(); }
   /**Iterator at the beginning for const objects.*/
-  const_iterator cbegin() const noexcept { return data_.cbegin(); }
+  const_iterator cbegin() const noexcept { return data_.get(); }
   /**Iterator at the end for const objects.*/
-  const_iterator cend() const noexcept { return data_.cend(); }
+  const_iterator cend() const noexcept { return cbegin() + ssize(); }
   /**Iterator at the end for const objects.*/
-  const_iterator end() const noexcept { return data_.cend(); }
+  const_iterator end() const noexcept { return cbegin() + ssize(); }
   /**Iterator at the end.*/
-  iterator end() { return data_.end(); }
+  iterator end() { return begin() + ssize(); }
 
-  iterator unsafe_begin_not_shared() { return data_.unsafe_begin_not_shared(); }
-  iterator unsafe_end_not_shared() { return data_.unsafe_end_not_shared(); }
+  iterator unsafe_begin_not_shared() { return data_.get(); }
+  iterator unsafe_end_not_shared() { return data_.get() + ssize(); }
 
   // Only for testing purposes
-  index ref_count() const noexcept { return data_.ref_count(); }
+  index ref_count() const noexcept { return data_.use_count(); }
 
   /**Take a diagonal from a tensor.*/
   Tensor<elt_t> diag(int which = 0, int ndx1 = 0, int ndx2 = -1) const {
     return take_diag(*this, which, ndx1, ndx2);
   }
 
+  /**Create a tensor on top of data we do not own.*/
+  static Tensor<elt_t> from_pointer(Dimensions dims, elt_t *data);
+
  private:
-  vector_type data_{};
+  shared_array<elt_t> data_{};
   Dimensions dims_{};
+
+  Tensor(Dimensions dimensions, shared_array<elt_t> data) noexcept;
 };
+
 //
 // Tensor slicing
 //
