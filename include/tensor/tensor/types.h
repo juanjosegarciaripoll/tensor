@@ -155,10 +155,10 @@ class Tensor {
   }
 
   /**Return a mutable reference to the i-th element of a Tensor, in column major order.  See \ref tensor_access*/
-  inline elt_t &at_seq(index i) { return begin()[i]; };
+  inline elt_t &at_seq(index i) & { return begin()[i]; };
   /**Return a mutable reference to an element of a Tensor based on one or more indices.  See \ref tensor_access*/
   template <typename... index_like>
-  inline elt_t &at(index i0, index_like... irest) {
+  inline elt_t &at(index i0, index_like... irest) & {
     return begin()[dims_.column_major_position(i0, irest...)];
   }
 
@@ -214,7 +214,7 @@ class Tensor {
   }
 
   /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
-  inline MutableTensorView<elt_t> at(Range r) {
+  inline MutableTensorView<elt_t> at(Range r) & {
     // a(range) is valid for 1D and for ND tensors which are treated
     // as being 1D
     std::array<Range, 1> ranges{std::move(r)};
@@ -224,7 +224,7 @@ class Tensor {
 
   /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
   template <typename... RangeLike>
-  inline MutableTensorView<elt_t> at(Range r1, RangeLike... rnext) {
+  inline MutableTensorView<elt_t> at(Range r1, RangeLike... rnext) & {
     std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
                                                    std::move(rnext)...};
     return MutableTensorView<elt_t>(*this, RangeSpan(ranges));
