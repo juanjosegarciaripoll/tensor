@@ -64,7 +64,7 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   std::unique_ptr<RTensor> realL;
   double *vl = nullptr;
   if (L) {
-    realL = std::make_unique<RTensor>(Dimensions{n, n});
+    realL = std::make_unique<RTensor>(RTensor::empty(n, n));
     vl = tensor_pointer(*realL);
     jobvl = 'V';
   }
@@ -73,7 +73,7 @@ CTensor eig(const RTensor &A, CTensor *R, CTensor *L) {
   std::unique_ptr<RTensor> realR;
   double *vr = nullptr;
   if (R) {
-    realR = std::make_unique<RTensor>(Dimensions{n, n});
+    realR = std::make_unique<RTensor>(RTensor::empty(n, n));
     vr = tensor_pointer(*realR);
     jobvr = 'V';
   }

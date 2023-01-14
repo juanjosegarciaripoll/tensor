@@ -247,7 +247,7 @@ class fixed_rank_iterator {
 
 template <typename elt_t>
 Tensor<elt_t> tensor_with_increasing_values(const Dimensions &d) {
-  Tensor<elt_t> data(d);
+  auto data = Tensor<elt_t>::empty(d);
   elt_t accum = 0;
   for (elt_t &x : data) {
     x = accum;
@@ -304,15 +304,15 @@ void test_over_tensors(void test(Tensor<elt_t> &t), int max_rank = 4,
     // Test over random dimensions
     //
     for (int times = 0; times < max_times; ++times) {
-      Tensor<elt_t> data(random_dimensions(rank, max_dimension));
-      data.randomize();
+      auto data = Tensor<elt_t>::random(random_dimensions(rank, max_dimension));
       test(data);
     }
     //
     // Forced tests over empty tensors
     //
     for (int times = 0; times < rank; ++times) {
-      Tensor<elt_t> data(random_empty_dimensions(rank, max_dimension, times));
+      auto data = Tensor<elt_t>::empty(
+          random_empty_dimensions(rank, max_dimension, times));
       test(data);
     }
   }

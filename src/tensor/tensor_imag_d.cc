@@ -22,9 +22,8 @@ namespace tensor {
 
 /**Complex conjugate of a tensor.*/
 RTensor imag(const RTensor &t) {
-  RTensor output(t.dimensions());
-  output.fill_with_zeros();
-  return output;
+  // FIXME remove!
+  return RTensor::zeros(t.dimensions());
 }
 
 }  // namespace tensor

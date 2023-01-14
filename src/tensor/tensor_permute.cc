@@ -162,7 +162,7 @@ Tensor<n> do_permute(const Tensor<n> &a, index ndx1, index ndx2) {
       goto NO_A3;
     }
     if (a3 > 1) {
-      Tensor<n> output(new_dims);
+      auto output = Tensor<n>::empty(new_dims);
       if (a1 > 1) {
         permute_24(output, a, a1, a2, a3, a4, a5);
       } else {
@@ -172,7 +172,7 @@ Tensor<n> do_permute(const Tensor<n> &a, index ndx1, index ndx2) {
     } else {
     NO_A3:
       if (a4 > 1 || a2 > 1) {
-        Tensor<n> output(new_dims);
+        auto output = Tensor<n>::empty(new_dims);
         if (a1 > 1) {
           permute_23(output, a, a1, a2, a4, a5);
         } else {

@@ -82,7 +82,7 @@ void do_foldin_into(Tensor<elt_t> &output, const Tensor<elt_t> &a, int _ndx1,
   if (rank == 0) {
     new_dims.at(0) = 1;
   }
-  output = Tensor<elt_t>(new_dims);
+  output = Tensor<elt_t>::empty(new_dims);
   if (output.size() == 0) return;
 
   elt_t *pC = output.begin();

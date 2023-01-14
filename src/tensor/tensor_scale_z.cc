@@ -29,7 +29,7 @@ namespace tensor {
   */
 CTensor scale(const CTensor &t, int ndx, const CTensor &v) {
   index d1{}, d2{}, d3{};
-  CTensor output(t.dimensions());
+  auto output = CTensor::empty(t.dimensions());
   surrounding_dimensions(t.dimensions(),
                          Dimensions::normalize_index(ndx, t.rank()), &d1, &d2,
                          &d3);
@@ -39,7 +39,7 @@ CTensor scale(const CTensor &t, int ndx, const CTensor &v) {
               << " of the scale vector" << std::endl;
     abort();
   }
-  doscale(output.begin(), t.cbegin(), v.cbegin(), d1, d2, d3);
+  doscale(output.unsafe_begin_not_shared(), t.cbegin(), v.cbegin(), d1, d2, d3);
   return output;
 }
 

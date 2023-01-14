@@ -40,7 +40,7 @@ CSRMatrix<elt_t>::CSRMatrix(index rows, index cols, index nonzero)
     : dims_{rows, cols},
       row_start_(static_cast<index_t>(safe_size_t(rows + 1))),
       column_(static_cast<index_t>(safe_size_t(nonzero))),
-      data_(Tensor<elt_t>::empty(column_.size())) {
+      data_(Tensor<elt_t>::empty(column_.ssize())) {
   std::fill(row_start_.begin(), row_start_.end(), 0);
 }
 
@@ -137,7 +137,7 @@ CSRMatrix<elt_t>::CSRMatrix(const Tensor<elt_t> &t)
     : dims_(t.dimensions()),
       row_start_(t.rows() + 1),
       column_(number_of_nonzero<elt_t>(t)),
-      data_(Tensor<elt_t>::empty(column_.size())) {
+      data_(Tensor<elt_t>::empty(column_.ssize())) {
   index nrows = rows();
   index ncols = columns();
 
@@ -193,7 +193,7 @@ index CSRMatrix<elt_t>::dimension(int which) const {
 template <typename elt_t>
 CSRMatrix<elt_t> CSRMatrix<elt_t>::eye(index rows, index columns) {
   index nel = std::min(rows, columns);
-  auto data = Tensor<elt_t>::empty(safe_size_t(nel));
+  auto data = Tensor<elt_t>::empty(nel);
   std::fill(data.begin(), data.end(), number_one<elt_t>());
   Indices row_start(static_cast<index_t>(safe_size_t(rows + 1)));
   for (index i = 0; i <= rows; i++) {

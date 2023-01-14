@@ -95,10 +95,13 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
     a2b = std::max(tensor::index(0), std::min(a2, a4 - which));
   }
   new_dims.at(ndx1) = a2b;
-  tensor::Tensor<elt_t> output(new_dims);
+  auto output = tensor::Tensor<elt_t>::empty(new_dims);
   which = -which;
   if (a2b) {
-    do_diag<elt_t>(output.begin(), a.begin(), a1, a2, a2b, a3, a3, a5, which);
+    do_diag<elt_t>(output.unsafe_begin_not_shared(), a.begin(), a1, a2, a2b, a3,
+                   a3, a5, which);
   }
   return output;
 }
+
+// FIXME remove explicit references to tensor:: namespace

@@ -22,8 +22,8 @@
 namespace tensor {
 
 RTensor index_to_tensor(const Indices &ndx) {
-  auto output = RTensor::empty(ndx.size());
-  std::transform(ndx.begin(), ndx.end(), output.begin(),
+  auto output = RTensor::empty(ndx.ssize());
+  std::transform(ndx.begin(), ndx.end(), output.unsafe_begin_not_shared(),
                  [](index n) { return static_cast<double>(n); });
   return output;
 }

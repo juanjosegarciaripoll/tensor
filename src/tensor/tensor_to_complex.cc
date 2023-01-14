@@ -21,10 +21,13 @@
 
 namespace tensor {
 
+// FIXME use algorithms
+
 CTensor to_complex(const RTensor &r) {
-  CTensor output(r.dimensions());
+  auto output = CTensor::empty(r.dimensions());
   RTensor::const_iterator ir = r.begin();
-  for (CTensor::iterator io = output.begin(); io != output.end(); ++io, ++ir) {
+  for (CTensor::iterator io = output.unsafe_begin_not_shared();
+       io != output.unsafe_end_not_shared(); ++io, ++ir) {
     *io = to_complex(*ir);
   }
   return output;
@@ -33,11 +36,11 @@ CTensor to_complex(const RTensor &r) {
 CTensor to_complex(const RTensor &r, const RTensor &i) {
   // This should be: tensor_assert(verify_tensor_dimensions_match(a.dimensions(), b.dimensions()));
   tensor_assert(r.size() == i.size());
-  CTensor output(r.dimensions());
+  auto output = CTensor::empty(r.dimensions());
   RTensor::const_iterator ir = r.begin();
   RTensor::const_iterator ii = i.begin();
-  for (CTensor::iterator io = output.begin(); io != output.end();
-       ++io, ++ir, ++ii) {
+  for (CTensor::iterator io = output.unsafe_begin_not_shared();
+       io != output.unsafe_end_not_shared(); ++io, ++ir, ++ii) {
     *io = to_complex(*ir, *ii);
   }
   return output;

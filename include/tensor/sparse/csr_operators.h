@@ -79,7 +79,7 @@ Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
   if (rows == 0 || cols == 0) return Sparse<result_type>(rows, cols);
 
   index_t max_size = m1.priv_data().ssize() + m2.priv_data().ssize();
-  Tensor<result_type> data(Dimensions{max_size});
+  auto data = Tensor<result_type>::empty(max_size);
   Indices column(max_size);
   Indices row_start(rows + 1);
 
@@ -158,8 +158,8 @@ Sparse<std::common_type_t<T1, T2>> sparse_binop(const Sparse<T1> &m1,
   index j = out_data - out_begin;
   Indices the_column(j);
   std::copy(column.begin(), column.begin() + j, the_column.begin());
-  Tensor<result_type> the_data(Dimensions{j});
-  std::copy(data.begin(), data.begin() + j, the_data.begin());
+  auto the_data = Tensor<result_type>::empty(j);
+  std::copy(data.begin(), data.begin() + j, the_data.unsafe_begin_not_shared());
   return Sparse<result_type>(m1.dimensions(), row_start, the_column, the_data);
 }
 

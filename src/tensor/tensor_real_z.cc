@@ -22,16 +22,16 @@ namespace tensor {
 
 /**Real part of a complex tensor.*/
 RTensor real(const CTensor &t) {
-  RTensor output(t.dimensions());
-  std::transform(t.cbegin(), t.cend(), output.begin(),
+  auto output = RTensor::empty(t.dimensions());
+  std::transform(t.cbegin(), t.cend(), output.unsafe_begin_not_shared(),
                  [](const auto &z) { return z.real(); });
   return output;
 }
 
 /**Imaginary part of a complex tensor.*/
 RTensor imag(const CTensor &t) {
-  RTensor output(t.dimensions());
-  std::transform(t.cbegin(), t.cend(), output.begin(),
+  auto output = RTensor::empty(t.dimensions());
+  std::transform(t.cbegin(), t.cend(), output.unsafe_begin_not_shared(),
                  [](const auto &z) { return z.imag(); });
   return output;
 }

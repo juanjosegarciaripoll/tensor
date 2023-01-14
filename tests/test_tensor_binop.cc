@@ -32,8 +32,7 @@ void test_tensor_tensor_binop(Tensor<elt_t> &P) {
   elt_t orig;
   if (P.size()) orig = Pcopy[0];
   for (size_t times = 0; times < default_repeats; times++) {
-    Tensor<elt_t2> Paux(P.dimensions());
-    Paux.randomize();
+    auto Paux = Tensor<elt_t2>::random(P.dimensions());
     const Tensor<elt_t3> P1 = P + Paux;
     const Tensor<elt_t3> P2 = P - Paux;
     const Tensor<elt_t3> P3 = P * Paux;

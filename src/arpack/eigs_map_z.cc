@@ -26,7 +26,7 @@ namespace arpack {
 using namespace tensor;
 
 CTensor make_matrix(const InPlaceLinearMap<CTensor> &A, size_t n) {
-  auto M = CTensor::empty(n, n);
+  auto M = CTensor::empty(static_cast<index_t>(n), static_cast<index_t>(n));
   for (tensor::index i = 0, l = static_cast<tensor::index>(n); i < l; i++) {
     CTensor v = CTensor::zeros(l);
     CTensor Av = CTensor::empty(l);

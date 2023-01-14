@@ -24,7 +24,7 @@
 namespace tensor {
 
 CTensor fftw(const CTensor &in, int direction) {
-  CTensor out(in.dimensions());
+  auto out = CTensor::empty(in.dimensions());
 
   auto *pin = const_cast<fftw_complex *>(
       reinterpret_cast<const fftw_complex *>(in.begin()));
@@ -36,7 +36,7 @@ CTensor fftw(const CTensor &in, int direction) {
 
 CTensor fftw(const CTensor &in, index dim, int direction) {
   tensor_assert(dim >= 0 && dim < in.rank());
-  CTensor out(in.dimensions());
+  auto out = CTensor::empty(in.dimensions());
 
   auto *pin = const_cast<fftw_complex *>(
       reinterpret_cast<const fftw_complex *>(in.begin()));
@@ -48,7 +48,7 @@ CTensor fftw(const CTensor &in, index dim, int direction) {
 
 CTensor fftw(const CTensor &in, const Booleans &convert, int direction) {
   tensor_assert(convert.ssize() == in.rank());
-  CTensor out(in.dimensions());
+  auto out = CTensor::empty(in.dimensions());
 
   auto *pin = const_cast<fftw_complex *>(
       reinterpret_cast<const fftw_complex *>(in.begin()));

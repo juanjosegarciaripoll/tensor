@@ -23,7 +23,8 @@ namespace tensor {
 
 /**Complex conjugate of a tensor.*/
 const CTensor conj(const CTensor &t) {
-  CTensor output(t.dimensions());
+  auto output = CTensor::empty(t.dimensions());
+  // FIXME
   CTensor::iterator a = output.begin();
   CTensor::const_iterator b = t.begin();
   CTensor::const_iterator bend = t.end();

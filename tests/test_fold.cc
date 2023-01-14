@@ -35,9 +35,9 @@ void test_fold(int max_dim) {
   for (int rankA = 1; rankA <= 3; rankA++) {
     for (int rankB = 1; rankB <= 3; rankB++) {
       for (DimensionIterator dA(rankA, max_dim); dA; ++dA) {
-        Tensor<n1> A(*dA);
+        auto A = Tensor<n1>::empty(*dA);
         for (DimensionIterator dB(rankB, max_dim); dB; ++dB) {
-          Tensor<n2> B(*dB);
+          auto B = Tensor<n2>::empty(*dB);
           for (int i = 0; i < A.rank(); i++) {
             if (!A.dimension(i)) continue;
             for (int j = 0; j < B.rank(); j++) {
@@ -85,8 +85,8 @@ void test_fold_throws() {
           std::fill(dB.begin(), dB.end(), 1);
           dA.at(i) = 0;
           dB.at(j) = 0;
-          Tensor<n1> A(dA);
-          Tensor<n2> B(dB);
+          auto A = Tensor<n1>::empty(dA);
+          auto B = Tensor<n2>::empty(dB);
           ASSERT_THROW_DEBUG(fold(A, i, B, j), tensor::dimensions_mismatch);
         }
       }

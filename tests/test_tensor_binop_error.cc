@@ -37,7 +37,7 @@ void test_tensor_tensor_binop_error(Tensor<elt_t> &P) {
     {
       Indices dims = P.dimensions();
       dims.at(P.rank() - 1) += 1;
-      Tensor<elt_t2> Psmaller(dims);
+      auto Psmaller = Tensor<elt_t2>::empty(dims);
       ASSERT_THROW_DEBUG(P + Psmaller, ::tensor::invalid_assertion);
       ASSERT_THROW_DEBUG(Psmaller + P, ::tensor::invalid_assertion);
     }

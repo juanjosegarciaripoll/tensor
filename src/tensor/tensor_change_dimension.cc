@@ -30,7 +30,7 @@ static Tensor change_dimension_inner(const Tensor &a, index dim,
   if (old_size == new_size) return a;
 
   d.at(dim) = new_size;
-  Tensor output(d);
+  auto output = Tensor::empty(d);
   if (new_size > a.dimension(dim)) output.fill_with_zeros();
 
   typename Tensor::iterator p_new = output.begin();

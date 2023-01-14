@@ -23,13 +23,13 @@
 namespace tensor {
 
 RTensor round(const RTensor &t) {
-  RTensor output(t.dimensions());
+  auto output = RTensor::empty(t.dimensions());
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
-  std::transform(t.begin(), t.end(), output.begin(), [](double x) {
-    return floor((x < 0) ? (x - 0.5) : (x + 0.5));
-  });
+  std::transform(
+      t.begin(), t.end(), output.unsafe_begin_not_shared(),
+      [](double x) { return floor((x < 0) ? (x - 0.5) : (x + 0.5)); });
 #else
-  std::transform(t.begin(), t.end(), output.begin(),
+  std::transform(t.begin(), t.end(), output.unsafe_begin_not_shared(),
                  [](double x) { return ::round(x); });
 #endif
   return output;

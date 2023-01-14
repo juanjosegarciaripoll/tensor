@@ -34,7 +34,7 @@ using tensor::index;
 template <typename elt_t>
 Tensor<elt_t> fill_continuous(const Tensor<elt_t> &P) {
   int m = 0;
-  Tensor<elt_t> output(P.dimensions());
+  auto output = Tensor<elt_t>::empty(P.dimensions());
   for (typename Tensor<elt_t>::iterator it = output.begin(); it != output.end();
        ++it) {
     *it = number_zero<elt_t>() + (double)m++;

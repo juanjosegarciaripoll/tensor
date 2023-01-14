@@ -66,9 +66,6 @@ class Tensor {
 
   ~Tensor() = default;
 
-  /**Constructs an unitialized N-D Tensor given the dimensions.*/
-  explicit Tensor(Dimensions new_dims);
-
   /**Constructs a 1-D Tensor from a vector.*/
   Tensor(const std::vector<elt_t> &data);
 
@@ -108,26 +105,11 @@ class Tensor {
   Tensor(typename detail::nested_initializer_list<4, elt_t>::type l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
 
-#if 0
-  /**Build a 1D Tensor or vector.*/
-  explicit Tensor(index length);
-  /**Build a 2D Tensor or matrix.*/
-  Tensor(index rows, index cols);
-  /**Build a 3D Tensor.*/
-  Tensor(index d1, index d2, index d3);
-  /**Build a 4D Tensor.*/
-  Tensor(index d1, index d2, index d3, index d4);
-  /**Build a 5D Tensor.*/
-  Tensor(index d1, index d2, index d3, index d4, index d5);
-  /**Build a 6D Tensor.*/
-  Tensor(index d1, index d2, index d3, index d4, index d5, index d6);
-#endif
-
   /**Assignment operator. Can result in both tensors sharing data.*/
   Tensor &operator=(const Tensor<elt_t> &other) = default;
 
   /**Assignment move operator. `other` tensor is emptied and this tensor acquires ownership of the data.*/
-  Tensor &operator=(Tensor<elt_t> &&other) = default;
+  Tensor &operator=(Tensor<elt_t> &&other) noexcept = default;
 
   /**Returns total number of elements in Tensor.*/
   size_t size() const noexcept { return dims_.total_size_t(); }
@@ -265,7 +247,10 @@ class Tensor {
   static Tensor<elt_t> eye(index rows, index cols);
 
   /**N-dimensional tensor with undefined values. */
-  static Tensor<elt_t> empty(Dimensions dimensions);
+  static Tensor<elt_t> empty(Dimensions &&dimensions);
+
+  /**N-dimensional tensor with undefined values. */
+  static Tensor<elt_t> empty(const Dimensions &dimensions);
 
   /**Empty tensor one or more dimensions, with undetermined values.*/
   template <typename... index_like>
@@ -349,6 +334,9 @@ class Tensor {
   shared_array<elt_t> data_{};
   Dimensions dims_{};
 
+  /**Constructs an unitialized N-D Tensor given the dimensions.*/
+  explicit Tensor(Dimensions new_dims);
+
   Tensor(Dimensions dimensions, shared_array<elt_t> data) noexcept;
 #ifdef TENSOR_COPY_ON_WRITE
   void ensure_unique_ignore_data();
@@ -389,8 +377,8 @@ class TensorView {
   }
 
   Tensor<elt_t> copy() const {
-    Tensor<elt_t> output(dimensions());
-    begin().copy_to_contiguous_iterator(output.begin());
+    auto output = Tensor<elt_t>::empty(dimensions());
+    begin().copy_to_contiguous_iterator(output.unsafe_begin_not_shared());
     return output;
   }
 
@@ -451,8 +439,8 @@ class MutableTensorView {
                                       tensor_.begin());
   }
   Tensor<elt_t> copy() const {
-    Tensor<elt_t> output(dimensions());
-    std::copy(begin(), end(), output.begin());
+    auto output = Tensor<elt_t>::empty(dimensions());
+    std::copy(begin(), end(), output.unsafe_begin_not_shared());
     return output;
   }
 

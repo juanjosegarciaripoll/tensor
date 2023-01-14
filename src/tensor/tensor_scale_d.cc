@@ -29,7 +29,7 @@ namespace tensor {
   */
 RTensor scale(const RTensor &t, int ndx, const RTensor &v) {
   index d1{}, d2{}, d3{};
-  RTensor output(t.dimensions());
+  auto output = RTensor::empty(t.dimensions());
   surrounding_dimensions(t.dimensions(),
                          Dimensions::normalize_index(ndx, t.rank()), &d1, &d2,
                          &d3);

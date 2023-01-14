@@ -29,7 +29,7 @@ using namespace tensor;
 
 template <class elt_t, typename op>
 inline auto ufunc1(const Tensor<elt_t> &a, op b) {
-  Tensor<decltype(b(a[0]))> output(a.dimensions());
+  auto output = Tensor<decltype(b(a[0]))>::empty(a.dimensions());
   std::transform(a.cbegin(), a.cend(), output.unsafe_begin_not_shared(), b);
   return output;
 }

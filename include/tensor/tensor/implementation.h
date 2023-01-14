@@ -49,8 +49,14 @@ void Tensor<elt_t>::randomize_not_shared(default_rng_t &rng) noexcept {
 }
 
 template <typename elt_t>
-Tensor<elt_t> Tensor<elt_t>::empty(Dimensions dimensions) {
+Tensor<elt_t> Tensor<elt_t>::empty(Dimensions &&dimensions) {
   return Tensor<elt_t>(std::move(dimensions),
+                       make_shared_array<elt_t>(dimensions.total_size_t()));
+}
+
+template <typename elt_t>
+Tensor<elt_t> Tensor<elt_t>::empty(const Dimensions &dimensions) {
+  return Tensor<elt_t>(Dimensions(dimensions),
                        make_shared_array<elt_t>(dimensions.total_size_t()));
 }
 

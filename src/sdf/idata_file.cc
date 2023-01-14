@@ -167,7 +167,7 @@ Indices InDataFile::load_indices() {
 
 void InDataFile::load(RTensor *t, const std::string &name) {
   read_tag(name, TAG_RTENSOR);
-  *t = RTensor(load_indices());
+  *t = RTensor::empty(load_indices());
   index_t length{};
   read_raw(length);
   tensor_assert(length == t->ssize());
@@ -176,7 +176,7 @@ void InDataFile::load(RTensor *t, const std::string &name) {
 
 void InDataFile::load(CTensor *t, const std::string &name) {
   read_tag(name, TAG_CTENSOR);
-  *t = CTensor(load_indices());
+  *t = CTensor::empty(load_indices());
   index_t length{};
   read_raw(length);
   tensor_assert(length == t->ssize());
