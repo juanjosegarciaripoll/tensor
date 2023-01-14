@@ -103,45 +103,67 @@ class nested_list_initializer {
 
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<1, elt_t>::type l) {
-    auto output = Tensor<elt_t>(dimensions(l));
+    auto output = Tensor<elt_t>::empty(dimensions(l));
     copy_into(output.begin(), output.dimensions().begin(), 1, l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<2, elt_t>::type l) {
-    auto output = Tensor<elt_t>(dimensions(l));
+    auto output = Tensor<elt_t>::empty(dimensions(l));
     copy_into(output.begin(), output.dimensions().begin(), 1, l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<3, elt_t>::type l) {
-    auto output = Tensor<elt_t>(dimensions(l));
+    auto output = Tensor<elt_t>::empty(dimensions(l));
     copy_into(output.begin(), output.dimensions().begin(), 1, l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<4, elt_t>::type l) {
-    auto output = Tensor<elt_t>(dimensions(l));
+    auto output = Tensor<elt_t>::empty(dimensions(l));
     copy_into(output.begin(), output.dimensions().begin(), 1, l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<5, elt_t>::type l) {
-    auto output = Tensor<elt_t>(dimensions(l));
+    auto output = Tensor<elt_t>::empty(dimensions(l));
     copy_into(output.begin(), output.dimensions().begin(), 1, l);
     return output;
   }
   static constexpr Tensor<elt_t> make_tensor(
       typename nested_initializer_list<6, elt_t>::type l) {
-    auto output = Tensor<elt_t>(dimensions(l));
+    auto output = Tensor<elt_t>::empty(dimensions(l));
     copy_into(output.begin(), output.dimensions().begin(), 1, l);
     return output;
   }
 };
-
 /** \endcond */
 
 }  // namespace detail
+
+template <typename elt_t>
+inline Tensor<elt_t> Tensor1D(const std::initializer_list<elt_t> &l) {
+  return detail::nested_list_initializer<elt_t>::make_tensor(l);
+}
+
+template <typename elt_t>
+inline Tensor<elt_t> Tensor2D(
+    const typename detail::nested_initializer_list<2, elt_t>::type &l) {
+  return detail::nested_list_initializer<elt_t>::make_tensor(l);
+}
+
+template <typename elt_t>
+inline Tensor<elt_t> Tensor3D(
+    const typename detail::nested_initializer_list<3, elt_t>::type &l) {
+  return detail::nested_list_initializer<elt_t>::make_tensor(l);
+}
+
+template <typename elt_t>
+inline Tensor<elt_t> Tensor4D(
+    const typename detail::nested_initializer_list<4, elt_t>::type &l) {
+  return detail::nested_list_initializer<elt_t>::make_tensor(l);
+}
 
 }  // namespace tensor
 
