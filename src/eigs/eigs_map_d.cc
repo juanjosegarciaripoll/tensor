@@ -59,10 +59,8 @@ CTensor eigs_gen(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
   }
 #endif
 #ifdef TENSOR_USE_ARPACK
-  if (driver == ArpackDriver) {
-    return linalg::arpack::eigs_gen(A, n, eig_type, neig, eigenvectors,
-                                    converged);
-  }
+  return linalg::arpack::eigs_gen(A, n, eig_type, neig, eigenvectors,
+								  converged);
 #endif
 }
 
