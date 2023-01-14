@@ -47,10 +47,10 @@ extern default_rng_t &default_rng();
 namespace detail {
 
 template <typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
-constexpr T rand_inner(T min, T max) {
+constexpr T rand_inner(T min, T max, default_rng_t &rng) {
   if (max > min + 1) {
     std::uniform_int_distribution<T> dist(min, max - 1);
-    return dist(default_rng());
+    return dist(rng);
   } else {
     return min;
   }
@@ -58,14 +58,14 @@ constexpr T rand_inner(T min, T max) {
 
 template <typename T,
           std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
-constexpr T rand_inner(T min, T max) {
+constexpr T rand_inner(T min, T max, default_rng_t &rng) {
   std::uniform_real_distribution<T> dist(min, max);
-  return dist(default_rng());
+  return dist(rng);
 }
 
-constexpr cdouble rand_inner(cdouble min, cdouble max) {
-  return cdouble(rand_inner(min.real(), max.real()),
-                 rand_inner(min.imag(), max.imag()));
+constexpr cdouble rand_inner(cdouble min, cdouble max, default_rng_t &rng) {
+  return cdouble(rand_inner(min.real(), max.real(), rng),
+                 rand_inner(min.imag(), max.imag(), rng));
 }
 
 template <typename T,
@@ -97,8 +97,20 @@ constexpr T rand_lower_limit() {
 	created with the real and imaginary parts of `max`.
 */
 template <typename T>
-T rand(T max = detail::rand_upper_limit<T>()) {
-  return detail::rand_inner(detail::rand_lower_limit<T>(), max);
+T rand_full(default_rng_t &rng = default_rng()) {
+  return detail::rand_inner(detail::rand_lower_limit<T>(),
+                            detail::rand_upper_limit<T>(), rng);
+}
+
+/** Returns a random number of the given T. If T is an integer type,
+	the value lays in the range [0, max), excluding `max`. If T is a
+	complex type, the real and imaginary parts are random numbers
+	created with the real and imaginary parts of `max`.
+*/
+template <typename T>
+T rand(T max = detail::rand_upper_limit<T>(),
+       default_rng_t &rng = default_rng()) {
+  return detail::rand_inner(detail::rand_lower_limit<T>(), max, rng);
 }
 
 /** Returns a random number of the given T. If T is an integer or
@@ -108,8 +120,8 @@ T rand(T max = detail::rand_upper_limit<T>()) {
 	of `max`.
 */
 template <typename T>
-T rand(T lower_bound, T upper_bound) {
-  return detail::rand_inner(lower_bound, upper_bound);
+T rand(T lower_bound, T upper_bound, default_rng_t &rng = default_rng()) {
+  return detail::rand_inner(lower_bound, upper_bound, rng);
 }
 
 }  // namespace tensor
