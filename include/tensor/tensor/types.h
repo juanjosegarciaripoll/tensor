@@ -29,6 +29,7 @@
 #include <tensor/vector.h>
 #include <tensor/indices.h>
 #include <tensor/detail/initializer.h>
+#include <tensor/detail/shared_ptr.h>
 #include <tensor/rand.h>
 #include <tensor/ranges.h>
 #include <tensor/tensor/iterator.h>
@@ -66,7 +67,7 @@ class Tensor {
   ~Tensor() = default;
 
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
-  explicit Tensor(const Dimensions &new_dims);
+  explicit Tensor(Dimensions new_dims);
 
   /**Constructs a 1-D Tensor from a vector.*/
   Tensor(const std::vector<elt_t> &data);
@@ -190,32 +191,28 @@ class Tensor {
   };
 
   /**Destructively fill this tensor with the given value. Consider using fill() instead.*/
-  Tensor<elt_t> &fill_with(const elt_t &e) noexcept {
-    std::fill(begin(), end(), e);
-    return *this;
-  }
+  Tensor<elt_t> &fill_with(elt_t e);
+
   /**Destructively fill this tensor with zeros. Consider using zeros() instead.*/
-  Tensor<elt_t> &fill_with_zeros() noexcept {
-    return fill_with(number_zero<elt_t>());
-  }
+  Tensor<elt_t> &fill_with_zeros();
+
   /**Destructively fill this tensor with random numbers. Consider using random() instead.*/
-  Tensor<elt_t> &randomize() noexcept {
-    std::generate(this->begin(), this->end(),
-                  []() -> elt_t { return rand<elt_t>(); });
-    return *this;
-  }
+  Tensor<elt_t> &randomize(default_rng_t &rng = default_rng());
 
   /**N-dimensional tensor one or more dimensions, filled with random numbers.*/
   template <typename... index_like>
   static inline Tensor<elt_t> random(index d0,
                                      index_like... next_dimensions) noexcept {
-    return Tensor<elt_t>::empty(d0, next_dimensions...).randomize();
+    return random(Dimensions{d0, static_cast<index_t>(next_dimensions)...});
   }
 
   /**N-dimensional tensor filled with random numbers.*/
-  static inline Tensor<elt_t> random(const Dimensions &dimensions) noexcept {
-    return Tensor<elt_t>(dimensions).randomize();
-  };
+  static inline Tensor<elt_t> random(Dimensions dimensions,
+                                     default_rng_t &rng = default_rng()) {
+    auto output = Tensor<elt_t>::empty(dimensions);
+    output.randomize_not_shared(rng);
+    return output;
+  }
 
   /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
   inline TensorView<elt_t> operator()(Range r) const {
@@ -263,52 +260,49 @@ class Tensor {
   //
   /**Identity square matrix.*/
   static inline Tensor<elt_t> eye(index rows) { return eye(rows, rows); }
+
   /**Rectangular identity matrix.*/
-  static Tensor<elt_t> eye(index rows, index cols) {
-    auto output = zeros(rows, cols);
-    for (index i = 0; i < rows && i < cols; ++i) {
-      output.at(i, i) = number_one<elt_t>();
-    }
-    return output;
-  }
+  static Tensor<elt_t> eye(index rows, index cols);
 
   /**N-dimensional tensor with undefined values. */
-  static inline Tensor<elt_t> empty(const Dimensions &dimensions) {
-    return Tensor<elt_t>(dimensions);
-  }
+  static Tensor<elt_t> empty(Dimensions dimensions);
 
   /**Empty tensor one or more dimensions, with undetermined values.*/
   template <typename... index_like>
-  static inline Tensor<elt_t> empty(index_like... nth_dimension) {
-    return Tensor<elt_t>(Dimensions({static_cast<index>(nth_dimension)...}));
+  static inline Tensor<elt_t> empty(index_t first_dimension,
+                                    index_like... nth_dimension) {
+    return empty(
+        Dimensions({first_dimension, static_cast<index>(nth_dimension)...}));
   }
 
   /**N-dimensional tensor one or more dimensions, filled with zeros.*/
   template <typename... index_like>
   static inline Tensor<elt_t> zeros(index first_dimension,
                                     index_like... next_dimensions) {
-    return Tensor::empty(first_dimension, next_dimensions...).fill_with_zeros();
+    return zeros(
+        Dimensions{first_dimension, static_cast<index_t>(next_dimensions)...});
   }
   /**N-dimensional tensor filled with ones.*/
-  static inline Tensor<elt_t> zeros(const Dimensions &dimensions) {
-    return Tensor<elt_t>(dimensions).fill_with_zeros();
-  }
+  static Tensor<elt_t> zeros(Dimensions dimensions);
 
   /**N-dimensional tensor one or more dimensions, filled with ones.*/
   template <typename... index_like>
   static inline Tensor<elt_t> ones(index first_dimension,
                                    index_like... next_dimensions) {
-    return Tensor::empty(first_dimension, next_dimensions...)
-        .fill_with(number_one<elt_t>());
+    return ones(
+        Dimensions{first_dimension, static_cast<index_t>(next_dimensions)...});
   }
+
   /**N-dimensional tensor filled with zeros.*/
-  static inline Tensor<elt_t> ones(const Dimensions &dimensions) {
-    return Tensor<elt_t>(dimensions).fill_with(number_one<elt_t>());
-  };
+  static Tensor<elt_t> ones(Dimensions dimensions);
 
   /**Iterator at the beginning.
    * \todo Make begin() noexcept when we remove copy-on-write*/
-  iterator begin() { return appropriate(data_, size()); }
+#ifdef TENSOR_COPY_ON_WRITE
+  iterator begin();
+#else
+  iterator begin() noexcept { return data_.get(); }
+#endif
   /**Iterator at the beginning.*/
   const_iterator begin() const noexcept { return data_.get(); }
   /**Iterator at the beginning for const objects.*/
@@ -320,8 +314,8 @@ class Tensor {
   /**Iterator at the end.*/
   iterator end() { return begin() + ssize(); }
 
-  iterator unsafe_begin_not_shared() { return data_.get(); }
-  iterator unsafe_end_not_shared() { return data_.get() + ssize(); }
+  iterator unsafe_begin_not_shared() noexcept { return data_.get(); }
+  iterator unsafe_end_not_shared() noexcept { return data_.get() + ssize(); }
 
   // Only for testing purposes
   index ref_count() const noexcept { return data_.use_count(); }
@@ -356,9 +350,12 @@ class Tensor {
   Dimensions dims_{};
 
   Tensor(Dimensions dimensions, shared_array<elt_t> data) noexcept;
-
-  /**Constructs an N-D Tensor with given initial data.*/
-  Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other);
+#ifdef TENSOR_COPY_ON_WRITE
+  void ensure_unique_ignore_data();
+#else
+  void ensure_unique_ignore_data() noexcept {}
+#endif
+  void randomize_not_shared(default_rng_t &rng) noexcept;
 };
 
 //
