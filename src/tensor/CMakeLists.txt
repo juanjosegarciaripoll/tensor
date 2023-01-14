@@ -19,7 +19,6 @@ target_sources(tensor
     tensor_fold_z.cc
     tensor_foldin_d.cc
     tensor_foldin_z.cc
-    tensor_imag_d.cc
     tensor_kron2_sum_d.cc
     tensor_kron2_sum_z.cc
     tensor_kron_d.cc

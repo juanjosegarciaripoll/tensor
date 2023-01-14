@@ -42,7 +42,7 @@ double norm2(const CTensor &r);
 double matrix_norminf(const CTensor &m);
 
 inline RTensor real(const RTensor &r) { return r; }
-RTensor imag(const RTensor &t);
+inline RTensor imag(const RTensor &t) { return RTensor::zeros(t.dimensions()); }
 RTensor real(const CTensor &t);
 RTensor imag(const CTensor &t);
 

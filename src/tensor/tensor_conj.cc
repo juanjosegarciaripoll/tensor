@@ -24,13 +24,8 @@ namespace tensor {
 /**Complex conjugate of a tensor.*/
 const CTensor conj(const CTensor &t) {
   auto output = CTensor::empty(t.dimensions());
-  // FIXME
-  CTensor::iterator a = output.begin();
-  CTensor::const_iterator b = t.begin();
-  CTensor::const_iterator bend = t.end();
-  for (; b != bend; ++a, ++b) {
-    *a = tensor::conj(*b);
-  }
+  std::transform(t.cbegin(), t.cend(), output.unsafe_begin_not_shared(),
+				 static_cast<cdouble(*)(cdouble)>(tensor::conj));
   return output;
 }
 
