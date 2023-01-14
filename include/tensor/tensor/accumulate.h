@@ -38,8 +38,7 @@ inline Tensor<elt> accumulate(const Tensor<elt> &t, index axis, function f,
   auto data = prepare_accumulate(t.dimensions(), axis);
   auto output = Tensor<elt>::empty(Dimensions{data.left_size, data.right_size})
                     .fill_with(start);
-  auto t3 =
-      Tensor<elt>(Dimensions{data.left_size, data.size, data.right_size}, t);
+  auto t3 = reshape(t, data.left_size, data.size, data.right_size);
   for (index k = 0; k < data.right_size; ++k) {
     for (index j = 0; j < data.size; ++j) {
       for (index i = 0; i < data.left_size; ++i) {
@@ -48,15 +47,14 @@ inline Tensor<elt> accumulate(const Tensor<elt> &t, index axis, function f,
       }
     }
   }
-  return Tensor<elt>(data.output_dimensions, output);
+  return reshape(output, data.output_dimensions);
 }
 
 template <typename elt, typename function>
 inline Tensor<elt> accumulate_no_start(const Tensor<elt> &t, index axis,
                                        function f) {
   auto data = prepare_accumulate(t.dimensions(), axis);
-  auto t3 =
-      Tensor<elt>(Dimensions{data.left_size, data.size, data.right_size}, t);
+  auto t3 = reshape(t, data.left_size, data.size, data.right_size);
   Tensor<elt> output(t3(_, range(0), _).copy());
   for (index k = 0; k < data.right_size; ++k) {
     for (index j = 1; j < data.size; ++j) {
@@ -66,7 +64,7 @@ inline Tensor<elt> accumulate_no_start(const Tensor<elt> &t, index axis,
       }
     }
   }
-  return Tensor<elt>(data.output_dimensions, output);
+  return reshape(output, data.output_dimensions);
 }
 
 template <typename elt>

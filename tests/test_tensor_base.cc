@@ -239,7 +239,7 @@ void test_copy_constructor_with_dims(Tensor<elt_t> &P) {
         copy.at(j) = d[j];
       }
     }
-    Tensor<elt_t> P2(copy, P);
+    Tensor<elt_t> P2 = reshape(P, copy);
     EXPECT_EQ(i + 1, P2.rank());
     EXPECT_EQ(P.size(), P2.size());
     EXPECT_TRUE(all_equal(copy, P2.dimensions()));

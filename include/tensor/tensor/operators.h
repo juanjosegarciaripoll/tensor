@@ -28,25 +28,6 @@
 
 namespace tensor {
 
-/**Return a Tensor with same data and given dimensions.*/
-template <typename elt_t>
-Tensor<elt_t> reshape(const Tensor<elt_t> &t, const Dimensions &d) {
-  return Tensor<elt_t>(d, t);
-}
-
-/**Return a RTensor with same data and given dimensions, specified separately.*/
-template <typename elt_t, typename... index_like>
-inline Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1,
-                             index_like... dnext) {
-  return Tensor<elt_t>({d1, static_cast<index>(dnext)...}, t);
-}
-
-/**Convert a tensor to a 1D vector with the same elements.*/
-template <typename elt_t>
-Tensor<elt_t> flatten(const Tensor<elt_t> &t) {
-  return reshape(t, t.ssize());
-}
-
 //
 // Unary operations
 //

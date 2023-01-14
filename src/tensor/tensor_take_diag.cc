@@ -87,7 +87,7 @@ const tensor::Tensor<elt_t> do_take_diag(const tensor::Tensor<elt_t> &a,
     abort();
   }
   if (a2 == 1 && a4 == 1) {
-    return tensor::Tensor<elt_t>(new_dims, a);
+    return reshape(a, new_dims);
   }
   if (which < 0) {
     a2b = std::max(tensor::index(0), std::min(a2 + which, a4));

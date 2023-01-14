@@ -68,9 +68,6 @@ class Tensor {
   /**Constructs an unitialized N-D Tensor given the dimensions.*/
   explicit Tensor(const Dimensions &new_dims);
 
-  /**Constructs an N-D Tensor with given initial data.*/
-  Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other);
-
   /**Constructs a 1-D Tensor from a vector.*/
   Tensor(const std::vector<elt_t> &data);
 
@@ -85,7 +82,7 @@ class Tensor {
   template <typename e2>
   // cppcheck-suppress noExplicitConstructor
   Tensor(const Tensor<e2> &other)
-	: data_(make_shared_array<elt>(other.size())), dims_(other.dimensions()) {
+      : data_(make_shared_array<elt>(other.size())), dims_(other.dimensions()) {
     std::copy(other.begin(), other.end(), begin());
   }
 
@@ -165,7 +162,9 @@ class Tensor {
   }
 
   /**Return the i-th element, accessed in column major order. See \ref tensor_access*/
-  inline const elt_t &operator[](index i) const noexcept { return cbegin()[i]; };
+  inline const elt_t &operator[](index i) const noexcept {
+    return cbegin()[i];
+  };
   /**Return an element of a Tensor based on one or more indices. See \ref tensor_access*/
   template <typename... index_like>
   inline const elt_t &operator()(index i0, index_like... irest) const noexcept {
@@ -254,9 +253,9 @@ class Tensor {
 
   /**Creates a fresh new copy of this tensor, sharing memory with no other object.*/
   Tensor<elt_t> copy() const {
-	auto output = Tensor<elt_t>::empty(dimensions());
-	std::copy(cbegin(), cend(), output.unsafe_begin_not_shared());
-	return output;
+    auto output = Tensor<elt_t>::empty(dimensions());
+    std::copy(cbegin(), cend(), output.unsafe_begin_not_shared());
+    return output;
   }
 
   //
@@ -335,11 +334,31 @@ class Tensor {
   /**Create a tensor on top of data we do not own.*/
   static Tensor<elt_t> from_pointer(Dimensions dims, elt_t *data);
 
+  /**Return a Tensor with same data and given dimensions.*/
+  friend Tensor<elt_t> reshape(const Tensor<elt_t> &t, Dimensions d) {
+    return Tensor<elt_t>(std::move(d), t.data_);
+  }
+
+  /**Return a RTensor with same data and given dimensions, specified separately.*/
+  template <typename... index_like>
+  friend inline Tensor<elt_t> reshape(const Tensor<elt_t> &t, index d1,
+                                      index_like... dnext) {
+    return Tensor<elt_t>(Dimensions{d1, static_cast<index>(dnext)...}, t.data_);
+  }
+
+  /**Convert a tensor to a 1D vector with the same elements.*/
+  friend inline Tensor<elt_t> flatten(const Tensor<elt_t> &t) {
+    return Tensor<elt_t>(Dimensions{t.ssize()}, t.data_);
+  }
+
  private:
   shared_array<elt_t> data_{};
   Dimensions dims_{};
 
   Tensor(Dimensions dimensions, shared_array<elt_t> data) noexcept;
+
+  /**Constructs an N-D Tensor with given initial data.*/
+  Tensor(const Dimensions &new_dims, const Tensor<elt_t> &other);
 };
 
 //

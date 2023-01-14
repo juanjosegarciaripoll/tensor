@@ -25,23 +25,26 @@ namespace tensor_test {
 template <typename elt_t>
 void test_scale_small() {
   auto zero = number_zero<elt_t>();
-  Tensor<elt_t> A(Dimensions{2, 3, 4}, linspace(0, 23, 24));
-  Tensor<elt_t> A1(Dimensions{2, 3, 4},
-                   {0,  2,  2,  6,  4,  10, 6,  14, 8,  18, 10, 22,
-                    12, 26, 14, 30, 16, 34, 18, 38, 20, 42, 22, 46});
+  auto A = reshape(Tensor<elt_t>(linspace(0, 23, 24)), 2, 3, 4);
+  auto A1 =
+      reshape(Tensor1D<elt_t>({0,  2,  2,  6,  4,  10, 6,  14, 8,  18, 10, 22,
+                               12, 26, 14, 30, 16, 34, 18, 38, 20, 42, 22, 46}),
+              2, 3, 4);
 
   EXPECT_CEQ(A1, scale(A, 0, linspace(1, 2, 2)));
   EXPECT_CEQ(A1, scale(A, -3, linspace(1, 2, 2)));
 
-  Tensor<elt_t> A2(Dimensions{2, 3, 4},
-                   {0,  1,  4,  6,  12, 15, 6,  7,  16, 18, 30, 33,
-                    12, 13, 28, 30, 48, 51, 18, 19, 40, 42, 66, 69});
+  auto A2 =
+      reshape(Tensor1D<elt_t>({0,  1,  4,  6,  12, 15, 6,  7,  16, 18, 30, 33,
+                               12, 13, 28, 30, 48, 51, 18, 19, 40, 42, 66, 69}),
+              2, 3, 4);
   EXPECT_CEQ(A2, scale(A, 1, linspace(1, 3, 3)));
   EXPECT_CEQ(A2, scale(A, -2, linspace(1, 3, 3)));
 
-  Tensor<elt_t> A4(Dimensions{2, 3, 4},
-                   {0,  1,  2,  3,  4,  5,  12, 14, 16, 18, 20, 22,
-                    36, 39, 42, 45, 48, 51, 72, 76, 80, 84, 88, 92});
+  auto A4 =
+      reshape(Tensor1D<elt_t>({0,  1,  2,  3,  4,  5,  12, 14, 16, 18, 20, 22,
+                               36, 39, 42, 45, 48, 51, 72, 76, 80, 84, 88, 92}),
+              2, 3, 4);
   EXPECT_CEQ(A4, scale(A, 2, linspace(1, 4, 4)));
   EXPECT_CEQ(A4, scale(A, -1, linspace(1, 4, 4)));
 
