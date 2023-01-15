@@ -20,11 +20,11 @@
 #include <gtest/gtest.h>
 #include <tensor/tensor.h>
 
+#include "test_view_common.cc"
+
 namespace tensor_test {
 
 using namespace tensor;
-
-#include "test_view_common.cc"
 
 //////////////////////////////////////////////////////////////////////
 // MANUALLY EXTRACT RANGES FROM A TENSOR USING LOOPS

@@ -30,10 +30,10 @@ namespace tensor_test {
 //
 
 template <typename n1, typename n2>
-void test_mmult(index max_dim) {
-  for (index i = 1; i <= max_dim; i++) {
-    for (index j = 1; j <= max_dim; j++) {
-      for (index k = 1; k <= max_dim; k++) {
+void test_mmult(index_t max_dim) {
+  for (index_t i = 1; i <= max_dim; i++) {
+    for (index_t j = 1; j <= max_dim; j++) {
+      for (index_t k = 1; k <= max_dim; k++) {
         auto A = Tensor<n1>::random(i, j);
         auto B = Tensor<n1>::random(j, k);
         EXPECT_CEQ(mmult(A, B), fold_22_12(A, B));

@@ -1,3 +1,4 @@
+#pragma once
 /*
     Copyright (c) 2010 Juan Jose Garcia Ripoll
 
@@ -16,15 +17,21 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <tensor/tensor.h>
+
 //////////////////////////////////////////////////////////////////////
 // CREATE A SET OF INDICES COVERING i0:i1:i2 (MATLAB NOTATION)
 //
 
-static Range range2(index i0, index i2, index i1) {
-  index l = (i2 - i0) / i1 + 1;
+namespace tensor {
+
+static Range range2(index_t i0, index_t i2, index_t i1) {
+  index_t l = (i2 - i0) / i1 + 1;
   Indices output(l);
-  for (int i = 0; i < l; i++, i0 += i1) {
+  for (index_t i = 0; i < l; i++, i0 += i1) {
     output.at(i) = i0;
   }
   return Range(output);
+}
+
 }
