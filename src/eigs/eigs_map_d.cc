@@ -23,7 +23,7 @@ namespace linalg {
 using namespace tensor;
 
 #if defined(TENSOR_USE_ARPACK) && defined(TENSOR_USE_PRIMME)
-static EigsDriver default_eigs_driver = ArpackDriver;
+static EigsDriver default_eigs_driver = ArpackDriver; // NOLINT
 
 EigsDriver get_default_eigs_driver() { return default_eigs_driver; }
 
@@ -46,8 +46,8 @@ CTensor eigs_gen(const LinearMap<RTensor> &A, size_t n, EigType eig_type,
 
 CTensor eigs_gen(const InPlaceLinearMap<RTensor> &A, size_t n, EigType eig_type,
                  size_t neig, CTensor *eigenvectors, bool *converged) {
-  EigsDriver driver = get_default_eigs_driver();
 #ifdef TENSOR_USE_PRIMME
+  EigsDriver driver = get_default_eigs_driver();
   if (driver == PrimmeDriver) {
     std::cerr << "Primme does not support non-symmetric real matrices.\n";
 #ifdef TENSOR_USE_ARPACK
