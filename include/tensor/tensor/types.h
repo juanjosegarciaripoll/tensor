@@ -368,6 +368,9 @@ class Tensor {
   void ensure_unique_ignore_data() noexcept {}
 #endif
   void randomize_not_shared(default_rng_t &rng) noexcept;
+
+  friend class MutableTensorView<elt_t>;
+  friend class TensorView<elt_t>;
 };
 
 //
@@ -378,40 +381,28 @@ class TensorView {
  public:
   TensorView() = delete;
   ~TensorView() = default;
-  TensorView(const TensorView<elt_t> &other) = default;
-  TensorView(TensorView<elt_t> &&other) noexcept = default;
+  TensorView(const TensorView<elt_t> &other) = delete;
+  TensorView(TensorView<elt_t> &&other) noexcept = delete;
   TensorView &operator=(const TensorView &) = delete;
   TensorView &operator=(TensorView &&) = delete;
 
-  TensorView(const Tensor<elt_t> &tensor, RangeSpan ranges)
-      : tensor_(tensor),
-        dims_(ranges.get_dimensions(tensor.dimensions())),
-        range_iterator_begin_(RangeIterator::begin(ranges)) {}
+  TensorView(const Tensor<elt_t> &tensor, RangeSpan ranges);
 
-  size_t size() const { return static_cast<size_t>(dims_.total_size()); }
+  size_t size() const { return dims_.total_size_t(); }
   index ssize() const { return dims_.total_size(); }
   const Dimensions &dimensions() const { return dims_; }
 
-  TensorConstIterator<elt_t> begin() const {
-    return TensorConstIterator<elt_t>(range_iterator_begin_, tensor_.begin());
-  }
-  TensorConstIterator<elt_t> end() const {
-    return TensorConstIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
-                                      tensor_.begin());
-  }
+  TensorConstIterator<elt_t> begin() const;
+  TensorConstIterator<elt_t> end() const;
 
-  Tensor<elt_t> copy() const {
-    auto output = Tensor<elt_t>::empty(dimensions());
-    begin().copy_to_contiguous_iterator(output.unsafe_begin_not_shared());
-    return output;
-  }
+  Tensor<elt_t> copy() const;
 
   [[deprecated]] Tensor<elt_t> clone() const { return copy(); }
 
   operator Tensor<elt_t>() const { return copy(); }
 
  private:
-  const Tensor<elt_t> &tensor_;
+  shared_array<elt_t> data_;
   Dimensions dims_;
   RangeIterator range_iterator_begin_;
 };
@@ -421,52 +412,28 @@ class MutableTensorView {
  public:
   MutableTensorView() = delete;
   ~MutableTensorView() = default;
-  MutableTensorView(const MutableTensorView<elt_t> &other) = default;
-  MutableTensorView(MutableTensorView<elt_t> &&other) noexcept = default;
+  MutableTensorView(const MutableTensorView<elt_t> &other) = delete;
+  MutableTensorView(MutableTensorView<elt_t> &&other) noexcept = delete;
 
-  MutableTensorView(Tensor<elt_t> &tensor, RangeSpan ranges)
-      : tensor_(tensor),
-        dims_(ranges.get_dimensions(tensor.dimensions())),
-        range_iterator_begin_(RangeIterator::begin(ranges)) {}
+  MutableTensorView(Tensor<elt_t> &tensor, RangeSpan ranges);
 
-  MutableTensorView &operator=(const TensorView<elt_t> &t) {
-    tensor_assert(dimensions() == t.dimensions());
-    begin().copy_from(t.begin());
-    return *this;
-  }
-  MutableTensorView &operator=(const Tensor<elt_t> &t) {
-    tensor_assert(dimensions() == t.dimensions());
-    begin().copy_from_contiguous_iterator(t.begin());
-    return *this;
-  }
-  MutableTensorView &operator=(elt_t v) {
-    begin().fill(v);
-    return *this;
-  }
+  MutableTensorView &operator=(const MutableTensorView &) = delete;
+  MutableTensorView &operator=(MutableTensorView &&) = delete;
 
-  size_t size() const { return static_cast<size_t>(dims_.total_size()); }
+  MutableTensorView &operator=(const TensorView<elt_t> &t);
+  MutableTensorView &operator=(const Tensor<elt_t> &t);
+  MutableTensorView &operator=(elt_t v);
+
+  size_t size() const { return dims_.total_size_t(); }
   index ssize() const { return dims_.total_size(); }
   const Dimensions &dimensions() const { return dims_; }
 
-  TensorIterator<elt_t> begin() {
-    return TensorIterator<elt_t>(range_iterator_begin_, tensor_.begin());
-  }
-  TensorIterator<elt_t> end() {
-    return TensorIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
-                                 tensor_.begin());
-  }
-  TensorConstIterator<elt_t> begin() const {
-    return TensorConstIterator<elt_t>(range_iterator_begin_, tensor_.begin());
-  }
-  TensorConstIterator<elt_t> end() const {
-    return TensorConstIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
-                                      tensor_.begin());
-  }
-  Tensor<elt_t> copy() const {
-    auto output = Tensor<elt_t>::empty(dimensions());
-    std::copy(begin(), end(), output.unsafe_begin_not_shared());
-    return output;
-  }
+  TensorIterator<elt_t> begin();
+  TensorIterator<elt_t> end();
+  TensorConstIterator<elt_t> begin() const;
+  TensorConstIterator<elt_t> end() const;
+
+  Tensor<elt_t> copy() const;
 
  private:
   Tensor<elt_t> &tensor_;

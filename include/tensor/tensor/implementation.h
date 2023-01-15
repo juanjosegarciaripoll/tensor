@@ -104,4 +104,94 @@ Tensor<elt_t> &Tensor<elt_t>::randomize(default_rng_t &rng) {
   return *this;
 }
 
+//
+// Const tensor views
+//
+
+template <typename elt_t>
+TensorView<elt_t>::TensorView(const Tensor<elt_t> &tensor, RangeSpan ranges)
+    : data_(tensor.data_),
+      dims_(ranges.get_dimensions(tensor.dimensions())),
+      range_iterator_begin_(RangeIterator::begin(ranges)) {}
+
+template <typename elt_t>
+Tensor<elt_t> TensorView<elt_t>::copy() const {
+  auto output = Tensor<elt_t>::empty(dimensions());
+  begin().copy_to_contiguous_iterator(output.unsafe_begin_not_shared());
+  return output;
+}
+
+template <typename elt_t>
+TensorConstIterator<elt_t> TensorView<elt_t>::begin() const {
+  return TensorConstIterator<elt_t>(range_iterator_begin_, data_.get());
+}
+
+template <typename elt_t>
+TensorConstIterator<elt_t> TensorView<elt_t>::end() const {
+  return TensorConstIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
+                                    data_.get());
+}
+
+//
+// Tensor views with writable access
+//
+
+template <typename elt_t>
+MutableTensorView<elt_t>::MutableTensorView(Tensor<elt_t> &tensor,
+                                            RangeSpan ranges)
+    : tensor_(tensor),
+      dims_(ranges.get_dimensions(tensor.dimensions())),
+      range_iterator_begin_(RangeIterator::begin(ranges)) {}
+
+template <typename elt_t>
+MutableTensorView<elt_t> &MutableTensorView<elt_t>::operator=(
+    const TensorView<elt_t> &t) {
+  tensor_assert(dimensions() == t.dimensions());
+  begin().copy_from(t.begin());
+  return *this;
+}
+
+template <typename elt_t>
+MutableTensorView<elt_t> &MutableTensorView<elt_t>::operator=(
+    const Tensor<elt_t> &t) {
+  tensor_assert(dimensions() == t.dimensions());
+  begin().copy_from_contiguous_iterator(t.begin());
+  return *this;
+}
+
+template <typename elt_t>
+MutableTensorView<elt_t> &MutableTensorView<elt_t>::operator=(elt_t v) {
+  begin().fill(v);
+  return *this;
+}
+
+template <typename elt_t>
+Tensor<elt_t> MutableTensorView<elt_t>::copy() const {
+  auto output = Tensor<elt_t>::empty(dimensions());
+  std::copy(begin(), end(), output.unsafe_begin_not_shared());
+  return output;
+}
+
+template <typename elt_t>
+TensorIterator<elt_t> MutableTensorView<elt_t>::begin() {
+  return TensorIterator<elt_t>(range_iterator_begin_, tensor_.begin());
+}
+
+template <typename elt_t>
+TensorIterator<elt_t> MutableTensorView<elt_t>::end() {
+  return TensorIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
+                               tensor_.begin());
+}
+
+template <typename elt_t>
+TensorConstIterator<elt_t> MutableTensorView<elt_t>::begin() const {
+  return TensorConstIterator<elt_t>(range_iterator_begin_, tensor_.begin());
+}
+
+template <typename elt_t>
+TensorConstIterator<elt_t> MutableTensorView<elt_t>::end() const {
+  return TensorConstIterator<elt_t>(range_iterator_begin_.make_end_iterator(),
+                                    tensor_.begin());
+}
+
 }  // namespace tensor
