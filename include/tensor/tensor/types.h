@@ -209,7 +209,7 @@ class Tensor {
     // as being 1D
     std::array<Range, 1> ranges{std::move(r)};
     ranges.begin()->set_dimension(ssize());
-    return TensorView<elt_t>(*this, RangeSpan(ranges));
+    return {*this, RangeSpan(ranges)};
   }
 
   /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
@@ -217,7 +217,7 @@ class Tensor {
   inline TensorView<elt_t> operator()(Range r1, RangeLike... rnext) const & {
     std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
                                                    std::move(rnext)...};
-    return TensorView<elt_t>(*this, RangeSpan(ranges));
+    return {*this, RangeSpan(ranges)};
   }
 
   /**Extracts a slice from a 1D Tensor. See \ref tensor_slice */
@@ -243,7 +243,7 @@ class Tensor {
     // as being 1D
     std::array<Range, 1> ranges{std::move(r)};
     ranges.begin()->set_dimension(ssize());
-    return MutableTensorView<elt_t>(*this, RangeSpan(ranges));
+    return {*this, RangeSpan(ranges)};
   }
 
   /**Extracts a slice from an N-dimensional Tensor. See \ref tensor_slice */
@@ -251,7 +251,7 @@ class Tensor {
   inline MutableTensorView<elt_t> at(Range r1, RangeLike... rnext) & {
     std::array<Range, 1 + sizeof...(rnext)> ranges{std::move(r1),
                                                    std::move(rnext)...};
-    return MutableTensorView<elt_t>(*this, RangeSpan(ranges));
+    return {*this, RangeSpan(ranges)};
   }
 
   /**Creates a fresh new copy of this tensor, sharing memory with no other object.*/
