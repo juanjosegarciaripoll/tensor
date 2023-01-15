@@ -69,6 +69,11 @@ RTensor mmult(const RSparse &m1, const RTensor &m2);
 /* Matrix multiplication between tensor and sparse matrix. */
 CTensor mmult(const CSparse &m1, const CTensor &m2);
 
+/* Matrix multiplication between tensor and sparse matrix. */
+void mmult_into(RTensor &output, const RSparse &m1, const RTensor &m2);
+/* Matrix multiplication between tensor and sparse matrix. */
+void mmult_into(RTensor &output, const CSparse &m1, const CTensor &m2);
+
 /* Real part of a sparse matrix.*/
 inline const RSparse &real(const RSparse &A) { return A; }
 /* Conjugate of a sparse matrix.*/

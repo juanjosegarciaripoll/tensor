@@ -38,8 +38,7 @@ CTensor eigs_gen(const RSparse &A, EigType eig_type, size_t neig,
   }
   return eigs_gen(
       [&](const RTensor &x, RTensor &y) {
-        auto new_y = mmult(A, x);
-        std::copy(new_y.begin(), new_y.end(), y.begin());
+		mmult_into(y, A, x);
       },
       static_cast<size_t>(A.columns()), eig_type, neig, eigenvectors,
       converged);
