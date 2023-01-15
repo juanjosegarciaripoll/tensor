@@ -34,28 +34,28 @@ void test_mmult(index_t max_dim, double density = 0.1) {
   for (index_t i = 1; i <= max_dim; i++) {
     for (index_t j = 1; j <= max_dim; j++) {
       for (index_t k = 1; k <= max_dim; k++) {
-		{
-		  auto A = Sparse<n1>::random(i, j, density);
-		  auto B = Tensor<n1>::random(j, k);
-		  auto C = mmult(A, B);
-		  EXPECT_CEQ(C, mmult(full(A), B));
-		  auto D = Tensor<n1>::empty(i, k);
-		  EXPECT_CEQ(C, (mmult_into(D, A, B), D));
-		  unique(B);
-		  unique(C);
-		  unique(D);
-		}
-		{
-		  auto A = Tensor<n1>::random(i, j);
-		  auto B = Sparse<n1>::random(j, k, density);
-		  auto C = mmult(A, B);
-		  EXPECT_CEQ(C, mmult(A, full(B)));
-		  auto D = Tensor<n1>::empty(i, k);
-		  EXPECT_CEQ(C, (mmult_into(D, A, B), D));
-		  unique(A);
-		  unique(C);
-		  unique(D);
-		}
+        {
+          auto A = Sparse<n1>::random(i, j, density);
+          auto B = Tensor<n1>::random(j, k);
+          auto C = mmult(A, B);
+          EXPECT_CEQ(C, mmult(full(A), B));
+          auto D = Tensor<n1>::empty(i, k);
+          EXPECT_CEQ(C, (mmult_into(D, A, B), D));
+          unique(B);
+          unique(C);
+          unique(D);
+        }
+        {
+          auto A = Tensor<n1>::random(i, j);
+          auto B = Sparse<n1>::random(j, k, density);
+          auto C = mmult(A, B);
+          EXPECT_CEQ(C, mmult(A, full(B)));
+          auto D = Tensor<n1>::empty(i, k);
+          EXPECT_CEQ(C, (mmult_into(D, A, B), D));
+          unique(A);
+          unique(C);
+          unique(D);
+        }
       }
     }
   }
@@ -113,7 +113,6 @@ TEST(RSparseMMultTest, SmallMatricesTimesHigherRankTensors) {
   }
 }
 
-
 TEST(RSparseMMultTest, TensorTimesSmallMatrices) {
   {
     auto A = RTensor({{2.0, -3.0}, {-1.0, 4.0}});
@@ -161,20 +160,21 @@ TEST(RSparseMMultTest, HigherRankTensorsTimesSmallMatrices) {
 TEST(RSparseMMultTest, DetectTensorDimensionMismatch) {
   EXPECT_THROW_DEBUG(mmult(RSparse::eye(2), RTensor{}), std::logic_error);
   EXPECT_THROW_DEBUG(mmult(RSparse::eye(2), RTensor::eye(3)), std::logic_error);
-  EXPECT_THROW_DEBUG(mmult(RSparse::eye(2), RTensor::eye(3, 4, 5)),
+  EXPECT_THROW_DEBUG(mmult(RSparse::eye(2), RTensor::ones(3, 4, 5)),
                      std::logic_error);
 
-  EXPECT_THROW_DEBUG(
-      mmult_into(RTensor::empty(6), RSparse::eye(2), RTensor::random(2, 3)),
-      std::logic_error);
-  EXPECT_THROW_DEBUG(
-      mmult_into(RTensor::empty(3, 3), RSparse::eye(2), RTensor::random(2, 3)),
-      std::logic_error);
-  EXPECT_THROW_DEBUG(
-      mmult_into(RTensor::empty(2, 4), RSparse::eye(2), RTensor::random(2, 3)),
-      std::logic_error);
-  EXPECT_THROW_DEBUG(mmult_into(RTensor::empty(2, 3, 1), RSparse::eye(2),
+  RTensor output;
+  EXPECT_THROW_DEBUG(mmult_into(output = RTensor::empty(6), RSparse::eye(2),
                                 RTensor::random(2, 3)),
+                     std::logic_error);
+  EXPECT_THROW_DEBUG(mmult_into(output = RTensor::empty(3, 3), RSparse::eye(2),
+                                RTensor::random(2, 3)),
+                     std::logic_error);
+  EXPECT_THROW_DEBUG(mmult_into(output = RTensor::empty(2, 4), RSparse::eye(2),
+                                RTensor::random(2, 3)),
+                     std::logic_error);
+  EXPECT_THROW_DEBUG(mmult_into(output = RTensor::empty(2, 3, 1),
+                                RSparse::eye(2), RTensor::random(2, 3)),
                      std::logic_error);
 }
 

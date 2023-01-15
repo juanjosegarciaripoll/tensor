@@ -69,9 +69,15 @@ static void mult_sp_t(elt_t *dest, const index_t *row_start,
 //
 
 template <typename elt_t>
+static bool matching_mmult_dimensions(const Sparse<elt_t> &m1,
+                                      const Tensor<elt_t> &m2) {
+  return m2.dimension(0) == m1.columns();
+}
+
+template <typename elt_t>
 static inline Tensor<elt_t> do_mmult(const Sparse<elt_t> &m1,
                                      const Tensor<elt_t> &m2) {
-  tensor_assert(m1.columns() == m2.dimension(0));
+  tensor_assert(matching_mmult_dimensions(m1, m2));
 
   // dest(i,k,l) = matrix(i,j) vector(k,j,l)
   Indices dims(m2.rank());
@@ -91,14 +97,24 @@ static inline Tensor<elt_t> do_mmult(const Sparse<elt_t> &m1,
 }
 
 template <typename elt_t>
+static bool matching_mmult_into_dimensions(Tensor<elt_t> &output,
+                                           const Sparse<elt_t> &m1,
+                                           const Tensor<elt_t> &m2) {
+  auto rank = m2.rank();
+  if (rank == output.rank()) {
+    if (output.dimension(0) == m1.rows()) {
+      return std::equal(output.dimensions().begin() + 1,
+                        output.dimensions().end(), m2.dimensions().begin() + 1);
+    }
+  }
+  return false;
+}
+
+template <typename elt_t>
 static inline void do_mmult_into(Tensor<elt_t> &output, const Sparse<elt_t> &m1,
                                  const Tensor<elt_t> &m2) {
-  tensor_assert(output.rank() == m2.rank());
-  tensor_assert(output.dimension(0) == m1.rows(0));
-  tensor_assert(m2.dimension(0) == m2.columns(0));
-  tensor_assert(std::equal(output.dimensions().begin() + 1,
-                           output.dimensions.end(),
-                           m2.dimensions().begin() + 1));
+  tensor_assert(matching_mmult_dimensions(m1, m2));
+  tensor_assert(matching_mmult_into_dimensions(output, m1, m2));
 
   output.fill_with_zeros();
   index_t i_len = m1.rows();
