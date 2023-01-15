@@ -24,4 +24,9 @@ namespace tensor {
  *  fold(m1,-1,m2,0) even if m1 or m2 are sparse matrices. */
 RTensor mmult(const RTensor &m1, const RSparse &m2) { return do_mmult(m1, m2); }
 
+/** Multiply a tensor with a sparse matrix, storing the result in output. */
+void mmult_into(RTensor &output, const RTensor &m1, const RSparse &m2) {
+  do_mmult_into(output, m1, m2);
+}
+
 }  // namespace tensor

@@ -79,6 +79,8 @@ class CSRMatrix {
             Tensor<elt_t> data);
   /**Convert a tensor to sparse form.*/
   explicit CSRMatrix(const Tensor<elt_t> &tensor);
+  /**Construct a sparse matrix from nested initializer lists.*/
+  CSRMatrix(const typename detail::nested_initializer_list<2, elt_t>::type &l) : CSRMatrix(tensor(l)) {}
   /**Copy constructor.*/
   CSRMatrix(const CSRMatrix<elt_t> &s) = default;
   /**Move constructor.*/

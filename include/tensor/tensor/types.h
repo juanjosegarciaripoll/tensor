@@ -87,22 +87,22 @@ class Tensor {
   /**Create a Tensor from a vector initializer list {1, 2, 3}. */
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
-  Tensor(typename detail::nested_initializer_list<1, elt_t>::type l)
+  Tensor(const typename detail::nested_initializer_list<1, elt_t>::type &l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a matrix braced initializer list of rows, e.g. {{1, 2, 3}, {3, 4, 5}}. */
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
-  Tensor(typename detail::nested_initializer_list<2, elt_t>::type l)
+  Tensor(const typename detail::nested_initializer_list<2, elt_t>::type &l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a three-dimensional initializer list, e.g. {{{1}, {2}}, {{3}, {4}}, {{5}, {6}}}. */
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
-  Tensor(typename detail::nested_initializer_list<3, elt_t>::type l)
+  Tensor(const typename detail::nested_initializer_list<3, elt_t>::type &l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
   /**Create a Tensor from a four-dimensional initializer list. */
   // NOLINTNEXTLINE(*-explicit-constructor)
   // cppcheck-suppress noExplicitConstructor
-  Tensor(typename detail::nested_initializer_list<4, elt_t>::type l)
+  Tensor(const typename detail::nested_initializer_list<4, elt_t>::type &l)
       : Tensor(detail::nested_list_initializer<elt_t>::make_tensor(l)) {}
 
   /**Assignment operator. Can result in both tensors sharing data.*/

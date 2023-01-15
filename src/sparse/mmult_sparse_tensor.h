@@ -36,18 +36,6 @@ static void mult_sp_t(elt_t *dest, const index_t *row_start,
                       const elt_t *vector, index_t i_len, index_t j_len,
                       index_t k_len, index_t l_len) {
   if (k_len == 1) {
-#if 0
-	// dest(i,l) = matrix(i,j) vector(j,l)
-	for (; l_len; l_len--, vector+=j_len) {
-	    for (index_t i = 0; i < i_len; i++) {
-		elt_t accum = *dest;
-		for (index_t j = row_start[i]; j < row_start[i+1]; j++) {
-		    accum += matrix[j] * vector[column[j]];
-		}
-		*(dest++) = accum;
-	    }
-	}
-#else
     for (; l_len; l_len--, vector += j_len) {
       const elt_t *m = matrix;
       const index_t *c = column;
@@ -59,7 +47,6 @@ static void mult_sp_t(elt_t *dest, const index_t *row_start,
         *(dest++) = accum;
       }
     }
-#endif
   } else {
     // dest(i,k,l) = matrix(i,j) vector(k,j,l)
     for (index_t l = 0; l < l_len; l++) {
@@ -86,12 +73,13 @@ static inline Tensor<elt_t> do_mmult(const Sparse<elt_t> &m1,
                                      const Tensor<elt_t> &m2) {
   tensor_assert(m1.columns() == m2.dimension(0));
 
+  // dest(i,k,l) = matrix(i,j) vector(k,j,l)
   Indices dims(m2.rank());
   std::copy(m2.dimensions().begin(), m2.dimensions().end(), dims.begin());
   index_t i_len = dims.at(0) = m1.rows();
   index_t k_len = 1;
-  index_t j_len = m2.dimension(0);
-  index_t l_len = m2.ssize() / j_len;
+  index_t j_len = m1.columns();
+  index_t l_len = m2.ssize() / (k_len * j_len);
 
   auto output = Tensor<elt_t>::zeros(dims);
 
@@ -115,7 +103,7 @@ static inline void do_mmult_into(Tensor<elt_t> &output, const Sparse<elt_t> &m1,
   output.fill_with_zeros();
   index_t i_len = m1.rows();
   index_t k_len = 1;
-  index_t j_len = m2.dimension(0);
+  index_t j_len = m1.columns();
   index_t l_len = m2.ssize() / j_len;
   mult_sp_t(output.begin(), m1.priv_row_start().cbegin(),
             m1.priv_column().cbegin(), m1.priv_data().cbegin(), m2.cbegin(),

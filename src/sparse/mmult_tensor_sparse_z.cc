@@ -24,4 +24,10 @@ namespace tensor {
  *  fold(m1,-1,m2,0) even if m1 or m2 are sparse matrices. */
 CTensor mmult(const CTensor &m1, const CSparse &m2) { return do_mmult(m1, m2); }
 
+/** Multiply a tensor with a sparse matrix, storing the result in output. */
+void mmult_into(CTensor &output, const CTensor &m1, const CSparse &m2) {
+  do_mmult_into(output, m1, m2);
+}
+
+
 }  // namespace tensor
