@@ -45,8 +45,14 @@ include(TensorOpenBLAS)
 # SYTEM CHECKS AND CONFIGURATION
 #
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(TENSOR_DEBUG_DEFAULT_VALUE ON)
+else()
+  set(TENSOR_DEBUG_DEFAULT_VALUE OFF)
+endif()
+
 # Configuration options
-option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" ON)
+option(TENSOR_DEBUG "Include assertions for out-of-range access and other conditions" ${TENSOR_DEBUG_DEFAULT_VALUE})
 option(TENSOR_FFTW "Enable support for FFTW" OFF)
 option(TENSOR_ARPACK "Enable support for Arpack" OFF)
 option(TENSOR_PRIMME "Enable support for Primme" OFF)
