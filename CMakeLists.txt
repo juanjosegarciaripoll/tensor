@@ -6,9 +6,6 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
 
-# Source files are named relative but transformed into absolute paths
-cmake_policy(SET CMP0076 NEW)
-
 # set the project name and version
 project(tensor
   VERSION 0.2.0
@@ -33,7 +30,6 @@ include(CheckSymbolExists)
 include(CheckTypeSize)
 include(GNUInstallDirs)
 include(TestBigEndian)
-find_package(PkgConfig QUIET)
 
 # Find our extra modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
