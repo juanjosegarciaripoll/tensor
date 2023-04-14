@@ -70,7 +70,6 @@ endif()
 
 # Search for dependencies
 set(TENSOR_DEPENDENCIES)
-set(cblas_found FALSE)
 set(TENSOR_USE_LAPACK TRUE)
 if(TENSOR_BLAS STREQUAL MKL)
   tensor_find_dependency(
@@ -81,11 +80,10 @@ if(TENSOR_BLAS STREQUAL MKL)
     DEPENDENCIES TENSOR_DEPENDENCIES
     REQUIRED
   )
-  set(cblas_found TRUE)
   set(TENSOR_USE_MKL TRUE)
   set(TENSOR_USE_LAPACK FALSE)
 endif()
-if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT cblas_found))
+if(TENSOR_BLAS STREQUAL OpenBLAS)
   tensor_find_dependency(
     NAME OpenBLAS
     OUTVAR tensor_blas_target
@@ -95,7 +93,6 @@ if((TENSOR_BLAS MATCHES OpenBLAS) OR (NOT cblas_found))
     PKGCONFIG_NAMES openblas-pthread openblas-openmp openblas openblas64
     REQUIRED
   )
-  set(cblas_found TRUE)
   set(TENSOR_USE_OPENBLAS TRUE)
   set(HAVE_CBLAS_H TRUE)
   tensor_openblas_requires_lapack(TARGET ${tensor_blas_target}
