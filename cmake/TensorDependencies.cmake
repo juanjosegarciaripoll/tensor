@@ -15,7 +15,7 @@ function(tensor_find_dependency)
     ${ARGN}
   )
   if (NOT ARGP_DEPENDENCIES)
-    message(FATAL_ERROR "ARGP_DEPENDENCIES variable is required")
+    message(FATAL_ERROR "tensor_find_dependenct needs a DEPENDENCIES variable to output to")
   endif() 
 
   if (NOT ARGP_NAME)

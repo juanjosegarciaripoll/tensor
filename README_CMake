@@ -1,0 +1,106 @@
+The latest versions of the tensor library use CMake instead of autoconf as meta
+build system.
+
+Basic instructions
+==================
+
+Requirements are similar to the autoconf-based build. See, however, below for
+new approaches. You need at least CMake version 3.18.
+
+1. Configure the build
+
+   cmake -S <path_to_tensor_checkout> -B <build_directory -D <variable>=<value>
+
+   For common variables, see below. The build directory holds temporary data
+   and can be removed after you have installed the library.
+
+2. Build and install the library
+
+   cd <build_directory>
+   make
+   make install
+
+   Optionally, you can also run the tests
+
+   cd <build_directory>/tests
+   ctest
+
+3. To later include the library in your own projects, you will need to write a
+   CMakeLists.txt with the line
+
+   find_package(tensor)
+
+   This will import the tensor library as target "tensor::tensor". Note that
+   the tensor config script will try to find all declared dependencies in turn,
+   so you will need the same build environment as the tensor library itself.
+
+
+Variables
+=========
+
+CMake allows significant tuning of the build through user-specifiable
+variables. The list of variables can be found in two blocks under
+CMakeLists.txt and cmake/TensorOptions.cmake. The most relevant options are
+
+BUILD_SHARED_LIBS    - when set to ON (default: OFF), build a shared library, otherwise a static library
+CMAKE_PREFIX_PATH    - semicolon-separated list of root directories where CMake searches for dependencies.
+                       If, for example, you install your private OpenBLAS build under /home/me/local_install
+		       (with subdirectories bin/, include/ etc.), you should set this variable to
+		       "/home/me/local_install" as a hint to CMake to search there.
+TENSOR_DEBUG         - when set to ON (default: OFF), adds some, possibly expensive, assertions to the code
+TENSOR_RANGE_SQUEEZE - when set to ON (default: ON), enable removal of dimensions when creating certain slices.
+                       See Changes.md for the exact behavior
+TENSOR_COPY_ON_WRITE - when set to ON (default: ON), use the traditional behavior where copying a tensor
+                       does not reserve new memory until you write to it.
+
+Several variables allow the selection of dependencies:
+
+TENSOR_BLAS   - set to "OpenBLAS" or "MKL" to select the appropriate BLAS / LAPACK backend.
+                Note that you may need a separate LAPACK library for some installations of OpenBLAS
+TENSOR_FFTW   - when set to ON (default: OFF), build with bindings to FFTW; requires the fftw library
+TENSOR_ARPACK - when set to ON (default: OFF), build with bindings to ARPACk; requires the arpack-ng library
+TENSOR_PRIMME - when set to ON (default: OFF), build with bindings to PRIMME;
+                setting this option will download and build the PRIMME library as part of the build
+
+
+Tricky dependencies problems
+============================
+
+Unless you have a special setup, the CMake build of the tensor library should
+be able to find installed dependencies automatically. If this fails, you
+usually have not installed this dependency, or you need to set the
+CMAKE_PREFIX_PATH appropriately.
+
+In rare cases, though, this may not be possible, then there are two simple
+options to deal with dependency problems:
+
+1. Specify the compiler and linker flags explicitly.
+
+   This should be used with caution, as the compiler/linker flags will not be
+   passed downstream. That is, if you afterwards write a program that consumes
+   the tensor library, it may need to get these flags explicitly as well.
+
+   For each dependency (MKL, OpenBLAS, lapack, arpack, fftw3), you can define
+   variables "TENSOR_<dependency>_CXXFLAGS" and "TENSOR_<dependency>_LDFLAGS"
+   to override the search mechanics and directly set the compile and link flags.
+
+2. Use some package management, e.g. vcpkg
+
+   While the resulting build artefacts may not be the most optimized ones, a
+   package manager relieves you from a lot of complexities. For the example of
+   vcpkg, you can just execute the following sequence of commands
+
+   git clone https://github.com/microsoft/vcpkg
+   cd vcpkg
+   ./bootstrap.sh
+   ./vcpkg install lapack arpack-ng fftw3 openblas
+
+   Then you can run the normal configure step for the tensor library and your
+   own downstream program with the additional option
+
+   -D CMAKE_TOOLCHAIN_FILE=<path_to_vcpkg_checkout>/scripts/buildsystems/vcpkg.cmake
+
+   Vcpkg does some additional magic, for example copying dlls to the target or
+   installation directory under Windows, and it builds generally static libraries
+   under Linux. But it allows you a quick start if you find yourself in dependency
+   trouble.
