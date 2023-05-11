@@ -102,6 +102,11 @@ check_PROGRAMS += test_view_set
 test_view_set_SOURCES = test_view_set.cc
 test_view_set_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
 
+TESTS += test_view_slicing_usage
+check_PROGRAMS += test_view_slicing_usage
+test_view_set_SOURCES = test_view_slicing_usage.cc
+test_view_set_LDADD = libtestmain.a ../src/libtensor.la $(GTEST_LDFLAGS) #-lstdc++
+
 TESTS += test_view_errors
 check_PROGRAMS += test_view_errors
 test_view_errors_SOURCES = test_view_errors.cc
