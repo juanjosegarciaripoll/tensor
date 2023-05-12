@@ -394,6 +394,8 @@ class TensorView {
 
   TensorConstIterator<elt_t> begin() const;
   TensorConstIterator<elt_t> end() const;
+  TensorConstIterator<elt_t> cbegin() const {return begin();}
+  TensorConstIterator<elt_t> cend() const {return end();}
 
   Tensor<elt_t> copy() const;
 
@@ -432,6 +434,8 @@ class MutableTensorView {
   TensorIterator<elt_t> end();
   TensorConstIterator<elt_t> begin() const;
   TensorConstIterator<elt_t> end() const;
+  TensorConstIterator<elt_t> cbegin() const {return begin();}
+  TensorConstIterator<elt_t> cend() const {return end();}
 
   Tensor<elt_t> copy() const;
 
