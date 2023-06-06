@@ -151,6 +151,10 @@ class Dimensions {
            std::equal(begin(), end(), other.begin());
   }
 
+  bool operator!=(const Dimensions &other) const {
+    return !(*this == other);
+  }
+
  private:
   template <typename... index_like>
   index_t column_major_inner(index n, index in, index_like... irest) const {
